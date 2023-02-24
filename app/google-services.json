@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "397578092741",
+    "project_id": "edu-mate-app",
+    "storage_bucket": "edu-mate-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:397578092741:android:e53c932d74ca4de9b6b0ac",
+        "android_client_info": {
+          "package_name": "edumate.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "397578092741-aigf85seupocbtog1snsvotd7t1u3fin.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDj9de1O42w2VWrrc9rhxUxEYeFJ8ceTVU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "397578092741-aigf85seupocbtog1snsvotd7t1u3fin.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

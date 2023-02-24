@@ -1,0 +1,10 @@
+ktlint {
+    android = true
+    ignoreFailures = false
+    disabledRules = ["final-newline"]
+    reporters {
+        reporter "plain"
+        reporter "checkstyle"
+        reporter "sarif"
+    }
+}
