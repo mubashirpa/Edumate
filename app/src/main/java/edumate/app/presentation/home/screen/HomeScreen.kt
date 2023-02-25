@@ -22,15 +22,15 @@ fun HomeScreen() {
         TopAppBar(title = {
             Text(text = stringResource(id = Strings.app_name))
         }, navigationIcon = {
-            IconButton(onClick = { }) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = null)
-            }
-        })
+                IconButton(onClick = { }) {
+                    Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+                }
+            })
     }, floatingActionButton = {
-        FloatingActionButton(onClick = { }) {
-            Icon(imageVector = Icons.Default.Add, contentDescription = null)
-        }
-    }) { paddingValues ->
+            FloatingActionButton(onClick = { }) {
+                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+            }
+        }) { paddingValues ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -40,7 +40,8 @@ fun HomeScreen() {
             LazyColumn(contentPadding = PaddingValues(10.dp), content = {
                 item {
                     Card(
-                        onClick = { }, modifier = Modifier
+                        onClick = { },
+                        modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
                     ) {
@@ -52,7 +53,8 @@ fun HomeScreen() {
                                         style = MaterialTheme.typography.headlineSmall
                                     )
                                     Text(
-                                        text = "Section", style = MaterialTheme.typography.bodyLarge
+                                        text = "Section",
+                                        style = MaterialTheme.typography.bodyLarge
                                     )
                                 }
                                 IconButton(onClick = { }) {
@@ -64,7 +66,8 @@ fun HomeScreen() {
                             }
                             Spacer(modifier = Modifier.weight(1f))
                             Text(
-                                text = "0 students", style = MaterialTheme.typography.labelMedium
+                                text = "0 students",
+                                style = MaterialTheme.typography.labelMedium
                             )
                         }
                     }
