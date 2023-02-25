@@ -1,10 +1,16 @@
+tasks.getByPath("preBuild").dependsOn("ktlintFormat")
+
 ktlint {
     android = true
     ignoreFailures = false
-    disabledRules = ["final-newline"]
+    disabledRules = ["final-newline", "no-wildcard-imports", "max-line-length", "package-name"]
     reporters {
         reporter "plain"
         reporter "checkstyle"
         reporter "sarif"
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
     }
 }
