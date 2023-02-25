@@ -91,7 +91,9 @@ fun CreateRoomScreen() {
 }
 
 @Preview(
-    device = "id:pixel_6_pro", showSystemUi = true, showBackground = true,
+    device = "id:pixel_6_pro",
+    showSystemUi = true,
+    showBackground = true,
     uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
