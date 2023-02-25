@@ -1,0 +1,55 @@
+package edumate.app.domain.usecase.authentication
+
+import com.google.firebase.FirebaseNetworkException
+import com.google.firebase.auth.FirebaseAuthException
+import com.google.firebase.auth.FirebaseUser
+import edumate.app.R.string as Strings
+import edumate.app.core.Resource
+import edumate.app.core.UiText
+import edumate.app.domain.repository.FirebaseAuthRepository
+import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+
+class SignInUseCase @Inject constructor(
+    private val repository: FirebaseAuthRepository
+) {
+    operator fun invoke(email: String, password: String): Flow<Resource<FirebaseUser?>> = flow {
+        try {
+            emit(Resource.Loading())
+            val user = repository.signInWithEmailAndPassword(email, password)
+            emit(Resource.Success(user))
+        } catch (e: FirebaseAuthException) {
+            when (e.errorCode) {
+                "ERROR_WRONG_PASSWORD" -> {
+                    emit(Resource.Error(UiText.StringResource(Strings.auth_error_wrong_password)))
+                }
+                "ERROR_USER_NOT_FOUND" -> {
+                    emit(
+                        Resource.Error(
+                            UiText.StringResource(
+                                Strings.auth_error_user_not_found,
+                                email
+                            )
+                        )
+                    )
+                }
+                "ERROR_USER_DISABLED" -> {
+                    emit(Resource.Error(UiText.StringResource(Strings.auth_error_user_disabled)))
+                }
+                "ERROR_TOO_MANY_REQUESTS" -> {
+                    emit(
+                        Resource.Error(UiText.StringResource(Strings.auth_error_too_many_requests))
+                    )
+                }
+                else -> {
+                    emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
+                }
+            }
+        } catch (e: FirebaseNetworkException) {
+            emit(Resource.Error(UiText.StringResource(Strings.auth_network_exception)))
+        } catch (e: Exception) {
+            emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
+        }
+    }
+}
