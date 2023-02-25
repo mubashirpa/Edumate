@@ -1,3 +1,61 @@
 <resources>
     <string name="app_name">Edumate</string>
+    <string name="email">Email</string>
+    <string name="hide_password">Hide password</string>
+    <string name="password">Password</string>
+    <string name="show_password">Show password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+
+    <!-- Error -->
+    <string name="error_api_exception">Google sign in failed.</string>
+    <string name="error_no_internet">Could not connect to the internet. Please check your network.</string>
+    <string name="error_unexpected">An unexpected error occurred.</string>
+    <string name="error_unknown">Something wrong happened. Please try again.</string>
+
+    <!-- Authentication error -->
+    <string name="auth_invalid_user_exception">An unknown error has been occurred.</string>
+    <string name="auth_error_user_disabled">User with this email has been disabled.</string>
+    <string name="auth_error_user_not_found">We can\'t find an account with %1s. try another email, or if you don\'t have an account, you can sign up.</string>
+
+    <string name="auth_invalid_credentials_exception">The given data doesn\'t match.</string>
+    <string name="auth_weak_password_exception">The password you entered is too weak.</string>
+    <string name="auth_error_wrong_password">The password you entered is incorrect. Please try again.</string>
+    <string name="auth_error_wrong_old_password">Your old password was entered incorrectly, please enter it again.</string>
+    <string name="auth_error_invalid_email">Please enter a valid email.</string>
+
+    <string name="auth_user_collision_exception">An unknown error has been occurred.</string>
+    <string name="auth_error_email_already_in_use">This email is on another account. You can log into the account associated with that email.</string>
+
+    <string name="auth_network_exception">An unknown network error has occurred.</string>
+    <string name="auth_unknown_exception">An unknown error has occurred.</string>
+    <string name="auth_error_too_many_requests">Too many requests, please try again later.</string>
+
+    <!-- Validation error -->
+    <string name="error_blank_email">Please enter your email address.</string>
+    <string name="error_blank_name">Please enter your name.</string>
+    <string name="error_blank_password">Your password must have at least 6 letters and numbers.</string>
+    <string name="error_invalid_email">Please enter a valid email.</string>
+    <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
+    <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
+
+    <!-- GetStartedScreen -->
+    <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
+    <string name="get_started">Get started</string>
+
+    <!-- LoginScreen -->
+    <string name="dont_have_an_account">Don\'t have an Account?</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="google">Google</string>
+    <string name="please_sign_in_to_your_account">Please sign in to your account</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="signing_in">Signing in</string>
+    <string name="welcome_back">Welcome back!</string>
+
+    <!-- RegisterScreen -->
+    <string name="create_new_account">Create new account</string>
+    <string name="creating_account">Creating account</string>
+    <string name="full_name">Full name</string>
+    <string name="have_an_account">Have an account?</string>
+    <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
 </resources>
