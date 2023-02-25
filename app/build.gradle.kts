@@ -58,6 +58,9 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.bundles.lifecycle)
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
 
     val composeBom = platform(libs.androidx.compose.bom)
     implementation(composeBom)
@@ -66,15 +69,15 @@ dependencies {
     debugImplementation(libs.bundles.compose.debug)
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-
     implementation(libs.bundles.hilt)
     kapt(libs.hilt.android.compiler)
 
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+
+    implementation(libs.google.play.services.auth)
+    implementation(libs.coil.compose)
+    implementation(libs.accompanist.systemuicontroller)
 }
 
 kapt {
