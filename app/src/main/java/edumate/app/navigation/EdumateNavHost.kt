@@ -20,7 +20,7 @@ fun EdumateNavHost(
         modifier = modifier
     ) {
         authentication(navController)
-        composable(route = Routes.Screen.HOME_SCREEN) {
+        composable(route = Screen.HomeScreen.route) {
             HomeScreen()
         }
     }

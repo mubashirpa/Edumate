@@ -1,6 +1,5 @@
 package edumate.app.presentation.create_room.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
@@ -8,7 +7,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -30,12 +28,12 @@ fun CreateRoomScreen() {
                 }
             )
         }
-    ) { paddingValues ->
+    ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .consumeWindowInsets(paddingValues)
-                .padding(paddingValues)
+                .consumeWindowInsets(innerPadding)
+                .padding(innerPadding)
         ) {
             Column {
                 Column(
@@ -88,15 +86,4 @@ fun CreateRoomScreen() {
             }
         }
     }
-}
-
-@Preview(
-    device = "id:pixel_6_pro",
-    showSystemUi = true,
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_NO or Configuration.UI_MODE_TYPE_NORMAL
-)
-@Composable
-private fun CreateRoomScreenPreview() {
-    CreateRoomScreen()
 }
