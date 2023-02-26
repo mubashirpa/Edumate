@@ -39,6 +39,11 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
         return firebaseAuth.signInWithCredential(firebaseCredential).await().user
     }
 
+    override suspend fun sendPasswordResetEmail(email: String): String {
+        firebaseAuth.sendPasswordResetEmail(email).await()
+        return email
+    }
+
     override fun signOut() {
         firebaseAuth.signOut()
     }

@@ -35,6 +35,15 @@ interface FirebaseAuthRepository {
     suspend fun signInWithGoogle(idToken: String): FirebaseUser?
 
     /**
+     * Triggers the Firebase Authentication backend to send a password-reset email to the given email address, which must correspond to an existing user of your app.
+     *
+     * @param email the email of the account to which you wish to issue an account reset email
+     *
+     * @throws FirebaseAuthInvalidUserException thrown if there is no user corresponding to the given email address.
+     */
+    suspend fun sendPasswordResetEmail(email: String): String
+
+    /**
      * Signs out the current user and clears it from the disk cache
      */
     fun signOut()
