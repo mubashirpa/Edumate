@@ -2,10 +2,14 @@
     <string name="app_name">Edumate</string>
     <string name="email">Email</string>
     <string name="hide_password">Hide password</string>
+    <string name="navigate_up">Navigate up</string>
     <string name="password">Password</string>
     <string name="show_password">Show password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
+
+    <!-- Success -->
+    <string name="success_send_password_reset_email">We sent an email to %1s with a link to get back into your account.</string>
 
     <!-- Error -->
     <string name="error_api_exception">Google sign in failed.</string>
@@ -58,4 +62,10 @@
     <string name="full_name">Full name</string>
     <string name="have_an_account">Have an account?</string>
     <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
+
+    <!-- RecoverScreen -->
+    <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
+    <string name="recover">Recover</string>
+    <string name="reset_password">Reset password</string>
+    <string name="sending_recovery_email">Sending email</string>
 </resources>
