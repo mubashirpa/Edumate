@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "397578092741",
+    "firebase_url": "https://edu-mate-app-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "edu-mate-app",
     "storage_bucket": "edu-mate-app.appspot.com"
   },
@@ -14,7 +15,15 @@
       },
       "oauth_client": [
         {
-          "client_id": "397578092741-aigf85seupocbtog1snsvotd7t1u3fin.apps.googleusercontent.com",
+          "client_id": "397578092741-fr35q5r4ggloceco12hdda0dvodmsii7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "edumate.app",
+            "certificate_hash": "ce2f8c1f51af6f8d47463f6aa6d72463639591ca"
+          }
+        },
+        {
+          "client_id": "397578092741-alqtcebud1r0tsddkm90gj3bfjebkdk0.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
