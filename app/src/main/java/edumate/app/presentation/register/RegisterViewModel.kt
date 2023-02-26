@@ -69,17 +69,17 @@ class RegisterViewModel @Inject constructor(
         val emailResult = validateEmail.execute(email)
         val passwordResult = validatePassword.execute(password)
 
-        val hasError = listOf(
-            nameResult,
-            emailResult,
-            passwordResult
-        ).any { !it.successful }
-
         uiState = uiState.copy(
             nameError = nameResult.error,
             emailError = emailResult.error,
             passwordError = passwordResult.error
         )
+
+        val hasError = listOf(
+            nameResult,
+            emailResult,
+            passwordResult
+        ).any { !it.successful }
 
         if (hasError) return
 

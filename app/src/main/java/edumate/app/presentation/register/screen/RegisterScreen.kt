@@ -1,7 +1,5 @@
 package edumate.app.presentation.register.screen
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -37,14 +35,9 @@ fun RegisterScreen(
     onRegisterSuccess: () -> Unit
 ) {
     val context = LocalContext.current
-    val activity = LocalContext.current as Activity
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnRegisterSuccess by rememberUpdatedState(onRegisterSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
-
-    BackHandler {
-        activity.finish()
-    }
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the user is logged in and
@@ -81,7 +74,7 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = stringResource(id = Strings.create_new_account),
                         style = MaterialTheme.typography.headlineSmall
@@ -93,7 +86,7 @@ fun RegisterScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    Spacer(modifier = Modifier.weight(0.5f))
+                    // Spacer(modifier = Modifier.weight(0.5f))
                     NameField(
                         value = viewModel.uiState.name,
                         onValueChange = {
@@ -136,7 +129,7 @@ fun RegisterScreen(
                         autofillTypes = listOf(AutofillType.NewPassword)
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
                             viewModel.onEvent(RegisterUiEvent.OnSignUpClick)
@@ -159,7 +152,7 @@ fun RegisterScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

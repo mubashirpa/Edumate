@@ -1,13 +1,13 @@
 package edumate.app.presentation.login.screen
 
-import android.app.Activity
 import android.app.Activity.RESULT_OK
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -49,7 +49,6 @@ fun LoginScreen(
     onLoginSuccess: () -> Unit
 ) {
     val context = LocalContext.current
-    val activity = LocalContext.current as Activity
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnLoginSuccess by rememberUpdatedState(onLoginSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
@@ -68,9 +67,10 @@ fun LoginScreen(
                 if (intent != null) {
                     val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
                     try {
-                        val account = task.getResult(ApiException::class.java)!!
-                        val idToken = account.idToken!!
-                        viewModel.onEvent(LoginUiEvent.OnGoogleSignInClick(idToken))
+                        val account = task.getResult(ApiException::class.java)
+                        account.idToken?.let { token ->
+                            viewModel.onEvent(LoginUiEvent.OnGoogleSignInClick(token))
+                        }
                     } catch (e: ApiException) {
                         scope.launch {
                             snackbarHostState.showSnackbar(
@@ -81,10 +81,6 @@ fun LoginScreen(
                 }
             }
         }
-
-    BackHandler {
-        activity.finish()
-    }
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the user is logged in and
@@ -116,11 +112,12 @@ fun LoginScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
-                        .fillMaxHeight(),
+                        .fillMaxHeight()
+                        .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = stringResource(id = Strings.welcome_back),
                         style = MaterialTheme.typography.headlineSmall
@@ -132,7 +129,7 @@ fun LoginScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    Spacer(modifier = Modifier.weight(0.5f))
+                    // Spacer(modifier = Modifier.weight(0.5f))
                     EmailField(
                         value = viewModel.uiState.email,
                         onValueChange = {
@@ -169,7 +166,7 @@ fun LoginScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
                             viewModel.onEvent(LoginUiEvent.OnSignInClick)
@@ -212,7 +209,7 @@ fun LoginScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
-                    Spacer(modifier = Modifier.weight(1f))
+                    // Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
