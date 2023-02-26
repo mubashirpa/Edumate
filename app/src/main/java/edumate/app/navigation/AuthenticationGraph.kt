@@ -2,51 +2,73 @@ package edumate.app.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import edumate.app.presentation.get_started.GetStartedScreen
 import edumate.app.presentation.login.screen.LoginScreen
+import edumate.app.presentation.recover.screen.RecoverScreen
 import edumate.app.presentation.register.screen.RegisterScreen
 
 fun NavGraphBuilder.authentication(navController: NavController) {
     navigation(
-        startDestination = Routes.Screen.GET_STARTED_SCREEN,
+        startDestination = Screen.GetStartedScreen.route,
         route = Routes.Graph.AUTHENTICATION
     ) {
-        composable(route = Routes.Screen.GET_STARTED_SCREEN) {
+        composable(route = Screen.GetStartedScreen.route) {
             GetStartedScreen(
                 navigateToLogin = {
-                    navController.navigate(Routes.Screen.LOGIN_SCREEN)
+                    navController.navigate(Screen.LoginScreen.route)
                 }
             )
         }
-        composable(route = Routes.Screen.LOGIN_SCREEN) {
+        composable(route = Screen.LoginScreen.route) {
             LoginScreen(
                 navigateToRegister = {
-                    navController.navigate(Routes.Screen.REGISTER_SCREEN) {
-                        popUpTo(Routes.Screen.LOGIN_SCREEN) { inclusive = true }
+                    navController.navigate(Screen.RegisterScreen.route) {
+                        popUpTo(Screen.LoginScreen.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
-                navigateToRecover = {
+                navigateToRecover = { email ->
+                    navController.navigate(
+                        Screen.RecoverScreen.withOptionalArgs("?email=$email")
+                    )
                 },
                 onLoginSuccess = {
-                    navController.popBackStack()
-                    navController.navigate(Routes.Screen.HOME_SCREEN)
+                    navController.popBackStack(Routes.Graph.AUTHENTICATION, true)
+                    navController.navigate(Screen.HomeScreen.route)
                 }
             )
         }
-        composable(route = Routes.Screen.REGISTER_SCREEN) {
+        composable(route = Screen.RegisterScreen.route) {
             RegisterScreen(
                 navigateToLogin = {
-                    navController.navigate(Routes.Screen.LOGIN_SCREEN) {
-                        popUpTo(Routes.Screen.REGISTER_SCREEN) { inclusive = true }
+                    navController.navigate(Screen.LoginScreen.route) {
+                        popUpTo(Screen.RegisterScreen.route) { inclusive = true }
                         launchSingleTop = true
                     }
                 },
                 onRegisterSuccess = {
-                    navController.popBackStack()
-                    navController.navigate(Routes.Screen.HOME_SCREEN)
+                    navController.popBackStack(Routes.Graph.AUTHENTICATION, true)
+                    navController.navigate(Screen.HomeScreen.route)
+                }
+            )
+        }
+        composable(
+            route = "${Screen.RecoverScreen.route}${Routes.Args.RECOVER_SCREEN}",
+            arguments = listOf(
+                navArgument(Routes.Args.RECOVER_EMAIL) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            RecoverScreen(
+                onPasswordResetEmailSent = {
+                    navController.navigateUp()
                 }
             )
         }
