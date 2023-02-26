@@ -1,13 +1,12 @@
 package edumate.app.presentation.get_started
 
-import android.app.Activity
-import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -25,47 +24,56 @@ import edumate.app.core.Constants
 fun GetStartedScreen(
     navigateToLogin: () -> Unit
 ) {
-    val activity = LocalContext.current as Activity
-    val painter = rememberAsyncImagePainter(Constants.GET_STARTED_SCREEN_BACKDROP)
-
-    BackHandler {
-        activity.finish()
-    }
+    val backgroundPlaceholder = rememberAsyncImagePainter(Constants.GET_STARTED_BACKDROP_ASSET_URL)
 
     Scaffold { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .consumeWindowInsets(innerPadding)
-                .padding(innerPadding),
+                .consumeWindowInsets(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(
-                        "https://firebasestorage.googleapis.com/v0/b/edu-mate-app.appspot.com/o/get_started.jpg?alt=media&token=6b9e6215-c0a4-4046-a15d-42cb5a102986"
-                    )
-                    .crossfade(true).build(),
-                placeholder = painter,
-                error = painter,
+                    .data(Constants.GET_STARTED_BACKDROP_URL)
+                    .crossfade(true)
+                    .build(),
+                placeholder = backgroundPlaceholder,
+                error = backgroundPlaceholder,
                 contentDescription = stringResource(id = Strings.get_started),
                 contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .blur(1.dp)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black),
+                            startY = 500f
+                        )
+                    )
             )
             Column(
                 modifier = Modifier
                     .fillMaxWidth(0.9f)
-                    .fillMaxHeight(),
+                    .fillMaxHeight()
+                    .padding(innerPadding),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(id = Strings.app_name).lowercase(),
-                    color = Color.White,
-                    style = MaterialTheme.typography.headlineLarge
-                )
+                Row {
+                    Text(
+                        text = stringResource(id = Strings.app_name).lowercase(),
+                        color = Color.White,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                    Text(
+                        text = ".",
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                }
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(id = Strings.get_started_message),
