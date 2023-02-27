@@ -40,16 +40,7 @@ class RecoverViewModel @Inject constructor(
                 )
             }
             is RecoverUiEvent.OnRecoverClick -> {
-                val email = uiState.email
-                val emailResult = validateEmail.execute(email)
-
-                val hasError = !emailResult.successful
-
-                uiState = uiState.copy(emailError = emailResult.error)
-
-                if (hasError) return
-
-                sendPasswordResetEmail(email)
+                sendPasswordResetEmail(uiState.email)
             }
             is RecoverUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -58,6 +49,11 @@ class RecoverViewModel @Inject constructor(
     }
 
     private fun sendPasswordResetEmail(email: String) {
+        val emailResult = validateEmail.execute(email)
+        uiState = uiState.copy(emailError = emailResult.error)
+
+        if (!emailResult.successful) return
+
         sendPasswordResetEmailUseCase(email).onEach { resource ->
             uiState = when (resource) {
                 is Resource.Loading -> {
