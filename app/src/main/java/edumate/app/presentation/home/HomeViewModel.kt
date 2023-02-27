@@ -1,14 +1,32 @@
 package edumate.app.presentation.home
 
+import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.core.Resource
+import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.SignOutUseCase
+import edumate.app.domain.usecase.rooms.GetRoomsUseCase
 import javax.inject.Inject
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val getRoomsUseCase: GetRoomsUseCase
 ) : ViewModel() {
+
+    var uiState by mutableStateOf(HomeUiState())
+        private set
+
+    init {
+        fetchRooms()
+    }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
@@ -16,5 +34,37 @@ class HomeViewModel @Inject constructor(
                 signOutUseCase()
             }
         }
+    }
+
+    private fun fetchRooms() {
+        getRoomsUseCase().onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    Log.d("hello", "loading")
+                    uiState = uiState.copy(
+                        loading = true,
+                        success = false,
+                        error = false,
+                        errorMessage = UiText.Empty
+                    )
+                }
+                is Resource.Success -> {
+                    Log.d("hello", "success: ${resource.data}")
+                    uiState = uiState.copy(
+                        loading = false,
+                        success = true,
+                        rooms = resource.data ?: emptyList()
+                    )
+                }
+                is Resource.Error -> {
+                    Log.d("hello", "error: ${resource.message}")
+                    uiState = uiState.copy(
+                        loading = false,
+                        error = true,
+                        errorMessage = resource.message!!
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }
