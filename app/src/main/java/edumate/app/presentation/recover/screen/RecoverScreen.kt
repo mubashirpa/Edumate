@@ -25,7 +25,6 @@ import edumate.app.presentation.recover.RecoverViewModel
 import kotlinx.coroutines.flow.filter
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class
 )
@@ -84,7 +83,6 @@ fun RecoverScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = stringResource(id = Strings.reset_password),
                         style = MaterialTheme.typography.headlineSmall
@@ -97,7 +95,6 @@ fun RecoverScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    // Spacer(modifier = Modifier.weight(0.5f))
                     EmailField(
                         value = viewModel.uiState.email,
                         onValueChange = {
@@ -111,7 +108,6 @@ fun RecoverScreen(
                         errorMessage = viewModel.uiState.emailError?.asString()
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
                             viewModel.onEvent(RecoverUiEvent.OnRecoverClick)
@@ -124,7 +120,6 @@ fun RecoverScreen(
                         Text(text = stringResource(id = Strings.recover))
                     }
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

@@ -2,6 +2,7 @@ package edumate.app.presentation.home.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -19,7 +20,8 @@ import edumate.app.presentation.home.HomeViewModel
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel()
+    viewModel: HomeViewModel = hiltViewModel(),
+    navigateToCreateRoom: () -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -39,7 +41,7 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { }) {
+            FloatingActionButton(onClick = navigateToCreateRoom) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         }
@@ -53,7 +55,7 @@ fun HomeScreen(
             LazyColumn(
                 contentPadding = PaddingValues(10.dp),
                 content = {
-                    item {
+                    items(viewModel.uiState.rooms) { room ->
                         Card(
                             onClick = { },
                             modifier = Modifier.aspectRatio(16f / 9f)
@@ -62,11 +64,11 @@ fun HomeScreen(
                                 Row {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                            text = "Name",
+                                            text = room.title.orEmpty(),
                                             style = MaterialTheme.typography.headlineSmall
                                         )
                                         Text(
-                                            text = "Section",
+                                            text = room.section.orEmpty(),
                                             style = MaterialTheme.typography.bodyLarge
                                         )
                                     }

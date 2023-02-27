@@ -37,7 +37,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class
 )
@@ -117,7 +116,6 @@ fun LoginScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = stringResource(id = Strings.welcome_back),
                         style = MaterialTheme.typography.headlineSmall
@@ -129,7 +127,6 @@ fun LoginScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    // Spacer(modifier = Modifier.weight(0.5f))
                     EmailField(
                         value = viewModel.uiState.email,
                         onValueChange = {
@@ -166,7 +163,6 @@ fun LoginScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
                             viewModel.onEvent(LoginUiEvent.OnSignInClick)
@@ -209,7 +205,6 @@ fun LoginScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }

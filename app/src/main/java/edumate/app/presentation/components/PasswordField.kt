@@ -21,7 +21,7 @@ import androidx.compose.ui.text.input.*
 import edumate.app.R.string as Strings
 import edumate.app.core.ext.autofill
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun PasswordField(
     value: String,
@@ -50,7 +50,10 @@ fun PasswordField(
         onValueChange = { onValueChange(it) },
         modifier = modifier
             .focusRequester(focusRequester)
-            .autofill(autofillTypes = autofillTypes, onFill = { onValueChange(it) }),
+            .autofill(
+                autofillTypes = autofillTypes,
+                onFill = { onValueChange(it) }
+            ),
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
@@ -82,12 +85,15 @@ fun PasswordField(
             keyboardType = KeyboardType.Password,
             imeAction = imeAction
         ),
-        keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }, onNext = {
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            },
+            onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }),
+            }
+        ),
         singleLine = true,
         shape = MaterialTheme.shapes.large
     )

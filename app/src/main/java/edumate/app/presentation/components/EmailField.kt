@@ -2,7 +2,6 @@ package edumate.app.presentation.components
 
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -21,7 +20,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import edumate.app.core.ext.autofill
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EmailField(
     value: String,
@@ -51,7 +50,10 @@ fun EmailField(
         onValueChange = { onValueChange(it) },
         modifier = modifier
             .focusRequester(focusRequester)
-            .autofill(autofillTypes = autofillTypes, onFill = { onValueChange(it) }),
+            .autofill(
+                autofillTypes = autofillTypes,
+                onFill = { onValueChange(it) }
+            ),
         readOnly = readOnly,
         label = label,
         placeholder = placeholder,
@@ -64,12 +66,15 @@ fun EmailField(
             keyboardType = KeyboardType.Email,
             imeAction = imeAction
         ),
-        keyboardActions = KeyboardActions(onDone = {
-            focusManager.clearFocus()
-            keyboardController?.hide()
-        }, onNext = {
+        keyboardActions = KeyboardActions(
+            onDone = {
+                focusManager.clearFocus()
+                keyboardController?.hide()
+            },
+            onNext = {
                 focusManager.moveFocus(FocusDirection.Down)
-            }),
+            }
+        ),
         singleLine = true,
         shape = MaterialTheme.shapes.large
     )

@@ -24,7 +24,6 @@ import edumate.app.presentation.register.RegisterViewModel
 import kotlinx.coroutines.flow.filter
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
     ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class
 )
@@ -74,7 +73,6 @@ fun RegisterScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Text(
                         text = stringResource(id = Strings.create_new_account),
                         style = MaterialTheme.typography.headlineSmall
@@ -86,7 +84,6 @@ fun RegisterScreen(
                         style = MaterialTheme.typography.bodySmall
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    // Spacer(modifier = Modifier.weight(0.5f))
                     NameField(
                         value = viewModel.uiState.name,
                         onValueChange = {
@@ -129,7 +126,6 @@ fun RegisterScreen(
                         autofillTypes = listOf(AutofillType.NewPassword)
                     )
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                     Button(
                         onClick = {
                             viewModel.onEvent(RegisterUiEvent.OnSignUpClick)
@@ -152,7 +148,6 @@ fun RegisterScreen(
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
-                    // Spacer(modifier = Modifier.weight(1f))
                 }
             }
         }
