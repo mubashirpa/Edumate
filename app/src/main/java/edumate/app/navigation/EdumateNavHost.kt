@@ -6,6 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import edumate.app.presentation.create_room.screen.CreateRoomScreen
 import edumate.app.presentation.home.screen.HomeScreen
 
 @Composable
@@ -21,7 +22,14 @@ fun EdumateNavHost(
     ) {
         authentication(navController)
         composable(route = Screen.HomeScreen.route) {
-            HomeScreen()
+            HomeScreen(
+                navigateToCreateRoom = {
+                    navController.navigate(Screen.CreateRoomScreen.route)
+                }
+            )
+        }
+        composable(route = Screen.CreateRoomScreen.route) {
+            CreateRoomScreen()
         }
     }
 }
