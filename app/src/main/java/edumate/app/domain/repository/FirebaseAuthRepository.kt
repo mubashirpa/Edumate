@@ -4,10 +4,17 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
+import kotlinx.coroutines.flow.Flow
 
 interface FirebaseAuthRepository {
 
+    val currentUserId: String
     val hasUser: Boolean
+
+    /**
+     * Returns the currently signed-in [FirebaseUser] or null if there is none.
+     */
+    val currentUser: Flow<FirebaseUser?>
 
     /**
      * Tries to create a new user account with the given email address and password. If successful, it also signs the user in into the app.
