@@ -4,20 +4,20 @@ import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toRoomsDto
-import edumate.app.domain.model.Room
+import edumate.app.domain.model.rooms.Room
 import edumate.app.domain.repository.RoomsRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AddRoomsUseCase @Inject constructor(
-    private val repository: RoomsRepository
+class UpdateRoomUseCase @Inject constructor(
+    private val roomsRepository: RoomsRepository
 ) {
-    operator fun invoke(room: Room): Flow<Resource<String>> = flow {
+    operator fun invoke(roomId: String, room: Room): Flow<Resource<Boolean>> = flow {
         try {
             emit(Resource.Loading())
-            val roomId = repository.add(room.toRoomsDto())
-            emit(Resource.Success(roomId))
+            roomsRepository.update(roomId, room.toRoomsDto())
+            emit(Resource.Success(true))
         } catch (e: Exception) {
             val message = e.localizedMessage
             if (message != null) {

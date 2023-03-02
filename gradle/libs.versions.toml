@@ -1,7 +1,9 @@
 [versions]
+android-gradle-plugin = "7.4.2"
 androidx-compose-material3 = "1.1.0-alpha07"
 androidx-compose-ui = "1.3.3"
 androidx-lifecycle = "2.6.0-rc01"
+com-google-accompanist = "0.29.1-alpha"
 com-google-dagger = "2.45"
 kotlin = "1.8.10"
 kotlinCompilerExtensionVersion = "1.4.2"
@@ -9,7 +11,9 @@ minSdk = "24"
 sdkVersion = "33"
 
 [libraries]
-accompanist-systemuicontroller = "com.google.accompanist:accompanist-systemuicontroller:0.29.1-alpha"
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "com-google-accompanist" }
+accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "com-google-accompanist" }
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "com-google-accompanist" }
 androidx-activity-compose = "androidx.activity:activity-compose:1.6.1"
 androidx-compose-bom = "androidx.compose:compose-bom:2023.01.00"
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
@@ -45,6 +49,11 @@ hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 junit = "junit:junit:4.13.2"
 
 [bundles]
+accompanist = [
+    "accompanist-pager",
+    "accompanist-pager-indicators",
+    "accompanist-systemuicontroller",
+]
 compose = [
     "androidx-compose-material-icons-core",
     "androidx-compose-material-icons-extended",
@@ -78,8 +87,8 @@ lifecycle = [
 ]
 
 [plugins]
-android-application = "com.android.application:7.4.1"
-android-library = "com.android.library:7.4.1"
+android-application = { id = "com.android.application", version.ref = "android-gradle-plugin" }
+android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 devtools-ksp = "com.google.devtools.ksp:1.8.10-1.0.9"
 google-services = "com.google.gms.google-services:4.3.15"
 gradle-ktlint = "org.jlleitschuh.gradle.ktlint:11.2.0"

@@ -30,6 +30,9 @@ class HomeViewModel @Inject constructor(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
+            is HomeUiEvent.OnOpenFabMenuChange -> {
+                uiState = uiState.copy(openFabMenu = event.open)
+            }
             is HomeUiEvent.SignOut -> {
                 signOutUseCase()
             }
@@ -40,7 +43,6 @@ class HomeViewModel @Inject constructor(
         getRoomsUseCase().onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    Log.d("hello", "loading")
                     uiState = uiState.copy(
                         loading = true,
                         success = false,
@@ -49,7 +51,6 @@ class HomeViewModel @Inject constructor(
                     )
                 }
                 is Resource.Success -> {
-                    Log.d("hello", "success: ${resource.data}")
                     uiState = uiState.copy(
                         loading = false,
                         success = true,

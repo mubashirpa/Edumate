@@ -29,7 +29,14 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.CreateRoomScreen.route) {
-            CreateRoomScreen()
+            CreateRoomScreen(
+                navigateToRoom = {
+                    navController.navigateUp()
+                },
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

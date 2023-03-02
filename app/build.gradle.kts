@@ -77,7 +77,7 @@ dependencies {
 
     implementation(libs.google.play.services.auth)
     implementation(libs.coil.compose)
-    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.bundles.accompanist)
 }
 
 kapt {

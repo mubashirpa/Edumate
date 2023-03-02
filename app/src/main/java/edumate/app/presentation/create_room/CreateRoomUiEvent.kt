@@ -5,4 +5,5 @@ sealed class CreateRoomUiEvent {
     data class SectionChanged(val section: String) : CreateRoomUiEvent()
     data class SubjectChanged(val subject: String) : CreateRoomUiEvent()
     object OnCreateClick : CreateRoomUiEvent()
+    object UserMessageShown : CreateRoomUiEvent()
 }

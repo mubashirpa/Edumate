@@ -1,38 +1,71 @@
 package edumate.app.presentation.create_room.screen
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edumate.app.R.string as Strings
+import edumate.app.presentation.components.EdumateSnackbarHost
+import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_room.CreateRoomUiEvent
 import edumate.app.presentation.create_room.CreateRoomViewModel
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun CreateRoomScreen(
-    viewModel: CreateRoomViewModel = hiltViewModel()
+    viewModel: CreateRoomViewModel = hiltViewModel(),
+    navigateToRoom: (roomId: String) -> Unit,
+    onBackPressed: () -> Unit
 ) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    LaunchedEffect(context) {
+        viewModel.createRoomResults.collect { roomId ->
+            navigateToRoom(roomId)
+        }
+    }
+
+    viewModel.uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            viewModel.onEvent(CreateRoomUiEvent.UserMessageShown)
+        }
+    }
+
     Scaffold(
+        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
-            CenterAlignedTopAppBar(
+            TopAppBar(
                 title = {
-                    Text(text = "Create room")
+                    Text(text = stringResource(id = Strings.title_create_room_screen))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { }) {
+                    IconButton(onClick = onBackPressed) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowLeft,
-                            contentDescription = null
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = stringResource(id = Strings.navigate_up)
                         )
                     }
-                }
+                },
+                scrollBehavior = scrollBehavior
             )
-        }
+        },
+        snackbarHost = { EdumateSnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -45,8 +78,9 @@ fun CreateRoomScreen(
                     modifier = Modifier
                         .weight(1f)
                         .padding(horizontal = 10.dp)
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                     OutlinedTextField(
                         value = viewModel.uiState.name,
                         onValueChange = {
@@ -54,7 +88,7 @@ fun CreateRoomScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Room name")
+                            Text(text = stringResource(id = Strings.room_name))
                         },
                         shape = MaterialTheme.shapes.medium
                     )
@@ -66,7 +100,7 @@ fun CreateRoomScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Section")
+                            Text(text = stringResource(id = Strings.section))
                         },
                         shape = MaterialTheme.shapes.medium
                     )
@@ -78,7 +112,7 @@ fun CreateRoomScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Subject")
+                            Text(text = stringResource(id = Strings.subject))
                         },
                         shape = MaterialTheme.shapes.medium
                     )
@@ -95,10 +129,15 @@ fun CreateRoomScreen(
                             viewModel.onEvent(CreateRoomUiEvent.OnCreateClick)
                         }
                     ) {
-                        Text(text = "Create")
+                        Text(text = stringResource(id = Strings.create))
                     }
                 }
             }
         }
     }
+
+    ProgressDialog(
+        text = stringResource(id = Strings.creating_room),
+        openDialog = viewModel.uiState.openProgressDialog
+    )
 }

@@ -7,6 +7,17 @@
     <string name="show_password">Show password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
+    <string name="enrolled">Enrolled</string>
+    <string name="teaching">Teaching</string>
+    <string name="retry">Retry</string>
+    <string name="creating_room">Creating room</string>
+    <string name="create">Create</string>
+    <string name="subject">Subject</string>
+    <string name="section">Section</string>
+    <string name="room_name">Room name (required)</string>
+
+    <!-- Screen titles -->
+    <string name="title_create_room_screen">Create room</string>
 
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1s with a link to get back into your account.</string>
@@ -39,6 +50,7 @@
     <string name="error_blank_email">Please enter your email address.</string>
     <string name="error_blank_name">Please enter your name.</string>
     <string name="error_blank_password">Your password must have at least 6 letters and numbers.</string>
+    <string name="error_blank_value">This field is required.</string>
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>

@@ -4,9 +4,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FieldValue.serverTimestamp
 import com.google.firebase.firestore.FirebaseFirestore
-import edumate.app.core.FirebaseKeys
+import edumate.app.core.FirebaseConstants
+import edumate.app.data.remote.dto.UsersDto
 import edumate.app.domain.repository.FirebaseAuthRepository
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
@@ -74,16 +74,15 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 
     private suspend fun createUserInFireStore() {
         firebaseAuth.currentUser?.apply {
-            val user = toUser()
-            firestore.collection(FirebaseKeys.Firestore.USERS_COLLECTION).document(uid).set(user)
+            val user = UsersDto(
+                displayName = displayName,
+                email = email,
+                photoUrl = photoUrl?.toString()
+            ).toMap()
+
+            firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION).document(uid)
+                .set(user)
                 .await()
         }
     }
-
-    private fun FirebaseUser.toUser() = mapOf(
-        FirebaseKeys.Firestore.CREATED_AT to serverTimestamp(),
-        FirebaseKeys.Firestore.DISPLAY_NAME to displayName,
-        FirebaseKeys.Firestore.EMAIL to email,
-        FirebaseKeys.Firestore.PHOTO_URL to photoUrl?.toString()
-    )
 }

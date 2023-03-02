@@ -1,28 +1,46 @@
 package edumate.app.presentation.home.screen
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.google.accompanist.pager.ExperimentalPagerApi
+import com.google.accompanist.pager.HorizontalPager
+import com.google.accompanist.pager.rememberPagerState
 import edumate.app.R.string as Strings
 import edumate.app.presentation.home.HomeUiEvent
 import edumate.app.presentation.home.HomeViewModel
+import edumate.app.presentation.home.screen.components.EnrolledContent
+import edumate.app.presentation.home.screen.components.TabScreen
+import edumate.app.presentation.home.screen.components.TeachingContent
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     navigateToCreateRoom: () -> Unit
 ) {
+    val tabs = listOf(
+        TabScreen.Enrolled,
+        TabScreen.Teaching
+    )
+    val pagerState = rememberPagerState()
+    val coroutineScope = rememberCoroutineScope()
+
+    BackHandler(viewModel.uiState.openFabMenu) {
+        viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -41,7 +59,11 @@ fun HomeScreen(
             )
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = navigateToCreateRoom) {
+            FloatingActionButton(
+                onClick = {
+                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(true))
+                }
+            ) {
                 Icon(imageVector = Icons.Default.Add, contentDescription = null)
             }
         }
@@ -52,43 +74,65 @@ fun HomeScreen(
                 .consumeWindowInsets(innerPadding)
                 .padding(innerPadding)
         ) {
-            LazyColumn(
-                contentPadding = PaddingValues(10.dp),
-                content = {
-                    items(viewModel.uiState.rooms) { room ->
-                        Card(
-                            onClick = { },
-                            modifier = Modifier.aspectRatio(16f / 9f)
-                        ) {
-                            Column(modifier = Modifier.padding(14.dp)) {
-                                Row {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = room.title.orEmpty(),
-                                            style = MaterialTheme.typography.headlineSmall
-                                        )
-                                        Text(
-                                            text = room.section.orEmpty(),
-                                            style = MaterialTheme.typography.bodyLarge
-                                        )
-                                    }
-                                    IconButton(onClick = { }) {
-                                        Icon(
-                                            imageVector = Icons.Default.MoreVert,
-                                            contentDescription = null
-                                        )
-                                    }
+            Column(modifier = Modifier.fillMaxSize()) {
+                TabRow(selectedTabIndex = pagerState.currentPage) {
+                    tabs.forEachIndexed { index, screen ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(
+                                        index
+                                    )
                                 }
-                                Spacer(modifier = Modifier.weight(1f))
+                            },
+                            text = {
                                 Text(
-                                    text = "0 students",
-                                    style = MaterialTheme.typography.labelMedium
+                                    text = stringResource(id = screen.title),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
-                        }
+                        )
                     }
                 }
+
+                HorizontalPager(count = tabs.size, state = pagerState) { page ->
+                    when (page) {
+                        0 -> {
+                            EnrolledContent(
+                                isLoading = viewModel.uiState.loading,
+                                error = viewModel.uiState.errorMessage,
+                                rooms = viewModel.uiState.rooms
+                            )
+                        }
+                        1 -> TeachingContent()
+                    }
+                }
+            }
+        }
+    }
+
+    if (viewModel.uiState.openFabMenu) {
+        ModalBottomSheet(
+            onDismissRequest = {
+                viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+            }
+        ) {
+            ListItem(
+                headlineText = { Text(text = "Create room") },
+                modifier = Modifier.clickable {
+                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                    navigateToCreateRoom()
+                }
             )
+            ListItem(
+                headlineText = { Text(text = "Join room") },
+                modifier = Modifier.clickable {
+                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                }
+            )
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }
