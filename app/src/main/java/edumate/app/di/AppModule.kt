@@ -36,18 +36,13 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRoomsRepository(firestore: FirebaseFirestore): RoomsRepository =
-        RoomsRepositoryImpl(firestore)
-
-    @Singleton
-    @Provides
     fun provideDynamicLinksRepository(dynamicLinks: FirebaseDynamicLinks): DynamicLinksRepository =
         DynamicLinksRepositoryImpl(dynamicLinks)
 
     @Singleton
     @Provides
-    fun providePeoplesRepository(firestore: FirebaseFirestore): PeoplesRepository =
-        PeoplesRepositoryImpl(firestore)
+    fun provideCoursesRepository(firestore: FirebaseFirestore): CoursesRepository =
+        CoursesRepositoryImpl(firestore)
 
     // Form validation
 

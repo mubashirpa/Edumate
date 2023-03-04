@@ -7,23 +7,24 @@ import edumate.app.core.FirebaseConstants
 import java.util.*
 
 data class UsersDto(
-    @ServerTimestamp
-    val createdAt: Date? = null,
+    @ServerTimestamp val createdAt: Date? = null,
     val displayName: String? = null,
-    val email: String? = null,
+    val emailAddress: String? = null,
     val photoUrl: String? = null,
-    val student: ArrayList<String>? = arrayListOf(),
-    val teacher: ArrayList<String>? = arrayListOf()
+    val enrolled: ArrayList<String>? = arrayListOf(),
+    val teaching: ArrayList<String>? = arrayListOf(),
+    val verified: Boolean? = false
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
         return hashMapOf(
-            FirebaseConstants.Firestore.CREATED_AT to FieldValue.serverTimestamp(),
+            FirebaseConstants.Firestore.CREATED_AT to (createdAt ?: FieldValue.serverTimestamp()),
             FirebaseConstants.Firestore.DISPLAY_NAME to displayName,
-            FirebaseConstants.Firestore.EMAIL to email,
+            FirebaseConstants.Firestore.EMAIL_ADDRESS to emailAddress,
             FirebaseConstants.Firestore.PHOTO_URL to photoUrl,
-            FirebaseConstants.Firestore.STUDENT to student,
-            FirebaseConstants.Firestore.TEACHER to teacher
+            FirebaseConstants.Firestore.ENROLLED to enrolled,
+            FirebaseConstants.Firestore.TEACHING to teaching,
+            FirebaseConstants.Firestore.VERIFIED to verified
         )
     }
 }

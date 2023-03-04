@@ -2,7 +2,7 @@ package edumate.app.navigation
 
 object Routes {
     object Screen {
-        const val CREATE_ROOM_SCREEN = "create_room_screen"
+        const val CREATE_CLASS_SCREEN = "create_class_screen"
         const val GET_STARTED_SCREEN = "get_started_screen"
         const val HOME_SCREEN = "home_screen"
         const val LOGIN_SCREEN = "login_screen"

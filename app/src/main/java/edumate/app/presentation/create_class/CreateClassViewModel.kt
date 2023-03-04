@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_room
+package edumate.app.presentation.create_class
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,11 +9,11 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.model.rooms.CreatedBy
-import edumate.app.domain.model.rooms.Room
+import edumate.app.domain.model.Course
+import edumate.app.domain.model.CourseState
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.rooms.CreateRoomUseCase
-import edumate.app.domain.usecase.rooms.DeleteRoomUseCase
+import edumate.app.domain.usecase.courses.CreateCourseUseCase
+import edumate.app.domain.usecase.courses.DeleteCourseUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -23,60 +23,66 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 
 @HiltViewModel
-class CreateRoomViewModel @Inject constructor(
-    private val createRoomUseCase: CreateRoomUseCase,
-    private val deleteRoomUseCase: DeleteRoomUseCase,
+class CreateClassViewModel @Inject constructor(
+    private val createCourseUseCase: CreateCourseUseCase,
+    private val deleteCourseUseCase: DeleteCourseUseCase,
     private val validateTextField: ValidateTextField,
     getCurrentUserUseCase: GetCurrentUserUseCase
 ) : ViewModel() {
 
-    var uiState by mutableStateOf(CreateRoomUiState())
+    var uiState by mutableStateOf(CreateClassUiState())
         private set
 
     private val resultChannel = Channel<String>()
     val createRoomResults = resultChannel.receiveAsFlow()
 
-    val room = mutableStateOf(Room())
+    private val room = mutableStateOf(Course())
 
     init {
         getCurrentUserUseCase().map { user ->
             uiState = uiState.copy(currentUser = user)
             if (user != null) {
                 room.value = room.value.copy(
-                    createdBy = CreatedBy(user.displayName, user.uid),
+                    courseState = CourseState.ACTIVE,
+                    ownerId = user.uid,
                     teachers = arrayListOf(user.uid)
                 )
             }
         }.launchIn(viewModelScope)
     }
 
-    fun onEvent(event: CreateRoomUiEvent) {
+    fun onEvent(event: CreateClassUiEvent) {
         when (event) {
-            is CreateRoomUiEvent.NameChanged -> {
+            is CreateClassUiEvent.NameChanged -> {
                 uiState = uiState.copy(
                     name = event.name,
-                    nameError = null
+                    nameError = null,
+                    isFabExpanded = event.name.isNotBlank()
                 )
-                room.value = room.value.copy(title = event.name)
+                room.value = room.value.copy(name = event.name)
             }
-            is CreateRoomUiEvent.SectionChanged -> {
+            is CreateClassUiEvent.SectionChanged -> {
                 uiState = uiState.copy(section = event.section)
                 room.value = room.value.copy(section = event.section)
             }
-            is CreateRoomUiEvent.SubjectChanged -> {
+            is CreateClassUiEvent.RoomChanged -> {
+                uiState = uiState.copy(room = event.room)
+                room.value = room.value.copy(room = event.room)
+            }
+            is CreateClassUiEvent.SubjectChanged -> {
                 uiState = uiState.copy(subject = event.subject)
                 room.value = room.value.copy(subject = event.subject)
             }
-            is CreateRoomUiEvent.OnCreateClick -> {
-                createRoom()
+            is CreateClassUiEvent.OnCreateClick -> {
+                createClass()
             }
-            is CreateRoomUiEvent.UserMessageShown -> {
+            is CreateClassUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
         }
     }
 
-    private fun createRoom() {
+    private fun createClass() {
         val nameResult = validateTextField.execute(uiState.name)
         uiState = uiState.copy(nameError = nameResult.error)
 
@@ -84,16 +90,16 @@ class CreateRoomViewModel @Inject constructor(
 
         val uid = uiState.currentUser?.uid
         if (uid != null) {
-            createRoomUseCase(room.value, uid).onEach { resource ->
+            createCourseUseCase(room.value).onEach { resource ->
+                val courseId = resource.data
                 when (resource) {
                     is Resource.Loading -> {
                         uiState = uiState.copy(openProgressDialog = true)
                     }
                     is Resource.Success -> {
-                        val roomId = resource.data
-                        if (roomId != null) {
+                        if (courseId != null) {
                             uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(resource.data)
+                            resultChannel.send(courseId)
                         } else {
                             uiState = uiState.copy(
                                 openProgressDialog = false,
@@ -102,8 +108,8 @@ class CreateRoomViewModel @Inject constructor(
                         }
                     }
                     is Resource.Error -> {
-                        if (resource.data != null) {
-                            deleteRoomUseCase(resource.data).launchIn(viewModelScope)
+                        if (courseId != null) {
+                            deleteCourseUseCase(courseId).launchIn(viewModelScope)
                         }
                         uiState = uiState.copy(
                             openProgressDialog = false,

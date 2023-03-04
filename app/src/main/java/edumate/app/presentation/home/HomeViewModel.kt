@@ -10,7 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.SignOutUseCase
-import edumate.app.domain.usecase.rooms.GetRoomsUseCase
+import edumate.app.domain.usecase.courses.GetEnrolledCoursesUseCase
+import edumate.app.domain.usecase.courses.GetTeachingCoursesUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -18,7 +19,8 @@ import kotlinx.coroutines.flow.onEach
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val signOutUseCase: SignOutUseCase,
-    private val getRoomsUseCase: GetRoomsUseCase
+    private val getEnrolledCoursesUseCase: GetEnrolledCoursesUseCase,
+    private val getTeachingCoursesUseCase: GetTeachingCoursesUseCase
 ) : ViewModel() {
 
     var uiState by mutableStateOf(HomeUiState())
@@ -40,7 +42,7 @@ class HomeViewModel @Inject constructor(
     }
 
     private fun fetchRooms() {
-        getRoomsUseCase().onEach { resource ->
+        getTeachingCoursesUseCase().onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(

@@ -10,7 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import edumate.app.core.UiText
-import edumate.app.domain.model.rooms.Room
+import edumate.app.domain.model.Course
 import edumate.app.presentation.components.LoadingIndicator
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -18,7 +18,7 @@ import edumate.app.presentation.components.LoadingIndicator
 fun EnrolledContent(
     isLoading: Boolean,
     error: UiText? = null,
-    rooms: List<Room>
+    rooms: List<Course>
 ) {
     when {
         isLoading -> {
@@ -26,6 +26,7 @@ fun EnrolledContent(
         }
         else -> {
             LazyColumn(
+                modifier = Modifier.fillMaxSize(),
                 contentPadding = PaddingValues(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 content = {
@@ -38,7 +39,7 @@ fun EnrolledContent(
                                 Row {
                                     Column(modifier = Modifier.weight(1f)) {
                                         Text(
-                                            text = room.title.orEmpty(),
+                                            text = room.name,
                                             style = MaterialTheme.typography.headlineSmall
                                         )
                                         Text(
