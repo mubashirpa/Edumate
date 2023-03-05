@@ -38,6 +38,11 @@
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>
 
+    <!-- Screen labels -->
+    <string name="label_stream_screen">Stream</string>
+    <string name="label_classwork_screen">Classwork</string>
+    <string name="label_people_screen">People</string>
+
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1s with a link to get back into your account.</string>
 

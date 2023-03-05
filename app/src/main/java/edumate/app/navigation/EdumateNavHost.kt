@@ -5,14 +5,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
+import edumate.app.presentation.class_details.screen.ClassDetailsScreen
 import edumate.app.presentation.create_class.screen.CreateClassScreen
 import edumate.app.presentation.home.screen.HomeScreen
+import edumate.app.presentation.join_class.screen.JoinClassScreen
 
 @Composable
 fun EdumateNavHost(
+    navController: NavHostController,
     modifier: Modifier = Modifier,
-    navController: NavHostController = rememberNavController(),
     startDestination: String = Routes.Graph.AUTHENTICATION
 ) {
     NavHost(
@@ -23,8 +24,14 @@ fun EdumateNavHost(
         authentication(navController)
         composable(route = Screen.HomeScreen.route) {
             HomeScreen(
-                navigateToCreateRoom = {
+                navigateToClassDetails = {
+                    navController.navigate(Screen.ClassDetailsScreen.route)
+                },
+                navigateToCreateClass = {
                     navController.navigate(Screen.CreateClassScreen.route)
+                },
+                navigateToJoinClass = {
+                    navController.navigate(Screen.JoinClassScreen.route)
                 }
             )
         }
@@ -33,6 +40,20 @@ fun EdumateNavHost(
                 navigateToRoom = {
                     navController.navigateUp()
                 },
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(route = Screen.ClassDetailsScreen.route) {
+            ClassDetailsScreen(
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(route = Screen.JoinClassScreen.route) {
+            JoinClassScreen(
                 onBackPressed = {
                     navController.navigateUp()
                 }

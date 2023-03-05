@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.navigation.compose.rememberNavController
 import edumate.app.navigation.EdumateNavHost
 import edumate.app.navigation.Routes
 
@@ -16,6 +17,14 @@ fun EdumateApp(
         modifier = Modifier.fillMaxSize(),
         color = MaterialTheme.colorScheme.background
     ) {
-        if (isLoggedIn) EdumateNavHost(startDestination = Routes.Screen.HOME_SCREEN) else EdumateNavHost()
+        val navController = rememberNavController()
+        if (isLoggedIn) {
+            EdumateNavHost(
+                navController = navController,
+                startDestination = Routes.Screen.HOME_SCREEN
+            )
+        } else {
+            EdumateNavHost(navController = navController)
+        }
     }
 }

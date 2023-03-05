@@ -1,5 +1,6 @@
 package edumate.app.domain.usecase.courses
 
+import android.util.Log
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.repository.CoursesRepository
@@ -14,9 +15,14 @@ class DeleteCourseUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             coursesRepository.deleteCourse(courseId)
+            Log.d(TAG, "Course $courseId deleted.")
             emit(Resource.Success(courseId))
         } catch (e: Exception) {
             emit(Resource.Error(UiText.DynamicString(e.message!!)))
         }
+    }
+
+    companion object {
+        private val TAG = DeleteCourseUseCase::class.java.simpleName
     }
 }

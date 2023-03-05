@@ -26,6 +26,7 @@ androidx-compose-ui-test-manifest = { module = "androidx.compose.ui:ui-test-mani
 androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 androidx-core-ktx = "androidx.core:core-ktx:1.9.0"
+androidx-core-splashscreen = "androidx.core:core-splashscreen:1.0.0-beta02"
 androidx-espresso-core = "androidx.test.espresso:espresso-core:3.5.1"
 androidx-junit = "androidx.test.ext:junit:1.1.5"
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle" }

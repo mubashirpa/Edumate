@@ -28,7 +28,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
-    navigateToCreateRoom: () -> Unit
+    navigateToClassDetails: () -> Unit,
+    navigateToCreateClass: () -> Unit,
+    navigateToJoinClass: () -> Unit
 ) {
     val tabs = listOf(
         TabScreen.Enrolled,
@@ -48,11 +50,7 @@ fun HomeScreen(
                     Text(text = stringResource(id = Strings.app_name))
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = {
-                            viewModel.onEvent(HomeUiEvent.SignOut)
-                        }
-                    ) {
+                    IconButton(onClick = navigateToClassDetails) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = null)
                     }
                 }
@@ -120,16 +118,17 @@ fun HomeScreen(
             }
         ) {
             ListItem(
-                headlineText = { Text(text = "Create room") },
+                headlineText = { Text(text = "Create class") },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateRoom()
+                    navigateToCreateClass()
                 }
             )
             ListItem(
-                headlineText = { Text(text = "Join room") },
+                headlineText = { Text(text = "Join class") },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                    navigateToJoinClass()
                 }
             )
             Spacer(modifier = Modifier.height(10.dp))

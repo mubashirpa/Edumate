@@ -77,6 +77,7 @@ dependencies {
 
     implementation(libs.google.play.services.auth)
     implementation(libs.coil.compose)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.accompanist)
 }
 

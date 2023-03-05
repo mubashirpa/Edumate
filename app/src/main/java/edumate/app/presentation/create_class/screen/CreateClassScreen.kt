@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
@@ -82,40 +83,26 @@ fun CreateClassScreen(
                 scrollBehavior = scrollBehavior
             )
         },
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
-                },
-                expanded = viewModel.uiState.isFabExpanded,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Filled.Done,
-                        contentDescription = stringResource(id = Strings.create)
-                    )
-                },
-                text = { Text(text = stringResource(id = Strings.create)) }
-            )
-        },
-        floatingActionButtonPosition = FabPosition.End
+        snackbarHost = { EdumateSnackbarHost(snackbarHostState) }
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .consumeWindowInsets(innerPadding)
-                .padding(innerPadding)
+                .padding(innerPadding),
+            contentAlignment = Alignment.TopCenter
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 10.dp)
+                    .fillMaxWidth(0.9f)
+                    .fillMaxHeight()
+                    .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
                 val nameError = viewModel.uiState.nameError
                 @Suppress("SENSELESS_COMPARISON")
-                OutlinedTextField(
+                TextField(
                     value = viewModel.uiState.name,
                     onValueChange = {
                         viewModel.onEvent(CreateClassUiEvent.NameChanged(it))
@@ -141,11 +128,10 @@ fun CreateClassScreen(
                     keyboardActions = KeyboardActions(onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
                     }),
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
+                TextField(
                     value = viewModel.uiState.section,
                     onValueChange = {
                         viewModel.onEvent(CreateClassUiEvent.SectionChanged(it))
@@ -163,11 +149,10 @@ fun CreateClassScreen(
                     keyboardActions = KeyboardActions(onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
                     }),
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
+                TextField(
                     value = viewModel.uiState.room,
                     onValueChange = {
                         viewModel.onEvent(CreateClassUiEvent.RoomChanged(it))
@@ -185,11 +170,10 @@ fun CreateClassScreen(
                     keyboardActions = KeyboardActions(onNext = {
                         focusManager.moveFocus(FocusDirection.Down)
                     }),
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.height(10.dp))
-                OutlinedTextField(
+                TextField(
                     value = viewModel.uiState.subject,
                     onValueChange = {
                         viewModel.onEvent(CreateClassUiEvent.SubjectChanged(it))
@@ -208,10 +192,19 @@ fun CreateClassScreen(
                         focusManager.clearFocus()
                         keyboardController?.hide()
                     }),
-                    singleLine = true,
-                    shape = MaterialTheme.shapes.medium
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            FAB(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .imePadding()
+                    .padding(16.dp),
+                expanded = viewModel.uiState.isFabExpanded
+            ) {
+                viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
             }
         }
     }
@@ -219,5 +212,25 @@ fun CreateClassScreen(
     ProgressDialog(
         text = stringResource(id = Strings.creating_room),
         openDialog = viewModel.uiState.openProgressDialog
+    )
+}
+
+@Composable
+private fun FAB(
+    modifier: Modifier = Modifier,
+    expanded: Boolean,
+    onClick: () -> Unit
+) {
+    ExtendedFloatingActionButton(
+        onClick = onClick,
+        modifier = modifier,
+        expanded = expanded,
+        icon = {
+            Icon(
+                imageVector = Icons.Filled.Done,
+                contentDescription = stringResource(id = Strings.create)
+            )
+        },
+        text = { Text(text = stringResource(id = Strings.create)) }
     )
 }
