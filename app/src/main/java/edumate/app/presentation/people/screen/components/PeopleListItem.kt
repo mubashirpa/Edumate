@@ -15,6 +15,7 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import edumate.app.domain.model.User
+import edumate.app.presentation.components.TextAvatar
 
 @Composable
 fun PeopleListItem(user: User) {

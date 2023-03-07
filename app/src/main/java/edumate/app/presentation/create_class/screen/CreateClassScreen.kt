@@ -41,7 +41,7 @@ import edumate.app.presentation.create_class.CreateClassViewModel
 @Composable
 fun CreateClassScreen(
     viewModel: CreateClassViewModel = hiltViewModel(),
-    navigateToRoom: (roomId: String) -> Unit,
+    navigateToClassDetails: (courseId: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -50,10 +50,11 @@ fun CreateClassScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val nameError = viewModel.uiState.nameError
 
     LaunchedEffect(context) {
-        viewModel.createRoomResults.collect { roomId ->
-            navigateToRoom(roomId)
+        viewModel.createClassResults.collect { courseId ->
+            navigateToClassDetails(courseId)
         }
     }
 
@@ -100,7 +101,6 @@ fun CreateClassScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
-                val nameError = viewModel.uiState.nameError
                 @Suppress("SENSELESS_COMPARISON")
                 TextField(
                     value = viewModel.uiState.name,
@@ -210,7 +210,7 @@ fun CreateClassScreen(
     }
 
     ProgressDialog(
-        text = stringResource(id = Strings.creating_room),
+        text = stringResource(id = Strings.creating_class),
         openDialog = viewModel.uiState.openProgressDialog
     )
 }

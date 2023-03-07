@@ -82,7 +82,7 @@ fun GetStartedScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
                 Spacer(modifier = Modifier.height(60.dp))
-                ElevatedButton(
+                Button(
                     onClick = navigateToLogin,
                     modifier = Modifier
                         .fillMaxWidth()

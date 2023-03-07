@@ -79,6 +79,7 @@ fun RecoverScreen(
                     modifier = Modifier
                         .fillMaxWidth(0.9f)
                         .fillMaxHeight()
+                        .imePadding()
                         .verticalScroll(rememberScrollState()),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

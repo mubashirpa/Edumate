@@ -28,6 +28,18 @@ class PeopleViewModel @Inject constructor(
         fetchTeachers("oml4UzRGTqjJ3TFY6JTF")
     }
 
+    fun onEvent(event: PeopleUiEvent) {
+        when (event) {
+            is PeopleUiEvent.OnFilterChange -> {
+                uiState = uiState.copy(
+                    showAll = event.peopleFilter == PeopleFilter.ALL,
+                    showTeachers = event.peopleFilter == PeopleFilter.TEACHERS,
+                    showStudents = event.peopleFilter == PeopleFilter.STUDENTS
+                )
+            }
+        }
+    }
+
     private fun fetchStudents(courseId: String) {
         getStudentsUseCase(courseId).onEach { resource ->
             when (resource) {

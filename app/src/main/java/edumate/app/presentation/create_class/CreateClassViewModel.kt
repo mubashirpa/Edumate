@@ -34,15 +34,15 @@ class CreateClassViewModel @Inject constructor(
         private set
 
     private val resultChannel = Channel<String>()
-    val createRoomResults = resultChannel.receiveAsFlow()
+    val createClassResults = resultChannel.receiveAsFlow()
 
-    private val room = mutableStateOf(Course())
+    private val course = mutableStateOf(Course())
 
     init {
         getCurrentUserUseCase().map { user ->
             uiState = uiState.copy(currentUser = user)
             if (user != null) {
-                room.value = room.value.copy(
+                course.value = course.value.copy(
                     courseState = CourseState.ACTIVE,
                     ownerId = user.uid,
                     teachers = arrayListOf(user.uid)
@@ -59,19 +59,19 @@ class CreateClassViewModel @Inject constructor(
                     nameError = null,
                     isFabExpanded = event.name.isNotBlank()
                 )
-                room.value = room.value.copy(name = event.name)
+                course.value = course.value.copy(name = event.name)
             }
             is CreateClassUiEvent.SectionChanged -> {
                 uiState = uiState.copy(section = event.section)
-                room.value = room.value.copy(section = event.section)
+                course.value = course.value.copy(section = event.section)
             }
             is CreateClassUiEvent.RoomChanged -> {
                 uiState = uiState.copy(room = event.room)
-                room.value = room.value.copy(room = event.room)
+                course.value = course.value.copy(room = event.room)
             }
             is CreateClassUiEvent.SubjectChanged -> {
                 uiState = uiState.copy(subject = event.subject)
-                room.value = room.value.copy(subject = event.subject)
+                course.value = course.value.copy(subject = event.subject)
             }
             is CreateClassUiEvent.OnCreateClick -> {
                 createClass()
@@ -88,38 +88,38 @@ class CreateClassViewModel @Inject constructor(
 
         if (!nameResult.successful) return
 
-        val uid = uiState.currentUser?.uid
-        if (uid != null) {
-            createCourseUseCase(room.value).onEach { resource ->
-                val courseId = resource.data
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(openProgressDialog = true)
-                    }
-                    is Resource.Success -> {
-                        if (courseId != null) {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(courseId)
-                        } else {
-                            uiState = uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = UiText.StringResource(Strings.error_unknown)
-                            )
-                        }
-                    }
-                    is Resource.Error -> {
-                        if (courseId != null) {
-                            deleteCourseUseCase(courseId).launchIn(viewModelScope)
-                        }
+        if (uiState.currentUser == null) {
+            uiState = uiState.copy(userMessage = UiText.StringResource(Strings.error_unexpected))
+            return
+        }
+
+        createCourseUseCase(course.value).onEach { resource ->
+            val courseId = resource.data
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+                is Resource.Success -> {
+                    if (courseId != null) {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        resultChannel.send(courseId)
+                    } else {
                         uiState = uiState.copy(
                             openProgressDialog = false,
-                            userMessage = resource.message
+                            userMessage = UiText.StringResource(Strings.error_unknown)
                         )
                     }
                 }
-            }.launchIn(viewModelScope)
-        } else {
-            uiState = uiState.copy(userMessage = UiText.StringResource(Strings.error_unexpected))
-        }
+                is Resource.Error -> {
+                    if (courseId != null) {
+                        deleteCourseUseCase(courseId).launchIn(viewModelScope)
+                    }
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }

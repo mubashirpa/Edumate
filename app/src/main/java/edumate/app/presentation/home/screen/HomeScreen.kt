@@ -7,34 +7,35 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 import edumate.app.R.string as Strings
+import edumate.app.presentation.enrolled.screen.EnrolledScreen
+import edumate.app.presentation.home.HomeTabsScreen
 import edumate.app.presentation.home.HomeUiEvent
 import edumate.app.presentation.home.HomeViewModel
-import edumate.app.presentation.home.screen.components.EnrolledContent
-import edumate.app.presentation.home.screen.components.TabScreen
-import edumate.app.presentation.home.screen.components.TeachingContent
+import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalPagerApi::class)
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: HomeViewModel = viewModel(),
     navigateToClassDetails: () -> Unit,
     navigateToCreateClass: () -> Unit,
     navigateToJoinClass: () -> Unit
 ) {
     val tabs = listOf(
-        TabScreen.Enrolled,
-        TabScreen.Teaching
+        HomeTabsScreen.Enrolled,
+        HomeTabsScreen.Teaching
     )
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -79,9 +80,7 @@ fun HomeScreen(
                             selected = pagerState.currentPage == index,
                             onClick = {
                                 coroutineScope.launch {
-                                    pagerState.animateScrollToPage(
-                                        index
-                                    )
+                                    pagerState.animateScrollToPage(index)
                                 }
                             },
                             text = {
@@ -94,17 +93,14 @@ fun HomeScreen(
                         )
                     }
                 }
-
                 HorizontalPager(count = tabs.size, state = pagerState) { page ->
                     when (page) {
                         0 -> {
-                            EnrolledContent(
-                                isLoading = viewModel.uiState.loading,
-                                error = viewModel.uiState.errorMessage,
-                                rooms = viewModel.uiState.rooms
-                            )
+                            EnrolledScreen()
                         }
-                        1 -> TeachingContent()
+                        1 -> {
+                            TeachingScreen()
+                        }
                     }
                 }
             }

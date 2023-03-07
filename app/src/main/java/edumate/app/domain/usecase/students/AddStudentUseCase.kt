@@ -1,6 +1,7 @@
 package edumate.app.domain.usecase.students
 
 import android.util.Log
+import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.repository.FirebaseAuthRepository
@@ -21,7 +22,7 @@ class AddStudentUseCase @Inject constructor(
             Log.d(TAG, "User $studentId was enrolled as student in the course with ID $courseId.")
             emit(Resource.Success(studentId))
         } catch (e: Exception) {
-            emit(Resource.Error(UiText.DynamicString(e.message!!)))
+            emit(Resource.Error(UiText.StringResource(Strings.error_course_not_found)))
         }
     }
 

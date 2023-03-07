@@ -1,4 +1,4 @@
-package edumate.app.presentation.home.screen.components
+package edumate.app.presentation.teaching.screen
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -9,19 +9,17 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import edumate.app.core.UiText
-import edumate.app.domain.model.Course
+import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.presentation.components.LoadingIndicator
+import edumate.app.presentation.teaching.TeachingViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EnrolledContent(
-    isLoading: Boolean,
-    error: UiText? = null,
-    rooms: List<Course>
+fun TeachingScreen(
+    viewModel: TeachingViewModel = hiltViewModel()
 ) {
     when {
-        isLoading -> {
+        viewModel.uiState.loading -> {
             LoadingIndicator()
         }
         else -> {
@@ -30,7 +28,7 @@ fun EnrolledContent(
                 contentPadding = PaddingValues(10.dp),
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 content = {
-                    items(rooms) { room ->
+                    items(viewModel.uiState.classes) { room ->
                         Card(
                             onClick = { },
                             modifier = Modifier.aspectRatio(21f / 9f)

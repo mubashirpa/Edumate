@@ -37,8 +37,11 @@ fun EdumateNavHost(
         }
         composable(route = Screen.CreateClassScreen.route) {
             CreateClassScreen(
-                navigateToRoom = {
-                    navController.navigateUp()
+                navigateToClassDetails = { courseId ->
+                    navController.navigate(Screen.ClassDetailsScreen.route) {
+                        popUpTo(Screen.CreateClassScreen.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 },
                 onBackPressed = {
                     navController.navigateUp()
@@ -54,6 +57,15 @@ fun EdumateNavHost(
         }
         composable(route = Screen.JoinClassScreen.route) {
             JoinClassScreen(
+                navigateToClassDetails = { courseId ->
+                    navController.navigate(Screen.ClassDetailsScreen.route) {
+                        popUpTo(Screen.JoinClassScreen.route) { inclusive = true }
+                        launchSingleTop = true
+                    }
+                },
+                navigateToProfile = {
+                    // TODO("Not yet implemented")
+                },
                 onBackPressed = {
                     navController.navigateUp()
                 }

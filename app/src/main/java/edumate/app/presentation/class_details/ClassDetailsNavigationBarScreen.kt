@@ -2,8 +2,12 @@ package edumate.app.presentation.class_details
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material.icons.outlined.*
+import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.filled.Forum
+import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.outlined.Assignment
+import androidx.compose.material.icons.outlined.Forum
+import androidx.compose.material.icons.outlined.People
 import androidx.compose.ui.graphics.vector.ImageVector
 import edumate.app.R.string as Strings
 import edumate.app.navigation.Screen
