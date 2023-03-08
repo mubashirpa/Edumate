@@ -43,7 +43,7 @@ data class CoursesDto(
             FirebaseConstants.Firestore.STUDENTS to students,
             FirebaseConstants.Firestore.SUBJECT to subject,
             FirebaseConstants.Firestore.TEACHERS to teachers,
-            FirebaseConstants.Firestore.UPDATE_TIME to (updateTime ?: FieldValue.serverTimestamp())
+            FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp()
         )
     }
 }

@@ -29,6 +29,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
+import edumate.app.presentation.components.ErrorScreen
+import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_class.CreateClassUiEvent
 import edumate.app.presentation.create_class.CreateClassViewModel
@@ -41,6 +43,7 @@ import edumate.app.presentation.create_class.CreateClassViewModel
 @Composable
 fun CreateClassScreen(
     viewModel: CreateClassViewModel = hiltViewModel(),
+    courseId: String? = null,
     navigateToClassDetails: (courseId: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -71,7 +74,12 @@ fun CreateClassScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = Strings.title_create_class_screen))
+                    val titleId = if (courseId == null) {
+                        Strings.title_create_class_screen
+                    } else {
+                        Strings.title_edit_class_screen
+                    }
+                    Text(text = stringResource(id = titleId))
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
@@ -93,124 +101,135 @@ fun CreateClassScreen(
                 .padding(innerPadding),
             contentAlignment = Alignment.TopCenter
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight()
-                    .imePadding()
-                    .verticalScroll(rememberScrollState())
-            ) {
-                Spacer(modifier = Modifier.height(10.dp))
-                @Suppress("SENSELESS_COMPARISON")
-                TextField(
-                    value = viewModel.uiState.name,
-                    onValueChange = {
-                        viewModel.onEvent(CreateClassUiEvent.NameChanged(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    label = {
-                        Text(text = stringResource(id = Strings.class_name))
-                    },
-                    supportingText = if (nameError != null) {
-                        {
-                            Text(text = nameError.asString())
-                        }
-                    } else {
-                        null
-                    },
-                    isError = nameError != null,
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TextField(
-                    value = viewModel.uiState.section,
-                    onValueChange = {
-                        viewModel.onEvent(CreateClassUiEvent.SectionChanged(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    label = {
-                        Text(text = stringResource(id = Strings.section))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TextField(
-                    value = viewModel.uiState.room,
-                    onValueChange = {
-                        viewModel.onEvent(CreateClassUiEvent.RoomChanged(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    label = {
-                        Text(text = stringResource(id = Strings.room))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(onNext = {
-                        focusManager.moveFocus(FocusDirection.Down)
-                    }),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                TextField(
-                    value = viewModel.uiState.subject,
-                    onValueChange = {
-                        viewModel.onEvent(CreateClassUiEvent.SubjectChanged(it))
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
-                    label = {
-                        Text(text = stringResource(id = Strings.subject))
-                    },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    }),
-                    singleLine = true
-                )
-                Spacer(modifier = Modifier.height(20.dp))
-            }
+            when {
+                viewModel.uiState.loading -> {
+                    LoadingIndicator()
+                }
+                viewModel.uiState.error != null -> {
+                    ErrorScreen()
+                }
+                else -> {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth(0.9f)
+                            .fillMaxHeight()
+                            .imePadding()
+                            .verticalScroll(rememberScrollState())
+                    ) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        @Suppress("SENSELESS_COMPARISON")
+                        TextField(
+                            value = viewModel.uiState.name,
+                            onValueChange = {
+                                viewModel.onEvent(CreateClassUiEvent.NameChanged(it))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
+                            label = {
+                                Text(text = stringResource(id = Strings.class_name))
+                            },
+                            supportingText = if (nameError != null) {
+                                {
+                                    Text(text = nameError.asString())
+                                }
+                            } else {
+                                null
+                            },
+                            isError = nameError != null,
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        TextField(
+                            value = viewModel.uiState.section,
+                            onValueChange = {
+                                viewModel.onEvent(CreateClassUiEvent.SectionChanged(it))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
+                            label = {
+                                Text(text = stringResource(id = Strings.section))
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        TextField(
+                            value = viewModel.uiState.room,
+                            onValueChange = {
+                                viewModel.onEvent(CreateClassUiEvent.RoomChanged(it))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
+                            label = {
+                                Text(text = stringResource(id = Strings.room))
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next
+                            ),
+                            keyboardActions = KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        TextField(
+                            value = viewModel.uiState.subject,
+                            onValueChange = {
+                                viewModel.onEvent(CreateClassUiEvent.SubjectChanged(it))
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
+                            label = {
+                                Text(text = stringResource(id = Strings.subject))
+                            },
+                            keyboardOptions = KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Done
+                            ),
+                            keyboardActions = KeyboardActions(onDone = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            }),
+                            singleLine = true
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
 
-            FAB(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .imePadding()
-                    .padding(16.dp),
-                expanded = viewModel.uiState.isFabExpanded
-            ) {
-                viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
+                    FAB(
+                        modifier = Modifier
+                            .align(Alignment.BottomEnd)
+                            .imePadding()
+                            .padding(16.dp),
+                        courseId = courseId,
+                        expanded = viewModel.uiState.isFabExpanded
+                    ) {
+                        viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
+                    }
+                }
             }
         }
     }
 
     ProgressDialog(
-        text = stringResource(id = Strings.creating_class),
+        text = viewModel.uiState.progressDialogText.asString(),
         openDialog = viewModel.uiState.openProgressDialog
     )
 }
@@ -218,9 +237,15 @@ fun CreateClassScreen(
 @Composable
 private fun FAB(
     modifier: Modifier = Modifier,
+    courseId: String?,
     expanded: Boolean,
     onClick: () -> Unit
 ) {
+    val buttonText = if (courseId == null) {
+        Strings.create
+    } else {
+        Strings.save
+    }
     ExtendedFloatingActionButton(
         onClick = onClick,
         modifier = modifier,
@@ -228,9 +253,9 @@ private fun FAB(
         icon = {
             Icon(
                 imageVector = Icons.Filled.Done,
-                contentDescription = stringResource(id = Strings.create)
+                contentDescription = stringResource(id = buttonText)
             )
         },
-        text = { Text(text = stringResource(id = Strings.create)) }
+        text = { Text(text = stringResource(id = buttonText)) }
     )
 }

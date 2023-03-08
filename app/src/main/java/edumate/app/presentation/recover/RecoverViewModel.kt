@@ -25,7 +25,11 @@ class RecoverViewModel @Inject constructor(
     var uiState by mutableStateOf(RecoverUiState())
         private set
 
-    private val email: String? = savedStateHandle[Routes.Args.RECOVER_EMAIL]
+    private val email: String? = try {
+        checkNotNull(savedStateHandle[Routes.Args.RECOVER_EMAIL])
+    } catch (e: IllegalStateException) {
+        null
+    }
 
     init {
         uiState = uiState.copy(email = email.orEmpty())

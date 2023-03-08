@@ -29,8 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navigateToClassDetails: () -> Unit,
-    navigateToCreateClass: () -> Unit,
+    navigateToClassDetails: (courseId: String) -> Unit,
+    navigateToCreateClass: (courseId: String?) -> Unit,
     navigateToJoinClass: () -> Unit
 ) {
     val tabs = listOf(
@@ -51,7 +51,7 @@ fun HomeScreen(
                     Text(text = stringResource(id = Strings.app_name))
                 },
                 navigationIcon = {
-                    IconButton(onClick = navigateToClassDetails) {
+                    IconButton(onClick = { navigateToClassDetails("123") }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = null)
                     }
                 }
@@ -96,10 +96,21 @@ fun HomeScreen(
                 HorizontalPager(count = tabs.size, state = pagerState) { page ->
                     when (page) {
                         0 -> {
-                            EnrolledScreen()
+                            EnrolledScreen(
+                                navigateToClassDetails = {
+                                    navigateToClassDetails(it)
+                                }
+                            )
                         }
                         1 -> {
-                            TeachingScreen()
+                            TeachingScreen(
+                                navigateToCreateClass = {
+                                    navigateToCreateClass(it)
+                                },
+                                navigateToClassDetails = {
+                                    navigateToClassDetails(it)
+                                }
+                            )
                         }
                     }
                 }
@@ -114,14 +125,14 @@ fun HomeScreen(
             }
         ) {
             ListItem(
-                headlineText = { Text(text = "Create class") },
+                headlineText = { Text(text = stringResource(id = Strings.create_class)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClass()
+                    navigateToCreateClass(null)
                 }
             )
             ListItem(
-                headlineText = { Text(text = "Join class") },
+                headlineText = { Text(text = stringResource(id = Strings.join_class)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                     navigateToJoinClass()

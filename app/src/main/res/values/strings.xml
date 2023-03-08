@@ -1,13 +1,16 @@
 <resources>
     <string name="app_name">Edumate</string>
+    <string name="add_a_class_to_get_started">Add a class to get started</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
     <string name="class_code">Class code</string>
     <string name="class_name">Class name (required)</string>
     <string name="create">Create</string>
+    <string name="create_class">Create class</string>
     <string name="create_new_account">Create new account</string>
     <string name="creating_account">Creating account</string>
     <string name="creating_class">Creating class</string>
     <string name="dont_have_an_account">Don\'t have an Account?</string>
+    <string name="edit">Edit</string>
     <string name="email">Email</string>
     <string name="enrolled">Enrolled</string>
     <string name="forgot_password">Forgot password?</string>
@@ -18,6 +21,8 @@
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
     <string name="join">Join</string>
+    <string name="join_a_class_to_get_started">Join a class to get started</string>
+    <string name="join_class">Join class</string>
     <string name="joining_class">Joining class</string>
     <string name="navigate_up">Navigate up</string>
     <string name="password">Password</string>
@@ -28,19 +33,26 @@
     <string name="reset_password">Reset password</string>
     <string name="retry">Retry</string>
     <string name="room">Room</string>
+    <string name="save">Save</string>
     <string name="section">Section</string>
     <string name="sending_recovery_email">Sending email</string>
+    <string name="share_invitation_link">Share invitation link</string>
     <string name="show_password">Show password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up">Sign up</string>
     <string name="signing_in">Signing in</string>
+    <string name="student">Student</string>
+    <string name="students">Students</string>
     <string name="subject">Subject</string>
     <string name="teaching">Teaching</string>
+    <string name="unenrol">Unenrol</string>
+    <string name="updating_class">Updating class</string>
     <string name="welcome_back">Welcome back!</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>
+    <string name="title_edit_class_screen">Edit class</string>
     <string name="title_join_class_screen">Join class</string>
 
     <!-- Screen labels -->

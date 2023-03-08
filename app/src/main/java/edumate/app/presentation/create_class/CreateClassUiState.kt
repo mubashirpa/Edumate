@@ -5,12 +5,15 @@ import edumate.app.core.UiText
 
 data class CreateClassUiState(
     val currentUser: FirebaseUser? = null,
+    val error: UiText? = null,
+    val isFabExpanded: Boolean = false,
+    val loading: Boolean = false,
     val name: String = "",
-    val section: String = "",
-    val room: String = "",
-    val subject: String = "",
-    val openProgressDialog: Boolean = false,
     val nameError: UiText? = null,
-    val userMessage: UiText? = null,
-    val isFabExpanded: Boolean = false
+    val openProgressDialog: Boolean = false,
+    val progressDialogText: UiText = UiText.Empty,
+    val room: String = "",
+    val section: String = "",
+    val subject: String = "",
+    val userMessage: UiText? = null
 )

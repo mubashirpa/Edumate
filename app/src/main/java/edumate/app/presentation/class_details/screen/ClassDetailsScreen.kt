@@ -24,6 +24,7 @@ import edumate.app.presentation.components.EdumateSnackbarHost
 fun ClassDetailsScreen(
     // Here we are using another NavHost so we need a separate NavHostController
     classDetailsNavController: NavHostController = rememberNavController(),
+    courseId: String,
     onBackPressed: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -58,7 +59,8 @@ fun ClassDetailsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .consumeWindowInsets(innerPadding)
-                .padding(innerPadding)
+                .padding(innerPadding),
+            courseId = courseId
         )
     }
 }

@@ -4,9 +4,9 @@ import com.google.firebase.auth.FirebaseUser
 import edumate.app.core.UiText
 
 data class JoinClassUiState(
-    val currentUser: FirebaseUser? = null,
     val classCode: String = "",
     val classCodeError: UiText? = null,
+    val currentUser: FirebaseUser? = null,
     val openProgressDialog: Boolean = false,
     val userMessage: UiText? = null
 )

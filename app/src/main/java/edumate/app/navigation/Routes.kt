@@ -23,5 +23,14 @@ object Routes {
         // RecoverScreen
         const val RECOVER_EMAIL = "email"
         const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
+
+        // ClassDetailsScreen
+        const val CLASS_DETAILS_COURSE_ID = "course_id"
+        const val CLASS_DETAILS_DEFAULT_COURSE_ID = "-1"
+        const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_COURSE_ID}"
+
+        // CreateClassScreen
+        const val CREATE_CLASS_COURSE_ID = "course_id"
+        const val CREATE_CLASS_SCREEN = "?$CREATE_CLASS_COURSE_ID={$CREATE_CLASS_COURSE_ID}"
     }
 }

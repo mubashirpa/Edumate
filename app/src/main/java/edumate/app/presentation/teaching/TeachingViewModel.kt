@@ -1,6 +1,5 @@
 package edumate.app.presentation.teaching
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -25,12 +24,21 @@ class TeachingViewModel @Inject constructor(
         fetchClasses()
     }
 
+    fun onEvent(event: TeachingUiEvent) {
+        when (event) {
+            is TeachingUiEvent.FetchClasses -> {
+                fetchClasses()
+            }
+        }
+    }
+
     private fun fetchClasses() {
         getTeachingCoursesUseCase().onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(
                         loading = true,
+                        error = null,
                         success = false
                     )
                 }
@@ -42,9 +50,9 @@ class TeachingViewModel @Inject constructor(
                     )
                 }
                 is Resource.Error -> {
-                    Log.d("hello", "error: ${resource.message}")
                     uiState = uiState.copy(
-                        loading = false
+                        loading = false,
+                        error = resource.message
                     )
                 }
             }

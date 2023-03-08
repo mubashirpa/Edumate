@@ -33,7 +33,7 @@ fun NavGraphBuilder.authentication(navController: NavController) {
                 },
                 navigateToRecover = { email ->
                     navController.navigate(
-                        Screen.RecoverScreen.withOptionalArgs("?email=$email")
+                        "${Screen.RecoverScreen.route}?${Routes.Args.RECOVER_EMAIL}=$email"
                     )
                 },
                 onLoginSuccess = {
