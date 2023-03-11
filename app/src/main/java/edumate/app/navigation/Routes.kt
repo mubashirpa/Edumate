@@ -10,6 +10,7 @@ object Routes {
         const val JOIN_CLASS_SCREEN = "join_class_screen"
         const val LOGIN_SCREEN = "login_screen"
         const val PEOPLE_SCREEN = "people_screen"
+        const val PROFILE_SCREEN = "profile_screen"
         const val RECOVER_SCREEN = "recover_screen"
         const val REGISTER_SCREEN = "register_screen"
         const val STREAM_SCREEN = "stream_screen"
@@ -25,9 +26,10 @@ object Routes {
         const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
 
         // ClassDetailsScreen
+        const val CLASS_DETAILS_TITLE = "title"
         const val CLASS_DETAILS_COURSE_ID = "course_id"
         const val CLASS_DETAILS_DEFAULT_COURSE_ID = "-1"
-        const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_COURSE_ID}"
+        const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_TITLE}/{$CLASS_DETAILS_COURSE_ID}"
 
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"

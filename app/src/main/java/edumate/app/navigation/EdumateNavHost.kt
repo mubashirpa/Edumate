@@ -11,6 +11,7 @@ import edumate.app.presentation.class_details.screen.ClassDetailsScreen
 import edumate.app.presentation.create_class.screen.CreateClassScreen
 import edumate.app.presentation.home.screen.HomeScreen
 import edumate.app.presentation.join_class.screen.JoinClassScreen
+import edumate.app.presentation.profile.screen.ProfileScreen
 
 @Composable
 fun EdumateNavHost(
@@ -26,8 +27,8 @@ fun EdumateNavHost(
         authentication(navController)
         composable(route = Screen.HomeScreen.route) {
             HomeScreen(
-                navigateToClassDetails = { courseId ->
-                    navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId))
+                navigateToClassDetails = { title, courseId ->
+                    navController.navigate(Screen.ClassDetailsScreen.withArgs(title, courseId))
                 },
                 navigateToCreateClass = { courseId ->
                     val createClassRoute = if (courseId != null) {
@@ -58,7 +59,7 @@ fun EdumateNavHost(
             CreateClassScreen(
                 courseId = courseId,
                 navigateToClassDetails = {
-                    navController.navigate(Screen.ClassDetailsScreen.withArgs(it)) {
+                    navController.navigate(Screen.ClassDetailsScreen.withArgs(null, it)) {
                         popUpTo(Screen.HomeScreen.route)
                         launchSingleTop = true
                     }
@@ -71,13 +72,13 @@ fun EdumateNavHost(
         composable(route = Screen.JoinClassScreen.route) {
             JoinClassScreen(
                 navigateToClassDetails = { courseId ->
-                    navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId)) {
+                    navController.navigate(Screen.ClassDetailsScreen.withArgs(null, courseId)) {
                         popUpTo(Screen.HomeScreen.route)
                         launchSingleTop = true
                     }
                 },
                 navigateToProfile = {
-                    // TODO("Not yet implemented")
+                    navController.navigate(Screen.ProfileScreen.route)
                 },
                 onBackPressed = {
                     navController.navigateUp()
@@ -87,20 +88,30 @@ fun EdumateNavHost(
         composable(
             route = "${Screen.ClassDetailsScreen.route}${Routes.Args.CLASS_DETAILS_SCREEN}",
             arguments = listOf(
+                navArgument(Routes.Args.CLASS_DETAILS_TITLE) {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
                 navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
                     type = NavType.StringType
                     defaultValue = Routes.Args.CLASS_DETAILS_DEFAULT_COURSE_ID
                 }
             )
         ) { backStackEntry ->
+            val title = backStackEntry.arguments?.getString(Routes.Args.CLASS_DETAILS_TITLE)
             val courseId =
                 backStackEntry.arguments?.getString(Routes.Args.CLASS_DETAILS_COURSE_ID).orEmpty()
             ClassDetailsScreen(
+                title = title,
                 courseId = courseId,
                 onBackPressed = {
                     navController.navigateUp()
                 }
             )
+        }
+        composable(route = Screen.ProfileScreen.route) {
+            ProfileScreen()
         }
     }
 }

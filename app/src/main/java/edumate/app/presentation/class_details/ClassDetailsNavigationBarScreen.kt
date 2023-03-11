@@ -3,11 +3,11 @@ package edumate.app.presentation.class_details
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assignment
-import androidx.compose.material.icons.filled.Forum
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.outlined.Assignment
-import androidx.compose.material.icons.outlined.Forum
 import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.ui.graphics.vector.ImageVector
 import edumate.app.R.string as Strings
 import edumate.app.navigation.Screen
@@ -21,8 +21,8 @@ sealed class ClassDetailsNavigationBarScreen(
     object Stream : ClassDetailsNavigationBarScreen(
         Screen.StreamScreen.route,
         Strings.label_stream_screen,
-        Icons.Filled.Forum,
-        Icons.Outlined.Forum
+        Icons.Filled.QuestionAnswer,
+        Icons.Outlined.QuestionAnswer
     )
 
     object Classwork :

@@ -1,9 +1,6 @@
 package edumate.app.presentation.class_details.screen
 
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -24,6 +21,7 @@ import edumate.app.presentation.components.EdumateSnackbarHost
 fun ClassDetailsScreen(
     // Here we are using another NavHost so we need a separate NavHostController
     classDetailsNavController: NavHostController = rememberNavController(),
+    title: String?,
     courseId: String,
     onBackPressed: () -> Unit
 ) {
@@ -35,8 +33,7 @@ fun ClassDetailsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    // TODO("Fix title")
-                    Text(text = stringResource(id = R.string.app_name))
+                    Text(text = if (title != null && title != "null") title else "")
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {

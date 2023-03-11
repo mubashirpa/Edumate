@@ -5,6 +5,7 @@ object FirebaseConstants {
     object Firestore {
         // Collections
         const val COURSES_COLLECTION = "courses"
+        const val COURSE_WORK_COLLECTION = "courseWork"
         const val USERS_COLLECTION = "users"
 
         // Courses
@@ -22,6 +23,16 @@ object FirebaseConstants {
         const val SUBJECT = "subject"
         const val TEACHERS = "teachers"
         const val UPDATE_TIME = "updateTime"
+
+        // CourseWork
+        const val COURSE_ID = "courseId"
+        const val CREATOR_USER_ID = ""
+        const val DUE_TIME = ""
+        const val MATERIALS = ""
+        const val MAX_POINTS = ""
+        const val SCHEDULED_TIME = ""
+        const val TITLE = ""
+        const val WORK_TYPE = ""
 
         // Users
         const val CREATED_AT = "createdAt"

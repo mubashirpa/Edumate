@@ -6,7 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.R
 import edumate.app.core.Resource
+import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.students.AddStudentUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -54,10 +56,10 @@ class JoinClassViewModel @Inject constructor(
     }
 
     private fun joinClass() {
-        val nameResult = validateTextField.execute(uiState.classCode)
-        uiState = uiState.copy(classCodeError = nameResult.error)
+        val classCodeResult = validateTextField.execute(uiState.classCode)
+        uiState = uiState.copy(classCodeError = UiText.StringResource(R.string.enter_class_code))
 
-        if (!nameResult.successful) return
+        if (!classCodeResult.successful) return
 
         addStudentUseCase(uiState.classCode).onEach { resource ->
             when (resource) {

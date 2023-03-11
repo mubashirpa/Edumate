@@ -12,7 +12,11 @@
     <string name="dont_have_an_account">Don\'t have an Account?</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
+    <string name="empty_screen_subtitle">This screen is still under construction.</string>
+    <string name="empty_screen_title">Screen under construction</string>
     <string name="enrolled">Enrolled</string>
+    <string name="enter_class_code">Enter class code.</string>
+    <string name="enter_class_name">Enter class name.</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="full_name">Full name</string>
     <string name="get_started">Get started</string>

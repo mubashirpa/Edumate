@@ -24,7 +24,7 @@ import edumate.app.presentation.enrolled.screen.components.EnrolledListItem
 @Composable
 fun EnrolledScreen(
     viewModel: EnrolledViewModel = hiltViewModel(),
-    navigateToClassDetails: (courseId: String) -> Unit
+    navigateToClassDetails: (name: String, courseId: String) -> Unit
 ) {
     val context = LocalContext.current
 

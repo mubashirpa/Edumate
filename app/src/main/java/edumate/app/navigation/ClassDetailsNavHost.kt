@@ -8,9 +8,9 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import edumate.app.presentation.people.screen.ClassworkScreen
+import edumate.app.presentation.classwork.screen.ClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
-import edumate.app.presentation.people.screen.StreamScreen
+import edumate.app.presentation.stream.screen.StreamScreen
 
 @Composable
 fun ClassDetailsNavHost(

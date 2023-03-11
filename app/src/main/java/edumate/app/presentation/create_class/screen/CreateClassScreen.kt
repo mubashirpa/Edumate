@@ -119,7 +119,7 @@ fun CreateClassScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         @Suppress("SENSELESS_COMPARISON")
                         TextField(
-                            value = viewModel.uiState.name,
+                            value = viewModel.uiState.course.name,
                             onValueChange = {
                                 viewModel.onEvent(CreateClassUiEvent.NameChanged(it))
                             },
@@ -148,7 +148,7 @@ fun CreateClassScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         TextField(
-                            value = viewModel.uiState.section,
+                            value = viewModel.uiState.course.section.orEmpty(),
                             onValueChange = {
                                 viewModel.onEvent(CreateClassUiEvent.SectionChanged(it))
                             },
@@ -169,7 +169,7 @@ fun CreateClassScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         TextField(
-                            value = viewModel.uiState.room,
+                            value = viewModel.uiState.course.room.orEmpty(),
                             onValueChange = {
                                 viewModel.onEvent(CreateClassUiEvent.RoomChanged(it))
                             },
@@ -190,7 +190,7 @@ fun CreateClassScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         TextField(
-                            value = viewModel.uiState.subject,
+                            value = viewModel.uiState.course.subject.orEmpty(),
                             onValueChange = {
                                 viewModel.onEvent(CreateClassUiEvent.SubjectChanged(it))
                             },

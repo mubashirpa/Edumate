@@ -29,7 +29,7 @@ fun PeopleListItem(user: User) {
     }
 
     ListItem(
-        headlineText = {
+        headlineContent = {
             Text(text = user.displayName.orEmpty())
         },
         leadingContent = {

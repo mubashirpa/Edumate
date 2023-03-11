@@ -28,6 +28,11 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideCourseWorkRepository(firestore: FirebaseFirestore): CourseWorkRepository =
+        CourseWorkRepositoryImpl(firestore)
+
+    @Singleton
+    @Provides
     fun provideDynamicLinksRepository(dynamicLinks: FirebaseDynamicLinks): DynamicLinksRepository =
         DynamicLinksRepositoryImpl(dynamicLinks)
 

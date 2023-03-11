@@ -9,6 +9,7 @@ sealed class Screen(val route: String) {
     object JoinClassScreen : Screen(Routes.Screen.JOIN_CLASS_SCREEN)
     object LoginScreen : Screen(Routes.Screen.LOGIN_SCREEN)
     object PeopleScreen : Screen(Routes.Screen.PEOPLE_SCREEN)
+    object ProfileScreen : Screen(Routes.Screen.PROFILE_SCREEN)
     object RecoverScreen : Screen(Routes.Screen.RECOVER_SCREEN)
     object RegisterScreen : Screen(Routes.Screen.REGISTER_SCREEN)
     object StreamScreen : Screen(Routes.Screen.STREAM_SCREEN)

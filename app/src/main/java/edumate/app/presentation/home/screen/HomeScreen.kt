@@ -1,8 +1,11 @@
 package edumate.app.presentation.home.screen
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -14,9 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.accompanist.pager.ExperimentalPagerApi
-import com.google.accompanist.pager.HorizontalPager
-import com.google.accompanist.pager.rememberPagerState
 import edumate.app.R.string as Strings
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
@@ -25,11 +25,15 @@ import edumate.app.presentation.home.HomeViewModel
 import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class, ExperimentalPagerApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navigateToClassDetails: (courseId: String) -> Unit,
+    navigateToClassDetails: (name: String?, courseId: String) -> Unit,
     navigateToCreateClass: (courseId: String?) -> Unit,
     navigateToJoinClass: () -> Unit
 ) {
@@ -51,7 +55,8 @@ fun HomeScreen(
                     Text(text = stringResource(id = Strings.app_name))
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navigateToClassDetails("123") }) {
+                    // TODO("Not implemented yet")
+                    IconButton(onClick = { navigateToClassDetails(null, "2Mx7YrbyGUr8tsuBVr4x") }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = null)
                     }
                 }
@@ -62,9 +67,7 @@ fun HomeScreen(
                 onClick = {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(true))
                 }
-            ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = null)
-            }
+            ) { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
         }
     ) { innerPadding ->
         Box(
@@ -93,23 +96,17 @@ fun HomeScreen(
                         )
                     }
                 }
-                HorizontalPager(count = tabs.size, state = pagerState) { page ->
+                HorizontalPager(pageCount = tabs.size, state = pagerState) { page ->
                     when (page) {
                         0 -> {
                             EnrolledScreen(
-                                navigateToClassDetails = {
-                                    navigateToClassDetails(it)
-                                }
+                                navigateToClassDetails = navigateToClassDetails
                             )
                         }
                         1 -> {
                             TeachingScreen(
-                                navigateToCreateClass = {
-                                    navigateToCreateClass(it)
-                                },
-                                navigateToClassDetails = {
-                                    navigateToClassDetails(it)
-                                }
+                                navigateToCreateClass = navigateToCreateClass,
+                                navigateToClassDetails = navigateToClassDetails
                             )
                         }
                     }
@@ -125,14 +122,14 @@ fun HomeScreen(
             }
         ) {
             ListItem(
-                headlineText = { Text(text = stringResource(id = Strings.create_class)) },
+                headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClass(null)
                 }
             )
             ListItem(
-                headlineText = { Text(text = stringResource(id = Strings.join_class)) },
+                headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                     navigateToJoinClass()

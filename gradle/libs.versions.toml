@@ -1,9 +1,9 @@
 [versions]
 android-gradle-plugin = "7.4.2"
-androidx-compose-material3 = "1.1.0-alpha07"
+androidx-compose-material3 = "1.1.0-alpha08"
 androidx-compose-ui = "1.3.3"
 androidx-lifecycle = "2.6.0-rc01"
-com-google-accompanist = "0.29.1-alpha"
+com-google-accompanist = "0.29.2-rc"
 com-google-dagger = "2.45"
 kotlin = "1.8.10"
 kotlinCompilerExtensionVersion = "1.4.2"
@@ -14,7 +14,7 @@ sdkVersion = "33"
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "com-google-accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "com-google-accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "com-google-accompanist" }
-androidx-activity-compose = "androidx.activity:activity-compose:1.6.1"
+androidx-activity-compose = "androidx.activity:activity-compose:1.7.0-rc01"
 androidx-compose-bom = "androidx.compose:compose-bom:2023.01.00"
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -37,7 +37,7 @@ androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.3"
 coil-compose = "io.coil-kt:coil-compose:2.2.2"
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
-firebase-bom = "com.google.firebase:firebase-bom:31.2.2"
+firebase-bom = "com.google.firebase:firebase-bom:31.2.3"
 firebase-database = { module = "com.google.firebase:firebase-database-ktx" }
 firebase-dynamic-links = { module = "com.google.firebase:firebase-dynamic-links-ktx" }
 firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
@@ -92,7 +92,7 @@ android-application = { id = "com.android.application", version.ref = "android-g
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 devtools-ksp = "com.google.devtools.ksp:1.8.10-1.0.9"
 google-services = "com.google.gms.google-services:4.3.15"
-gradle-ktlint = "org.jlleitschuh.gradle.ktlint:11.2.0"
+gradle-ktlint = "org.jlleitschuh.gradle.ktlint:11.3.1"
 gradle-versions = "com.github.ben-manes.versions:0.46.0"
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "com-google-dagger" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

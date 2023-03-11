@@ -23,7 +23,7 @@ import edumate.app.presentation.teaching.screen.components.TeachingListItem
 fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
     navigateToCreateClass: (courseId: String) -> Unit,
-    navigateToClassDetails: (courseId: String) -> Unit
+    navigateToClassDetails: (name: String, courseId: String) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -60,12 +60,8 @@ fun TeachingScreen(
                                 val shareIntent = Intent.createChooser(sendIntent, null)
                                 context.startActivity(shareIntent)
                             },
-                            onEditClick = {
-                                navigateToCreateClass(it)
-                            },
-                            onClick = {
-                                navigateToClassDetails(it)
-                            }
+                            onEditClick = navigateToCreateClass,
+                            onClick = navigateToClassDetails
                         )
                     }
                 }

@@ -48,12 +48,18 @@ class CreateClassViewModel @Inject constructor(
     } catch (e: IllegalStateException) {
         null
     }
-
-    private val course = mutableStateOf(Course())
+    private val initialCourse = mutableStateOf(
+        Course(
+            name = "",
+            section = "",
+            room = "",
+            subject = ""
+        )
+    )
 
     init {
         if (id == null) {
-            loadUser()
+            fetchUserDetails()
         } else {
             fetchCourse(id)
         }
@@ -63,23 +69,32 @@ class CreateClassViewModel @Inject constructor(
         when (event) {
             is CreateClassUiEvent.NameChanged -> {
                 uiState = uiState.copy(
-                    name = event.name,
+                    course = uiState.course.copy(name = event.name),
                     nameError = null,
-                    isFabExpanded = event.name.isNotBlank()
+                    isFabExpanded = initialCourse.value != uiState.course.copy(name = event.name) && event.name.isNotBlank()
                 )
-                course.value = course.value.copy(name = event.name)
             }
             is CreateClassUiEvent.SectionChanged -> {
-                uiState = uiState.copy(section = event.section)
-                course.value = course.value.copy(section = event.section)
+                uiState = uiState.copy(
+                    course = uiState.course.copy(section = event.section),
+                    isFabExpanded = initialCourse.value != uiState.course.copy(
+                        section = event.section
+                    ) && uiState.course.name.isNotBlank()
+                )
             }
             is CreateClassUiEvent.RoomChanged -> {
-                uiState = uiState.copy(room = event.room)
-                course.value = course.value.copy(room = event.room)
+                uiState = uiState.copy(
+                    course = uiState.course.copy(room = event.room),
+                    isFabExpanded = initialCourse.value != uiState.course.copy(room = event.room) && uiState.course.name.isNotBlank()
+                )
             }
             is CreateClassUiEvent.SubjectChanged -> {
-                uiState = uiState.copy(subject = event.subject)
-                course.value = course.value.copy(subject = event.subject)
+                uiState = uiState.copy(
+                    course = uiState.course.copy(subject = event.subject),
+                    isFabExpanded = initialCourse.value != uiState.course.copy(
+                        subject = event.subject
+                    ) && uiState.course.name.isNotBlank()
+                )
             }
             is CreateClassUiEvent.OnCreateClick -> {
                 if (id == null) {
@@ -95,18 +110,18 @@ class CreateClassViewModel @Inject constructor(
     }
 
     private fun createCourse() {
-        val nameResult = validateTextField.execute(uiState.name)
-        uiState = uiState.copy(nameError = nameResult.error)
+        val nameResult = validateTextField.execute(uiState.course.name)
+        uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
 
         if (!nameResult.successful) return
 
-        // This is used here because loadUser()
+        // Return if currentUser is null
         if (uiState.currentUser == null) {
             uiState = uiState.copy(userMessage = UiText.StringResource(Strings.error_unexpected))
             return
         }
 
-        createCourseUseCase(course.value).onEach { resource ->
+        createCourseUseCase(uiState.course).onEach { resource ->
             val courseId = resource.data
             when (resource) {
                 is Resource.Loading -> {
@@ -140,12 +155,12 @@ class CreateClassViewModel @Inject constructor(
     }
 
     private fun updateCourse() {
-        val nameResult = validateTextField.execute(uiState.name)
-        uiState = uiState.copy(nameError = nameResult.error)
+        val nameResult = validateTextField.execute(uiState.course.name)
+        uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
 
         if (!nameResult.successful) return
 
-        updateCourseUseCase(course.value).onEach { resource ->
+        updateCourseUseCase(uiState.course).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(
@@ -174,16 +189,12 @@ class CreateClassViewModel @Inject constructor(
                     uiState = uiState.copy(loading = true)
                 }
                 is Resource.Success -> {
-                    val data = resource.data
-                    if (data != null) {
-                        course.value = data
+                    val course = resource.data
+                    if (course != null) {
+                        initialCourse.value = course
                         uiState = uiState.copy(
                             loading = false,
-                            name = data.name,
-                            section = data.section.orEmpty(),
-                            room = data.room.orEmpty(),
-                            subject = data.subject.orEmpty(),
-                            isFabExpanded = true
+                            course = course
                         )
                     } else {
                         uiState = uiState.copy(
@@ -202,15 +213,18 @@ class CreateClassViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun loadUser() {
+    private fun fetchUserDetails() {
         getCurrentUserUseCase().map { user ->
-            uiState = uiState.copy(currentUser = user)
             if (user != null) {
-                course.value = course.value.copy(
-                    courseState = CourseState.ACTIVE,
-                    ownerId = user.uid,
-                    teachers = arrayListOf(user.uid)
+                uiState = uiState.copy(
+                    course = uiState.course.copy(
+                        courseState = CourseState.ACTIVE,
+                        ownerId = user.uid,
+                        teachers = arrayListOf(user.uid)
+                    ),
+                    currentUser = user
                 )
+                initialCourse.value = uiState.course
             }
         }.launchIn(viewModelScope)
     }
