@@ -10,8 +10,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.model.Course
-import edumate.app.domain.model.CourseState
+import edumate.app.domain.model.courses.Course
+import edumate.app.domain.model.courses.CourseState
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.CreateCourseUseCase
 import edumate.app.domain.usecase.courses.DeleteCourseUseCase
@@ -111,9 +111,11 @@ class CreateClassViewModel @Inject constructor(
 
     private fun createCourse() {
         val nameResult = validateTextField.execute(uiState.course.name)
-        uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
 
-        if (!nameResult.successful) return
+        if (!nameResult.successful) {
+            uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
+            return
+        }
 
         // Return if currentUser is null
         if (uiState.currentUser == null) {
@@ -156,9 +158,11 @@ class CreateClassViewModel @Inject constructor(
 
     private fun updateCourse() {
         val nameResult = validateTextField.execute(uiState.course.name)
-        uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
 
-        if (!nameResult.successful) return
+        if (!nameResult.successful) {
+            uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
+            return
+        }
 
         updateCourseUseCase(uiState.course).onEach { resource ->
             when (resource) {

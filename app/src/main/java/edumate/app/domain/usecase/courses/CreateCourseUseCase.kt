@@ -4,7 +4,7 @@ import android.util.Log
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toCoursesDto
-import edumate.app.domain.model.Course
+import edumate.app.domain.model.courses.Course
 import edumate.app.domain.repository.CoursesRepository
 import edumate.app.domain.repository.FirebaseAuthRepository
 import javax.inject.Inject

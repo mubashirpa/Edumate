@@ -23,6 +23,7 @@ fun ClassDetailsScreen(
     classDetailsNavController: NavHostController = rememberNavController(),
     title: String?,
     courseId: String,
+    onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -57,7 +58,9 @@ fun ClassDetailsScreen(
                 .fillMaxSize()
                 .consumeWindowInsets(innerPadding)
                 .padding(innerPadding),
-            courseId = courseId
+            courseId = courseId,
+            snackbarHostState = snackbarHostState,
+            onLeaveClass = onLeaveClass
         )
     }
 }

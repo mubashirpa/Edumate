@@ -7,14 +7,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Resource
+import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.GetEnrolledCoursesUseCase
 import edumate.app.domain.usecase.students.DeleteStudentUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class EnrolledViewModel @Inject constructor(
+    getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getEnrolledCoursesUseCase: GetEnrolledCoursesUseCase,
     private val deleteStudentUseCase: DeleteStudentUseCase
 ) : ViewModel() {
@@ -23,6 +26,9 @@ class EnrolledViewModel @Inject constructor(
         private set
 
     init {
+        getCurrentUserUseCase().map { user ->
+            uiState = uiState.copy(currentUser = user)
+        }.launchIn(viewModelScope)
         fetchClasses()
     }
 
@@ -32,7 +38,9 @@ class EnrolledViewModel @Inject constructor(
                 fetchClasses()
             }
             is EnrolledUiEvent.Unenroll -> {
-                unEnroll(event.courseId)
+                uiState.currentUser?.uid?.let { uid ->
+                    unEnroll(event.courseId, uid)
+                }
             }
             is EnrolledUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -67,8 +75,8 @@ class EnrolledViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun unEnroll(courseId: String) {
-        deleteStudentUseCase(courseId).onEach { resource ->
+    private fun unEnroll(courseId: String, uid: String) {
+        deleteStudentUseCase(courseId, uid).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)

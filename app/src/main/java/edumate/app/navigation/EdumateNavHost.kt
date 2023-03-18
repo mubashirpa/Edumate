@@ -105,6 +105,9 @@ fun EdumateNavHost(
             ClassDetailsScreen(
                 title = title,
                 courseId = courseId,
+                onLeaveClass = {
+                    navController.navigateUp()
+                },
                 onBackPressed = {
                     navController.navigateUp()
                 }

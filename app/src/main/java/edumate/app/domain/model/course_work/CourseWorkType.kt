@@ -1,4 +1,4 @@
-package edumate.app.domain.model
+package edumate.app.domain.model.course_work
 
 enum class CourseWorkType {
     COURSE_WORK_TYPE_UNSPECIFIED,

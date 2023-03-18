@@ -2,7 +2,7 @@ package edumate.app.presentation.create_class
 
 import com.google.firebase.auth.FirebaseUser
 import edumate.app.core.UiText
-import edumate.app.domain.model.Course
+import edumate.app.domain.model.courses.Course
 
 data class CreateClassUiState(
     val course: Course = Course(

@@ -97,4 +97,4 @@ gradle-versions = "com.github.ben-manes.versions:0.46.0"
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "com-google-dagger" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-version-catalog-update = "nl.littlerobots.version-catalog-update:0.7.0"
+version-catalog-update = "nl.littlerobots.version-catalog-update:0.8.0"

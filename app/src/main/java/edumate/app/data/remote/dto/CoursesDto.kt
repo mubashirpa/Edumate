@@ -4,7 +4,7 @@ import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
-import edumate.app.domain.model.CourseState
+import edumate.app.domain.model.courses.CourseState
 import java.util.ArrayList
 import java.util.Date
 

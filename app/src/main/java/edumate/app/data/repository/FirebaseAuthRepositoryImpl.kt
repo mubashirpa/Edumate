@@ -77,6 +77,7 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
             val user = UsersDto(
                 displayName = displayName,
                 emailAddress = email,
+                id = uid,
                 photoUrl = photoUrl?.toString(),
                 verified = isEmailVerified
             ).toMap()

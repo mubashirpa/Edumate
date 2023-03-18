@@ -3,20 +3,17 @@ package edumate.app.domain.usecase.teachers
 import android.util.Log
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.repository.FirebaseAuthRepository
 import edumate.app.domain.repository.TeachersRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class DeleteTeacherUseCase @Inject constructor(
-    private val teachersRepository: TeachersRepository,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val teachersRepository: TeachersRepository
 ) {
-    operator fun invoke(courseId: String): Flow<Resource<Boolean>> = flow {
+    operator fun invoke(courseId: String, uid: String): Flow<Resource<Boolean>> = flow {
         try {
             emit(Resource.Loading())
-            val uid = firebaseAuthRepository.currentUserId
             teachersRepository.deleteTeacher(courseId, uid)
             Log.d(TAG, "The teacher $uid was deleted from the course with ID $courseId.")
             emit(Resource.Success(true))

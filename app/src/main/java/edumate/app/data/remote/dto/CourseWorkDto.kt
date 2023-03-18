@@ -3,21 +3,21 @@ package edumate.app.data.remote.dto
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
-import edumate.app.domain.model.CourseWorkType
-import edumate.app.domain.model.Material
+import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.domain.model.course_work.Material
 import java.util.Date
 
 data class CourseWorkDto(
     val courseId: String = "",
     @ServerTimestamp val creationTime: Date? = null,
     val creatorUserId: String = "",
-    val description: String? = "",
-    val dueTime: Date? = null,
+    var description: String? = "",
+    var dueTime: Date? = null,
     val id: String = "",
-    val materials: List<Material> = listOf(),
-    val maxPoints: Int = 0,
-    val scheduledTime: Date? = null,
-    val title: String = "",
+    var materials: List<Material> = listOf(),
+    var maxPoints: Int = 0,
+    var scheduledTime: Date? = null,
+    var title: String = "",
     @ServerTimestamp val updateTime: Date? = null,
     val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
 ) {

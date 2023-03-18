@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
-import edumate.app.domain.model.Course
+import edumate.app.domain.model.courses.Course
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

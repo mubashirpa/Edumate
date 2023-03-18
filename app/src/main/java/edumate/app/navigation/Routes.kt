@@ -5,6 +5,7 @@ object Routes {
         const val CLASS_DETAILS_SCREEN = "class_details_screen"
         const val CLASSWORK_SCREEN = "classwork_screen"
         const val CREATE_CLASS_SCREEN = "create_class_screen"
+        const val CREATE_CLASSWORK_SCREEN = "create_classwork_screen"
         const val GET_STARTED_SCREEN = "get_started_screen"
         const val HOME_SCREEN = "home_screen"
         const val JOIN_CLASS_SCREEN = "join_class_screen"
@@ -34,5 +35,9 @@ object Routes {
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"
         const val CREATE_CLASS_SCREEN = "?$CREATE_CLASS_COURSE_ID={$CREATE_CLASS_COURSE_ID}"
+
+        // CreateClassworkScreen
+        const val CREATE_CLASSWORK_TYPE = "work_type"
+        const val CREATE_CLASSWORK_SCREEN = "/{$CREATE_CLASSWORK_TYPE}"
     }
 }

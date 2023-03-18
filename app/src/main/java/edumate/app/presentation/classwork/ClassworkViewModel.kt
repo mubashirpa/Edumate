@@ -1,6 +1,5 @@
 package edumate.app.presentation.classwork
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -40,12 +39,20 @@ class ClassworkViewModel @Inject constructor(
         getCourseWorksUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
+                    uiState = uiState.copy(dataState = DataState.LOADING)
                 }
                 is Resource.Success -> {
-                    uiState = uiState.copy(classWorks = resource.data ?: listOf())
+                    val classWorks = resource.data
+                    uiState = uiState.copy(
+                        dataState = if (classWorks.isNullOrEmpty()) DataState.EMPTY else DataState.SUCCESS,
+                        classWorks = classWorks ?: emptyList()
+                    )
                 }
                 is Resource.Error -> {
-                    Log.d("hello", resource.message.toString())
+                    uiState = uiState.copy(
+                        dataState = DataState.ERROR,
+                        errorMessage = resource.message!!
+                    )
                 }
             }
         }.launchIn(viewModelScope)

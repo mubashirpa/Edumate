@@ -1,9 +1,13 @@
 <resources>
     <string name="app_name">Edumate</string>
     <string name="add_a_class_to_get_started">Add a class to get started</string>
+    <string name="all">All</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
+    <string name="cancel">Cancel</string>
     <string name="class_code">Class code</string>
     <string name="class_name">Class name (required)</string>
+    <string name="copied_invitation_link">Copied invitation link</string>
+    <string name="copy_link">Copy link</string>
     <string name="create">Create</string>
     <string name="create_class">Create class</string>
     <string name="create_new_account">Create new account</string>
@@ -24,22 +28,31 @@
     <string name="google">Google</string>
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
+    <string name="invite">Invite</string>
+    <string name="invite_students_to_your_class">Invite students to your class</string>
     <string name="join">Join</string>
     <string name="join_a_class_to_get_started">Join a class to get started</string>
     <string name="join_class">Join class</string>
     <string name="joining_class">Joining class</string>
+    <string name="leave_class">Leave class</string>
+    <string name="leaving_class">Leaving class</string>
+    <string name="loading">Loading</string>
     <string name="navigate_up">Navigate up</string>
     <string name="password">Password</string>
     <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
     <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
     <string name="please_sign_in_to_your_account">Please sign in to your account</string>
     <string name="recover">Recover</string>
+    <string name="remove">Remove</string>
+    <string name="removing_student">Removing student</string>
+    <string name="removing_teacher">Removing teacher</string>
     <string name="reset_password">Reset password</string>
     <string name="retry">Retry</string>
     <string name="room">Room</string>
     <string name="save">Save</string>
     <string name="section">Section</string>
     <string name="sending_recovery_email">Sending email</string>
+    <string name="share">Share</string>
     <string name="share_invitation_link">Share invitation link</string>
     <string name="show_password">Show password</string>
     <string name="sign_in">Sign in</string>
@@ -49,10 +62,12 @@
     <string name="student">Student</string>
     <string name="students">Students</string>
     <string name="subject">Subject</string>
+    <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
     <string name="unenrol">Unenrol</string>
     <string name="updating_class">Updating class</string>
     <string name="welcome_back">Welcome back!</string>
+    <string name="leave_class_warning_message">You wont be able to open this class unless you\'re re-invited</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>

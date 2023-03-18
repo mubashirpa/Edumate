@@ -57,9 +57,13 @@ class JoinClassViewModel @Inject constructor(
 
     private fun joinClass() {
         val classCodeResult = validateTextField.execute(uiState.classCode)
-        uiState = uiState.copy(classCodeError = UiText.StringResource(R.string.enter_class_code))
 
-        if (!classCodeResult.successful) return
+        if (!classCodeResult.successful) {
+            uiState = uiState.copy(
+                classCodeError = UiText.StringResource(R.string.enter_class_name)
+            )
+            return
+        }
 
         addStudentUseCase(uiState.classCode).onEach { resource ->
             when (resource) {

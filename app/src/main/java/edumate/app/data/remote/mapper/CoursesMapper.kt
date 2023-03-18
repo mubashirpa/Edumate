@@ -1,7 +1,7 @@
 package edumate.app.data.remote.mapper
 
 import edumate.app.data.remote.dto.CoursesDto
-import edumate.app.domain.model.Course
+import edumate.app.domain.model.courses.Course
 
 fun CoursesDto.toCourse(): Course {
     return Course(

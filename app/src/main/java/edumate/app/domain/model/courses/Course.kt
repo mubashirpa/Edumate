@@ -1,4 +1,4 @@
-package edumate.app.domain.model
+package edumate.app.domain.model.courses
 
 import java.util.*
 

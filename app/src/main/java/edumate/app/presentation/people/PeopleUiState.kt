@@ -1,11 +1,21 @@
 package edumate.app.presentation.people
 
+import com.google.firebase.auth.FirebaseUser
+import edumate.app.R.string as Strings
+import edumate.app.core.UiText
 import edumate.app.domain.model.User
 
 data class PeopleUiState(
-    val showAll: Boolean = true,
-    val showStudents: Boolean = false,
-    val showTeachers: Boolean = false,
-    val students: List<User> = emptyList(),
-    val teachers: List<User> = emptyList()
+    val currentUser: FirebaseUser? = null,
+    val dataState: DataState = DataState.UNKNOWN,
+    val filter: PeopleFilter = PeopleFilter.ALL,
+    val isFabExpanded: Boolean = false,
+    val isUserLeaveClass: Boolean = false,
+    val openFabMenu: Boolean = false,
+    val openLeaveClassDialog: Boolean = false,
+    val openProgressDialog: Boolean = false,
+    val peoples: List<User> = emptyList(),
+    val progressDialogText: UiText = UiText.StringResource(Strings.loading),
+    val refreshing: Boolean = false,
+    val userMessage: UiText? = null
 )
