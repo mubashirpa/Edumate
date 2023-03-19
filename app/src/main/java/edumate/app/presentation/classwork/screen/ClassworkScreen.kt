@@ -4,18 +4,27 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.LiveHelp
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkViewModel
@@ -23,64 +32,99 @@ import edumate.app.presentation.classwork.DataState
 import edumate.app.presentation.classwork.screen.components.ClassworkListItem
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
-import java.util.*
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ClassworkScreen(
     viewModel: ClassworkViewModel = hiltViewModel(),
-    userType: UserType,
-    workType: CourseWorkType,
-    navigateToCreateClasswork: (workType: String) -> Unit
+    snackbarHostState: SnackbarHostState,
+    course: Course,
+    navigateToCreateClasswork: (workType: CourseWorkType) -> Unit
 ) {
+    val context = LocalContext.current
+    val refreshState = rememberPullRefreshState(
+        refreshing = viewModel.uiState.refreshing,
+        onRefresh = {
+            viewModel.onEvent(ClassworkUiEvent.OnRefresh)
+        }
+    )
+    val currentUserType =
+        if (course.teachers?.contains(viewModel.uiState.currentUser?.uid) == true) {
+            UserType.TEACHER
+        } else {
+            UserType.STUDENT
+        }
+
+    viewModel.uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            viewModel.onEvent(ClassworkUiEvent.UserMessageShown)
+        }
+    }
+
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.TopCenter
     ) {
-        when (viewModel.uiState.dataState) {
-            DataState.UNKNOWN -> {
+        when (val dataState = viewModel.uiState.dataState) {
+            is DataState.UNKNOWN -> {
                 // Nothing happened
             }
-            DataState.LOADING -> {
+            is DataState.LOADING -> {
                 LoadingIndicator()
             }
-            DataState.ERROR -> {
+            is DataState.ERROR -> {
                 ErrorScreen(
-                    errorMessage = viewModel.uiState.errorMessage.asString(),
+                    errorMessage = dataState.message.asString(),
                     onRetry = {
-                        // TODO("Not yet implemented")
+                        viewModel.onEvent(ClassworkUiEvent.OnRetry)
                     }
                 )
             }
-            DataState.EMPTY -> {
+            is DataState.EMPTY -> {
                 ErrorScreen(
-                    errorMessage = if (userType == UserType.TEACHER) {
-                        "Add assignments and other works for the class"
+                    errorMessage = if (currentUserType == UserType.TEACHER) {
+                        stringResource(id = Strings.add_assignments_and_other_works_for_class)
                     } else {
-                        "Your teacher hasn't assigned any classwork yet"
+                        stringResource(id = Strings.your_teacher_hasnt_assigned_any_classwork_yet)
                     }
                 )
             }
-            DataState.SUCCESS -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    content = {
-                        items(viewModel.uiState.classWorks) { classWork ->
-                            ClassworkListItem(
-                                onClick = {
-                                    // TODO("Not yet implemented")
-                                },
-                                userType = userType,
-                                workType = workType,
-                                work = classWork
-                            )
+            is DataState.SUCCESS -> {
+                Box(modifier = Modifier.pullRefresh(refreshState)) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        content = {
+                            items(viewModel.uiState.classWorks) { classWork ->
+                                ClassworkListItem(
+                                    work = classWork,
+                                    currentUserType = currentUserType,
+                                    workType = classWork.workType,
+                                    onEdit = {
+                                        // TODO("Not yet implemented")
+                                    },
+                                    onDelete = {
+                                        // TODO("Not yet implemented")
+                                    },
+                                    onClick = {
+                                        // TODO("Not yet implemented")
+                                    }
+                                )
+                            }
                         }
-                    }
-                )
+                    )
+
+                    PullRefreshIndicator(
+                        viewModel.uiState.refreshing,
+                        refreshState,
+                        Modifier.align(Alignment.TopCenter)
+                    )
+                }
             }
         }
 
-        if (userType == UserType.TEACHER) {
+        if (currentUserType == UserType.TEACHER) {
             FloatingActionButton(
                 onClick = {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
@@ -89,7 +133,12 @@ fun ClassworkScreen(
                     .align(Alignment.BottomEnd)
                     .imePadding()
                     .padding(16.dp)
-            ) { Icon(imageVector = Icons.Default.Add, contentDescription = "Create classwork") }
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = stringResource(id = Strings.create_classwork)
+                )
+            }
         }
     }
 
@@ -101,30 +150,30 @@ fun ClassworkScreen(
             }
         ) {
             ListItem(
-                headlineContent = { Text(text = "Assignment") },
+                headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.ASSIGNMENT.toString())
+                    navigateToCreateClasswork(CourseWorkType.ASSIGNMENT)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Assignment, contentDescription = null)
                 }
             )
             ListItem(
-                headlineContent = { Text(text = "Question") },
+                headlineContent = { Text(text = stringResource(id = Strings.question)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.ASSIGNMENT.toString())
+                    navigateToCreateClasswork(CourseWorkType.SHORT_ANSWER_QUESTION)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.LiveHelp, contentDescription = null)
                 }
             )
             ListItem(
-                headlineContent = { Text(text = "Material") },
+                headlineContent = { Text(text = stringResource(id = Strings.material)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.ASSIGNMENT.toString())
+                    navigateToCreateClasswork(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)

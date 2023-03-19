@@ -17,7 +17,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.class_details.UserType
@@ -26,13 +28,21 @@ import java.util.*
 
 @Composable
 fun ClassworkListItem(
-    onClick: () -> Unit,
-    userType: UserType,
+    work: CourseWork,
+    modifier: Modifier = Modifier,
+    currentUserType: UserType,
     workType: CourseWorkType,
-    work: CourseWork
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onClick: () -> Unit
 ) {
-    val trailingContent: @Composable (() -> Unit)? = if (userType == UserType.TEACHER) {
-        { MenuButton() }
+    val trailingContent: @Composable (() -> Unit)? = if (currentUserType == UserType.TEACHER) {
+        {
+            MenuButton(
+                onEdit = onEdit,
+                onDelete = onDelete
+            )
+        }
     } else {
         null
     }
@@ -41,11 +51,11 @@ fun ClassworkListItem(
         headlineContent = {
             Text(text = work.title)
         },
-        modifier = Modifier.clickable(onClick = onClick),
+        modifier = modifier.clickable(onClick = onClick),
         supportingContent = {
             val format = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
             val postedDate: String = format.format(work.creationTime ?: 0)
-            Text(text = "Posted $postedDate")
+            Text(text = stringResource(id = Strings.posted_, postedDate))
         },
         leadingContent = {
             val icon = when (workType) {
@@ -83,7 +93,10 @@ private fun LeadingIcon(
 }
 
 @Composable
-private fun MenuButton() {
+private fun MenuButton(
+    onEdit: () -> Unit,
+    onDelete: () -> Unit
+) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
@@ -98,17 +111,17 @@ private fun MenuButton() {
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(text = "Edit") },
+                text = { Text(text = stringResource(id = Strings.edit)) },
                 onClick = {
                     expanded = false
-                    // TODO("Not yet implemented")
+                    onEdit()
                 }
             )
             DropdownMenuItem(
-                text = { Text(text = "Delete") },
+                text = { Text(text = stringResource(id = Strings.delete)) },
                 onClick = {
                     expanded = false
-                    // TODO("Not yet implemented")
+                    onDelete()
                 }
             )
         }

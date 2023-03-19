@@ -9,8 +9,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.presentation.class_details.UserType
+import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.classwork.screen.ClassworkScreen
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
@@ -20,8 +19,8 @@ import edumate.app.presentation.stream.screen.StreamScreen
 fun ClassDetailsNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    courseId: String,
     snackbarHostState: SnackbarHostState,
+    course: Course,
     onLeaveClass: () -> Unit
 ) {
     NavHost(
@@ -32,7 +31,7 @@ fun ClassDetailsNavHost(
         val arguments: List<NamedNavArgument> = listOf(
             navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
                 type = NavType.StringType
-                defaultValue = courseId
+                defaultValue = course.id.orEmpty()
             }
         )
 
@@ -47,10 +46,12 @@ fun ClassDetailsNavHost(
             arguments = arguments
         ) {
             ClassworkScreen(
-                userType = UserType.TEACHER,
-                workType = CourseWorkType.ASSIGNMENT,
+                snackbarHostState = snackbarHostState,
+                course = course,
                 navigateToCreateClasswork = { workType ->
-                    navController.navigate(Screen.CreateClassworkScreen.withArgs(workType))
+                    navController.navigate(
+                        Screen.CreateClassworkScreen.withArgs(workType.toString())
+                    )
                 }
             )
         }
@@ -60,6 +61,7 @@ fun ClassDetailsNavHost(
         ) {
             PeopleScreen(
                 snackbarHostState = snackbarHostState,
+                course = course,
                 onLeaveClass = onLeaveClass
             )
         }

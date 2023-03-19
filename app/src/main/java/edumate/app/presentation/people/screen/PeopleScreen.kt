@@ -53,23 +53,18 @@ import kotlinx.coroutines.launch
 fun PeopleScreen(
     viewModel: PeopleViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
+    course: Course,
     onLeaveClass: () -> Unit
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnLeaveClass by rememberUpdatedState(onLeaveClass)
-    val state = rememberPullRefreshState(
+    val refreshState = rememberPullRefreshState(
         refreshing = viewModel.uiState.refreshing,
         onRefresh = {
             viewModel.onEvent(PeopleUiEvent.OnRefresh)
         }
-    )
-    val course = Course(
-        alternateLink = "https://edumate.web.app",
-        ownerId = "XlPv3TJBFEbaZxWoOBHgFKuw4iy1",
-        students = arrayListOf("NxyHm4f8Cedi9vRFf3l54WrHr1m2", "gy7Agvjr6SeNjB7UvAApQHesLgH2"),
-        teachers = arrayListOf("XlPv3TJBFEbaZxWoOBHgFKuw4iy1", "KAGuI6VQI3NY78Ft42ej6a12cBm2")
     )
     val currentUserType =
         if (course.teachers?.contains(viewModel.uiState.currentUser?.uid) == true) {
@@ -192,7 +187,7 @@ fun PeopleScreen(
                     if (dataState is DataState.EMPTY) {
                         ErrorScreen(errorMessage = dataState.message.asString())
                     } else {
-                        Box(modifier = Modifier.pullRefresh(state)) {
+                        Box(modifier = Modifier.pullRefresh(refreshState)) {
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 content = {
@@ -245,7 +240,7 @@ fun PeopleScreen(
 
                             PullRefreshIndicator(
                                 viewModel.uiState.refreshing,
-                                state,
+                                refreshState,
                                 Modifier.align(Alignment.TopCenter)
                             )
                         }
