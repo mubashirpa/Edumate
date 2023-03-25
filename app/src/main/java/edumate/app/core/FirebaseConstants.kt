@@ -26,13 +26,14 @@ object FirebaseConstants {
 
         // CourseWork
         const val COURSE_ID = "courseId"
-        const val CREATOR_USER_ID = ""
-        const val DUE_TIME = ""
-        const val MATERIALS = ""
-        const val MAX_POINTS = ""
-        const val SCHEDULED_TIME = ""
-        const val TITLE = ""
-        const val WORK_TYPE = ""
+        const val CREATOR_USER_ID = "creatorUserId"
+        const val DUE_TIME = "dueTime"
+        const val MATERIALS = "materials"
+        const val MAX_POINTS = "maxPoints"
+        const val STATE = "state"
+        const val SCHEDULED_TIME = "scheduledTime"
+        const val TITLE = "title"
+        const val WORK_TYPE = "workType"
 
         // Users
         const val CREATED_AT = "createdAt"

@@ -27,7 +27,7 @@ fun ClassDetailsScreen(
     onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit
 ) {
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val course = Course(
         alternateLink = "https://edumate.web.app",

@@ -129,12 +129,8 @@ fun CreateClassScreen(
                             label = {
                                 Text(text = stringResource(id = Strings.class_name))
                             },
-                            supportingText = if (nameError != null) {
-                                {
-                                    Text(text = nameError.asString())
-                                }
-                            } else {
-                                null
+                            supportingText = {
+                                Text(text = stringResource(id = Strings.required))
                             },
                             isError = nameError != null,
                             keyboardOptions = KeyboardOptions(
@@ -146,7 +142,7 @@ fun CreateClassScreen(
                             }),
                             singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         TextField(
                             value = viewModel.uiState.course.section.orEmpty(),
                             onValueChange = {
@@ -167,7 +163,7 @@ fun CreateClassScreen(
                             }),
                             singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         TextField(
                             value = viewModel.uiState.course.room.orEmpty(),
                             onValueChange = {
@@ -188,7 +184,7 @@ fun CreateClassScreen(
                             }),
                             singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(10.dp))
+                        Spacer(modifier = Modifier.height(16.dp))
                         TextField(
                             value = viewModel.uiState.course.subject.orEmpty(),
                             onValueChange = {
@@ -210,7 +206,7 @@ fun CreateClassScreen(
                             }),
                             singleLine = true
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(30.dp))
                     }
 
                     FAB(

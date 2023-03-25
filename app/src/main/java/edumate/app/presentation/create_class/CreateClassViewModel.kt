@@ -113,11 +113,10 @@ class CreateClassViewModel @Inject constructor(
         val nameResult = validateTextField.execute(uiState.course.name)
 
         if (!nameResult.successful) {
-            uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
+            uiState = uiState.copy(nameError = nameResult.error)
             return
         }
 
-        // Return if currentUser is null
         if (uiState.currentUser == null) {
             uiState = uiState.copy(userMessage = UiText.StringResource(Strings.error_unexpected))
             return
@@ -160,7 +159,7 @@ class CreateClassViewModel @Inject constructor(
         val nameResult = validateTextField.execute(uiState.course.name)
 
         if (!nameResult.successful) {
-            uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_class_name))
+            uiState = uiState.copy(nameError = nameResult.error)
             return
         }
 

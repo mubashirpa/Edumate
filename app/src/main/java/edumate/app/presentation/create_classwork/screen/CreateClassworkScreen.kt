@@ -1,46 +1,157 @@
 package edumate.app.presentation.create_classwork.screen
 
-import android.content.res.Configuration
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import edumate.app.R.string as Strings
+import edumate.app.presentation.classwork.ClassworkType
+import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
+import edumate.app.presentation.create_classwork.CreateClassworkUiState
+import edumate.app.presentation.create_classwork.CreateClassworkViewModel
+import edumate.app.presentation.create_classwork.screen.components.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 @Composable
 fun CreateClassworkScreen(
+    viewModel: CreateClassworkViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     workType: String
 ) {
+    val uiState = viewModel.uiState
+    val filePicker =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+            uri?.let {
+                viewModel.onEvent(CreateClassworkUiEvent.OnGetContent(it))
+            }
+        }
+
     when (workType) {
-        "ASSIGNMENT" -> {
-            ContentAssignment()
+        "${ClassworkType.ASSIGNMENT}" -> {
+            ContentAssignment(
+                courseTitle = "Name",
+                uiState = uiState,
+                onTitleChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnTitleChange(it))
+                },
+                onDescriptionChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnDescriptionChange(it))
+                },
+                onDueDateChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnDueDateChange(it))
+                },
+                onOpenAttachmentMenuChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(it))
+                },
+                onOpenDatePickerDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(it))
+                },
+                onOpenPointsDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(it))
+                },
+                onOpenTimePickerDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(it))
+                },
+                onPointsChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnPointsChange(it))
+                }
+            )
         }
-        "SHORT_ANSWER_QUESTION" -> {
-            ContentQuestion()
+        "${ClassworkType.QUESTION}" -> {
+            ContentQuestion(
+                courseTitle = "Name",
+                uiState = uiState,
+                onTitleChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnTitleChange(it))
+                },
+                onDescriptionChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnDescriptionChange(it))
+                },
+                onDueDateChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnDueDateChange(it))
+                },
+                onOpenAttachmentMenuChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(it))
+                },
+                onOpenDatePickerDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(it))
+                },
+                onOpenPointsDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(it))
+                },
+                onOpenTimePickerDialogChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(it))
+                },
+                onPointsChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnPointsChange(it))
+                }
+            )
         }
-        "COURSE_WORK_TYPE_UNSPECIFIED" -> {
-            ContentMaterial()
+        "${ClassworkType.MATERIAL}" -> {
+            ContentMaterial(
+                courseTitle = "Title",
+                uiState = uiState,
+                onTitleChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnTitleChange(it))
+                },
+                onDescriptionChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnDescriptionChange(it))
+                },
+                onOpenAttachmentMenuChange = {
+                    viewModel.onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(it))
+                }
+            )
         }
     }
+
+    AttachmentMenuBottomSheet(
+        openBottomSheet = uiState.openAttachmentMenu,
+        onInsertLinkClick = {
+            viewModel.onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(true))
+        },
+        onUploadFileClick = { filePicker.launch("*/*") },
+        onDismissRequest = {
+            viewModel.onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(false))
+        }
+    )
+
+    AddLinkDialog(
+        openDialog = uiState.openAddLinkDialog,
+        onConfirm = { /* TODO() */ },
+        onDismissRequest = {
+            viewModel.onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(false))
+        }
+    )
 }
 
 @Composable
-private fun ContentAssignment() {
-    var description by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-    val iconButtonPlaceholder: @Composable () -> Unit = {
-        Spacer(modifier = Modifier.size(48.dp))
-    }
+private fun ContentAssignment(
+    courseTitle: String,
+    uiState: CreateClassworkUiState,
+    onTitleChange: (title: String) -> Unit,
+    onDescriptionChange: (description: String) -> Unit,
+    onDueDateChange: (dueDate: Date?) -> Unit,
+    onOpenAttachmentMenuChange: (open: Boolean) -> Unit,
+    onOpenDatePickerDialogChange: (open: Boolean) -> Unit,
+    onOpenPointsDialogChange: (open: Boolean) -> Unit,
+    onOpenTimePickerDialogChange: (open: Boolean) -> Unit,
+    onPointsChange: (points: String?) -> Unit
+) {
+    val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
+    val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
 
     Column(
         modifier = Modifier
@@ -53,23 +164,24 @@ private fun ContentAssignment() {
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
+                        value = uiState.title,
+                        onValueChange = onTitleChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Assignment title")
-                        }
+                            Text(text = stringResource(id = Strings.assignment_title))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Assignment, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Assignment
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     Row(
                         modifier = Modifier
@@ -86,58 +198,165 @@ private fun ContentAssignment() {
                         Spacer(modifier = Modifier.width(16.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "Name") }
+                            label = { Text(text = courseTitle) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "All students") }
+                            label = { Text(text = stringResource(id = Strings.all_students)) }
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.People, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.People
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = description,
-                        onValueChange = {
-                            description = it
-                        },
+                        value = uiState.description,
+                        onValueChange = onDescriptionChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Description")
-                        }
+                            Text(text = stringResource(id = Strings.description))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Description, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Description
             )
-            Item(
-                title = "Add attachment",
-                leadingIcon = Icons.Default.Attachment,
-                onClick = {}
-            )
-            Item(
-                title = "100 points",
-                leadingIcon = Icons.Default.PlaylistAddCheck,
-                trailingContent = {
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+            FieldListItem(
+                headlineContent = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 56.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = MaterialTheme.shapes.extraSmall
+                            ),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        uiState.attachments.onEach {
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = it,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Image,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                            Divider()
+                        }
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(id = Strings.add_attachment),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
+                            modifier = Modifier.clickable { onOpenAttachmentMenuChange(true) }
+                        )
                     }
                 },
-                onClick = {}
+                leadingIcon = Icons.Default.Attachment
             )
-            Item(
-                title = "Due date",
+            FieldListItem(
+                title = if (uiState.points != null && uiState.points != "0") {
+                    stringResource(id = Strings._points, uiState.points)
+                } else {
+                    stringResource(id = Strings.unmarked)
+                },
+                leadingIcon = Icons.Default.PlaylistAddCheck,
+                trailingContent = if (uiState.points != null && uiState.points != "0") {
+                    {
+                        IconButton(onClick = { onPointsChange(null) }) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
+                } else {
+                    null
+                },
+                onClick = {
+                    onOpenPointsDialogChange(true)
+                }
+            )
+            FieldListItem(
+                headlineContent = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = MaterialTheme.shapes.extraSmall
+                            )
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .clickable(
+                                enabled = uiState.dueDate == null,
+                                onClick = { onOpenDatePickerDialogChange(true) }
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (uiState.dueDate != null) {
+                                dateFormatter.format(uiState.dueDate)
+                            } else {
+                                stringResource(id = Strings.due_date)
+                            },
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clickable(
+                                    enabled = uiState.dueDate != null,
+                                    onClick = { onOpenDatePickerDialogChange(true) }
+                                ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        if (uiState.dueDate != null) {
+                            Text(
+                                text = timeFormatter.format(uiState.dueDate),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .clickable { onOpenTimePickerDialogChange(true) },
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                },
                 leadingIcon = Icons.Default.CalendarToday,
-                onClick = {}
+                trailingContent = if (uiState.dueDate != null) {
+                    {
+                        IconButton(onClick = { onDueDateChange(null) }) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
+                } else {
+                    null
+                }
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -147,21 +366,58 @@ private fun ContentAssignment() {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            Text(text = "Assign")
+            Text(text = stringResource(id = Strings.assign))
         }
         Spacer(modifier = Modifier.height(20.dp))
     }
+
+    ContentDatePickerDialog(
+        date = uiState.dueDate,
+        openDialog = uiState.openDatePickerDialog,
+        onConfirm = onDueDateChange,
+        onDismissRequest = {
+            onOpenDatePickerDialogChange(false)
+        }
+    )
+
+    ContentTimePickerDialog(
+        date = uiState.dueDate,
+        openDialog = uiState.openTimePickerDialog,
+        onConfirm = onDueDateChange,
+        onDismissRequest = {
+            onOpenTimePickerDialogChange(false)
+        }
+    )
+
+    PointsDialog(
+        openDialog = uiState.openPointsDialog,
+        currentPoint = uiState.points,
+        onConfirmClick = onPointsChange,
+        onDismissRequest = {
+            onOpenPointsDialogChange(false)
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ContentQuestion() {
-    var description by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-    val iconButtonPlaceholder: @Composable () -> Unit = {
-        Spacer(modifier = Modifier.size(48.dp))
-    }
+private fun ContentQuestion(
+    courseTitle: String,
+    uiState: CreateClassworkUiState,
+    onTitleChange: (title: String) -> Unit,
+    onDescriptionChange: (description: String) -> Unit,
+    onDueDateChange: (dueDate: Date?) -> Unit,
+    onOpenAttachmentMenuChange: (open: Boolean) -> Unit,
+    onOpenDatePickerDialogChange: (open: Boolean) -> Unit,
+    onOpenPointsDialogChange: (open: Boolean) -> Unit,
+    onOpenTimePickerDialogChange: (open: Boolean) -> Unit,
+    onPointsChange: (points: String?) -> Unit
+) {
+    val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
+    val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
+    val options = listOf("Short answer", "Multiple choice")
+    var expanded by remember { mutableStateOf(false) }
+    var selectedOptionText by remember { mutableStateOf(options[0]) }
 
     Column(
         modifier = Modifier
@@ -174,23 +430,24 @@ private fun ContentQuestion() {
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
+                        value = uiState.title,
+                        onValueChange = onTitleChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Question title")
-                        }
+                            Text(text = stringResource(id = Strings.question_title))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.LiveHelp, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.LiveHelp
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     Row(
                         modifier = Modifier
@@ -207,44 +464,36 @@ private fun ContentQuestion() {
                         Spacer(modifier = Modifier.width(16.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "Name") }
+                            label = { Text(text = courseTitle) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "All students") }
+                            label = { Text(text = stringResource(id = Strings.all_students)) }
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.People, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.People
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = description,
-                        onValueChange = {
-                            description = it
-                        },
+                        value = uiState.description,
+                        onValueChange = onDescriptionChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Description")
-                        }
+                            Text(text = stringResource(id = Strings.description))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Description, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Description
             )
-
-            val options = listOf("Short answer", "Multiple choice")
-            var expanded by remember { mutableStateOf(false) }
-            var selectedOptionText by remember { mutableStateOf(options[0]) }
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     ExposedDropdownMenuBox(
                         expanded = expanded,
@@ -280,36 +529,144 @@ private fun ContentQuestion() {
                         }
                     }
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Quiz, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Quiz
             )
-
             if (selectedOptionText == options[1]) {
-                Item(title = "Add answers") {
-                }
+                FieldListItem(
+                    title = "Add answers",
+                    onClick = {}
+                )
             }
-
-            Item(
-                title = "Add attachment",
-                leadingIcon = Icons.Default.Attachment,
-                onClick = {}
-            )
-            Item(
-                title = "100 points",
-                leadingIcon = Icons.Default.PlaylistAddCheck,
-                trailingContent = {
-                    IconButton(onClick = {}) {
-                        Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+            FieldListItem(
+                headlineContent = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 56.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = MaterialTheme.shapes.extraSmall
+                            ),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        uiState.attachments.onEach {
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = it,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Image,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                            Divider()
+                        }
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(id = Strings.add_attachment),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
+                            modifier = Modifier.clickable { onOpenAttachmentMenuChange(true) }
+                        )
                     }
                 },
-                onClick = {}
+                leadingIcon = Icons.Default.Attachment
             )
-            Item(
-                title = "Due date",
+            FieldListItem(
+                title = if (uiState.points != null && uiState.points != "0") {
+                    stringResource(id = Strings._points, uiState.points)
+                } else {
+                    stringResource(id = Strings.unmarked)
+                },
+                leadingIcon = Icons.Default.PlaylistAddCheck,
+                trailingContent = if (uiState.points != null && uiState.points != "0") {
+                    {
+                        IconButton(onClick = { onPointsChange(null) }) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
+                } else {
+                    null
+                },
+                onClick = {
+                    onOpenPointsDialogChange(true)
+                }
+            )
+            FieldListItem(
+                headlineContent = {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(56.dp)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = MaterialTheme.shapes.extraSmall
+                            )
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .clickable(
+                                enabled = uiState.dueDate == null,
+                                onClick = { onOpenDatePickerDialogChange(true) }
+                            ),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = if (uiState.dueDate != null) {
+                                dateFormatter.format(uiState.dueDate)
+                            } else {
+                                stringResource(id = Strings.due_date)
+                            },
+                            modifier = Modifier
+                                .padding(start = 16.dp)
+                                .clickable(
+                                    enabled = uiState.dueDate != null,
+                                    onClick = { onOpenDatePickerDialogChange(true) }
+                                ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                        if (uiState.dueDate != null) {
+                            Text(
+                                text = timeFormatter.format(uiState.dueDate),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .clickable { onOpenTimePickerDialogChange(true) },
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                },
                 leadingIcon = Icons.Default.CalendarToday,
-                onClick = {}
+                trailingContent = if (uiState.dueDate != null) {
+                    {
+                        IconButton(onClick = { onDueDateChange(null) }) {
+                            Icon(imageVector = Icons.Default.Clear, contentDescription = null)
+                        }
+                    }
+                } else {
+                    null
+                }
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -319,21 +676,47 @@ private fun ContentQuestion() {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            Text(text = "Ask")
+            Text(text = stringResource(id = Strings.ask))
         }
         Spacer(modifier = Modifier.height(20.dp))
     }
+
+    ContentDatePickerDialog(
+        date = uiState.dueDate,
+        openDialog = uiState.openDatePickerDialog,
+        onConfirm = onDueDateChange,
+        onDismissRequest = {
+            onOpenDatePickerDialogChange(false)
+        }
+    )
+
+    ContentTimePickerDialog(
+        date = uiState.dueDate,
+        openDialog = uiState.openTimePickerDialog,
+        onConfirm = onDueDateChange,
+        onDismissRequest = {
+            onOpenTimePickerDialogChange(false)
+        }
+    )
+
+    PointsDialog(
+        openDialog = uiState.openPointsDialog,
+        currentPoint = uiState.points,
+        onConfirmClick = onPointsChange,
+        onDismissRequest = {
+            onOpenPointsDialogChange(false)
+        }
+    )
 }
 
 @Composable
-private fun ContentMaterial() {
-    var description by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-        mutableStateOf(TextFieldValue(""))
-    }
-    val iconButtonPlaceholder: @Composable () -> Unit = {
-        Spacer(modifier = Modifier.size(48.dp))
-    }
-
+private fun ContentMaterial(
+    courseTitle: String,
+    uiState: CreateClassworkUiState,
+    onTitleChange: (title: String) -> Unit,
+    onDescriptionChange: (description: String) -> Unit,
+    onOpenAttachmentMenuChange: (open: Boolean) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -345,23 +728,25 @@ private fun ContentMaterial() {
                 .weight(1f)
                 .verticalScroll(rememberScrollState())
         ) {
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = "",
-                        onValueChange = {},
+                        value = uiState.title,
+                        onValueChange = onTitleChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Material title")
-                        }
+                            Text(text = stringResource(id = Strings.material_title))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Book, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Book,
+                trailingContent = {}
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     Row(
                         modifier = Modifier
@@ -378,43 +763,89 @@ private fun ContentMaterial() {
                         Spacer(modifier = Modifier.width(16.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "Name") }
+                            label = { Text(text = courseTitle) }
                         )
-                        Spacer(modifier = Modifier.width(12.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = "All students") }
+                            label = { Text(text = stringResource(id = Strings.all_students)) }
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.People, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.People,
+                trailingContent = {}
             )
-            ListItem(
+            FieldListItem(
                 headlineContent = {
                     OutlinedTextField(
-                        value = description,
-                        onValueChange = {
-                            description = it
-                        },
+                        value = uiState.description,
+                        onValueChange = onDescriptionChange,
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = "Description")
-                        }
+                            Text(text = stringResource(id = Strings.description))
+                        },
+                        keyboardOptions = KeyboardOptions(
+                            capitalization = KeyboardCapitalization.Sentences,
+                            autoCorrect = true
+                        )
                     )
                 },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Description, contentDescription = null)
-                },
-                trailingContent = iconButtonPlaceholder
+                leadingIcon = Icons.Default.Description,
+                trailingContent = {}
             )
-            Item(
-                title = "Add attachment",
+            FieldListItem(
+                headlineContent = {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(min = 56.dp)
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outline,
+                                shape = MaterialTheme.shapes.extraSmall
+                            ),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        uiState.attachments.onEach {
+                            ListItem(
+                                headlineContent = {
+                                    Text(
+                                        text = it,
+                                        overflow = TextOverflow.Ellipsis,
+                                        maxLines = 1
+                                    )
+                                },
+                                leadingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Image,
+                                        contentDescription = null
+                                    )
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = null
+                                    )
+                                }
+                            )
+                            Divider()
+                        }
+                        ListItem(
+                            headlineContent = {
+                                Text(
+                                    text = stringResource(id = Strings.add_attachment),
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            },
+                            modifier = Modifier.clickable { onOpenAttachmentMenuChange(true) }
+                        )
+                    }
+                },
                 leadingIcon = Icons.Default.Attachment,
-                onClick = {}
+                trailingContent = {}
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
@@ -424,60 +855,8 @@ private fun ContentMaterial() {
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
         ) {
-            Text(text = "Post")
+            Text(text = stringResource(id = Strings.post))
         }
         Spacer(modifier = Modifier.height(20.dp))
     }
-}
-
-@Composable
-private fun Item(
-    title: String,
-    leadingIcon: ImageVector? = null,
-    trailingContent: @Composable (() -> Unit)? = null,
-    onClick: () -> Unit
-) {
-    ListItem(
-        headlineContent = {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = MaterialTheme.shapes.extraSmall
-                    )
-                    .clip(MaterialTheme.shapes.extraSmall)
-                    .clickable(onClick = onClick),
-                contentAlignment = Alignment.CenterStart
-            ) {
-                Text(
-                    text = title,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyLarge
-                )
-            }
-        },
-        leadingContent = {
-            if (leadingIcon != null) {
-                Icon(imageVector = leadingIcon, contentDescription = null)
-            } else {
-                Spacer(modifier = Modifier.size(24.dp))
-            }
-        },
-        trailingContent = trailingContent ?: { Spacer(modifier = Modifier.size(48.dp)) }
-    )
-}
-
-@Preview(
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    device = "id:pixel_6_pro",
-    showSystemUi = true,
-    showBackground = true
-)
-@Composable
-private fun CreateClassworkScreenPreview() {
-    CreateClassworkScreen("COURSE_WORK_TYPE_UNSPECIFIED")
 }

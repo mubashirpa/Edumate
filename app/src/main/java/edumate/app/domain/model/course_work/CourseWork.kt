@@ -4,15 +4,16 @@ import java.util.*
 
 data class CourseWork(
     val courseId: String = "",
-    val creationTime: Date? = null,
-    val creatorUserId: String = "",
-    var description: String? = "",
-    var dueTime: Date? = null,
     val id: String = "",
-    var materials: List<Material> = listOf(),
-    var maxPoints: Int = 0,
-    var scheduledTime: Date? = null,
     var title: String = "",
+    var description: String? = null,
+    var materials: List<Material> = listOf(),
+    var state: CourseWorkState = CourseWorkState.COURSE_WORK_STATE_UNSPECIFIED,
+    val creationTime: Date? = null,
     val updateTime: Date? = null,
-    val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
+    var dueTime: Date? = null,
+    var scheduledTime: Date? = null,
+    var maxPoints: Int = 0,
+    val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
+    val creatorUserId: String = ""
 )

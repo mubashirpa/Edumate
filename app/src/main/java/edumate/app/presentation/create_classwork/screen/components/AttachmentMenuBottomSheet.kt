@@ -1,0 +1,50 @@
+package edumate.app.presentation.create_classwork.screen.components
+
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.InsertLink
+import androidx.compose.material.icons.outlined.UploadFile
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import edumate.app.R.string as Strings
+import java.util.*
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AttachmentMenuBottomSheet(
+    openBottomSheet: Boolean,
+    onInsertLinkClick: () -> Unit,
+    onUploadFileClick: () -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    if (openBottomSheet) {
+        ModalBottomSheet(onDismissRequest = onDismissRequest) {
+            ListItem(
+                headlineContent = {
+                    Text(text = stringResource(id = Strings.insert_link))
+                },
+                modifier = Modifier.clickable {
+                    onDismissRequest()
+                    onInsertLinkClick()
+                },
+                leadingContent = {
+                    Icon(imageVector = Icons.Outlined.InsertLink, contentDescription = null)
+                }
+            )
+            ListItem(
+                headlineContent = {
+                    Text(text = stringResource(id = Strings.upload_file))
+                },
+                modifier = Modifier.clickable {
+                    onDismissRequest()
+                    onUploadFileClick()
+                },
+                leadingContent = {
+                    Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
+                }
+            )
+        }
+    }
+}

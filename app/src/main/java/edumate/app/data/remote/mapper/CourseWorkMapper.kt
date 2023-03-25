@@ -6,33 +6,35 @@ import edumate.app.domain.model.course_work.CourseWork
 fun CourseWorkDto.toCourseWork(): CourseWork {
     return CourseWork(
         courseId,
-        creationTime,
-        creatorUserId,
-        description,
-        dueTime,
         id,
-        materials,
-        maxPoints,
-        scheduledTime,
         title,
+        description,
+        materials,
+        state,
+        creationTime,
         updateTime,
-        workType
+        dueTime,
+        scheduledTime,
+        maxPoints,
+        workType,
+        creatorUserId
     )
 }
 
 fun CourseWork.toCourseWorkDto(): CourseWorkDto {
     return CourseWorkDto(
         courseId,
-        creationTime,
-        creatorUserId,
-        description,
-        dueTime,
         id,
-        materials,
-        maxPoints,
-        scheduledTime,
         title,
+        description,
+        materials,
+        state,
+        creationTime,
         updateTime,
-        workType
+        dueTime,
+        scheduledTime,
+        maxPoints,
+        workType,
+        creatorUserId
     )
 }

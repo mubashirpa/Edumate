@@ -118,13 +118,8 @@ fun JoinClassScreen(
                     .verticalScroll(rememberScrollState())
             ) {
                 Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text = stringResource(id = Strings.ask_your_teacher_for_the_class_code),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Spacer(modifier = Modifier.height(16.dp))
                 @Suppress("SENSELESS_COMPARISON")
-                OutlinedTextField(
+                TextField(
                     value = viewModel.uiState.classCode,
                     onValueChange = {
                         viewModel.onEvent(JoinClassUiEvent.ClassCodeChanged(it))
@@ -137,10 +132,14 @@ fun JoinClassScreen(
                     },
                     supportingText = if (classCodeError != null) {
                         {
-                            Text(text = classCodeError.asString())
+                            Text(
+                                text = stringResource(
+                                    id = Strings.ask_your_teacher_for_the_class_code
+                                )
+                            )
                         }
                     } else {
-                        null
+                        { Text(text = stringResource(id = Strings.required)) }
                     },
                     isError = classCodeError != null,
                     keyboardOptions = KeyboardOptions(

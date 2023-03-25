@@ -23,9 +23,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.R.string as Strings
-import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.classwork.ClassworkType
 import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.DataState
@@ -39,7 +39,7 @@ fun ClassworkScreen(
     viewModel: ClassworkViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     course: Course,
-    navigateToCreateClasswork: (workType: CourseWorkType) -> Unit
+    navigateToCreateClasswork: (workType: ClassworkType) -> Unit
 ) {
     val context = LocalContext.current
     val refreshState = rememberPullRefreshState(
@@ -153,7 +153,7 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.ASSIGNMENT)
+                    navigateToCreateClasswork(ClassworkType.ASSIGNMENT)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Assignment, contentDescription = null)
@@ -163,7 +163,7 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.question)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.SHORT_ANSWER_QUESTION)
+                    navigateToCreateClasswork(ClassworkType.QUESTION)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.LiveHelp, contentDescription = null)
@@ -173,7 +173,7 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.material)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)
+                    navigateToCreateClasswork(ClassworkType.MATERIAL)
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
