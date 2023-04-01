@@ -13,7 +13,8 @@ data class CourseWork(
     val updateTime: Date? = null,
     var dueTime: Date? = null,
     var scheduledTime: Date? = null,
-    var maxPoints: Int = 0,
+    var maxPoints: Int? = null,
     val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
-    val creatorUserId: String = ""
+    val creatorUserId: String = "",
+    val multipleChoiceQuestion: MultipleChoiceQuestion? = null
 )

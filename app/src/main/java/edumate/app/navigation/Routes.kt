@@ -27,17 +27,19 @@ object Routes {
         const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
 
         // ClassDetailsScreen
-        const val CLASS_DETAILS_TITLE = "title"
         const val CLASS_DETAILS_COURSE_ID = "course_id"
         const val CLASS_DETAILS_DEFAULT_COURSE_ID = "-1"
-        const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_TITLE}/{$CLASS_DETAILS_COURSE_ID}"
+        const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_COURSE_ID}"
 
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"
         const val CREATE_CLASS_SCREEN = "?$CREATE_CLASS_COURSE_ID={$CREATE_CLASS_COURSE_ID}"
 
         // CreateClassworkScreen
+        const val CREATE_CLASSWORK_COURSE_ID = "course_id"
+        const val CREATE_CLASSWORK_COURSE_NAME = "course_name"
         const val CREATE_CLASSWORK_TYPE = "work_type"
-        const val CREATE_CLASSWORK_SCREEN = "/{$CREATE_CLASSWORK_TYPE}"
+        const val CREATE_CLASSWORK_SCREEN =
+            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_COURSE_NAME}/{$CREATE_CLASSWORK_TYPE}"
     }
 }

@@ -33,7 +33,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
-    navigateToClassDetails: (name: String?, courseId: String) -> Unit,
+    drawerState: DrawerState,
+    navigateToClassDetails: (courseId: String) -> Unit,
     navigateToCreateClass: (courseId: String?) -> Unit,
     navigateToJoinClass: () -> Unit
 ) {
@@ -55,8 +56,7 @@ fun HomeScreen(
                     Text(text = stringResource(id = Strings.app_name))
                 },
                 navigationIcon = {
-                    // TODO("Not implemented yet")
-                    IconButton(onClick = { navigateToClassDetails(null, "2Mx7YrbyGUr8tsuBVr4x") }) {
+                    IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = null)
                     }
                 }
@@ -66,9 +66,14 @@ fun HomeScreen(
             FloatingActionButton(
                 onClick = {
                     viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(true))
-                }
+                },
+                modifier = Modifier.navigationBarsPadding()
             ) { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
-        }
+        },
+        contentWindowInsets = ScaffoldDefaults
+            .contentWindowInsets
+            .exclude(WindowInsets.navigationBars)
+            .exclude(WindowInsets.ime)
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -76,7 +81,11 @@ fun HomeScreen(
                 .consumeWindowInsets(innerPadding)
                 .padding(innerPadding)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding()
+            ) {
                 TabRow(selectedTabIndex = pagerState.currentPage) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
@@ -112,30 +121,33 @@ fun HomeScreen(
                     }
                 }
             }
-        }
-    }
 
-    if (viewModel.uiState.openFabMenu) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+            if (viewModel.uiState.openFabMenu) {
+                val bottomMargin =
+                    WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                    }
+                ) {
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
+                        modifier = Modifier.clickable {
+                            viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            navigateToCreateClass(null)
+                        }
+                    )
+                    ListItem(
+                        headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
+                        modifier = Modifier.clickable {
+                            viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            navigateToJoinClass()
+                        }
+                    )
+                    Spacer(modifier = Modifier.height(bottomMargin))
+                }
             }
-        ) {
-            ListItem(
-                headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
-                modifier = Modifier.clickable {
-                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClass(null)
-                }
-            )
-            ListItem(
-                headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
-                modifier = Modifier.clickable {
-                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                    navigateToJoinClass()
-                }
-            )
-            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

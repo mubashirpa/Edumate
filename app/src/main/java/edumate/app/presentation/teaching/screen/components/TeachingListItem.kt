@@ -21,12 +21,12 @@ fun TeachingListItem(
     course: Course,
     onShareClick: (link: String) -> Unit,
     onEditClick: (courseId: String) -> Unit,
-    onClick: (name: String, courseId: String) -> Unit
+    onClick: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
     Card(
         onClick = {
-            onClick(course.name, course.id.orEmpty())
+            onClick(course.id.orEmpty())
         },
         modifier = Modifier.aspectRatio(21f / 9f)
     ) {

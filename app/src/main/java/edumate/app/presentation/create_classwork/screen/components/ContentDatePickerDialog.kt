@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
 import edumate.app.R.string as Strings
 import java.util.*
@@ -17,9 +18,17 @@ fun ContentDatePickerDialog(
     onConfirm: (date: Date) -> Unit,
     onDismissRequest: () -> Unit
 ) {
+    // TODO("Block previous days from being selected")
     if (openDialog) {
         val datePickerState = rememberDatePickerState()
         val confirmEnabled = derivedStateOf { datePickerState.selectedDateMillis != null }
+        val configuration = LocalConfiguration.current
+
+        if (configuration.screenHeightDp > 400) {
+            datePickerState.displayMode = DisplayMode.Picker
+        } else {
+            datePickerState.displayMode = DisplayMode.Input
+        }
 
         DatePickerDialog(
             onDismissRequest = onDismissRequest,
@@ -50,7 +59,10 @@ fun ContentDatePickerDialog(
                 TextButton(onClick = onDismissRequest) { Text(stringResource(id = Strings.cancel)) }
             }
         ) {
-            DatePicker(state = datePickerState)
+            DatePicker(
+                state = datePickerState,
+                showModeToggle = configuration.screenHeightDp > 400
+            )
         }
     }
 }

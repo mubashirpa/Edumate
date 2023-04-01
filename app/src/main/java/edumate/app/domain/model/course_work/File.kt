@@ -1,7 +1,7 @@
 package edumate.app.domain.model.course_work
 
-data class Link(
+data class File(
     val url: String = "",
     val title: String? = null,
-    val thumbnailUrl: String? = null
+    val type: String? = null
 )

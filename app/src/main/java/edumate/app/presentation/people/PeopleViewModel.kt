@@ -57,24 +57,24 @@ class PeopleViewModel @Inject constructor(
                 }
             }
             is PeopleUiEvent.OnFilterChange -> {
-                when (event.peopleFilter) {
-                    PeopleFilter.ALL -> {
+                when (event.peopleFilterType) {
+                    PeopleFilterType.ALL -> {
                         uiState = uiState.copy(
                             dataState = DataState.SUCCESS,
-                            filter = event.peopleFilter,
+                            filter = event.peopleFilterType,
                             isFabExpanded = false,
                             peoples = peoples
                         )
                     }
-                    PeopleFilter.TEACHERS -> {
+                    PeopleFilterType.TEACHERS -> {
                         uiState = uiState.copy(
                             dataState = DataState.SUCCESS,
-                            filter = event.peopleFilter,
+                            filter = event.peopleFilterType,
                             isFabExpanded = false,
                             peoples = teachers()
                         )
                     }
-                    PeopleFilter.STUDENTS -> {
+                    PeopleFilterType.STUDENTS -> {
                         val students = students()
                         uiState = uiState.copy(
                             dataState = if (students.isEmpty()) {
@@ -86,7 +86,7 @@ class PeopleViewModel @Inject constructor(
                             } else {
                                 DataState.SUCCESS
                             },
-                            filter = event.peopleFilter,
+                            filter = event.peopleFilterType,
                             isFabExpanded = students.isEmpty(),
                             peoples = students
                         )
@@ -132,7 +132,7 @@ class PeopleViewModel @Inject constructor(
                     is Resource.Success -> {
                         peoples = resource.data ?: emptyList()
                         when (uiState.filter) {
-                            PeopleFilter.ALL -> {
+                            PeopleFilterType.ALL -> {
                                 uiState = uiState.copy(
                                     dataState = DataState.SUCCESS,
                                     isFabExpanded = false,
@@ -140,7 +140,7 @@ class PeopleViewModel @Inject constructor(
                                     refreshing = false
                                 )
                             }
-                            PeopleFilter.TEACHERS -> {
+                            PeopleFilterType.TEACHERS -> {
                                 uiState = uiState.copy(
                                     dataState = DataState.SUCCESS,
                                     isFabExpanded = false,
@@ -148,7 +148,7 @@ class PeopleViewModel @Inject constructor(
                                     refreshing = false
                                 )
                             }
-                            PeopleFilter.STUDENTS -> {
+                            PeopleFilterType.STUDENTS -> {
                                 val students = students()
                                 uiState = uiState.copy(
                                     dataState = if (students.isEmpty()) {

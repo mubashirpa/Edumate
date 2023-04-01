@@ -30,7 +30,7 @@ import kotlinx.coroutines.launch
 fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
     navigateToCreateClass: (courseId: String) -> Unit,
-    navigateToClassDetails: (name: String, courseId: String) -> Unit
+    navigateToClassDetails: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
     val refreshScope = rememberCoroutineScope()

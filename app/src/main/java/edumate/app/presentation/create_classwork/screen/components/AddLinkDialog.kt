@@ -11,6 +11,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -29,14 +31,16 @@ fun AddLinkDialog(
     onDismissRequest: () -> Unit
 ) {
     if (openDialog) {
-        val focusManager = LocalFocusManager.current
-        val keyboardController = LocalSoftwareKeyboardController.current
         var link by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue(""))
         }
         val confirmEnabled = derivedStateOf { URLUtil.isValidUrl(link.text) }
 
         AlertDialog(onDismissRequest = onDismissRequest) {
+            val focusRequester = remember { FocusRequester() }
+            val focusManager = LocalFocusManager.current
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             Surface(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -57,6 +61,7 @@ fun AddLinkDialog(
                         onValueChange = {
                             link = it
                         },
+                        modifier = Modifier.focusRequester(focusRequester),
                         label = {
                             Text(text = stringResource(id = Strings.url))
                         },
@@ -69,7 +74,8 @@ fun AddLinkDialog(
                                 keyboardController?.hide()
                                 focusManager.clearFocus()
                             }
-                        )
+                        ),
+                        singleLine = true
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Row(modifier = Modifier.align(Alignment.End)) {
@@ -88,6 +94,10 @@ fun AddLinkDialog(
                         }
                     }
                 }
+            }
+
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
             }
         }
     }

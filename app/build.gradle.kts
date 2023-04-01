@@ -79,6 +79,8 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.accompanist)
+    implementation(libs.jsoup)
+    implementation(libs.burnoutcrew.reorderable)
 }
 
 kapt {

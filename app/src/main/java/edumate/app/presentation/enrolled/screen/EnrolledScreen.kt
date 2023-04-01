@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EnrolledScreen(
     viewModel: EnrolledViewModel = hiltViewModel(),
-    navigateToClassDetails: (name: String, courseId: String) -> Unit
+    navigateToClassDetails: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
     val refreshScope = rememberCoroutineScope()

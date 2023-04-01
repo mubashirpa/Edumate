@@ -17,7 +17,8 @@ fun CourseWorkDto.toCourseWork(): CourseWork {
         scheduledTime,
         maxPoints,
         workType,
-        creatorUserId
+        creatorUserId,
+        multipleChoiceQuestion
     )
 }
 
@@ -35,6 +36,7 @@ fun CourseWork.toCourseWorkDto(): CourseWorkDto {
         scheduledTime,
         maxPoints,
         workType,
-        creatorUserId
+        creatorUserId,
+        multipleChoiceQuestion
     )
 }

@@ -1,6 +1,7 @@
 package edumate.app.presentation.create_classwork.screen.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.InsertLink
 import androidx.compose.material.icons.outlined.UploadFile
@@ -8,6 +9,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import java.util.*
 
@@ -20,6 +22,9 @@ fun AttachmentMenuBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     if (openBottomSheet) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(onDismissRequest = onDismissRequest) {
             ListItem(
                 headlineContent = {
@@ -45,6 +50,7 @@ fun AttachmentMenuBottomSheet(
                     Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
                 }
             )
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 }

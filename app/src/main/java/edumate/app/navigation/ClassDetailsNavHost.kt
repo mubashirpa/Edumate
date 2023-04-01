@@ -14,6 +14,7 @@ import edumate.app.presentation.classwork.screen.ClassworkScreen
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
 import edumate.app.presentation.stream.screen.StreamScreen
+import edumate.app.presentation.view_classwork.screen.ViewClassworkScreen
 
 @Composable
 fun ClassDetailsNavHost(
@@ -21,7 +22,8 @@ fun ClassDetailsNavHost(
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
     course: Course,
-    onLeaveClass: () -> Unit
+    onLeaveClass: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
     NavHost(
         navController = navController,
@@ -48,11 +50,19 @@ fun ClassDetailsNavHost(
             ClassworkScreen(
                 snackbarHostState = snackbarHostState,
                 course = course,
-                navigateToCreateClasswork = { workType ->
+                navigateToCreateClasswork = { courseId, courseName, workType ->
                     navController.navigate(
-                        Screen.CreateClassworkScreen.withArgs(workType.toString())
+                        Screen.CreateClassworkScreen.withArgs(
+                            courseId,
+                            courseName,
+                            workType.toString()
+                        )
                     )
-                }
+                },
+                navigateToViewClasswork = {
+                    navController.navigate("view")
+                },
+                onBackPressed = onBackPressed
             )
         }
         composable(
@@ -62,20 +72,40 @@ fun ClassDetailsNavHost(
             PeopleScreen(
                 snackbarHostState = snackbarHostState,
                 course = course,
-                onLeaveClass = onLeaveClass
+                onLeaveClass = onLeaveClass,
+                onBackPressed = onBackPressed
             )
         }
         composable(
             route = "${Screen.CreateClassworkScreen.route}${Routes.Args.CREATE_CLASSWORK_SCREEN}",
             arguments = listOf(
+                navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_ID) {
+                    type = NavType.StringType
+                },
+                navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_NAME) {
+                    type = NavType.StringType
+                },
                 navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) {
                     type = NavType.StringType
                 }
             )
         ) { backStackEntry ->
-            val workType =
-                backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_TYPE).orEmpty()
-            CreateClassworkScreen(workType = workType)
+            val courseName =
+                backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_COURSE_NAME)
+                    .orEmpty()
+            CreateClassworkScreen(
+                snackbarHostState = snackbarHostState,
+                className = courseName,
+                onCreateClassworkSuccess = {
+                    navController.navigateUp()
+                },
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
+        }
+        composable(route = "view") {
+            ViewClassworkScreen()
         }
     }
 }

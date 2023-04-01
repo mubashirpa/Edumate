@@ -30,6 +30,7 @@ object FirebaseConstants {
         const val DUE_TIME = "dueTime"
         const val MATERIALS = "materials"
         const val MAX_POINTS = "maxPoints"
+        const val MULTIPLE_CHOICE_QUESTION = "multipleChoiceQuestion"
         const val STATE = "state"
         const val SCHEDULED_TIME = "scheduledTime"
         const val TITLE = "title"
@@ -49,8 +50,7 @@ object FirebaseConstants {
         const val DOMAIN_URI_PREFIX = "https://edumate.page.link"
     }
 
-    object Hosting {
-        const val EDU_MATE_APP = "https://edu-mate-app.web.app/room?id="
-        const val EDUMATEAPP = "https://edumateapp.web.app/room?id="
+    object Storage {
+        const val COURSE_STORAGE_PATH = "course"
     }
 }

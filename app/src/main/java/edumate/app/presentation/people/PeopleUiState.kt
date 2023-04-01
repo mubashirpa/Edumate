@@ -8,7 +8,7 @@ import edumate.app.domain.model.User
 data class PeopleUiState(
     val currentUser: FirebaseUser? = null,
     val dataState: DataState = DataState.UNKNOWN,
-    val filter: PeopleFilter = PeopleFilter.ALL,
+    val filter: PeopleFilterType = PeopleFilterType.ALL,
     val isFabExpanded: Boolean = false,
     val isUserLeaveClass: Boolean = false,
     val openFabMenu: Boolean = false,

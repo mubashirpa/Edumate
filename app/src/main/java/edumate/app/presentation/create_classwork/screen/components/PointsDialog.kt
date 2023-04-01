@@ -33,8 +33,6 @@ fun PointsDialog(
     onDismissRequest: () -> Unit
 ) {
     if (openDialog) {
-        val focusManager = LocalFocusManager.current
-        val keyboardController = LocalSoftwareKeyboardController.current
         var point by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue(currentPoint ?: "100"))
         }
@@ -46,6 +44,9 @@ fun PointsDialog(
         val confirmEnabled = derivedStateOf { point.text.isNotBlank() }
 
         AlertDialog(onDismissRequest = onDismissRequest) {
+            val focusManager = LocalFocusManager.current
+            val keyboardController = LocalSoftwareKeyboardController.current
+
             Surface(
                 modifier = Modifier
                     .wrapContentWidth()

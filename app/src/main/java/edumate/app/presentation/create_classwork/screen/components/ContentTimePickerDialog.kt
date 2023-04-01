@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isContainer
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.zIndex
 import edumate.app.R.string as Strings
 import java.util.*
@@ -97,7 +98,11 @@ private fun TimePickerDialog(
     toggle: @Composable () -> Unit,
     content: @Composable (ColumnScope.() -> Unit)
 ) {
-    AlertDialog(onDismissRequest = onCancel) {
+    AlertDialog(
+        onDismissRequest = onCancel,
+        modifier = Modifier.wrapContentHeight(),
+        properties = DialogProperties(usePlatformDefaultWidth = false)
+    ) {
         Surface(
             modifier = Modifier
                 .wrapContentWidth()
@@ -106,7 +111,11 @@ private fun TimePickerDialog(
             color = AlertDialogDefaults.containerColor,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
-            Column(modifier = Modifier.padding(24.dp)) {
+            Column(
+                modifier = Modifier
+                    .width(IntrinsicSize.Min)
+                    .padding(24.dp)
+            ) {
                 Text(
                     text = title,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

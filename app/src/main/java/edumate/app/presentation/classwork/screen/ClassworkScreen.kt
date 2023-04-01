@@ -18,14 +18,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.R.string as Strings
+import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
-import edumate.app.presentation.classwork.ClassworkType
+import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
 import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.DataState
@@ -39,8 +41,12 @@ fun ClassworkScreen(
     viewModel: ClassworkViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     course: Course,
-    navigateToCreateClasswork: (workType: ClassworkType) -> Unit
+    navigateToCreateClasswork: (courseId: String, courseName: String, workType: CourseWorkType) -> Unit,
+    navigateToViewClasswork: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
+    val topBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
     val refreshState = rememberPullRefreshState(
         refreshing = viewModel.uiState.refreshing,
@@ -63,87 +69,105 @@ fun ClassworkScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        when (val dataState = viewModel.uiState.dataState) {
-            is DataState.UNKNOWN -> {
-                // Nothing happened
-            }
-            is DataState.LOADING -> {
-                LoadingIndicator()
-            }
-            is DataState.ERROR -> {
-                ErrorScreen(
-                    errorMessage = dataState.message.asString(),
-                    onRetry = {
-                        viewModel.onEvent(ClassworkUiEvent.OnRetry)
-                    }
-                )
-            }
-            is DataState.EMPTY -> {
-                ErrorScreen(
-                    errorMessage = if (currentUserType == UserType.TEACHER) {
-                        stringResource(id = Strings.add_assignments_and_other_works_for_class)
-                    } else {
-                        stringResource(id = Strings.your_teacher_hasnt_assigned_any_classwork_yet)
-                    }
-                )
-            }
-            is DataState.SUCCESS -> {
-                Box(modifier = Modifier.pullRefresh(refreshState)) {
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        content = {
-                            items(viewModel.uiState.classWorks) { classWork ->
-                                ClassworkListItem(
-                                    work = classWork,
-                                    currentUserType = currentUserType,
-                                    workType = classWork.workType,
-                                    onEdit = {
-                                        // TODO("Not yet implemented")
-                                    },
-                                    onDelete = {
-                                        // TODO("Not yet implemented")
-                                    },
-                                    onClick = {
-                                        // TODO("Not yet implemented")
-                                    }
-                                )
-                            }
+    Column(modifier = Modifier.fillMaxSize()) {
+        ClassDetailsAppBar(
+            title = course.name,
+            scrollBehavior = scrollBehavior,
+            onNavigationClick = onBackPressed
+        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            when (val dataState = viewModel.uiState.dataState) {
+                is DataState.UNKNOWN -> {
+                    // Nothing happened
+                }
+                is DataState.LOADING -> {
+                    LoadingIndicator()
+                }
+                is DataState.ERROR -> {
+                    ErrorScreen(
+                        errorMessage = dataState.message.asString(),
+                        onRetry = {
+                            viewModel.onEvent(ClassworkUiEvent.OnRetry)
                         }
                     )
-
-                    PullRefreshIndicator(
-                        viewModel.uiState.refreshing,
-                        refreshState,
-                        Modifier.align(Alignment.TopCenter)
+                }
+                is DataState.EMPTY -> {
+                    ErrorScreen(
+                        errorMessage = if (currentUserType == UserType.TEACHER) {
+                            stringResource(id = Strings.add_assignments_and_other_works_for_class)
+                        } else {
+                            stringResource(
+                                id = Strings.your_teacher_hasnt_assigned_any_classwork_yet
+                            )
+                        }
                     )
                 }
-            }
-        }
+                is DataState.SUCCESS -> {
+                    Box(
+                        modifier = Modifier
+                            .pullRefresh(refreshState)
+                            .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    ) {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            content = {
+                                items(viewModel.uiState.classWorks) { classWork ->
+                                    ClassworkListItem(
+                                        work = classWork,
+                                        currentUserType = currentUserType,
+                                        workType = classWork.workType,
+                                        onEdit = {
+                                            // TODO("Not yet implemented")
+                                        },
+                                        onDelete = {
+                                            viewModel.onEvent(
+                                                ClassworkUiEvent.OnDelete(
+                                                    classWork.id,
+                                                    classWork.courseId
+                                                )
+                                            )
+                                        },
+                                        onClick = navigateToViewClasswork
+                                    )
+                                }
+                            }
+                        )
 
-        if (currentUserType == UserType.TEACHER) {
-            FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .imePadding()
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(id = Strings.create_classwork)
-                )
+                        PullRefreshIndicator(
+                            viewModel.uiState.refreshing,
+                            refreshState,
+                            Modifier.align(Alignment.TopCenter)
+                        )
+                    }
+                }
+            }
+
+            if (currentUserType == UserType.TEACHER) {
+                FloatingActionButton(
+                    onClick = {
+                        viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .imePadding()
+                        .padding(16.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = stringResource(id = Strings.create_classwork)
+                    )
+                }
             }
         }
     }
 
     if (viewModel.uiState.openFabMenu) {
-        // TODO("Fix alignment")
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(
             onDismissRequest = {
                 viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
@@ -153,7 +177,11 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(ClassworkType.ASSIGNMENT)
+                    navigateToCreateClasswork(
+                        course.id.orEmpty(),
+                        course.name,
+                        CourseWorkType.ASSIGNMENT
+                    )
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Assignment, contentDescription = null)
@@ -163,7 +191,11 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.question)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(ClassworkType.QUESTION)
+                    navigateToCreateClasswork(
+                        course.id.orEmpty(),
+                        course.name,
+                        CourseWorkType.SHORT_ANSWER_QUESTION
+                    )
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.LiveHelp, contentDescription = null)
@@ -173,15 +205,17 @@ fun ClassworkScreen(
                 headlineContent = { Text(text = stringResource(id = Strings.material)) },
                 modifier = Modifier.clickable {
                     viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(ClassworkType.MATERIAL)
+                    navigateToCreateClasswork(
+                        course.id.orEmpty(),
+                        course.name,
+                        CourseWorkType.MATERIAL
+                    )
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
                 }
             )
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 }

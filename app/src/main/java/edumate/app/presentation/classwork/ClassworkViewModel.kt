@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.course_work.DeleteCourseWorkUseCase
 import edumate.app.domain.usecase.course_work.GetCourseWorksUseCase
 import edumate.app.navigation.Routes
 import javax.inject.Inject
@@ -21,7 +22,8 @@ import kotlinx.coroutines.flow.onEach
 class ClassworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getCourseWorksUseCase: GetCourseWorksUseCase
+    private val getCourseWorksUseCase: GetCourseWorksUseCase,
+    private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase
 ) : ViewModel() {
 
     var uiState by mutableStateOf(ClassworkUiState())
@@ -33,7 +35,7 @@ class ClassworkViewModel @Inject constructor(
         getCurrentUserUseCase().map { user ->
             uiState = uiState.copy(currentUser = user)
         }.launchIn(viewModelScope)
-        fetCourseWorks(false)
+        fetchClasswork(false)
     }
 
     fun onEvent(event: ClassworkUiEvent) {
@@ -41,11 +43,14 @@ class ClassworkViewModel @Inject constructor(
             is ClassworkUiEvent.OnOpenFabMenuChange -> {
                 uiState = uiState.copy(openFabMenu = event.open)
             }
+            is ClassworkUiEvent.OnDelete -> {
+                deleteClasswork(event.courseWorkId, event.courseId)
+            }
             is ClassworkUiEvent.OnRefresh -> {
-                fetCourseWorks(true)
+                fetchClasswork(true)
             }
             is ClassworkUiEvent.OnRetry -> {
-                fetCourseWorks(false)
+                fetchClasswork(false)
             }
             is ClassworkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -53,7 +58,7 @@ class ClassworkViewModel @Inject constructor(
         }
     }
 
-    private fun fetCourseWorks(refreshing: Boolean) {
+    private fun fetchClasswork(refreshing: Boolean) {
         // DataState.LOADING is only used when initial loading and retry.
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry.
@@ -95,5 +100,21 @@ class ClassworkViewModel @Inject constructor(
                 }
             }.launchIn(viewModelScope)
         }
+    }
+
+    private fun deleteClasswork(courseWorkId: String, courseId: String) {
+        deleteCourseWorkUseCase(courseWorkId, courseId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    // TODO("Show progress dialog")
+                }
+                is Resource.Success -> {
+                    fetchClasswork(true)
+                }
+                is Resource.Error -> {
+                    // TODO("Show error message")
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }

@@ -16,8 +16,8 @@ class CoursesRepositoryImpl @Inject constructor(
 
     override suspend fun createCourse(coursesDto: CoursesDto, uid: String): String {
         val documentId = coursesCollection().document().id
-        coursesCollection().document(documentId).set(coursesDto.copy(id = documentId).toMap())
-            .await()
+        val course = coursesDto.copy(id = documentId).toMap()
+        coursesCollection().document(documentId).set(course).await()
         // After a course created, add $courseId in users/$uid/teaching array
         firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION).document(uid)
             .update(FirebaseConstants.Firestore.TEACHING, FieldValue.arrayUnion(documentId)).await()
@@ -25,7 +25,7 @@ class CoursesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun deleteCourse(courseId: String) {
-        coursesCollection().document(courseId).delete()
+        coursesCollection().document(courseId).delete().await()
     }
 
     override suspend fun getCourse(courseId: String): CoursesDto? {

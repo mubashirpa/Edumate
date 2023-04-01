@@ -51,6 +51,10 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideJsoupRepository(): JsoupRepository = JsoupRepositoryImpl()
+
+    @Singleton
+    @Provides
     fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository =
         StudentsRepositoryImpl(firestore)
 

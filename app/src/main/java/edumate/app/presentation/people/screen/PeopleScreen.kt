@@ -23,6 +23,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -33,11 +34,12 @@ import edumate.app.R.string as Strings
 import edumate.app.domain.model.User
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.people.DataState
-import edumate.app.presentation.people.PeopleFilter
+import edumate.app.presentation.people.PeopleFilterType
 import edumate.app.presentation.people.PeopleUiEvent
 import edumate.app.presentation.people.PeopleViewModel
 import edumate.app.presentation.people.screen.components.PeopleListItem
@@ -54,8 +56,11 @@ fun PeopleScreen(
     viewModel: PeopleViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     course: Course,
-    onLeaveClass: () -> Unit
+    onLeaveClass: () -> Unit,
+    onBackPressed: () -> Unit
 ) {
+    val topBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -91,187 +96,217 @@ fun PeopleScreen(
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
-    ) {
-        when (val dataState = viewModel.uiState.dataState) {
-            is DataState.UNKNOWN -> {
-                // Nothing happened
-            }
-            is DataState.LOADING -> {
-                LoadingIndicator()
-            }
-            is DataState.ERROR -> {
-                ErrorScreen(
-                    errorMessage = dataState.message.asString(),
-                    onRetry = {
-                        viewModel.onEvent(PeopleUiEvent.OnRetry)
-                    }
-                )
-            }
-            else -> {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    Row(modifier = Modifier.padding(vertical = 10.dp)) {
-                        Spacer(modifier = Modifier.width(16.dp))
-                        FilterChip(
-                            selected = viewModel.uiState.filter == PeopleFilter.ALL,
-                            onClick = {
-                                viewModel.onEvent(
-                                    PeopleUiEvent.OnFilterChange(PeopleFilter.ALL)
-                                )
-                            },
-                            label = { Text(stringResource(id = Strings.all)) },
-                            leadingIcon = if (viewModel.uiState.filter == PeopleFilter.ALL) {
-                                {
-                                    Icon(
-                                        imageVector = Icons.Filled.Done,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(
-                                            FilterChipDefaults.IconSize
+    Column(modifier = Modifier.fillMaxSize()) {
+        ClassDetailsAppBar(
+            title = course.name,
+            scrollBehavior = scrollBehavior,
+            onNavigationClick = onBackPressed
+        )
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            when (val dataState = viewModel.uiState.dataState) {
+                is DataState.UNKNOWN -> {
+                    // Nothing happened
+                }
+                is DataState.LOADING -> {
+                    LoadingIndicator()
+                }
+                is DataState.ERROR -> {
+                    ErrorScreen(
+                        errorMessage = dataState.message.asString(),
+                        onRetry = {
+                            viewModel.onEvent(PeopleUiEvent.OnRetry)
+                        }
+                    )
+                }
+                else -> {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Row(
+                            modifier = Modifier
+                                .padding(
+                                    horizontal = 16.dp,
+                                    vertical = 10.dp
+                                ),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            FilterChip(
+                                selected = viewModel.uiState.filter == PeopleFilterType.ALL,
+                                onClick = {
+                                    viewModel.onEvent(
+                                        PeopleUiEvent.OnFilterChange(
+                                            PeopleFilterType.ALL
                                         )
                                     )
-                                }
-                            } else {
-                                null
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        FilterChip(
-                            selected = viewModel.uiState.filter == PeopleFilter.TEACHERS,
-                            onClick = {
-                                viewModel.onEvent(
-                                    PeopleUiEvent.OnFilterChange(PeopleFilter.TEACHERS)
-                                )
-                            },
-                            label = { Text(stringResource(id = Strings.teachers)) },
-                            leadingIcon = if (viewModel.uiState.filter == PeopleFilter.TEACHERS) {
-                                {
-                                    Icon(
-                                        imageVector = Icons.Filled.Done,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(
-                                            FilterChipDefaults.IconSize
-                                        )
-                                    )
-                                }
-                            } else {
-                                null
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        FilterChip(
-                            selected = viewModel.uiState.filter == PeopleFilter.STUDENTS,
-                            onClick = {
-                                viewModel.onEvent(
-                                    PeopleUiEvent.OnFilterChange(PeopleFilter.STUDENTS)
-                                )
-                            },
-                            label = { Text(stringResource(id = Strings.students)) },
-                            leadingIcon = if (viewModel.uiState.filter == PeopleFilter.STUDENTS) {
-                                {
-                                    Icon(
-                                        imageVector = Icons.Filled.Done,
-                                        contentDescription = null,
-                                        modifier = Modifier.size(
-                                            FilterChipDefaults.IconSize
-                                        )
-                                    )
-                                }
-                            } else {
-                                null
-                            }
-                        )
-                        Spacer(modifier = Modifier.width(16.dp))
-                    }
-                    if (dataState is DataState.EMPTY) {
-                        ErrorScreen(errorMessage = dataState.message.asString())
-                    } else {
-                        Box(modifier = Modifier.pullRefresh(refreshState)) {
-                            LazyColumn(
-                                modifier = Modifier.fillMaxSize(),
-                                content = {
-                                    items(
-                                        items = viewModel.uiState.peoples,
-                                        key = { it.id.orEmpty() }
-                                    ) { user: User ->
-                                        val userType =
-                                            if (course.teachers?.contains(user.id) == true) {
-                                                UserType.TEACHER
-                                            } else {
-                                                UserType.STUDENT
-                                            }
-
-                                        PeopleListItem(
-                                            user = user,
-                                            modifier = Modifier.animateItemPlacement(),
-                                            currentUserType = currentUserType,
-                                            currentUserId = "${viewModel.uiState.currentUser?.uid}",
-                                            courseOwnerId = course.ownerId.orEmpty(),
-                                            onLeaveClass = {
-                                                viewModel.onEvent(
-                                                    PeopleUiEvent.OnOpenLeaveClassDialogChange(
-                                                        true
-                                                    )
-                                                )
-                                            },
-                                            onEmail = {
-                                                composeEmail(
-                                                    context,
-                                                    arrayOf(user.emailAddress.orEmpty())
-                                                )
-                                            },
-                                            onRemove = {
-                                                // TODO("Add confirmation dialog")
-                                                viewModel.onEvent(
-                                                    PeopleUiEvent.OnDeletePeople(
-                                                        userType,
-                                                        user.id.orEmpty()
-                                                    )
-                                                )
-                                            },
-                                            onClick = {
-                                                // TODO("Not yet implemented")
-                                            }
+                                },
+                                label = { Text(stringResource(id = Strings.all)) },
+                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.ALL) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Filled.Done,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(
+                                                FilterChipDefaults.IconSize
+                                            )
                                         )
                                     }
+                                } else {
+                                    null
                                 }
                             )
-
-                            PullRefreshIndicator(
-                                viewModel.uiState.refreshing,
-                                refreshState,
-                                Modifier.align(Alignment.TopCenter)
+                            FilterChip(
+                                selected = viewModel.uiState.filter == PeopleFilterType.TEACHERS,
+                                onClick = {
+                                    viewModel.onEvent(
+                                        PeopleUiEvent.OnFilterChange(
+                                            PeopleFilterType.TEACHERS
+                                        )
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(id = Strings.teachers)
+                                    )
+                                },
+                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.TEACHERS) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Filled.Done,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(
+                                                FilterChipDefaults.IconSize
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    null
+                                }
                             )
+                            FilterChip(
+                                selected = viewModel.uiState.filter == PeopleFilterType.STUDENTS,
+                                onClick = {
+                                    viewModel.onEvent(
+                                        PeopleUiEvent.OnFilterChange(
+                                            PeopleFilterType.STUDENTS
+                                        )
+                                    )
+                                },
+                                label = {
+                                    Text(
+                                        stringResource(id = Strings.students)
+                                    )
+                                },
+                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.STUDENTS) {
+                                    {
+                                        Icon(
+                                            imageVector = Icons.Filled.Done,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(
+                                                FilterChipDefaults.IconSize
+                                            )
+                                        )
+                                    }
+                                } else {
+                                    null
+                                }
+                            )
+                        }
+                        if (dataState is DataState.EMPTY) {
+                            ErrorScreen(errorMessage = dataState.message.asString())
+                        } else {
+                            Box(
+                                modifier = Modifier
+                                    .pullRefresh(refreshState)
+                                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                            ) {
+                                LazyColumn(
+                                    modifier = Modifier.fillMaxSize(),
+                                    content = {
+                                        items(
+                                            items = viewModel.uiState.peoples,
+                                            key = { it.id.orEmpty() }
+                                        ) { user: User ->
+                                            val userType =
+                                                if (course.teachers?.contains(user.id) == true) {
+                                                    UserType.TEACHER
+                                                } else {
+                                                    UserType.STUDENT
+                                                }
+
+                                            PeopleListItem(
+                                                user = user,
+                                                modifier = Modifier.animateItemPlacement(),
+                                                currentUserType = currentUserType,
+                                                currentUserId = "${viewModel.uiState.currentUser?.uid}",
+                                                courseOwnerId = course.ownerId.orEmpty(),
+                                                onLeaveClass = {
+                                                    viewModel.onEvent(
+                                                        PeopleUiEvent.OnOpenLeaveClassDialogChange(
+                                                            true
+                                                        )
+                                                    )
+                                                },
+                                                onEmail = {
+                                                    composeEmail(
+                                                        context,
+                                                        arrayOf(user.emailAddress.orEmpty())
+                                                    )
+                                                },
+                                                onRemove = {
+                                                    // TODO("Add confirmation dialog")
+                                                    viewModel.onEvent(
+                                                        PeopleUiEvent.OnDeletePeople(
+                                                            userType,
+                                                            user.id.orEmpty()
+                                                        )
+                                                    )
+                                                },
+                                                onClick = {
+                                                    // TODO("Not yet implemented")
+                                                }
+                                            )
+                                        }
+                                    }
+                                )
+
+                                PullRefreshIndicator(
+                                    viewModel.uiState.refreshing,
+                                    refreshState,
+                                    Modifier.align(Alignment.TopCenter)
+                                )
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if (currentUserType == UserType.TEACHER) {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(true))
-                },
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .imePadding()
-                    .padding(16.dp),
-                expanded = viewModel.uiState.isFabExpanded,
-                icon = {
-                    Icon(
-                        imageVector = Icons.Default.PersonAddAlt,
-                        contentDescription = stringResource(id = Strings.invite)
-                    )
-                },
-                text = { Text(text = stringResource(id = Strings.invite)) }
-            )
+            if (currentUserType == UserType.TEACHER) {
+                ExtendedFloatingActionButton(
+                    onClick = {
+                        viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(true))
+                    },
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .imePadding()
+                        .padding(16.dp),
+                    expanded = viewModel.uiState.isFabExpanded,
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.PersonAddAlt,
+                            contentDescription = stringResource(id = Strings.invite)
+                        )
+                    },
+                    text = { Text(text = stringResource(id = Strings.invite)) }
+                )
+            }
         }
     }
 
     if (viewModel.uiState.openFabMenu) {
-        // TODO("Fix alignment")
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(
             onDismissRequest = {
                 viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
@@ -298,9 +333,7 @@ fun PeopleScreen(
                     }
                 }
             )
-            Spacer(
-                modifier = Modifier.height(10.dp)
-            )
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 

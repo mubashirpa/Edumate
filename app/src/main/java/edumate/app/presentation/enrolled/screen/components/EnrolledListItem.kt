@@ -18,11 +18,11 @@ import edumate.app.domain.model.courses.Course
 fun EnrolledListItem(
     course: Course,
     onUnEnrollClick: (courseId: String) -> Unit,
-    onClick: (name: String, courseId: String) -> Unit
+    onClick: (courseId: String) -> Unit
 ) {
     Card(
         onClick = {
-            onClick(course.name, course.id.orEmpty())
+            onClick(course.id.orEmpty())
         },
         modifier = Modifier.aspectRatio(21f / 9f)
     ) {

@@ -1,11 +1,13 @@
 package edumate.app.data.remote.dto
 
 import com.google.firebase.firestore.Exclude
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import edumate.app.domain.model.course_work.CourseWorkState
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.course_work.Material
+import edumate.app.domain.model.course_work.MultipleChoiceQuestion
 import java.util.Date
 
 data class CourseWorkDto(
@@ -21,9 +23,10 @@ data class CourseWorkDto(
     val updateTime: Date? = null,
     var dueTime: Date? = null,
     var scheduledTime: Date? = null,
-    var maxPoints: Int = 0,
+    var maxPoints: Int? = null,
     val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
-    val creatorUserId: String = ""
+    val creatorUserId: String = "",
+    val multipleChoiceQuestion: MultipleChoiceQuestion? = null
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
@@ -34,13 +37,20 @@ data class CourseWorkDto(
             FirebaseConstants.Firestore.DESCRIPTION to description,
             FirebaseConstants.Firestore.MATERIALS to materials,
             FirebaseConstants.Firestore.STATE to state,
-            FirebaseConstants.Firestore.CREATION_TIME to creationTime,
-            FirebaseConstants.Firestore.UPDATE_TIME to updateTime,
+            FirebaseConstants.Firestore.CREATION_TIME to (
+                creationTime
+                    ?: FieldValue.serverTimestamp()
+                ),
+            FirebaseConstants.Firestore.UPDATE_TIME to (updateTime ?: FieldValue.serverTimestamp()),
             FirebaseConstants.Firestore.DUE_TIME to dueTime,
-            FirebaseConstants.Firestore.SCHEDULED_TIME to scheduledTime,
+            FirebaseConstants.Firestore.SCHEDULED_TIME to (
+                scheduledTime
+                    ?: FieldValue.serverTimestamp()
+                ),
             FirebaseConstants.Firestore.MAX_POINTS to maxPoints,
             FirebaseConstants.Firestore.WORK_TYPE to workType,
-            FirebaseConstants.Firestore.CREATOR_USER_ID to creatorUserId
+            FirebaseConstants.Firestore.CREATOR_USER_ID to creatorUserId,
+            FirebaseConstants.Firestore.MULTIPLE_CHOICE_QUESTION to multipleChoiceQuestion
         )
     }
 }

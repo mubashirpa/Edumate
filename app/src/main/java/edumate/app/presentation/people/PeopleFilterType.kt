@@ -1,6 +1,6 @@
 package edumate.app.presentation.people
 
-enum class PeopleFilter {
+enum class PeopleFilterType {
     ALL,
     TEACHERS,
     STUDENTS
