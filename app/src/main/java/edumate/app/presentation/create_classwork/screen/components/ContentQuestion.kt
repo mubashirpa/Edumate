@@ -33,6 +33,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
 import java.text.SimpleDateFormat
 import java.util.*
@@ -43,17 +44,7 @@ import org.burnoutcrew.reorderable.*
 fun ContentQuestion(
     courseTitle: String,
     uiState: CreateClassworkUiState,
-    onTitleChange: (title: String) -> Unit,
-    onDescriptionChange: (description: String) -> Unit,
-    onDueDateChange: (dueDate: Date?) -> Unit,
-    onOpenAttachmentMenuChange: (open: Boolean) -> Unit,
-    onOpenDatePickerDialogChange: (open: Boolean) -> Unit,
-    onOpenPointsDialogChange: (open: Boolean) -> Unit,
-    onOpenTimePickerDialogChange: (open: Boolean) -> Unit,
-    onPointsChange: (points: String?) -> Unit,
-    onRemoveAttachment: (position: Int) -> Unit,
-    onWorkTypeChange: (workType: CourseWorkType) -> Unit,
-    onAskQuestion: () -> Unit
+    onEvent: (CreateClassworkUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
@@ -65,11 +56,7 @@ fun ContentQuestion(
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -81,7 +68,9 @@ fun ContentQuestion(
                     @Suppress("SENSELESS_COMPARISON")
                     OutlinedTextField(
                         value = uiState.title,
-                        onValueChange = onTitleChange,
+                        onValueChange = {
+                            onEvent(CreateClassworkUiEvent.OnTitleChange(it))
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.question_title))
@@ -133,7 +122,9 @@ fun ContentQuestion(
                 headlineContent = {
                     OutlinedTextField(
                         value = uiState.description,
-                        onValueChange = onDescriptionChange,
+                        onValueChange = {
+                            onEvent(CreateClassworkUiEvent.OnDescriptionChange(it))
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.description))
@@ -178,7 +169,9 @@ fun ContentQuestion(
                                             0 -> CourseWorkType.SHORT_ANSWER_QUESTION
                                             else -> CourseWorkType.MULTIPLE_CHOICE_QUESTION
                                         }
-                                        onWorkTypeChange(questionType)
+                                        onEvent(
+                                            CreateClassworkUiEvent.OnWorkTypeChange(questionType)
+                                        )
                                         expanded = false
                                     },
                                     contentPadding = ExposedDropdownMenuDefaults.ItemContentPadding
@@ -271,7 +264,13 @@ fun ContentQuestion(
                                     }
                                 },
                                 trailingContent = {
-                                    IconButton(onClick = { onRemoveAttachment(index) }) {
+                                    IconButton(onClick = {
+                                        onEvent(
+                                            CreateClassworkUiEvent.OnRemoveAttachment(
+                                                index
+                                            )
+                                        )
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Default.Clear,
                                             contentDescription = null
@@ -289,7 +288,13 @@ fun ContentQuestion(
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             },
-                            modifier = Modifier.clickable { onOpenAttachmentMenuChange(true) }
+                            modifier = Modifier.clickable {
+                                onEvent(
+                                    CreateClassworkUiEvent.OnOpenAttachmentMenuChange(
+                                        true
+                                    )
+                                )
+                            }
                         )
                     }
                 },
@@ -304,7 +309,9 @@ fun ContentQuestion(
                 leadingIcon = Icons.Default.PlaylistAddCheck,
                 trailingContent = if (uiState.points != null && uiState.points != "0") {
                     {
-                        IconButton(onClick = { onPointsChange(null) }) {
+                        IconButton(
+                            onClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(null)) }
+                        ) {
                             Icon(imageVector = Icons.Default.Clear, contentDescription = null)
                         }
                     }
@@ -312,7 +319,7 @@ fun ContentQuestion(
                     null
                 },
                 onClick = {
-                    onOpenPointsDialogChange(true)
+                    onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(true))
                 }
             )
             FieldListItem(
@@ -329,7 +336,13 @@ fun ContentQuestion(
                             .clip(MaterialTheme.shapes.extraSmall)
                             .clickable(
                                 enabled = uiState.dueDate == null,
-                                onClick = { onOpenDatePickerDialogChange(true) }
+                                onClick = {
+                                    onEvent(
+                                        CreateClassworkUiEvent.OnOpenDatePickerDialogChange(
+                                            true
+                                        )
+                                    )
+                                }
                             ),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -344,7 +357,13 @@ fun ContentQuestion(
                                 .padding(start = 16.dp)
                                 .clickable(
                                     enabled = uiState.dueDate != null,
-                                    onClick = { onOpenDatePickerDialogChange(true) }
+                                    onClick = {
+                                        onEvent(
+                                            CreateClassworkUiEvent.OnOpenDatePickerDialogChange(
+                                                true
+                                            )
+                                        )
+                                    }
                                 ),
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             overflow = TextOverflow.Ellipsis,
@@ -356,7 +375,13 @@ fun ContentQuestion(
                                 text = timeFormatter.format(uiState.dueDate),
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
-                                    .clickable { onOpenTimePickerDialogChange(true) },
+                                    .clickable {
+                                        onEvent(
+                                            CreateClassworkUiEvent.OnOpenTimePickerDialogChange(
+                                                true
+                                            )
+                                        )
+                                    },
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyLarge
                             )
@@ -366,7 +391,9 @@ fun ContentQuestion(
                 leadingIcon = Icons.Default.CalendarToday,
                 trailingContent = if (uiState.dueDate != null) {
                     {
-                        IconButton(onClick = { onDueDateChange(null) }) {
+                        IconButton(
+                            onClick = { onEvent(CreateClassworkUiEvent.OnDueDateChange(null)) }
+                        ) {
                             Icon(imageVector = Icons.Default.Clear, contentDescription = null)
                         }
                     }
@@ -377,7 +404,7 @@ fun ContentQuestion(
         }
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = onAskQuestion,
+            onClick = { onEvent(CreateClassworkUiEvent.CreateClasswork) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
@@ -390,27 +417,27 @@ fun ContentQuestion(
     ContentDatePickerDialog(
         date = uiState.dueDate,
         openDialog = uiState.openDatePickerDialog,
-        onConfirm = onDueDateChange,
+        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
         onDismissRequest = {
-            onOpenDatePickerDialogChange(false)
+            onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false))
         }
     )
 
     ContentTimePickerDialog(
         date = uiState.dueDate,
         openDialog = uiState.openTimePickerDialog,
-        onConfirm = onDueDateChange,
+        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
         onDismissRequest = {
-            onOpenTimePickerDialogChange(false)
+            onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false))
         }
     )
 
     PointsDialog(
         openDialog = uiState.openPointsDialog,
         currentPoint = uiState.points,
-        onConfirmClick = onPointsChange,
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(it)) },
         onDismissRequest = {
-            onOpenPointsDialogChange(false)
+            onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false))
         }
     )
 }

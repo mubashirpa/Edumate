@@ -22,14 +22,13 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
 import edumate.app.presentation.classwork.ClassworkUiEvent
-import edumate.app.presentation.classwork.ClassworkViewModel
+import edumate.app.presentation.classwork.ClassworkUiState
 import edumate.app.presentation.classwork.DataState
 import edumate.app.presentation.classwork.screen.components.ClassworkListItem
 import edumate.app.presentation.components.ErrorScreen
@@ -38,7 +37,8 @@ import edumate.app.presentation.components.LoadingIndicator
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ClassworkScreen(
-    viewModel: ClassworkViewModel = hiltViewModel(),
+    uiState: ClassworkUiState,
+    onEvent: (ClassworkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
     navigateToCreateClasswork: (courseId: String, courseName: String, workType: CourseWorkType) -> Unit,
@@ -49,23 +49,23 @@ fun ClassworkScreen(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
     val refreshState = rememberPullRefreshState(
-        refreshing = viewModel.uiState.refreshing,
+        refreshing = uiState.refreshing,
         onRefresh = {
-            viewModel.onEvent(ClassworkUiEvent.OnRefresh)
+            onEvent(ClassworkUiEvent.OnRefresh)
         }
     )
     val currentUserType =
-        if (course.teachers?.contains(viewModel.uiState.currentUser?.uid) == true) {
+        if (course.teachers?.contains(uiState.currentUser?.uid) == true) {
             UserType.TEACHER
         } else {
             UserType.STUDENT
         }
 
-    viewModel.uiState.userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
-            viewModel.onEvent(ClassworkUiEvent.UserMessageShown)
+            onEvent(ClassworkUiEvent.UserMessageShown)
         }
     }
 
@@ -79,7 +79,7 @@ fun ClassworkScreen(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.TopCenter
         ) {
-            when (val dataState = viewModel.uiState.dataState) {
+            when (val dataState = uiState.dataState) {
                 is DataState.UNKNOWN -> {
                     // Nothing happened
                 }
@@ -90,7 +90,7 @@ fun ClassworkScreen(
                     ErrorScreen(
                         errorMessage = dataState.message.asString(),
                         onRetry = {
-                            viewModel.onEvent(ClassworkUiEvent.OnRetry)
+                            onEvent(ClassworkUiEvent.OnRetry)
                         }
                     )
                 }
@@ -114,7 +114,7 @@ fun ClassworkScreen(
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             content = {
-                                items(viewModel.uiState.classWorks) { classWork ->
+                                items(uiState.classWorks) { classWork ->
                                     ClassworkListItem(
                                         work = classWork,
                                         currentUserType = currentUserType,
@@ -123,7 +123,7 @@ fun ClassworkScreen(
                                             // TODO("Not yet implemented")
                                         },
                                         onDelete = {
-                                            viewModel.onEvent(
+                                            onEvent(
                                                 ClassworkUiEvent.OnDelete(
                                                     classWork.id,
                                                     classWork.courseId
@@ -137,7 +137,7 @@ fun ClassworkScreen(
                         )
 
                         PullRefreshIndicator(
-                            viewModel.uiState.refreshing,
+                            uiState.refreshing,
                             refreshState,
                             Modifier.align(Alignment.TopCenter)
                         )
@@ -148,7 +148,7 @@ fun ClassworkScreen(
             if (currentUserType == UserType.TEACHER) {
                 FloatingActionButton(
                     onClick = {
-                        viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
+                        onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
                     },
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
@@ -164,19 +164,19 @@ fun ClassworkScreen(
         }
     }
 
-    if (viewModel.uiState.openFabMenu) {
+    if (uiState.openFabMenu) {
         val bottomMargin =
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
 
         ModalBottomSheet(
             onDismissRequest = {
-                viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
             }
         ) {
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
                 modifier = Modifier.clickable {
-                    viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
                         course.id.orEmpty(),
                         course.name,
@@ -190,7 +190,7 @@ fun ClassworkScreen(
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.question)) },
                 modifier = Modifier.clickable {
-                    viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
                         course.id.orEmpty(),
                         course.name,
@@ -204,7 +204,7 @@ fun ClassworkScreen(
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.material)) },
                 modifier = Modifier.clickable {
-                    viewModel.onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
                         course.id.orEmpty(),
                         course.name,

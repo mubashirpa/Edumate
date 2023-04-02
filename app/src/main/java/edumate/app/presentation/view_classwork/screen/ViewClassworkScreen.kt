@@ -1,6 +1,5 @@
 package edumate.app.presentation.view_classwork.screen
 
-import android.content.res.Configuration
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material.icons.Icons
@@ -11,19 +10,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.ext.header
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview(
-    device = "id:pixel_6_pro",
-    showBackground = true,
-    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
-)
 @Composable
-fun ViewClassworkScreen() {
+fun ViewClassworkScreen(
+    onBackPressed: () -> Unit
+) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
 
@@ -41,7 +36,7 @@ fun ViewClassworkScreen() {
                 )
             },
             navigationIcon = {
-                IconButton(onClick = {}) {
+                IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
                         contentDescription = stringResource(id = Strings.navigate_up)
@@ -50,14 +45,19 @@ fun ViewClassworkScreen() {
             },
             scrollBehavior = scrollBehavior
         )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 10.dp)
-        ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            val bottomMargin = WindowInsets.navigationBars.asPaddingValues()
+                .calculateBottomPadding() + 10.dp
+            val contentPadding = PaddingValues(
+                start = 10.dp,
+                top = 10.dp,
+                end = 10.dp,
+                bottom = bottomMargin
+            )
+
             LazyVerticalGrid(
                 columns = GridCells.Adaptive(128.dp),
-                contentPadding = PaddingValues(10.dp),
+                contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(10.dp),
                 horizontalArrangement = Arrangement.spacedBy(10.dp),
                 content = {

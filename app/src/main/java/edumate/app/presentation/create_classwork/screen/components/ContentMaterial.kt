@@ -22,28 +22,21 @@ import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
+import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
 
 @Composable
 fun ContentMaterial(
     courseTitle: String,
     uiState: CreateClassworkUiState,
-    onTitleChange: (title: String) -> Unit,
-    onDescriptionChange: (description: String) -> Unit,
-    onOpenAttachmentMenuChange: (open: Boolean) -> Unit,
-    onRemoveAttachment: (position: Int) -> Unit,
-    onPostMaterial: () -> Unit
+    onEvent: (CreateClassworkUiEvent) -> Unit
 ) {
     val context = LocalContext.current
     val fileUtils = remember {
         FileUtils(context)
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .imePadding()
-    ) {
+    Column(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -55,7 +48,7 @@ fun ContentMaterial(
                     @Suppress("SENSELESS_COMPARISON")
                     OutlinedTextField(
                         value = uiState.title,
-                        onValueChange = onTitleChange,
+                        onValueChange = { onEvent(CreateClassworkUiEvent.OnTitleChange(it)) },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.material_title))
@@ -109,7 +102,7 @@ fun ContentMaterial(
                 headlineContent = {
                     OutlinedTextField(
                         value = uiState.description,
-                        onValueChange = onDescriptionChange,
+                        onValueChange = { onEvent(CreateClassworkUiEvent.OnDescriptionChange(it)) },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.description))
@@ -183,7 +176,13 @@ fun ContentMaterial(
                                     }
                                 },
                                 trailingContent = {
-                                    IconButton(onClick = { onRemoveAttachment(index) }) {
+                                    IconButton(onClick = {
+                                        onEvent(
+                                            CreateClassworkUiEvent.OnRemoveAttachment(
+                                                index
+                                            )
+                                        )
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Default.Clear,
                                             contentDescription = null
@@ -201,7 +200,13 @@ fun ContentMaterial(
                                     style = MaterialTheme.typography.bodyLarge
                                 )
                             },
-                            modifier = Modifier.clickable { onOpenAttachmentMenuChange(true) }
+                            modifier = Modifier.clickable {
+                                onEvent(
+                                    CreateClassworkUiEvent.OnOpenAttachmentMenuChange(
+                                        true
+                                    )
+                                )
+                            }
                         )
                     }
                 },
@@ -211,7 +216,7 @@ fun ContentMaterial(
         }
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = onPostMaterial,
+            onClick = { onEvent(CreateClassworkUiEvent.CreateClasswork) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)

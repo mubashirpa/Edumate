@@ -1,6 +1,7 @@
 package edumate.app.navigation
 
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -19,7 +20,8 @@ fun EdumateNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     startDestination: String = Routes.Graph.AUTHENTICATION,
-    drawerState: DrawerState
+    drawerState: DrawerState,
+    snackbarHostState: SnackbarHostState
 ) {
     NavHost(
         navController = navController,
@@ -30,6 +32,7 @@ fun EdumateNavHost(
         composable(route = Screen.HomeScreen.route) {
             HomeScreen(
                 drawerState = drawerState,
+                snackbarHostState = snackbarHostState,
                 navigateToClassDetails = { courseId ->
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId))
                 },

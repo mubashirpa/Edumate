@@ -27,13 +27,13 @@ import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalLayoutApi::class,
     ExperimentalFoundationApi::class
 )
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = viewModel(),
     drawerState: DrawerState,
+    snackbarHostState: SnackbarHostState,
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToCreateClass: (courseId: String?) -> Unit,
     navigateToJoinClass: () -> Unit
@@ -73,19 +73,13 @@ fun HomeScreen(
         contentWindowInsets = ScaffoldDefaults
             .contentWindowInsets
             .exclude(WindowInsets.navigationBars)
-            .exclude(WindowInsets.ime)
     ) { innerPadding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .consumeWindowInsets(innerPadding)
                 .padding(innerPadding)
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding()
-            ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 TabRow(selectedTabIndex = pagerState.currentPage) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
@@ -106,14 +100,26 @@ fun HomeScreen(
                     }
                 }
                 HorizontalPager(pageCount = tabs.size, state = pagerState) { page ->
+                    val bottomMargin = WindowInsets.navigationBars.asPaddingValues()
+                        .calculateBottomPadding() + 10.dp
+                    val contentPadding = PaddingValues(
+                        start = 10.dp,
+                        top = 10.dp,
+                        end = 10.dp,
+                        bottom = bottomMargin
+                    )
+
                     when (page) {
                         0 -> {
                             EnrolledScreen(
+                                snackbarHostState = snackbarHostState,
+                                contentPadding = contentPadding,
                                 navigateToClassDetails = navigateToClassDetails
                             )
                         }
                         1 -> {
                             TeachingScreen(
+                                contentPadding = contentPadding,
                                 navigateToCreateClass = navigateToCreateClass,
                                 navigateToClassDetails = navigateToClassDetails
                             )

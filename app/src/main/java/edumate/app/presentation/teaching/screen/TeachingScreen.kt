@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
+    contentPadding: PaddingValues,
     navigateToCreateClass: (courseId: String) -> Unit,
     navigateToClassDetails: (courseId: String) -> Unit
 ) {
@@ -63,7 +64,7 @@ fun TeachingScreen(
             Box(modifier = Modifier.pullRefresh(state)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(10.dp),
+                    contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
                         items(viewModel.uiState.classes) { course ->

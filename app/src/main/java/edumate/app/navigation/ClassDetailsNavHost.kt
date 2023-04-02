@@ -3,6 +3,7 @@ package edumate.app.navigation
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -10,7 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import edumate.app.domain.model.courses.Course
+import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.screen.ClassworkScreen
+import edumate.app.presentation.create_classwork.CreateClassworkViewModel
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
 import edumate.app.presentation.stream.screen.StreamScreen
@@ -47,7 +50,10 @@ fun ClassDetailsNavHost(
             route = Screen.ClassworkScreen.route,
             arguments = arguments
         ) {
+            val viewModel: ClassworkViewModel = hiltViewModel()
             ClassworkScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
                 snackbarHostState = snackbarHostState,
                 course = course,
                 navigateToCreateClasswork = { courseId, courseName, workType ->
@@ -90,10 +96,14 @@ fun ClassDetailsNavHost(
                 }
             )
         ) { backStackEntry ->
+            val viewModel: CreateClassworkViewModel = hiltViewModel()
             val courseName =
                 backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_COURSE_NAME)
                     .orEmpty()
             CreateClassworkScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                createClassworkResults = viewModel.createClassworkResults,
                 snackbarHostState = snackbarHostState,
                 className = courseName,
                 onCreateClassworkSuccess = {
@@ -105,7 +115,11 @@ fun ClassDetailsNavHost(
             )
         }
         composable(route = "view") {
-            ViewClassworkScreen()
+            ViewClassworkScreen(
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

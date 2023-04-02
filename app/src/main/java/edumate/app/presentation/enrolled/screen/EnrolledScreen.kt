@@ -1,6 +1,5 @@
 package edumate.app.presentation.enrolled.screen
 
-import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,6 +7,7 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,6 +29,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun EnrolledScreen(
     viewModel: EnrolledViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState,
+    contentPadding: PaddingValues,
     navigateToClassDetails: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
@@ -46,8 +48,7 @@ fun EnrolledScreen(
 
     viewModel.uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
-            // TODO("Convert to snackbar")
-            Toast.makeText(context, userMessage.asString(context), Toast.LENGTH_LONG).show()
+            snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
             viewModel.onEvent(EnrolledUiEvent.UserMessageShown)
         }
@@ -73,7 +74,7 @@ fun EnrolledScreen(
             Box(modifier = Modifier.pullRefresh(state)) {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
-                    contentPadding = PaddingValues(10.dp),
+                    contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
                         items(viewModel.uiState.classes) { course ->
