@@ -26,7 +26,7 @@ fun TeachingListItem(
     val context = LocalContext.current
     Card(
         onClick = {
-            onClick(course.id.orEmpty())
+            onClick(course.id)
         },
         modifier = Modifier.aspectRatio(21f / 9f)
     ) {
@@ -57,13 +57,13 @@ fun TeachingListItem(
                         onShareClick(course.alternateLink.orEmpty())
                     },
                     onEditClick = {
-                        onEditClick(course.id.orEmpty())
+                        onEditClick(course.id)
                     }
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = studentSize(context, course.students?.size ?: 0),
+                text = studentSize(context, course.students.size),
                 style = MaterialTheme.typography.labelMedium
             )
         }

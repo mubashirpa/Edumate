@@ -15,6 +15,7 @@ import edumate.app.core.FirebaseConstants
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
+import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.course_work.*
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
@@ -56,18 +57,15 @@ class CreateClassworkViewModel @Inject constructor(
     private val type: String = try {
         checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
     } catch (e: IllegalStateException) {
-        "${CourseWorkType.MATERIAL}"
+        "${CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED}"
     }
     private var currentUser: FirebaseUser? = null
 
     init {
-        val workType = when (type) {
-            "${CourseWorkType.ASSIGNMENT}" -> CourseWorkType.ASSIGNMENT
-            "${CourseWorkType.SHORT_ANSWER_QUESTION}" -> CourseWorkType.SHORT_ANSWER_QUESTION
-            "${CourseWorkType.MULTIPLE_CHOICE_QUESTION}" -> CourseWorkType.MULTIPLE_CHOICE_QUESTION
-            else -> CourseWorkType.MATERIAL
-        }
-        uiState = uiState.copy(workType = workType)
+        val workType: CourseWorkType? = type.enumValueOf(
+            CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
+        )
+        uiState = uiState.copy(workType = workType!!)
         getCurrentUserUseCase().map { user ->
             currentUser = user
         }.launchIn(viewModelScope)

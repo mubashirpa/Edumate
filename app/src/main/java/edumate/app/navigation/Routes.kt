@@ -15,6 +15,7 @@ object Routes {
         const val RECOVER_SCREEN = "recover_screen"
         const val REGISTER_SCREEN = "register_screen"
         const val STREAM_SCREEN = "stream_screen"
+        const val VIEW_CLASSWORK_SCREEN = "view_classwork_screen"
     }
 
     object Graph {
@@ -22,14 +23,13 @@ object Routes {
     }
 
     object Args {
-        // RecoverScreen
-        const val RECOVER_EMAIL = "email"
-        const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
-
         // ClassDetailsScreen
         const val CLASS_DETAILS_COURSE_ID = "course_id"
         const val CLASS_DETAILS_DEFAULT_COURSE_ID = "-1"
         const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_COURSE_ID}"
+
+        // ClassworkScreen
+        const val CLASSWORK_COURSE_ID = "course_id"
 
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"
@@ -37,9 +37,23 @@ object Routes {
 
         // CreateClassworkScreen
         const val CREATE_CLASSWORK_COURSE_ID = "course_id"
-        const val CREATE_CLASSWORK_COURSE_NAME = "course_name"
         const val CREATE_CLASSWORK_TYPE = "work_type"
         const val CREATE_CLASSWORK_SCREEN =
-            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_COURSE_NAME}/{$CREATE_CLASSWORK_TYPE}"
+            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_TYPE}"
+
+        // PeopleScreen
+        const val PEOPLE_COURSE_ID = "course_id"
+        const val PEOPLE_COURSE_OWNER_ID = "owner_id"
+
+        // RecoverScreen
+        const val RECOVER_EMAIL = "email"
+        const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
+
+        // ViewClassworkScreen
+        const val VIEW_CLASSWORK_WORK_ID = "work_id"
+        const val VIEW_CLASSWORK_WORK_TYPE = "work_type"
+        const val VIEW_CLASSWORK_COURSE_ID = "course_id"
+        const val VIEW_CLASSWORK_SCREEN =
+            "/{$VIEW_CLASSWORK_WORK_ID}/{$VIEW_CLASSWORK_WORK_TYPE}/{$VIEW_CLASSWORK_COURSE_ID}"
     }
 }

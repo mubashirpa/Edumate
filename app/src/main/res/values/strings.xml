@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Edumate</string>
     <string name="_points">%1s points</string>
     <string name="add">Add</string>
@@ -15,9 +15,12 @@
     <string name="assignment">Assignment</string>
     <string name="assignment_title">Assignment title</string>
     <string name="cancel">Cancel</string>
+    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">Cannot retrieve Classwork at this time, Please try again later.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">Cannot retrieve Peoples at this time, Please try again later.</string>
     <string name="change_point_value">Change point value</string>
     <string name="class_code">Class code*</string>
     <string name="class_name">Class name*</string>
+    <string name="comments_will_also_be_deleted">Comments will also be deleted.</string>
     <string name="copied_invitation_link">Copied invitation link</string>
     <string name="copy_link">Copy link</string>
     <string name="create">Create</string>
@@ -27,8 +30,13 @@
     <string name="creating_account">Creating account</string>
     <string name="creating_class">Creating class</string>
     <string name="delete">Delete</string>
+    <string name="delete_assignment">Delete assignment?</string>
+    <string name="delete_material">Delete material?</string>
+    <string name="delete_question">Delete question?</string>
     <string name="description">Description</string>
     <string name="dont_have_an_account">Don\'t have an Account?</string>
+    <string name="due_">Due %1s</string>
+    <string name="due_today_">Due today, %1s</string>
     <string name="due_date">Due date</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
@@ -52,12 +60,12 @@
     <string name="joining_class">Joining class</string>
     <string name="leave_class">Leave class</string>
     <string name="leave_class_warning_message">You wont be able to open this class unless you\'re re-invited</string>
-    <string name="leaving_class">Leaving class</string>
-    <string name="loading">Loading</string>
+    <string name="marks_and_comments_will_also_be_deleted">Marks and comments will also be deleted.</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
     <string name="missing_title">Missing title</string>
     <string name="navigate_up">Navigate up</string>
+    <string name="no_due_date">No due date</string>
     <string name="ok">OK</string>
     <string name="password">Password</string>
     <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
@@ -69,8 +77,8 @@
     <string name="question_title">Question title</string>
     <string name="recover">Recover</string>
     <string name="remove">Remove</string>
-    <string name="removing_student">Removing student</string>
-    <string name="removing_teacher">Removing teacher</string>
+    <string name="remove_student">Remove student?</string>
+    <string name="remove_teacher">Remove teacher?</string>
     <string name="required">*required</string>
     <string name="reset_password">Reset password</string>
     <string name="retry">Retry</string>
@@ -85,6 +93,7 @@
     <string name="sign_in">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up">Sign up</string>
+    <string name="sign_up_with_google">Sign up with Google</string>
     <string name="signing_in">Signing in</string>
     <string name="student">Student</string>
     <string name="students">Students</string>
@@ -94,6 +103,7 @@
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
     <string name="unenrol">Unenrol</string>
+    <string name="unknown">Unknown</string>
     <string name="unmarked">Unmarked</string>
     <string name="updating_class">Updating class</string>
     <string name="upload_file">Upload file</string>
@@ -115,7 +125,6 @@
     <string name="success_send_password_reset_email">We sent an email to %1s with a link to get back into your account.</string>
 
     <!-- Error -->
-    <string name="error_api_exception">Google sign in failed.</string>
     <string name="error_course_not_found">No class with that class code.</string>
     <string name="error_unexpected">An unexpected error occurred.</string>
     <string name="error_unknown">Something wrong happened. Please try again.</string>
@@ -133,6 +142,13 @@
     <string name="auth_network_exception">An unknown network error has occurred.</string>
     <string name="auth_unknown_exception">An unknown error has occurred.</string>
     <string name="auth_error_too_many_requests">Too many requests, please try again later.</string>
+
+    <!-- Google authentication -->
+    <string name="error_auth_google_activity_not_found">Failed to start Google authentication.</string>
+    <string name="error_auth_google_failed">Cannot find a matching credential.</string>
+    <string name="error_auth_google_api_exception">Something went wrong. Please try again.</string>
+    <string name="error_auth_google_network_error">Check your connection and try again.</string>
+    <string name="error_auth_google_no_token">Something isn\'t right. Try your request again later.</string>
 
     <!-- Validation error -->
     <string name="error_blank_email">Please enter your email address.</string>

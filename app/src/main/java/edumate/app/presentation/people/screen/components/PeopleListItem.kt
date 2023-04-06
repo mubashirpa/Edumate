@@ -1,6 +1,5 @@
 package edumate.app.presentation.people.screen.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
@@ -34,11 +33,10 @@ fun PeopleListItem(
     courseOwnerId: String,
     onLeaveClass: () -> Unit,
     onEmail: () -> Unit,
-    onRemove: () -> Unit,
-    onClick: () -> Unit
+    onRemove: () -> Unit
 ) {
     val photoUrl = user.photoUrl
-    val userId = "${user.id}"
+    val userId = user.id
     val avatar: @Composable () -> Unit = {
         TextAvatar(
             id = userId,
@@ -72,7 +70,7 @@ fun PeopleListItem(
         headlineContent = {
             Text(text = user.displayName.orEmpty())
         },
-        modifier = modifier.clickable(onClick = onClick),
+        modifier = modifier,
         leadingContent = {
             if (photoUrl != null) {
                 SubcomposeAsyncImage(

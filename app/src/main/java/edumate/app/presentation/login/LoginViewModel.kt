@@ -34,6 +34,9 @@ class LoginViewModel @Inject constructor(
                     emailError = null
                 )
             }
+            is LoginUiEvent.OnGoogleSignInClick -> {
+                signInWithGoogle(event.token)
+            }
             is LoginUiEvent.PasswordChanged -> {
                 uiState = uiState.copy(
                     password = event.password,
@@ -42,9 +45,6 @@ class LoginViewModel @Inject constructor(
             }
             is LoginUiEvent.OnSignInClick -> {
                 signInWithEmailAndPassword(uiState.email, uiState.password)
-            }
-            is LoginUiEvent.OnGoogleSignInClick -> {
-                signInWithGoogle(event.token)
             }
             is LoginUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)

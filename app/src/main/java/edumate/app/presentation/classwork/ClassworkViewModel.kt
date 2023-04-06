@@ -7,6 +7,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.R.string as Strings
+import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
@@ -29,7 +31,11 @@ class ClassworkViewModel @Inject constructor(
     var uiState by mutableStateOf(ClassworkUiState())
         private set
 
-    private val courseId: String? = savedStateHandle[Routes.Args.CLASS_DETAILS_COURSE_ID]
+    private val courseId: String? = try {
+        checkNotNull(savedStateHandle[Routes.Args.CLASSWORK_COURSE_ID])
+    } catch (e: IllegalStateException) {
+        null
+    }
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -40,11 +46,14 @@ class ClassworkViewModel @Inject constructor(
 
     fun onEvent(event: ClassworkUiEvent) {
         when (event) {
+            is ClassworkUiEvent.OnDeleteClasswork -> {
+                deleteClasswork(event.classworkId)
+            }
+            is ClassworkUiEvent.OnOpenDeleteClassworkDialogChange -> {
+                uiState = uiState.copy(deleteClasswork = event.classwork)
+            }
             is ClassworkUiEvent.OnOpenFabMenuChange -> {
                 uiState = uiState.copy(openFabMenu = event.open)
-            }
-            is ClassworkUiEvent.OnDelete -> {
-                deleteClasswork(event.courseWorkId, event.courseId)
             }
             is ClassworkUiEvent.OnRefresh -> {
                 fetchClasswork(true)
@@ -63,8 +72,8 @@ class ClassworkViewModel @Inject constructor(
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry.
         // Otherwise show snackbar by using userMessage
-        courseId?.let { id ->
-            getCourseWorksUseCase(id).onEach { resource ->
+        if (courseId != null) {
+            getCourseWorksUseCase(courseId).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         uiState = if (refreshing) {
@@ -74,16 +83,17 @@ class ClassworkViewModel @Inject constructor(
                         }
                     }
                     is Resource.Success -> {
-                        val classWorks = resource.data ?: emptyList()
+                        val classwork = resource.data ?: emptyList()
                         uiState = uiState.copy(
-                            dataState = if (classWorks.isEmpty()) {
+                            dataState = if (classwork.isEmpty()) {
+                                // Message is set from ui
                                 DataState.EMPTY(
                                     message = UiText.Empty
                                 )
                             } else {
                                 DataState.SUCCESS
                             },
-                            classWorks = classWorks,
+                            classwork = classwork,
                             refreshing = false
                         )
                     }
@@ -99,22 +109,40 @@ class ClassworkViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
+        } else {
+            uiState =
+                uiState.copy(
+                    dataState = DataState.ERROR(
+                        UiText.StringResource(
+                            Strings.cannot_retrieve_classwork_at_this_time_lease_try_again_later
+                        )
+                    )
+                )
         }
     }
 
-    private fun deleteClasswork(courseWorkId: String, courseId: String) {
-        deleteCourseWorkUseCase(courseWorkId, courseId).onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    // TODO("Show progress dialog")
+    private fun deleteClasswork(classworkId: String) {
+        courseId?.let {
+            deleteCourseWorkUseCase(classworkId, it).onEach { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(
+                            deleteClasswork = null,
+                            openProgressDialog = true
+                        )
+                    }
+                    is Resource.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        fetchClasswork(true)
+                    }
+                    is Resource.Error -> {
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = resource.message
+                        )
+                    }
                 }
-                is Resource.Success -> {
-                    fetchClasswork(true)
-                }
-                is Resource.Error -> {
-                    // TODO("Show error message")
-                }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
+        }
     }
 }

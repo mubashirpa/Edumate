@@ -2,6 +2,7 @@ package edumate.app.data.repository
 
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.CourseWorkDto
@@ -31,7 +32,10 @@ class CourseWorkRepositoryImpl @Inject constructor(
     }
 
     override suspend fun list(courseId: String): List<CourseWorkDto> {
-        return coursesWorkCollection(courseId).get().await().documents.mapNotNull { snapshot ->
+        return coursesWorkCollection(courseId).orderBy(
+            FirebaseConstants.Firestore.CREATION_TIME,
+            Query.Direction.DESCENDING
+        ).get().await().documents.mapNotNull { snapshot ->
             snapshot.toObject<CourseWorkDto>()
         }
     }

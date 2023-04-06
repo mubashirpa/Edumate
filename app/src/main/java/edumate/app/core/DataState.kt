@@ -1,6 +1,4 @@
-package edumate.app.presentation.classwork
-
-import edumate.app.core.UiText
+package edumate.app.core
 
 sealed class DataState {
     object UNKNOWN : DataState()

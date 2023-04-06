@@ -1,5 +1,6 @@
 package edumate.app.presentation.classwork.screen.components
 
+import android.text.format.DateUtils
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
@@ -36,6 +38,9 @@ fun ClassworkListItem(
     onDelete: () -> Unit,
     onClick: () -> Unit
 ) {
+    val dateFormat = remember { SimpleDateFormat("dd MMM yyyy", Locale.getDefault()) }
+    val timeFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
+    val dateTimeFormat = remember { SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) }
     val trailingContent: @Composable (() -> Unit)? = if (currentUserType == UserType.TEACHER) {
         {
             MenuButton(
@@ -49,13 +54,56 @@ fun ClassworkListItem(
 
     ListItem(
         headlineContent = {
-            Text(text = work.title)
+            Text(
+                text = work.title,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1
+            )
         },
         modifier = modifier.clickable(onClick = onClick),
         supportingContent = {
-            val format = SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault())
-            val postedDate: String = format.format(work.creationTime ?: 0)
-            Text(text = stringResource(id = Strings.posted_, postedDate))
+            when (currentUserType) {
+                UserType.STUDENT -> {
+                    if (work.workType == CourseWorkType.MATERIAL) {
+                        val creationTime = work.creationTime
+                        if (creationTime != null) {
+                            val isToday = DateUtils.isToday(creationTime.time)
+                            val posted = if (isToday) {
+                                timeFormat.format(creationTime)
+                            } else {
+                                dateTimeFormat.format(creationTime)
+                            }
+                            Text(text = stringResource(id = Strings.posted_, posted))
+                        }
+                    } else {
+                        val dueTime = work.dueTime
+                        if (dueTime != null) {
+                            val isToday = DateUtils.isToday(dueTime.time)
+                            val due = if (isToday) {
+                                stringResource(id = Strings.due_today_, timeFormat.format(dueTime))
+                            } else {
+                                stringResource(id = Strings.due_, dateTimeFormat.format(dueTime))
+                            }
+                            Text(text = due)
+                        } else {
+                            Text(text = stringResource(id = Strings.no_due_date))
+                        }
+                    }
+                }
+                UserType.TEACHER -> {
+                    val creationTime = work.creationTime
+                    if (creationTime != null) {
+                        val isToday = DateUtils.isToday(creationTime.time)
+                        val posted = if (isToday) {
+                            timeFormat.format(creationTime)
+                        } else {
+                            dateFormat.format(creationTime)
+                        }
+                        Text(text = stringResource(id = Strings.posted_, posted))
+                    }
+                }
+                UserType.UNKNOWN -> {}
+            }
         },
         leadingContent = {
             val icon = when (workType) {

@@ -34,13 +34,13 @@ class EnrolledViewModel @Inject constructor(
 
     fun onEvent(event: EnrolledUiEvent) {
         when (event) {
-            is EnrolledUiEvent.FetchClasses -> {
-                fetchClasses()
-            }
             is EnrolledUiEvent.Unenroll -> {
                 uiState.currentUser?.uid?.let { uid ->
                     unEnroll(event.courseId, uid)
                 }
+            }
+            is EnrolledUiEvent.FetchClasses -> {
+                fetchClasses()
             }
             is EnrolledUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)

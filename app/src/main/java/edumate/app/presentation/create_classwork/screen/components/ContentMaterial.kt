@@ -145,33 +145,33 @@ fun ContentMaterial(
                                     )
                                 },
                                 leadingContent = {
-                                    val icon = if (material.file != null) {
-                                        when (fileUtils.getFileType(material.file.type)) {
-                                            FileType.IMAGE -> Icons.Default.Image
-                                            FileType.VIDEO -> Icons.Default.VideoFile
-                                            FileType.AUDIO -> Icons.Default.AudioFile
-                                            FileType.PDF -> Icons.Default.PictureAsPdf
-                                            FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                    if (material.link?.thumbnailUrl.isNullOrEmpty()) {
+                                        val icon = if (material.file != null) {
+                                            when (fileUtils.getFileType(material.file.type)) {
+                                                FileType.IMAGE -> Icons.Default.Image
+                                                FileType.VIDEO -> Icons.Default.VideoFile
+                                                FileType.AUDIO -> Icons.Default.AudioFile
+                                                FileType.PDF -> Icons.Default.PictureAsPdf
+                                                FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                            }
+                                        } else if (material.link != null) {
+                                            Icons.Default.Link
+                                        } else {
+                                            Icons.Default.Attachment
                                         }
-                                    } else if (material.link != null) {
-                                        Icons.Default.Link
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = null
+                                        )
                                     } else {
-                                        Icons.Default.Attachment
-                                    }
-                                    if (material.link?.thumbnailUrl != null && material.link.thumbnailUrl.isNotEmpty()) {
                                         AsyncImage(
                                             model = ImageRequest.Builder(LocalContext.current)
-                                                .data(material.link.thumbnailUrl)
+                                                .data(material.link?.thumbnailUrl)
                                                 .crossfade(true)
                                                 .build(),
                                             contentDescription = null,
                                             contentScale = ContentScale.Inside,
                                             modifier = Modifier.size(24.dp)
-                                        )
-                                    } else {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null
                                         )
                                     }
                                 },

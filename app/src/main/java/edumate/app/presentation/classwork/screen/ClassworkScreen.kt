@@ -1,9 +1,11 @@
 package edumate.app.presentation.classwork.screen
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -14,8 +16,7 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -23,16 +24,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
+import edumate.app.core.DataState
+import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
 import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkUiState
-import edumate.app.presentation.classwork.DataState
 import edumate.app.presentation.classwork.screen.components.ClassworkListItem
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
+import edumate.app.presentation.components.ProgressDialog
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -41,13 +44,17 @@ fun ClassworkScreen(
     onEvent: (ClassworkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
-    navigateToCreateClasswork: (courseId: String, courseName: String, workType: CourseWorkType) -> Unit,
-    navigateToViewClasswork: () -> Unit,
+    navigateToCreateClasswork: (courseId: String, workType: CourseWorkType) -> Unit,
+    navigateToEditClasswork: (courseId: String, classworkId: String, workType: CourseWorkType) -> Unit,
+    navigateToViewClasswork: (courseId: String, classworkId: String, workType: CourseWorkType) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val courseId = course.id
+    val scrollState = rememberLazyListState()
     val refreshState = rememberPullRefreshState(
         refreshing = uiState.refreshing,
         onRefresh = {
@@ -55,11 +62,18 @@ fun ClassworkScreen(
         }
     )
     val currentUserType =
-        if (course.teachers?.contains(uiState.currentUser?.uid) == true) {
+        if (course.teachers.contains(uiState.currentUser?.uid)) {
             UserType.TEACHER
-        } else {
+        } else if (course.students.contains(uiState.currentUser?.uid)) {
             UserType.STUDENT
+        } else {
+            UserType.UNKNOWN
         }
+    val jumpToBottomButtonEnabled by remember {
+        derivedStateOf {
+            scrollState.firstVisibleItemIndex == 0
+        }
+    }
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -97,7 +111,9 @@ fun ClassworkScreen(
                 is DataState.EMPTY -> {
                     ErrorScreen(
                         errorMessage = if (currentUserType == UserType.TEACHER) {
-                            stringResource(id = Strings.add_assignments_and_other_works_for_class)
+                            stringResource(
+                                id = Strings.add_assignments_and_other_works_for_class
+                            )
                         } else {
                             stringResource(
                                 id = Strings.your_teacher_hasnt_assigned_any_classwork_yet
@@ -113,24 +129,28 @@ fun ClassworkScreen(
                     ) {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
+                            state = scrollState,
                             content = {
-                                items(uiState.classWorks) { classWork ->
+                                items(uiState.classwork) { classwork ->
+                                    val id = classwork.id
+                                    val type = classwork.workType
                                     ClassworkListItem(
-                                        work = classWork,
+                                        work = classwork,
                                         currentUserType = currentUserType,
-                                        workType = classWork.workType,
+                                        workType = type,
                                         onEdit = {
-                                            // TODO("Not yet implemented")
+                                            navigateToEditClasswork(courseId, id, type)
                                         },
                                         onDelete = {
                                             onEvent(
-                                                ClassworkUiEvent.OnDelete(
-                                                    classWork.id,
-                                                    classWork.courseId
+                                                ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
+                                                    classwork
                                                 )
                                             )
                                         },
-                                        onClick = navigateToViewClasswork
+                                        onClick = {
+                                            navigateToViewClasswork(courseId, id, type)
+                                        }
                                     )
                                 }
                             }
@@ -146,19 +166,25 @@ fun ClassworkScreen(
             }
 
             if (currentUserType == UserType.TEACHER) {
-                FloatingActionButton(
-                    onClick = {
-                        onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
-                    },
+                Row(
                     modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .imePadding()
-                        .padding(16.dp)
+                        .fillMaxWidth()
+                        .align(Alignment.BottomEnd),
+                    horizontalArrangement = Arrangement.End
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
-                        contentDescription = stringResource(id = Strings.create_classwork)
-                    )
+                    AnimatedVisibility(visible = jumpToBottomButtonEnabled) {
+                        FloatingActionButton(
+                            onClick = {
+                                onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
+                            },
+                            modifier = Modifier.padding(16.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Add,
+                                contentDescription = stringResource(id = Strings.create_classwork)
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -171,15 +197,15 @@ fun ClassworkScreen(
         ModalBottomSheet(
             onDismissRequest = {
                 onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-            }
+            },
+            sheetState = bottomSheetState
         ) {
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
                 modifier = Modifier.clickable {
                     onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
-                        course.id.orEmpty(),
-                        course.name,
+                        courseId,
                         CourseWorkType.ASSIGNMENT
                     )
                 },
@@ -192,8 +218,7 @@ fun ClassworkScreen(
                 modifier = Modifier.clickable {
                     onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
-                        course.id.orEmpty(),
-                        course.name,
+                        courseId,
                         CourseWorkType.SHORT_ANSWER_QUESTION
                     )
                 },
@@ -206,8 +231,7 @@ fun ClassworkScreen(
                 modifier = Modifier.clickable {
                     onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
                     navigateToCreateClasswork(
-                        course.id.orEmpty(),
-                        course.name,
+                        courseId,
                         CourseWorkType.MATERIAL
                     )
                 },
@@ -217,5 +241,67 @@ fun ClassworkScreen(
             )
             Spacer(modifier = Modifier.height(bottomMargin))
         }
+    }
+
+    ProgressDialog(openDialog = uiState.openProgressDialog)
+
+    DeleteClassworkDialog(
+        onDismissRequest = {
+            onEvent(ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(null))
+        },
+        classwork = uiState.deleteClasswork,
+        onConfirmClick = {
+            onEvent(ClassworkUiEvent.OnDeleteClasswork(it))
+        }
+    )
+}
+
+@Composable
+private fun DeleteClassworkDialog(
+    onDismissRequest: () -> Unit,
+    classwork: CourseWork?,
+    onConfirmClick: (workId: String) -> Unit
+) {
+    if (classwork != null) {
+        val title = when (classwork.workType) {
+            CourseWorkType.MATERIAL -> stringResource(id = Strings.delete_material)
+            CourseWorkType.ASSIGNMENT -> stringResource(id = Strings.delete_assignment)
+            CourseWorkType.SHORT_ANSWER_QUESTION -> stringResource(id = Strings.delete_question)
+            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> stringResource(id = Strings.delete_question)
+            else -> stringResource(id = Strings.delete)
+        }
+        val message = when (classwork.workType) {
+            CourseWorkType.MATERIAL -> stringResource(id = Strings.comments_will_also_be_deleted)
+            CourseWorkType.ASSIGNMENT -> stringResource(
+                id = Strings.marks_and_comments_will_also_be_deleted
+            )
+            CourseWorkType.SHORT_ANSWER_QUESTION -> stringResource(
+                id = Strings.marks_and_comments_will_also_be_deleted
+            )
+            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> stringResource(
+                id = Strings.marks_and_comments_will_also_be_deleted
+            )
+            else -> ""
+        }
+
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            title = {
+                Text(text = title)
+            },
+            text = {
+                Text(text = message)
+            },
+            confirmButton = {
+                TextButton(onClick = { onConfirmClick(classwork.id) }) {
+                    Text(stringResource(id = Strings.delete))
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismissRequest) {
+                    Text(stringResource(id = Strings.cancel))
+                }
+            }
+        )
     }
 }

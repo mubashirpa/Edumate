@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
+import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.moveItemToFirstPosition
 import edumate.app.domain.model.User
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.GetPeoplesUseCase
@@ -34,7 +36,16 @@ class PeopleViewModel @Inject constructor(
     var uiState by mutableStateOf(PeopleUiState())
         private set
 
-    private val courseId: String? = savedStateHandle[Routes.Args.CLASS_DETAILS_COURSE_ID]
+    private val courseId: String? = try {
+        checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_ID])
+    } catch (e: IllegalStateException) {
+        null
+    }
+    private val ownerId: String? = try {
+        checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_OWNER_ID])
+    } catch (e: IllegalStateException) {
+        null
+    }
     private var peoples: List<User> = emptyList()
 
     init {
@@ -46,16 +57,6 @@ class PeopleViewModel @Inject constructor(
 
     fun onEvent(event: PeopleUiEvent) {
         when (event) {
-            is PeopleUiEvent.OnDeletePeople -> {
-                when (event.userType) {
-                    UserType.STUDENT -> {
-                        deleteStudent(event.uid)
-                    }
-                    UserType.TEACHER -> {
-                        deleteTeacher(event.uid, false)
-                    }
-                }
-            }
             is PeopleUiEvent.OnFilterChange -> {
                 when (event.peopleFilterType) {
                     PeopleFilterType.ALL -> {
@@ -102,6 +103,20 @@ class PeopleViewModel @Inject constructor(
             is PeopleUiEvent.OnOpenLeaveClassDialogChange -> {
                 uiState = uiState.copy(openLeaveClassDialog = event.open)
             }
+            is PeopleUiEvent.OnOpenRemoveUserDialogChange -> {
+                uiState = uiState.copy(removeUser = event.user)
+            }
+            is PeopleUiEvent.OnRemoveUser -> {
+                when (event.userType) {
+                    UserType.STUDENT -> {
+                        deleteStudent(event.uid)
+                    }
+                    UserType.TEACHER -> {
+                        deleteTeacher(event.uid, false)
+                    }
+                    UserType.UNKNOWN -> {}
+                }
+            }
             is PeopleUiEvent.OnRefresh -> {
                 fetchPeoples(true)
             }
@@ -119,8 +134,8 @@ class PeopleViewModel @Inject constructor(
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry.
         // Otherwise show snackbar by using userMessage
-        courseId?.let { id ->
-            getPeoplesUseCase(id).onEach { resource ->
+        if (courseId != null) {
+            getPeoplesUseCase(courseId).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         uiState = if (refreshing) {
@@ -131,6 +146,8 @@ class PeopleViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         peoples = resource.data ?: emptyList()
+                        peoples = peoples.moveItemToFirstPosition { it.id == ownerId }
+
                         when (uiState.filter) {
                             PeopleFilterType.ALL -> {
                                 uiState = uiState.copy(
@@ -179,6 +196,15 @@ class PeopleViewModel @Inject constructor(
                     }
                 }
             }.launchIn(viewModelScope)
+        } else {
+            uiState =
+                uiState.copy(
+                    dataState = DataState.ERROR(
+                        UiText.StringResource(
+                            Strings.cannot_retrieve_peoples_at_this_time_lease_try_again_later
+                        )
+                    )
+                )
         }
     }
 
@@ -189,15 +215,9 @@ class PeopleViewModel @Inject constructor(
             deleteTeacherUseCase(id, uid).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
-                        val progressDialogTextId = if (isLeaving) {
-                            Strings.leaving_class
-                        } else {
-                            Strings.removing_teacher
-                        }
-
                         uiState = uiState.copy(
                             openProgressDialog = true,
-                            progressDialogText = UiText.StringResource(progressDialogTextId)
+                            removeUser = null
                         )
                     }
                     is Resource.Success -> {
@@ -229,7 +249,7 @@ class PeopleViewModel @Inject constructor(
                     is Resource.Loading -> {
                         uiState = uiState.copy(
                             openProgressDialog = true,
-                            progressDialogText = UiText.StringResource(Strings.removing_student)
+                            removeUser = null
                         )
                     }
                     is Resource.Success -> {
@@ -249,13 +269,13 @@ class PeopleViewModel @Inject constructor(
 
     private fun teachers(): List<User> {
         return peoples.filter {
-            it.teaching?.contains(courseId) ?: false
+            it.teaching.contains(courseId)
         }
     }
 
     private fun students(): List<User> {
         return peoples.filter {
-            it.enrolled?.contains(courseId) ?: false
+            it.enrolled.contains(courseId)
         }
     }
 }

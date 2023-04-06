@@ -11,6 +11,7 @@ minSdk = "24"
 sdkVersion = "33"
 
 [libraries]
+accompanist-flowlayout = { module = "com.google.accompanist:accompanist-flowlayout", version.ref = "com-google-accompanist" }
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "com-google-accompanist" }
 accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pager-indicators", version.ref = "com-google-accompanist" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "com-google-accompanist" }
@@ -36,6 +37,7 @@ androidx-lifecycle-viewmodel-savedstate = { module = "androidx.lifecycle:lifecyc
 burnoutcrew-reorderable = "org.burnoutcrew.composereorderable:reorderable:0.9.6"
 androidx-navigation-compose = "androidx.navigation:navigation-compose:2.5.3"
 coil-compose = "io.coil-kt:coil-compose:2.2.2"
+coil-video = "io.coil-kt:coil-video:2.2.2"
 firebase-analytics = { module = "com.google.firebase:firebase-analytics-ktx" }
 firebase-auth = { module = "com.google.firebase:firebase-auth-ktx" }
 firebase-bom = "com.google.firebase:firebase-bom:31.2.3"
@@ -53,6 +55,7 @@ junit = "junit:junit:4.13.2"
 
 [bundles]
 accompanist = [
+    "accompanist-flowlayout",
     "accompanist-pager",
     "accompanist-pager-indicators",
     "accompanist-systemuicontroller",

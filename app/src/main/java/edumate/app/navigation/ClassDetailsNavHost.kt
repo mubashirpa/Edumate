@@ -4,12 +4,13 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NamedNavArgument
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import edumate.app.core.utils.enumValueOf
+import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.screen.ClassworkScreen
@@ -17,6 +18,7 @@ import edumate.app.presentation.create_classwork.CreateClassworkViewModel
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
 import edumate.app.presentation.stream.screen.StreamScreen
+import edumate.app.presentation.view_classwork.ViewClassworkViewModel
 import edumate.app.presentation.view_classwork.screen.ViewClassworkScreen
 
 @Composable
@@ -33,22 +35,17 @@ fun ClassDetailsNavHost(
         startDestination = Screen.StreamScreen.route,
         modifier = modifier
     ) {
-        val arguments: List<NamedNavArgument> = listOf(
-            navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
-                type = NavType.StringType
-                defaultValue = course.id.orEmpty()
-            }
-        )
-
-        composable(
-            route = Screen.StreamScreen.route,
-            arguments = arguments
-        ) {
+        composable(route = Screen.StreamScreen.route) {
             StreamScreen()
         }
         composable(
             route = Screen.ClassworkScreen.route,
-            arguments = arguments
+            arguments = listOf(
+                navArgument(Routes.Args.CLASSWORK_COURSE_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.id
+                }
+            )
         ) {
             val viewModel: ClassworkViewModel = hiltViewModel()
             ClassworkScreen(
@@ -56,24 +53,41 @@ fun ClassDetailsNavHost(
                 onEvent = viewModel::onEvent,
                 snackbarHostState = snackbarHostState,
                 course = course,
-                navigateToCreateClasswork = { courseId, courseName, workType ->
+                navigateToCreateClasswork = { courseId, workType ->
                     navController.navigate(
                         Screen.CreateClassworkScreen.withArgs(
                             courseId,
-                            courseName,
                             workType.toString()
                         )
                     )
                 },
-                navigateToViewClasswork = {
-                    navController.navigate("view")
+                navigateToEditClasswork = { _, _, _ ->
+                    // TODO("Not yet implemented")
+                },
+                navigateToViewClasswork = { courseId, classworkId, workType ->
+                    navController.navigate(
+                        Screen.ViewClassworkScreen.withArgs(
+                            classworkId,
+                            workType.toString(),
+                            courseId
+                        )
+                    )
                 },
                 onBackPressed = onBackPressed
             )
         }
         composable(
             route = Screen.PeopleScreen.route,
-            arguments = arguments
+            arguments = listOf(
+                navArgument(Routes.Args.PEOPLE_COURSE_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.id
+                },
+                navArgument(Routes.Args.PEOPLE_COURSE_OWNER_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.ownerId
+                }
+            )
         ) {
             PeopleScreen(
                 snackbarHostState = snackbarHostState,
@@ -88,24 +102,18 @@ fun ClassDetailsNavHost(
                 navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_ID) {
                     type = NavType.StringType
                 },
-                navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_NAME) {
-                    type = NavType.StringType
-                },
                 navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) {
                     type = NavType.StringType
                 }
             )
-        ) { backStackEntry ->
+        ) {
             val viewModel: CreateClassworkViewModel = hiltViewModel()
-            val courseName =
-                backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_COURSE_NAME)
-                    .orEmpty()
             CreateClassworkScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 createClassworkResults = viewModel.createClassworkResults,
                 snackbarHostState = snackbarHostState,
-                className = courseName,
+                className = course.name,
                 onCreateClassworkSuccess = {
                     navController.navigateUp()
                 },
@@ -114,8 +122,28 @@ fun ClassDetailsNavHost(
                 }
             )
         }
-        composable(route = "view") {
+        composable(
+            route = "${Screen.ViewClassworkScreen.route}${Routes.Args.VIEW_CLASSWORK_SCREEN}",
+            arguments = listOf(
+                navArgument(Routes.Args.VIEW_CLASSWORK_WORK_ID) {
+                    type = NavType.StringType
+                },
+                navArgument(Routes.Args.VIEW_CLASSWORK_WORK_TYPE) {
+                    type = NavType.StringType
+                },
+                navArgument(Routes.Args.VIEW_CLASSWORK_COURSE_ID) {
+                    type = NavType.StringType
+                }
+            )
+        ) { backStackEntry ->
+            val viewModel: ViewClassworkViewModel = hiltViewModel()
+            val workType: CourseWorkType? =
+                backStackEntry.arguments?.getString(Routes.Args.VIEW_CLASSWORK_WORK_TYPE).orEmpty()
+                    .enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)
+
             ViewClassworkScreen(
+                uiState = viewModel.uiState,
+                classworkType = workType!!,
                 onBackPressed = {
                     navController.navigateUp()
                 }

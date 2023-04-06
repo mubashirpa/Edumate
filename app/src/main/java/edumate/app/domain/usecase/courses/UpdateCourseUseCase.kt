@@ -14,7 +14,7 @@ class UpdateCourseUseCase @Inject constructor(
     private val coursesRepository: CoursesRepository
 ) {
     operator fun invoke(course: Course): Flow<Resource<String>> = flow {
-        val courseId = course.id!!
+        val courseId = course.id
         try {
             emit(Resource.Loading())
             coursesRepository.updateCourse(courseId, course.toCoursesDto())

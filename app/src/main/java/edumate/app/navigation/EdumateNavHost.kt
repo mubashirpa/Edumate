@@ -113,7 +113,11 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.ProfileScreen.route) {
-            ProfileScreen()
+            ProfileScreen(
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

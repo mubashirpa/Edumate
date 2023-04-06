@@ -22,7 +22,7 @@ fun EnrolledListItem(
 ) {
     Card(
         onClick = {
-            onClick(course.id.orEmpty())
+            onClick(course.id)
         },
         modifier = Modifier.aspectRatio(21f / 9f)
     ) {
@@ -50,7 +50,7 @@ fun EnrolledListItem(
                 }
                 EnrolledMenuButton(
                     onUnEnrollClick = {
-                        onUnEnrollClick(course.id.orEmpty())
+                        onUnEnrollClick(course.id)
                     }
                 )
             }

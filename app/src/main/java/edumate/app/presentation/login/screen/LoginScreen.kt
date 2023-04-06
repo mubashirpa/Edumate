@@ -1,8 +1,9 @@
 package edumate.app.presentation.login.screen
 
 import android.app.Activity.RESULT_OK
+import android.content.ActivityNotFoundException
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,9 +23,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.auth.api.identity.BeginSignInRequest
+import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import edumate.app.R.drawable as Drawables
 import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
@@ -52,29 +54,49 @@ fun LoginScreen(
     val currentOnLoginSuccess by rememberUpdatedState(onLoginSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
-    val googleSignInOptions = remember {
-        GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(context.getString(Strings.default_web_client_id)).requestEmail().build()
+    val oneTapClient = remember {
+        Identity.getSignInClient(context)
     }
-    val googleSignInClient = remember {
-        GoogleSignIn.getClient(context, googleSignInOptions)
+    val signInRequest = remember {
+        BeginSignInRequest.builder()
+            .setGoogleIdTokenRequestOptions(
+                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                    .setSupported(true)
+                    .setServerClientId(context.getString(Strings.default_web_client_id))
+                    .setFilterByAuthorizedAccounts(true)
+                    .build()
+            ).build()
     }
     val activityResultLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
-                val intent = result.data
-                if (intent != null) {
-                    val task = GoogleSignIn.getSignedInAccountFromIntent(intent)
-                    try {
-                        val account = task.getResult(ApiException::class.java)
-                        account.idToken?.let { token ->
-                            viewModel.onEvent(LoginUiEvent.OnGoogleSignInClick(token))
-                        }
-                    } catch (e: ApiException) {
+                try {
+                    val credential = oneTapClient.getSignInCredentialFromIntent(result.data)
+                    val idToken = credential.googleIdToken
+                    if (idToken != null) {
+                        viewModel.onEvent(LoginUiEvent.OnGoogleSignInClick(idToken))
+                    } else {
                         scope.launch {
                             snackbarHostState.showSnackbar(
-                                context.getString(Strings.error_api_exception)
+                                context.getString(Strings.error_auth_google_no_token)
                             )
+                        }
+                    }
+                } catch (e: ApiException) {
+                    when (e.statusCode) {
+                        CommonStatusCodes.NETWORK_ERROR -> {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    context.getString(Strings.error_auth_google_network_error)
+                                )
+                            }
+                        }
+                        else -> {
+                            scope.launch {
+                                snackbarHostState.showSnackbar(
+                                    context.getString(Strings.error_auth_google_api_exception)
+                                )
+                            }
                         }
                     }
                 }
@@ -178,8 +200,32 @@ fun LoginScreen(
                     Spacer(modifier = Modifier.height(10.dp))
                     OutlinedButton(
                         onClick = {
-                            val signInIntent = googleSignInClient.signInIntent
-                            activityResultLauncher.launch(signInIntent)
+                            oneTapClient.beginSignIn(signInRequest)
+                                .addOnSuccessListener { result ->
+                                    val request =
+                                        IntentSenderRequest.Builder(
+                                            result.pendingIntent.intentSender
+                                        )
+                                            .build()
+                                    try {
+                                        activityResultLauncher.launch(request)
+                                    } catch (_: ActivityNotFoundException) {
+                                        scope.launch {
+                                            snackbarHostState.showSnackbar(
+                                                context.getString(
+                                                    Strings.error_auth_google_activity_not_found
+                                                )
+                                            )
+                                        }
+                                    }
+                                }
+                                .addOnFailureListener {
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar(
+                                            context.getString(Strings.error_auth_google_failed)
+                                        )
+                                    }
+                                }
                         },
                         modifier = Modifier
                             .fillMaxWidth()
