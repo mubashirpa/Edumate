@@ -70,31 +70,17 @@ class CreateClassViewModel @Inject constructor(
             is CreateClassUiEvent.NameChanged -> {
                 uiState = uiState.copy(
                     course = uiState.course.copy(name = event.name),
-                    nameError = null,
-                    isFabExpanded = initialCourse.value != uiState.course.copy(name = event.name) && event.name.isNotBlank()
+                    nameError = null
                 )
             }
             is CreateClassUiEvent.RoomChanged -> {
-                uiState = uiState.copy(
-                    course = uiState.course.copy(room = event.room),
-                    isFabExpanded = initialCourse.value != uiState.course.copy(room = event.room) && uiState.course.name.isNotBlank()
-                )
+                uiState = uiState.copy(course = uiState.course.copy(room = event.room))
             }
             is CreateClassUiEvent.SectionChanged -> {
-                uiState = uiState.copy(
-                    course = uiState.course.copy(section = event.section),
-                    isFabExpanded = initialCourse.value != uiState.course.copy(
-                        section = event.section
-                    ) && uiState.course.name.isNotBlank()
-                )
+                uiState = uiState.copy(course = uiState.course.copy(section = event.section))
             }
             is CreateClassUiEvent.SubjectChanged -> {
-                uiState = uiState.copy(
-                    course = uiState.course.copy(subject = event.subject),
-                    isFabExpanded = initialCourse.value != uiState.course.copy(
-                        subject = event.subject
-                    ) && uiState.course.name.isNotBlank()
-                )
+                uiState = uiState.copy(course = uiState.course.copy(subject = event.subject))
             }
             is CreateClassUiEvent.OnCreateClick -> {
                 if (id == null) {

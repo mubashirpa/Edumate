@@ -133,6 +133,7 @@ fun PeopleScreen(
                 }
                 is DataState.ERROR -> {
                     ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
                         errorMessage = dataState.message.asString(),
                         onRetry = {
                             viewModel.onEvent(PeopleUiEvent.OnRetry)
@@ -231,7 +232,10 @@ fun PeopleScreen(
                             )
                         }
                         if (dataState is DataState.EMPTY) {
-                            ErrorScreen(errorMessage = dataState.message.asString())
+                            ErrorScreen(
+                                modifier = Modifier.fillMaxSize(),
+                                errorMessage = dataState.message.asString()
+                            )
                         } else {
                             Box(
                                 modifier = Modifier

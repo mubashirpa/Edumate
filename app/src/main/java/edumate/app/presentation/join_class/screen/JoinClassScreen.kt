@@ -139,7 +139,13 @@ fun JoinClassScreen(
                             )
                         }
                     } else {
-                        { Text(text = stringResource(id = Strings.required)) }
+                        {
+                            Text(
+                                text = stringResource(
+                                    id = Strings.class_code_shared_by_your_teacher
+                                )
+                            )
+                        }
                     },
                     isError = classCodeError != null,
                     keyboardOptions = KeyboardOptions(
@@ -152,7 +158,6 @@ fun JoinClassScreen(
                     singleLine = true
                 )
                 Spacer(modifier = Modifier.height(30.dp))
-                Spacer(modifier = Modifier.weight(1f))
                 Button(
                     onClick = {
                         viewModel.onEvent(JoinClassUiEvent.OnJoinClick)

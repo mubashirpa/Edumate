@@ -52,13 +52,17 @@ fun TeachingScreen(
         }
         viewModel.uiState.error != null -> {
             ErrorScreen(
+                modifier = Modifier.fillMaxSize(),
                 onRetry = {
                     viewModel.onEvent(TeachingUiEvent.FetchClasses)
                 }
             )
         }
         viewModel.uiState.classes.isEmpty() -> {
-            ErrorScreen(errorMessage = stringResource(id = Strings.add_a_class_to_get_started))
+            ErrorScreen(
+                modifier = Modifier.fillMaxSize(),
+                errorMessage = stringResource(id = Strings.add_a_class_to_get_started)
+            )
         }
         else -> {
             Box(modifier = Modifier.pullRefresh(state)) {

@@ -46,7 +46,12 @@ fun ClassworkScreen(
     course: Course,
     navigateToCreateClasswork: (courseId: String, workType: CourseWorkType) -> Unit,
     navigateToEditClasswork: (courseId: String, classworkId: String, workType: CourseWorkType) -> Unit,
-    navigateToViewClasswork: (courseId: String, classworkId: String, workType: CourseWorkType) -> Unit,
+    navigateToViewClasswork: (
+        courseId: String,
+        classworkId: String,
+        workType: CourseWorkType,
+        currentUserType: UserType
+    ) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
@@ -102,6 +107,7 @@ fun ClassworkScreen(
                 }
                 is DataState.ERROR -> {
                     ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
                         errorMessage = dataState.message.asString(),
                         onRetry = {
                             onEvent(ClassworkUiEvent.OnRetry)
@@ -110,6 +116,7 @@ fun ClassworkScreen(
                 }
                 is DataState.EMPTY -> {
                     ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
                         errorMessage = if (currentUserType == UserType.TEACHER) {
                             stringResource(
                                 id = Strings.add_assignments_and_other_works_for_class
@@ -149,7 +156,12 @@ fun ClassworkScreen(
                                             )
                                         },
                                         onClick = {
-                                            navigateToViewClasswork(courseId, id, type)
+                                            navigateToViewClasswork(
+                                                courseId,
+                                                id,
+                                                type,
+                                                currentUserType
+                                            )
                                         }
                                     )
                                 }

@@ -12,6 +12,7 @@ import androidx.navigation.navArgument
 import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
+import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.screen.ClassworkScreen
 import edumate.app.presentation.create_classwork.CreateClassworkViewModel
@@ -64,11 +65,12 @@ fun ClassDetailsNavHost(
                 navigateToEditClasswork = { _, _, _ ->
                     // TODO("Not yet implemented")
                 },
-                navigateToViewClasswork = { courseId, classworkId, workType ->
+                navigateToViewClasswork = { courseId, classworkId, workType, userType ->
                     navController.navigate(
                         Screen.ViewClassworkScreen.withArgs(
                             classworkId,
                             workType.toString(),
+                            userType.toString(),
                             courseId
                         )
                     )
@@ -137,13 +139,17 @@ fun ClassDetailsNavHost(
             )
         ) { backStackEntry ->
             val viewModel: ViewClassworkViewModel = hiltViewModel()
-            val workType: CourseWorkType? =
+            val classworkType: CourseWorkType? =
                 backStackEntry.arguments?.getString(Routes.Args.VIEW_CLASSWORK_WORK_TYPE).orEmpty()
                     .enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)
+            val currentUserType: UserType? =
+                backStackEntry.arguments?.getString(Routes.Args.VIEW_CLASSWORK_USER_TYPE).orEmpty()
+                    .enumValueOf(UserType.UNKNOWN)
 
             ViewClassworkScreen(
                 uiState = viewModel.uiState,
-                classworkType = workType!!,
+                classworkType = classworkType!!,
+                currentUserType = currentUserType!!,
                 onBackPressed = {
                     navController.navigateUp()
                 }

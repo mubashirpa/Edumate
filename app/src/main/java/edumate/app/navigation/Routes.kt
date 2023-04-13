@@ -52,8 +52,9 @@ object Routes {
         // ViewClassworkScreen
         const val VIEW_CLASSWORK_WORK_ID = "work_id"
         const val VIEW_CLASSWORK_WORK_TYPE = "work_type"
+        const val VIEW_CLASSWORK_USER_TYPE = "user_type"
         const val VIEW_CLASSWORK_COURSE_ID = "course_id"
         const val VIEW_CLASSWORK_SCREEN =
-            "/{$VIEW_CLASSWORK_WORK_ID}/{$VIEW_CLASSWORK_WORK_TYPE}/{$VIEW_CLASSWORK_COURSE_ID}"
+            "/{$VIEW_CLASSWORK_WORK_ID}/{$VIEW_CLASSWORK_WORK_TYPE}/{$VIEW_CLASSWORK_USER_TYPE}/{$VIEW_CLASSWORK_COURSE_ID}"
     }
 }

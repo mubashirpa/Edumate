@@ -7,7 +7,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -106,7 +105,7 @@ fun CreateClassScreen(
                     LoadingIndicator()
                 }
                 viewModel.uiState.error != null -> {
-                    ErrorScreen()
+                    ErrorScreen(modifier = Modifier.fillMaxSize())
                 }
                 else -> {
                     Column(
@@ -207,17 +206,20 @@ fun CreateClassScreen(
                             singleLine = true
                         )
                         Spacer(modifier = Modifier.height(30.dp))
-                    }
-
-                    FAB(
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .imePadding()
-                            .padding(16.dp),
-                        courseId = courseId,
-                        expanded = viewModel.uiState.isFabExpanded
-                    ) {
-                        viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
+                        val buttonText = if (courseId == null) {
+                            Strings.create
+                        } else {
+                            Strings.save
+                        }
+                        Button(
+                            onClick = {
+                                viewModel.onEvent(CreateClassUiEvent.OnCreateClick)
+                            },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Text(text = stringResource(id = buttonText))
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
                     }
                 }
             }
@@ -227,31 +229,5 @@ fun CreateClassScreen(
     ProgressDialog(
         text = viewModel.uiState.progressDialogText.asString(),
         openDialog = viewModel.uiState.openProgressDialog
-    )
-}
-
-@Composable
-private fun FAB(
-    modifier: Modifier = Modifier,
-    courseId: String?,
-    expanded: Boolean,
-    onClick: () -> Unit
-) {
-    val buttonText = if (courseId == null) {
-        Strings.create
-    } else {
-        Strings.save
-    }
-    ExtendedFloatingActionButton(
-        onClick = onClick,
-        modifier = modifier,
-        expanded = expanded,
-        icon = {
-            Icon(
-                imageVector = Icons.Filled.Done,
-                contentDescription = stringResource(id = buttonText)
-            )
-        },
-        text = { Text(text = stringResource(id = buttonText)) }
     )
 }

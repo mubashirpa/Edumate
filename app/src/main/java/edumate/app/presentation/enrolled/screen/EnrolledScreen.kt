@@ -60,6 +60,7 @@ fun EnrolledScreen(
         }
         viewModel.uiState.error != null -> {
             ErrorScreen(
+                modifier = Modifier.fillMaxSize(),
                 onRetry = {
                     viewModel.onEvent(EnrolledUiEvent.FetchClasses)
                 }
@@ -67,6 +68,7 @@ fun EnrolledScreen(
         }
         viewModel.uiState.classes.isEmpty() -> {
             ErrorScreen(
+                modifier = Modifier.fillMaxSize(),
                 errorMessage = stringResource(id = Strings.join_a_class_to_get_started)
             )
         }

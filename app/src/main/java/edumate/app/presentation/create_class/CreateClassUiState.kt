@@ -13,7 +13,6 @@ data class CreateClassUiState(
     ),
     val currentUser: FirebaseUser? = null,
     val error: UiText? = null,
-    val isFabExpanded: Boolean = false,
     val loading: Boolean = false,
     val nameError: UiText? = null,
     val openProgressDialog: Boolean = false,
