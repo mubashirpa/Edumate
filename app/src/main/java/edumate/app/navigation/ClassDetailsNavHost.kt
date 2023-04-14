@@ -148,6 +148,7 @@ fun ClassDetailsNavHost(
 
             ViewClassworkScreen(
                 uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
                 classworkType = classworkType!!,
                 currentUserType = currentUserType!!,
                 onBackPressed = {

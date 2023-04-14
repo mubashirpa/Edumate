@@ -1,7 +1,6 @@
 package edumate.app.di
 
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.dynamiclinks.FirebaseDynamicLinks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import dagger.Module
@@ -33,11 +32,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideDynamicLinksRepository(dynamicLinks: FirebaseDynamicLinks): DynamicLinksRepository =
-        DynamicLinksRepositoryImpl(dynamicLinks)
-
-    @Singleton
-    @Provides
     fun provideFirebaseAuthRepository(
         firebaseAuth: FirebaseAuth,
         firestore: FirebaseFirestore
@@ -57,6 +51,11 @@ object AppModule {
     @Provides
     fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository =
         StudentsRepositoryImpl(firestore)
+
+    @Singleton
+    @Provides
+    fun provideStudentSubmissionRepository(firestore: FirebaseFirestore): StudentSubmissionRepository =
+        StudentSubmissionRepositoryImpl(firestore)
 
     @Singleton
     @Provides

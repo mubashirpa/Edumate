@@ -14,4 +14,9 @@ class FirebaseStorageRepositoryImpl @Inject constructor(
         val pathReference = reference.child(path)
         return pathReference.putFile(uri).await().storage.downloadUrl.await()
     }
+
+    override suspend fun deleteFile(path: String) {
+        val pathReference = reference.child(path)
+        pathReference.delete().await()
+    }
 }

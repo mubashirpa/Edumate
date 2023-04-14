@@ -7,6 +7,7 @@ object FirebaseConstants {
         const val COURSES_COLLECTION = "courses"
         const val COURSE_WORK_COLLECTION = "courseWork"
         const val USERS_COLLECTION = "users"
+        const val STUDENT_SUBMISSIONS_COLLECTION = "studentSubmissions"
 
         // Courses
         const val ALTERNATE_LINK = "alternateLink"
@@ -36,6 +37,16 @@ object FirebaseConstants {
         const val TITLE = "title"
         const val WORK_TYPE = "workType"
 
+        // StudentSubmissions
+        const val COURSE_WORK_ID = "courseWorkId"
+        const val USER_ID = "userId"
+        const val LATE = "late"
+        const val ASSIGNED_GRADE = "assignedGrade"
+        const val COURSE_WORK_TYPE = "courseWorkType"
+        const val ASSIGNMENT_SUBMISSION = "assignmentSubmission"
+        const val SHORT_ANSWER_SUBMISSION = "shortAnswerSubmission"
+        const val MULTIPLE_CHOICE_SUBMISSION = "multipleChoiceSubmission"
+
         // Users
         const val CREATED_AT = "createdAt"
         const val DISPLAY_NAME = "displayName"
@@ -44,10 +55,6 @@ object FirebaseConstants {
         const val ENROLLED = "enrolled"
         const val TEACHING = "teaching"
         const val VERIFIED = "verified"
-    }
-
-    object DynamicLinks {
-        const val DOMAIN_URI_PREFIX = "https://edumate.page.link"
     }
 
     object Storage {

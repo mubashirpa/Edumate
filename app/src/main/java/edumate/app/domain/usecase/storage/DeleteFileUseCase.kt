@@ -1,6 +1,5 @@
 package edumate.app.domain.usecase.storage
 
-import android.net.Uri
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
@@ -9,14 +8,14 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class UploadFileUseCase @Inject constructor(
+class DeleteFileUseCase @Inject constructor(
     private val storageRepository: FirebaseStorageRepository
 ) {
-    operator fun invoke(uri: Uri, path: String): Flow<Resource<Uri?>> = flow {
+    operator fun invoke(path: String): Flow<Resource<Boolean>> = flow {
         try {
             emit(Resource.Loading())
-            val downloadUri = storageRepository.uploadFile(uri, path)
-            emit(Resource.Success(downloadUri))
+            storageRepository.deleteFile(path)
+            emit(Resource.Success(true))
         } catch (e: Exception) {
             emit(Resource.Error(UiText.StringResource(Strings.error_unknown)))
         }
