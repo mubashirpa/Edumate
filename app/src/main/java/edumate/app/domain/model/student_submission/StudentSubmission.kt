@@ -10,6 +10,7 @@ data class StudentSubmission(
     val userId: String = "",
     val creationTime: Date? = null,
     val updateTime: Date? = null,
+    val state: SubmissionState = SubmissionState.SUBMISSION_STATE_UNSPECIFIED,
     val late: Boolean = false,
     val assignedGrade: Int? = null,
     val alternateLink: String = "",

@@ -129,7 +129,7 @@ fun PeopleScreen(
                     // Nothing happened
                 }
                 is DataState.LOADING -> {
-                    LoadingIndicator()
+                    LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
                 is DataState.ERROR -> {
                     ErrorScreen(

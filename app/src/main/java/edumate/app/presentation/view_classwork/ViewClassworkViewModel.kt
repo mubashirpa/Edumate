@@ -20,6 +20,7 @@ import edumate.app.domain.model.student_submission.AssignmentSubmission
 import edumate.app.domain.model.student_submission.Attachment
 import edumate.app.domain.model.student_submission.DriveFile
 import edumate.app.domain.model.student_submission.StudentSubmission
+import edumate.app.domain.model.student_submission.SubmissionState
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.course_work.GetCourseWorkUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
@@ -27,6 +28,7 @@ import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.student_submission.GetStudentSubmissionUseCase
 import edumate.app.domain.usecase.student_submission.TurnInStudentSubmissionUseCase
 import edumate.app.navigation.Routes
+import java.util.Date
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -84,6 +86,10 @@ class ViewClassworkViewModel @Inject constructor(
             ViewClassworkUiEvent.TurnIn -> {
                 submitAssignment()
             }
+
+            ViewClassworkUiEvent.UnSubmit -> {
+                unSubmitClasswork()
+            }
         }
     }
 
@@ -137,15 +143,40 @@ class ViewClassworkViewModel @Inject constructor(
                 courseWorkId,
                 currentUser?.uid.orEmpty()
             ).onEach { resource ->
-                if (resource is Resource.Success) {
-                    val studentSubmission = resource.data
-                    if (studentSubmission?.assignmentSubmission != null) {
-                        uiState.attachments.addAll(
-                            studentSubmission.assignmentSubmission.attachments
+                when (resource) {
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(yourWorkDataState = DataState.LOADING)
+                    }
+
+                    is Resource.Success -> {
+                        val submission = resource.data
+                        val attachments = submission?.assignmentSubmission?.attachments.orEmpty()
+                        if (submission != null) {
+                            studentSubmission.value = submission
+                        }
+                        uiState.studentSubmissionAttachments.clear()
+                        uiState.studentSubmissionAttachments.addAll(attachments)
+                        uiState = uiState.copy(
+                            studentSubmissionLate = studentSubmission.value.late,
+                            studentSubmissionPoint = studentSubmission.value.assignedGrade,
+                            studentSubmissionState = studentSubmission.value.state,
+                            yourWorkDataState = DataState.SUCCESS
                         )
+                    }
+
+                    is Resource.Error -> {
+                        uiState =
+                            uiState.copy(yourWorkDataState = DataState.ERROR(resource.message!!))
                     }
                 }
             }.launchIn(viewModelScope)
+        } else {
+            uiState =
+                uiState.copy(
+                    yourWorkDataState = DataState.ERROR(
+                        UiText.StringResource(Strings.error_unexpected)
+                    )
+                )
         }
     }
 
@@ -171,7 +202,7 @@ class ViewClassworkViewModel @Inject constructor(
                             title = fileName,
                             type = mimeType
                         )
-                        uiState.attachments.add(Attachment(driveFile))
+                        uiState.studentSubmissionAttachments.add(Attachment(driveFile))
                         uiState.copy(openProgressDialog = false)
                     } else {
                         uiState.copy(
@@ -192,7 +223,7 @@ class ViewClassworkViewModel @Inject constructor(
     }
 
     private fun deleteFile(index: Int) {
-        val fileName = uiState.attachments[index].driveFile?.title
+        val fileName = uiState.studentSubmissionAttachments[index].driveFile?.title
         val filePath =
             "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/$courseWorkId/$fileName"
 
@@ -203,7 +234,7 @@ class ViewClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    uiState.attachments.removeAt(index)
+                    uiState.studentSubmissionAttachments.removeAt(index)
                     uiState.copy(openProgressDialog = false)
                 }
 
@@ -224,16 +255,20 @@ class ViewClassworkViewModel @Inject constructor(
         }
 
         val userId = currentUser?.uid.orEmpty()
+        val late = uiState.classwork.dueTime?.before(Date()) == true
 
         studentSubmission.value = studentSubmission.value.copy(
             courseId = courseId,
             courseWorkId = courseWorkId,
             id = userId,
             userId = userId,
-            late = false,
+            state = SubmissionState.TURNED_IN,
+            late = late,
             alternateLink = "https://edumateapp.web.app/submissions?cid=$courseId&wid=$courseWorkId&id=$userId",
             courseWorkType = CourseWorkType.ASSIGNMENT,
-            assignmentSubmission = AssignmentSubmission(attachments = uiState.attachments)
+            assignmentSubmission = AssignmentSubmission(
+                attachments = uiState.studentSubmissionAttachments
+            )
         )
 
         turnInStudentSubmissionUseCase(
@@ -248,6 +283,38 @@ class ViewClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
+                    fetchStudentSubmission()
+                    uiState.copy(openProgressDialog = false)
+                }
+
+                is Resource.Error -> {
+                    uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun unSubmitClasswork() {
+        studentSubmission.value = studentSubmission.value.copy(
+            state = SubmissionState.RECLAIMED_BY_STUDENT
+        )
+
+        turnInStudentSubmissionUseCase(
+            studentSubmission.value.courseId,
+            studentSubmission.value.courseWorkId,
+            studentSubmission.value.id,
+            studentSubmission.value
+        ).onEach { resource ->
+            uiState = when (resource) {
+                is Resource.Loading -> {
+                    uiState.copy(openProgressDialog = true)
+                }
+
+                is Resource.Success -> {
+                    fetchStudentSubmission()
                     uiState.copy(openProgressDialog = false)
                 }
 

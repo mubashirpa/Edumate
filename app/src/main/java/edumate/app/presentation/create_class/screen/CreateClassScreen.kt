@@ -102,7 +102,7 @@ fun CreateClassScreen(
         ) {
             when {
                 viewModel.uiState.loading -> {
-                    LoadingIndicator()
+                    LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
                 viewModel.uiState.error != null -> {
                     ErrorScreen(modifier = Modifier.fillMaxSize())

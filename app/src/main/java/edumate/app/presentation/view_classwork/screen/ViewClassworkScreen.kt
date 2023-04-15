@@ -95,7 +95,7 @@ fun ViewClassworkScreen(
                     }
 
                     else -> {
-                        ComingSoon()
+                        ComingSoon(modifier = Modifier.navigationBarsPadding())
                     }
                 }
             }
@@ -320,6 +320,9 @@ fun ContentAssignment(
         },
         onSubmitClick = {
             onEvent(ViewClassworkUiEvent.TurnIn)
+        },
+        onUnSubmitClick = {
+            onEvent(ViewClassworkUiEvent.UnSubmit)
         }
     )
 }

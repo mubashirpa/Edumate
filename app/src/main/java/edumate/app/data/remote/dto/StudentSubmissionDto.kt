@@ -8,6 +8,7 @@ import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.student_submission.AssignmentSubmission
 import edumate.app.domain.model.student_submission.MultipleChoiceSubmission
 import edumate.app.domain.model.student_submission.ShortAnswerSubmission
+import edumate.app.domain.model.student_submission.SubmissionState
 import java.util.*
 import kotlin.collections.HashMap
 
@@ -20,6 +21,7 @@ data class StudentSubmissionDto(
     val creationTime: Date? = null,
     @ServerTimestamp
     val updateTime: Date? = null,
+    val state: SubmissionState = SubmissionState.SUBMISSION_STATE_UNSPECIFIED,
     val late: Boolean = false,
     val assignedGrade: Int? = null,
     val alternateLink: String = "",
@@ -40,6 +42,7 @@ data class StudentSubmissionDto(
                     ?: FieldValue.serverTimestamp()
                 ),
             FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
+            FirebaseConstants.Firestore.STATE to state,
             FirebaseConstants.Firestore.LATE to late,
             FirebaseConstants.Firestore.ASSIGNED_GRADE to assignedGrade,
             FirebaseConstants.Firestore.ALTERNATE_LINK to alternateLink,
