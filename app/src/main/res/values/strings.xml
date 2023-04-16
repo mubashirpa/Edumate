@@ -5,8 +5,10 @@
     <string name="add_a_class_to_get_started">Add a class to get started</string>
     <string name="add_assignments_and_other_works_for_class">Add assignments and other works for the class</string>
     <string name="add_attachment">Add attachment</string>
+    <string name="add_class_comment">Add class comment</string>
     <string name="add_link">Add link</string>
     <string name="add_option">Add option</string>
+    <string name="add_work">Add work</string>
     <string name="all">All</string>
     <string name="all_students">All students</string>
     <string name="ask">Ask</string>
@@ -14,6 +16,7 @@
     <string name="assign">Assign</string>
     <string name="assignment">Assignment</string>
     <string name="assignment_title">Assignment title</string>
+    <string name="attachments">Attachments</string>
     <string name="cancel">Cancel</string>
     <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">Cannot retrieve Classwork at this time, Please try again later.</string>
     <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">Cannot retrieve Peoples at this time, Please try again later.</string>
@@ -35,6 +38,7 @@
     <string name="delete_material">Delete material?</string>
     <string name="delete_question">Delete question?</string>
     <string name="description">Description</string>
+    <string name="done_late">Done late</string>
     <string name="dont_have_an_account">Don\'t have an Account?</string>
     <string name="due_">Due %1s</string>
     <string name="due_date">Due date</string>
@@ -50,6 +54,8 @@
     <string name="get_started">Get started</string>
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
     <string name="google">Google</string>
+    <string name="hand_in">Hand in</string>
+    <string name="handed_in">Handed in</string>
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
     <string name="insert_link">Insert link</string>
@@ -62,9 +68,11 @@
     <string name="joining_class">Joining class</string>
     <string name="leave_class">Leave class</string>
     <string name="leave_class_warning_message">You wont be able to open this class unless you\'re re-invited</string>
+    <string name="mark_as_done">Mark as done</string>
     <string name="marks_and_comments_will_also_be_deleted">Marks and comments will also be deleted.</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
+    <string name="missing">Missing</string>
     <string name="missing_title">Missing title</string>
     <string name="navigate_up">Navigate up</string>
     <string name="no_due_date">No due date</string>
@@ -106,13 +114,16 @@
     <string name="switch_to_touch_input">Switch to Touch Input</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
+    <string name="un_submit">Un-submit</string>
     <string name="unenrol">Unenrol</string>
     <string name="unmarked">Unmarked</string>
     <string name="updating_class">Updating class</string>
     <string name="upload_file">Upload file</string>
     <string name="url">URL</string>
     <string name="welcome_back">Welcome back!</string>
+    <string name="you_have_no_attachments_uploaded">You have no attachments uploaded.</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet</string>
+    <string name="your_work">Your work</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>

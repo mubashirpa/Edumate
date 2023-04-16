@@ -131,17 +131,17 @@ fun ContentAssignment(
             }
         }
 
-    Box(
+    Column(
         modifier = Modifier
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f)
+        ) {
+            Column(modifier = Modifier.fillMaxSize()) {
                 if (isTeacher) {
                     TabRow(selectedTabIndex = pagerState.currentPage) {
                         tabs.forEachIndexed { index, screen ->
@@ -206,7 +206,10 @@ fun ContentAssignment(
                                             if (points != null && points > 0) {
                                                 Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
-                                                    text = "$points points",
+                                                    text = stringResource(
+                                                        id = Strings._points,
+                                                        points
+                                                    ),
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                                     style = MaterialTheme.typography.bodyMedium
                                                 )
@@ -228,7 +231,7 @@ fun ContentAssignment(
                                     if (attachments.isNotEmpty()) {
                                         header {
                                             Text(
-                                                text = "Attachments",
+                                                text = stringResource(id = Strings.attachments),
                                                 modifier = Modifier.padding(top = 6.dp),
                                                 style = MaterialTheme.typography.titleMedium
                                             )
@@ -276,34 +279,35 @@ fun ContentAssignment(
                     }
                 }
             }
-            if (currentUserType == UserType.STUDENT) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp)
-                ) {
-                    Button(
-                        onClick = {
-                            onEvent(ViewClassworkUiEvent.OnOpenYourWorkBottomSheet(true))
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "Your work")
-                    }
-                }
+
+            FloatingActionButton(
+                onClick = {},
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Filled.Comment,
+                    contentDescription = stringResource(id = Strings.add_class_comment)
+                )
             }
         }
 
-        FloatingActionButton(
-            onClick = {},
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-        ) {
-            Icon(
-                imageVector = Icons.Filled.Comment,
-                contentDescription = "Add class comment"
-            )
+        if (currentUserType == UserType.STUDENT) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Button(
+                    onClick = {
+                        onEvent(ViewClassworkUiEvent.OnOpenYourWorkBottomSheet(true))
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(id = Strings.your_work))
+                }
+            }
         }
     }
 
@@ -375,7 +379,7 @@ fun ContentMaterial(
             if (attachments.isNotEmpty()) {
                 header {
                     Text(
-                        text = "Attachments",
+                        text = stringResource(id = Strings.attachments),
                         modifier = Modifier.padding(top = 6.dp),
                         style = MaterialTheme.typography.titleMedium
                     )

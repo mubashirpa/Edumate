@@ -7,14 +7,25 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.InsertDriveFile
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import edumate.app.R.string as Strings
 import edumate.app.core.DataState
+import edumate.app.core.utils.FileType
+import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.student_submission.SubmissionState
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
@@ -31,6 +42,9 @@ fun YourWorkBottomSheet(
     onSubmitClick: () -> Unit,
     onUnSubmitClick: () -> Unit
 ) {
+    val context = LocalContext.current
+    val fileUtils = remember { FileUtils(context) }
+
     if (uiState.openYourWorkBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
@@ -50,7 +64,7 @@ fun YourWorkBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Your work",
+                        text = stringResource(id = Strings.your_work),
                         modifier = Modifier.weight(1f),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge
@@ -60,7 +74,12 @@ fun YourWorkBottomSheet(
 
                 when (uiState.yourWorkDataState) {
                     is DataState.ERROR -> {
-                        ErrorScreen(errorMessage = uiState.yourWorkDataState.message.asString())
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
                     }
 
                     DataState.LOADING -> {
@@ -95,7 +114,11 @@ fun YourWorkBottomSheet(
                                         .height(128.dp),
                                     contentAlignment = Alignment.Center
                                 ) {
-                                    Text(text = "You have no attachments uploaded.")
+                                    Text(
+                                        text = stringResource(
+                                            id = Strings.you_have_no_attachments_uploaded
+                                        )
+                                    )
                                 }
                             } else {
                                 attachments.onEachIndexed { index, attachment ->
@@ -106,6 +129,25 @@ fun YourWorkBottomSheet(
                                                     ?: attachment.driveFile?.url.orEmpty(),
                                                 overflow = TextOverflow.Ellipsis,
                                                 maxLines = 1
+                                            )
+                                        },
+                                        leadingContent = {
+                                            val icon =
+                                                when (
+                                                    fileUtils.getFileType(
+                                                        attachment.driveFile?.type
+                                                    )
+                                                ) {
+                                                    FileType.IMAGE -> Icons.Default.Image
+                                                    FileType.VIDEO -> Icons.Default.VideoFile
+                                                    FileType.AUDIO -> Icons.Default.AudioFile
+                                                    FileType.PDF -> Icons.Default.PictureAsPdf
+                                                    FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                }
+
+                                            Icon(
+                                                imageVector = icon,
+                                                contentDescription = null
                                             )
                                         },
                                         trailingContent = {
@@ -152,7 +194,7 @@ private fun YourWorkActionButtons(
                 onClick = onUnSubmitClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Un-submit")
+                Text(text = stringResource(id = Strings.un_submit))
             }
         }
 
@@ -161,7 +203,7 @@ private fun YourWorkActionButtons(
                 onClick = onUnSubmitClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = "Un-submit")
+                Text(text = stringResource(id = Strings.un_submit))
             }
         }
 
@@ -174,18 +216,18 @@ private fun YourWorkActionButtons(
                 ) {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = "Add work",
+                        contentDescription = stringResource(id = Strings.add_work),
                         modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = "Add work")
+                    Text(text = stringResource(id = Strings.add_work))
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedButton(
                     onClick = onSubmitClick,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Mark as done")
+                    Text(text = stringResource(id = Strings.mark_as_done))
                 }
             } else {
                 OutlinedButton(
@@ -195,18 +237,18 @@ private fun YourWorkActionButtons(
                 ) {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = "Add work",
+                        contentDescription = stringResource(id = Strings.add_work),
                         modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
-                    Text(text = "Add work")
+                    Text(text = stringResource(id = Strings.add_work))
                 }
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = onSubmitClick,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = "Hand in")
+                    Text(text = stringResource(id = Strings.hand_in))
                 }
             }
         }
@@ -228,12 +270,12 @@ private fun TopBarTrailingContent(
         when (uiState.studentSubmissionState) {
             SubmissionState.TURNED_IN -> {
                 Text(
-                    text = "Handed in",
+                    text = stringResource(id = Strings.handed_in),
                     style = MaterialTheme.typography.bodyMedium
                 )
                 if (uiState.studentSubmissionLate) {
                     Text(
-                        text = "Done late",
+                        text = stringResource(id = Strings.done_late),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
@@ -246,7 +288,7 @@ private fun TopBarTrailingContent(
                 )
                 if (uiState.studentSubmissionLate) {
                     Text(
-                        text = "Done late",
+                        text = stringResource(id = Strings.done_late),
                         style = MaterialTheme.typography.labelSmall
                     )
                 }
@@ -260,26 +302,26 @@ private fun TopBarTrailingContent(
                     )
                     if (uiState.studentSubmissionLate) {
                         Text(
-                            text = "Done late",
+                            text = stringResource(id = Strings.done_late),
                             style = MaterialTheme.typography.labelSmall
                         )
                     }
                 } else if (dueDate != null) {
                     if (dueDate.before(Date())) {
                         Text(
-                            text = "Missing",
+                            text = stringResource(id = Strings.missing),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     } else if (date != null) {
                         Text(
-                            text = "Due $date",
+                            text = stringResource(id = Strings.due_, date),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 } else {
                     Text(
-                        text = "No due date",
+                        text = stringResource(id = Strings.no_due_date),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
@@ -289,19 +331,19 @@ private fun TopBarTrailingContent(
                 if (dueDate != null) {
                     if (dueDate.before(Date())) {
                         Text(
-                            text = "Missing",
+                            text = stringResource(id = Strings.missing),
                             color = MaterialTheme.colorScheme.error,
                             style = MaterialTheme.typography.bodyMedium
                         )
                     } else if (date != null) {
                         Text(
-                            text = "Due $date",
+                            text = stringResource(id = Strings.due_, date),
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
                 } else {
                     Text(
-                        text = "No due date",
+                        text = stringResource(id = Strings.no_due_date),
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
