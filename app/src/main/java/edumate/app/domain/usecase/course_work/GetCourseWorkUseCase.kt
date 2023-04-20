@@ -12,11 +12,11 @@ import kotlinx.coroutines.flow.flow
 class GetCourseWorkUseCase @Inject constructor(
     private val courseWorkRepository: CourseWorkRepository
 ) {
-    operator fun invoke(courseWorkId: String, courseId: String): Flow<Resource<CourseWork?>> =
+    operator fun invoke(courseId: String, id: String): Flow<Resource<CourseWork?>> =
         flow {
             try {
                 emit(Resource.Loading())
-                val courseWork = courseWorkRepository.get(courseWorkId, courseId)?.toCourseWork()
+                val courseWork = courseWorkRepository.get(courseId, id)?.toCourseWork()
                 emit(Resource.Success(courseWork))
             } catch (e: Exception) {
                 emit(Resource.Error(UiText.DynamicString("${e.message}")))

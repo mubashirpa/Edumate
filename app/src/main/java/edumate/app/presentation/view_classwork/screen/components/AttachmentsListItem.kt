@@ -26,12 +26,12 @@ import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.course_work.File
+import edumate.app.domain.model.course_work.DriveFile
 
 @Composable
 fun AttachmentsListItem(
     title: String,
-    file: File? = null,
+    driveFile: DriveFile? = null,
     icon: ImageVector = Icons.Default.Attachment,
     onClick: () -> Unit
 ) {
@@ -45,7 +45,7 @@ fun AttachmentsListItem(
     ) {
         Column(modifier = Modifier.padding(10.dp)) {
             OutlinedCard(modifier = Modifier.aspectRatio(16f / 9f)) {
-                if (file == null) {
+                if (driveFile == null) {
                     Box(
                         modifier = Modifier.fillMaxSize(),
                         contentAlignment = Alignment.Center
@@ -53,11 +53,11 @@ fun AttachmentsListItem(
                         Icon(imageVector = icon, contentDescription = null)
                     }
                 } else {
-                    when (fileUtils.getFileType(file.type)) {
+                    when (fileUtils.getFileType(driveFile.type)) {
                         FileType.IMAGE -> {
                             AsyncImage(
                                 model = ImageRequest.Builder(context)
-                                    .data(file.url)
+                                    .data(driveFile.url)
                                     .crossfade(true)
                                     .build(),
                                 contentDescription = null,
@@ -66,7 +66,7 @@ fun AttachmentsListItem(
                             )
                         }
                         FileType.VIDEO -> {
-                            VideoThumbnail(url = file.url, modifier = Modifier.fillMaxSize())
+                            VideoThumbnail(url = driveFile.url, modifier = Modifier.fillMaxSize())
                         }
                         else -> {
                             Box(

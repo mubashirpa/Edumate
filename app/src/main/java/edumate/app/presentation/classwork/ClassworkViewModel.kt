@@ -49,18 +49,23 @@ class ClassworkViewModel @Inject constructor(
             is ClassworkUiEvent.OnDeleteClasswork -> {
                 deleteClasswork(event.classworkId)
             }
+
             is ClassworkUiEvent.OnOpenDeleteClassworkDialogChange -> {
                 uiState = uiState.copy(deleteClasswork = event.classwork)
             }
+
             is ClassworkUiEvent.OnOpenFabMenuChange -> {
                 uiState = uiState.copy(openFabMenu = event.open)
             }
+
             is ClassworkUiEvent.OnRefresh -> {
                 fetchClasswork(true)
             }
+
             is ClassworkUiEvent.OnRetry -> {
                 fetchClasswork(false)
             }
+
             is ClassworkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
@@ -82,6 +87,7 @@ class ClassworkViewModel @Inject constructor(
                             uiState.copy(dataState = DataState.LOADING)
                         }
                     }
+
                     is Resource.Success -> {
                         val classwork = resource.data ?: emptyList()
                         uiState = uiState.copy(
@@ -97,6 +103,7 @@ class ClassworkViewModel @Inject constructor(
                             refreshing = false
                         )
                     }
+
                     is Resource.Error -> {
                         uiState = if (refreshing) {
                             uiState.copy(
@@ -123,7 +130,7 @@ class ClassworkViewModel @Inject constructor(
 
     private fun deleteClasswork(classworkId: String) {
         courseId?.let {
-            deleteCourseWorkUseCase(classworkId, it).onEach { resource ->
+            deleteCourseWorkUseCase(it, classworkId).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         uiState = uiState.copy(
@@ -131,10 +138,12 @@ class ClassworkViewModel @Inject constructor(
                             openProgressDialog = true
                         )
                     }
+
                     is Resource.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchClasswork(true)
                     }
+
                     is Resource.Error -> {
                         uiState = uiState.copy(
                             openProgressDialog = false,

@@ -34,6 +34,7 @@ import edumate.app.presentation.components.ComingSoon
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
+import edumate.app.presentation.student_work.screen.StudentWorkScreen
 import edumate.app.presentation.view_classwork.ViewClassworkTabsScreen
 import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
@@ -246,11 +247,11 @@ fun ContentAssignment(
                                                     )
                                                 }
 
-                                                it.file != null -> {
+                                                it.driveFile != null -> {
                                                     val icon =
                                                         when (
                                                             fileUtils.getFileType(
-                                                                it.file.type
+                                                                it.driveFile.type
                                                             )
                                                         ) {
                                                             FileType.IMAGE -> Icons.Default.Image
@@ -260,8 +261,9 @@ fun ContentAssignment(
                                                             FileType.UNKNOWN -> Icons.Default.InsertDriveFile
                                                         }
                                                     AttachmentsListItem(
-                                                        title = it.file.title ?: it.file.url,
-                                                        file = it.file,
+                                                        title = it.driveFile.title
+                                                            ?: it.driveFile.url,
+                                                        driveFile = it.driveFile,
                                                         icon = icon,
                                                         onClick = {}
                                                     )
@@ -274,7 +276,7 @@ fun ContentAssignment(
                         }
 
                         1 -> {
-                            ComingSoon()
+                            StudentWorkScreen()
                         }
                     }
                 }
@@ -394,11 +396,11 @@ fun ContentMaterial(
                             )
                         }
 
-                        it.file != null -> {
+                        it.driveFile != null -> {
                             val icon =
                                 when (
                                     fileUtils.getFileType(
-                                        it.file.type
+                                        it.driveFile.type
                                     )
                                 ) {
                                     FileType.IMAGE -> Icons.Default.Image
@@ -408,8 +410,8 @@ fun ContentMaterial(
                                     FileType.UNKNOWN -> Icons.Default.InsertDriveFile
                                 }
                             AttachmentsListItem(
-                                title = it.file.title ?: it.file.url,
-                                file = it.file,
+                                title = it.driveFile.title ?: it.driveFile.url,
+                                driveFile = it.driveFile,
                                 icon = icon,
                                 onClick = {}
                             )

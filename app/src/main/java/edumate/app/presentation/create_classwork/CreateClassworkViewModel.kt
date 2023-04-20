@@ -9,6 +9,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
 import edumate.app.core.FirebaseConstants
@@ -16,10 +17,20 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.enumValueOf
-import edumate.app.domain.model.course_work.*
+import edumate.app.domain.model.course_work.AssigneeMode
+import edumate.app.domain.model.course_work.Assignment
+import edumate.app.domain.model.course_work.CourseWork
+import edumate.app.domain.model.course_work.CourseWorkState
+import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.domain.model.course_work.DriveFile
+import edumate.app.domain.model.course_work.Link
+import edumate.app.domain.model.course_work.Material
+import edumate.app.domain.model.course_work.MultipleChoiceQuestion
+import edumate.app.domain.model.course_work.SubmissionModificationMode
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.course_work.CreateCourseWorkUseCase
+import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
 import edumate.app.navigation.Routes
@@ -38,6 +49,7 @@ class CreateClassworkViewModel @Inject constructor(
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val createCourseWorkUseCase: CreateCourseWorkUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
+    private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField
 ) : ViewModel() {
 
@@ -81,44 +93,54 @@ class CreateClassworkViewModel @Inject constructor(
                 uiState.attachments.add(Material(link = link))
                 fetchUrlMetadata(event.link)
             }
+
             is CreateClassworkUiEvent.OnDescriptionChange -> {
                 uiState = uiState.copy(description = event.description)
             }
+
             is CreateClassworkUiEvent.OnDueDateChange -> {
                 uiState = uiState.copy(dueDate = event.dueDate)
             }
-            is CreateClassworkUiEvent.OnGetContent -> {
+
+            is CreateClassworkUiEvent.OnFilePicked -> {
                 uploadFile(event.uri, event.fileUtils)
             }
+
             is CreateClassworkUiEvent.OnOpenAddLinkDialogChange -> {
                 uiState = uiState.copy(openAddLinkDialog = event.open)
             }
+
             is CreateClassworkUiEvent.OnOpenAttachmentMenuChange -> {
                 uiState = uiState.copy(openAttachmentMenu = event.open)
             }
+
             is CreateClassworkUiEvent.OnOpenDatePickerDialogChange -> {
                 uiState = uiState.copy(openDatePickerDialog = event.open)
             }
+
             is CreateClassworkUiEvent.OnOpenPointsDialogChange -> {
                 uiState = uiState.copy(openPointsDialog = event.open)
             }
+
             is CreateClassworkUiEvent.OnOpenTimePickerDialogChange -> {
                 uiState = uiState.copy(openTimePickerDialog = event.open)
             }
+
             is CreateClassworkUiEvent.OnPointsChange -> {
                 uiState = uiState.copy(points = event.points)
             }
+
             is CreateClassworkUiEvent.OnTitleChange -> {
                 uiState = uiState.copy(
                     title = event.title,
                     titleError = null
                 )
             }
+
             is CreateClassworkUiEvent.OnRemoveAttachment -> {
-                // Stop urlUseCaseJob to avoid conflict
-                urlUseCaseJob?.cancel()
-                uiState.attachments.removeAt(event.position)
+                deleteFile(event.index)
             }
+
             is CreateClassworkUiEvent.OnWorkTypeChange -> {
                 // Empty choices when change workType
                 uiState = uiState.copy(
@@ -126,9 +148,11 @@ class CreateClassworkViewModel @Inject constructor(
                     choices = mutableStateListOf("Option 1")
                 )
             }
+
             CreateClassworkUiEvent.CreateClasswork -> {
                 createClasswork()
             }
+
             CreateClassworkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
@@ -138,17 +162,6 @@ class CreateClassworkViewModel @Inject constructor(
     private fun createClasswork() {
         val title = uiState.title
         val titleResult = validateTextField.execute(title)
-        val maxPoints = try {
-            uiState.points?.toInt()
-        } catch (e: NumberFormatException) {
-            null
-        }
-        val multipleChoiceQuestion =
-            if (uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
-                MultipleChoiceQuestion(choices = uiState.choices)
-            } else {
-                null
-            }
 
         if (!titleResult.successful) {
             uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
@@ -160,28 +173,59 @@ class CreateClassworkViewModel @Inject constructor(
             return
         }
 
+        val maxPoints = try {
+            uiState.points?.toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+        val multipleChoiceQuestion =
+            if (uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
+                MultipleChoiceQuestion(choices = uiState.choices)
+            } else {
+                null
+            }
+        val id = FirebaseFirestore.getInstance()
+            .collection(FirebaseConstants.Firestore.COURSES_COLLECTION).document(courseId)
+            .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document().id
+        val assignment = if (uiState.workType == CourseWorkType.ASSIGNMENT) {
+            Assignment(
+                studentWorkFolder = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/$id"
+            )
+        } else {
+            null
+        }
+
         courseWork.value = courseWork.value.copy(
             courseId = courseId,
+            id = id,
             title = uiState.title,
             description = uiState.description.ifEmpty { null },
             materials = uiState.attachments,
             state = CourseWorkState.PUBLISHED,
+            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/details?cid=$courseId&cwid=$id",
             dueTime = uiState.dueDate,
             maxPoints = maxPoints,
             workType = uiState.workType,
+            assigneeMode = AssigneeMode.ALL_STUDENTS,
+            submissionModificationMode = SubmissionModificationMode.MODIFIABLE,
             creatorUserId = currentUser!!.uid,
+            assignment = assignment,
             multipleChoiceQuestion = multipleChoiceQuestion
         )
 
-        createCourseWorkUseCase(courseWork.value).onEach { resource ->
+        createCourseWorkUseCase(courseId, courseWork.value).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)
                 }
+
                 is Resource.Success -> {
+                    val classwork = resource.data
                     uiState = uiState.copy(openProgressDialog = false)
-                    resultChannel.send(resource.data.orEmpty())
+                    // TODO("Add error message if classwork is null")
+                    resultChannel.send(classwork?.id.orEmpty())
                 }
+
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
@@ -196,26 +240,53 @@ class CreateClassworkViewModel @Inject constructor(
         val fileExtension = fileUtils.getFileExtension(uri)
         val fileName = fileUtils.getFileName(uri) ?: "${uri.lastPathSegment}.$fileExtension"
         val mimeType = fileUtils.getMimeType(uri)
+        val filePath = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
 
-        uploadFileUseCase(
-            uri,
-            "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
-        ).onEach { resource ->
+        uploadFileUseCase(uri, filePath).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)
                 }
+
                 is Resource.Success -> {
-                    val file = File(
+                    val driveFile = DriveFile(
                         url = resource.data.toString(),
                         title = fileName,
                         type = mimeType
                     )
                     uiState = uiState.copy(openProgressDialog = false)
-                    uiState.attachments.add(Material(file = file))
+                    uiState.attachments.add(Material(driveFile = driveFile))
                 }
+
                 is Resource.Error -> {
                     uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteFile(index: Int) {
+        val fileName = uiState.attachments[index].driveFile?.title
+        val filePath = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
+
+        deleteFileUseCase(filePath).onEach { resource ->
+            uiState = when (resource) {
+                is Resource.Loading -> {
+                    uiState.copy(openProgressDialog = true)
+                }
+
+                is Resource.Success -> {
+                    // Stop urlUseCaseJob to avoid conflict
+                    urlUseCaseJob?.cancel()
+                    uiState.attachments.removeAt(index)
+                    uiState.copy(openProgressDialog = false)
+                }
+
+                is Resource.Error -> {
+                    uiState.copy(
                         openProgressDialog = false,
                         userMessage = resource.message
                     )

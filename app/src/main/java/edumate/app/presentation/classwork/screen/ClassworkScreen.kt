@@ -102,9 +102,11 @@ fun ClassworkScreen(
                 is DataState.UNKNOWN -> {
                     // Nothing happened
                 }
+
                 is DataState.LOADING -> {
                     LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
+
                 is DataState.ERROR -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
@@ -114,6 +116,7 @@ fun ClassworkScreen(
                         }
                     )
                 }
+
                 is DataState.EMPTY -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
@@ -128,6 +131,7 @@ fun ClassworkScreen(
                         }
                     )
                 }
+
                 is DataState.SUCCESS -> {
                     Box(
                         modifier = Modifier
@@ -203,9 +207,6 @@ fun ClassworkScreen(
     }
 
     if (uiState.openFabMenu) {
-        val bottomMargin =
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
-
         ModalBottomSheet(
             onDismissRequest = {
                 onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
@@ -251,7 +252,7 @@ fun ClassworkScreen(
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
                 }
             )
-            Spacer(modifier = Modifier.height(bottomMargin))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 
@@ -287,12 +288,15 @@ private fun DeleteClassworkDialog(
             CourseWorkType.ASSIGNMENT -> stringResource(
                 id = Strings.marks_and_comments_will_also_be_deleted
             )
+
             CourseWorkType.SHORT_ANSWER_QUESTION -> stringResource(
                 id = Strings.marks_and_comments_will_also_be_deleted
             )
+
             CourseWorkType.MULTIPLE_CHOICE_QUESTION -> stringResource(
                 id = Strings.marks_and_comments_will_also_be_deleted
             )
+
             else -> ""
         }
 

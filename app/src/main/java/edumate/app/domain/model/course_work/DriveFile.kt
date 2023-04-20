@@ -1,7 +1,7 @@
 package edumate.app.domain.model.course_work
 
-data class File(
-    val url: String = "",
+data class DriveFile(
+    val type: String? = null,
     val title: String? = null,
-    val type: String? = null
+    val url: String = ""
 )

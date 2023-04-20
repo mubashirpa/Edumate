@@ -128,9 +128,11 @@ fun PeopleScreen(
                 is DataState.UNKNOWN -> {
                     // Nothing happened
                 }
+
                 is DataState.LOADING -> {
                     LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
+
                 is DataState.ERROR -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
@@ -140,6 +142,7 @@ fun PeopleScreen(
                         }
                     )
                 }
+
                 else -> {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Row(
@@ -321,9 +324,6 @@ fun PeopleScreen(
     }
 
     if (viewModel.uiState.openFabMenu) {
-        val bottomMargin =
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
-
         ModalBottomSheet(
             onDismissRequest = {
                 viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
@@ -350,7 +350,7 @@ fun PeopleScreen(
                     }
                 }
             )
-            Spacer(modifier = Modifier.height(bottomMargin))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 
@@ -469,9 +469,11 @@ private fun RemoveUserDialog(
                                 is AsyncImagePainter.State.Loading -> {
                                     avatar()
                                 }
+
                                 is AsyncImagePainter.State.Error -> {
                                     avatar()
                                 }
+
                                 else -> {
                                     SubcomposeAsyncImageContent()
                                 }

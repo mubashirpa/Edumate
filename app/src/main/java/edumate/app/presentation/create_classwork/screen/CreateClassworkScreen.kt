@@ -43,7 +43,7 @@ fun CreateClassworkScreen(
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
-                onEvent(CreateClassworkUiEvent.OnGetContent(it, fileUtils))
+                onEvent(CreateClassworkUiEvent.OnFilePicked(it, fileUtils))
             }
         }
 
@@ -81,6 +81,7 @@ fun CreateClassworkScreen(
                     onEvent = onEvent
                 )
             }
+
             CourseWorkType.ASSIGNMENT -> {
                 ContentAssignment(
                     courseTitle = className,
@@ -88,6 +89,7 @@ fun CreateClassworkScreen(
                     onEvent = onEvent
                 )
             }
+
             else -> {
                 ContentQuestion(
                     courseTitle = className,

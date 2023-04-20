@@ -2,6 +2,7 @@ package edumate.app.data.repository
 
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.StudentSubmissionDto
@@ -23,11 +24,9 @@ class StudentSubmissionRepositoryImpl @Inject constructor(
     }
 
     override suspend fun list(courseId: String, courseWorkId: String): List<StudentSubmissionDto> {
-        return studentSubmissions(
-            courseId,
-            courseWorkId
-        ).orderBy(FirebaseConstants.Firestore.CREATION_TIME).get()
-            .await().documents.mapNotNull { snapshot ->
+        return studentSubmissions(courseId, courseWorkId)
+            .orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING)
+            .get().await().documents.mapNotNull { snapshot ->
                 snapshot.toObject<StudentSubmissionDto>()
             }
     }

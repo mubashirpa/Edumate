@@ -22,9 +22,6 @@ fun AttachmentMenuBottomSheet(
     onDismissRequest: () -> Unit
 ) {
     if (openBottomSheet) {
-        val bottomMargin =
-            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
-
         ModalBottomSheet(onDismissRequest = onDismissRequest) {
             ListItem(
                 headlineContent = {
@@ -50,7 +47,7 @@ fun AttachmentMenuBottomSheet(
                     Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
                 }
             )
-            Spacer(modifier = Modifier.height(bottomMargin))
+            Spacer(modifier = Modifier.height(10.dp))
         }
     }
 }

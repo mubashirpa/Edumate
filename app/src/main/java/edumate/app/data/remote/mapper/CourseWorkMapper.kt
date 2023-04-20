@@ -11,13 +11,18 @@ fun CourseWorkDto.toCourseWork(): CourseWork {
         description,
         materials,
         state,
+        alternateLink,
         creationTime,
         updateTime,
         dueTime,
         scheduledTime,
         maxPoints,
         workType,
+        assigneeMode,
+        individualStudentsOptions,
+        submissionModificationMode,
         creatorUserId,
+        assignment,
         multipleChoiceQuestion
     )
 }
@@ -30,13 +35,18 @@ fun CourseWork.toCourseWorkDto(): CourseWorkDto {
         description,
         materials,
         state,
+        alternateLink,
         creationTime,
         updateTime,
         dueTime,
         scheduledTime,
         maxPoints,
         workType,
+        assigneeMode,
+        individualStudentsOptions,
+        submissionModificationMode,
         creatorUserId,
+        assignment,
         multipleChoiceQuestion
     )
 }

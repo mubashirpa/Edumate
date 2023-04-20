@@ -221,8 +221,8 @@ fun ContentQuestion(
                         uiState.attachments.onEachIndexed { index, material ->
                             ListItem(
                                 headlineContent = {
-                                    val title: String = if (material.file != null) {
-                                        material.file.title ?: material.file.url
+                                    val title: String = if (material.driveFile != null) {
+                                        material.driveFile.title ?: material.driveFile.url
                                     } else {
                                         material.link?.title ?: material.link?.url.orEmpty()
                                     }
@@ -234,8 +234,8 @@ fun ContentQuestion(
                                 },
                                 leadingContent = {
                                     if (material.link?.thumbnailUrl.isNullOrEmpty()) {
-                                        val icon = if (material.file != null) {
-                                            when (fileUtils.getFileType(material.file.type)) {
+                                        val icon = if (material.driveFile != null) {
+                                            when (fileUtils.getFileType(material.driveFile.type)) {
                                                 FileType.IMAGE -> Icons.Default.Image
                                                 FileType.VIDEO -> Icons.Default.VideoFile
                                                 FileType.AUDIO -> Icons.Default.AudioFile

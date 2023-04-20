@@ -122,49 +122,53 @@ fun YourWorkBottomSheet(
                                 }
                             } else {
                                 attachments.onEachIndexed { index, attachment ->
-                                    ListItem(
-                                        headlineContent = {
-                                            Text(
-                                                text = attachment.driveFile?.title
-                                                    ?: attachment.driveFile?.url.orEmpty(),
-                                                overflow = TextOverflow.Ellipsis,
-                                                maxLines = 1
-                                            )
-                                        },
-                                        leadingContent = {
-                                            val icon =
-                                                when (
-                                                    fileUtils.getFileType(
-                                                        attachment.driveFile?.type
-                                                    )
-                                                ) {
-                                                    FileType.IMAGE -> Icons.Default.Image
-                                                    FileType.VIDEO -> Icons.Default.VideoFile
-                                                    FileType.AUDIO -> Icons.Default.AudioFile
-                                                    FileType.PDF -> Icons.Default.PictureAsPdf
-                                                    FileType.UNKNOWN -> Icons.Default.InsertDriveFile
-                                                }
+                                    OutlinedCard {
+                                        ListItem(
+                                            headlineContent = {
+                                                Text(
+                                                    text = attachment.driveFile?.title
+                                                        ?: attachment.driveFile?.url.orEmpty(),
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    maxLines = 1
+                                                )
+                                            },
+                                            leadingContent = {
+                                                val icon =
+                                                    when (
+                                                        fileUtils.getFileType(
+                                                            attachment.driveFile?.type
+                                                        )
+                                                    ) {
+                                                        FileType.IMAGE -> Icons.Default.Image
+                                                        FileType.VIDEO -> Icons.Default.VideoFile
+                                                        FileType.AUDIO -> Icons.Default.AudioFile
+                                                        FileType.PDF -> Icons.Default.PictureAsPdf
+                                                        FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                    }
 
-                                            Icon(
-                                                imageVector = icon,
-                                                contentDescription = null
-                                            )
-                                        },
-                                        trailingContent = {
-                                            IconButton(onClick = { onRemoveAttachmentClick(index) }) {
                                                 Icon(
-                                                    imageVector = Icons.Default.Clear,
+                                                    imageVector = icon,
                                                     contentDescription = null
                                                 )
+                                            },
+                                            trailingContent = {
+                                                IconButton(
+                                                    onClick = { onRemoveAttachmentClick(index) }
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Clear,
+                                                        contentDescription = null
+                                                    )
+                                                }
                                             }
-                                        }
-                                    )
+                                        )
+                                    }
                                     if (index < attachments.lastIndex) {
-                                        Divider(modifier = Modifier.padding(horizontal = 16.dp))
+                                        Spacer(modifier = Modifier.height(10.dp))
                                     }
                                 }
                             }
-                            Spacer(modifier = Modifier.height(10.dp))
+                            Spacer(modifier = Modifier.height(16.dp))
                             YourWorkActionButtons(
                                 state = uiState.studentSubmissionState,
                                 attachmentsSize = attachments.size,

@@ -64,6 +64,7 @@ class ViewClassworkViewModel @Inject constructor(
     init {
         getCurrentUserUseCase().map { user ->
             currentUser = user
+            // TODO("Fetch student submission only if current user is student")
             fetchStudentSubmission()
         }.launchIn(viewModelScope)
         fetchClasswork()
@@ -95,7 +96,7 @@ class ViewClassworkViewModel @Inject constructor(
 
     private fun fetchClasswork() {
         if (courseWorkId != null && courseId != null) {
-            getCourseWorkUseCase(courseWorkId, courseId).onEach { resource ->
+            getCourseWorkUseCase(courseId, courseWorkId).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         uiState = uiState.copy(dataState = DataState.LOADING)
@@ -184,7 +185,6 @@ class ViewClassworkViewModel @Inject constructor(
         val fileExtension = fileUtils.getFileExtension(uri)
         val fileName = fileUtils.getFileName(uri) ?: "${uri.lastPathSegment}.$fileExtension"
         val mimeType = fileUtils.getMimeType(uri)
-
         val filePath =
             "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/$courseWorkId/$fileName"
 
@@ -257,6 +257,8 @@ class ViewClassworkViewModel @Inject constructor(
         val userId = currentUser?.uid.orEmpty()
         val late = uiState.classwork.dueTime?.before(Date()) == true
 
+        // TODO("shortAnswerSubmission and multipleChoiceSubmission")
+
         studentSubmission.value = studentSubmission.value.copy(
             courseId = courseId,
             courseWorkId = courseWorkId,
@@ -264,7 +266,7 @@ class ViewClassworkViewModel @Inject constructor(
             userId = userId,
             state = SubmissionState.TURNED_IN,
             late = late,
-            alternateLink = "https://edumateapp.web.app/submissions?cid=$courseId&wid=$courseWorkId&id=$userId",
+            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/submissions?cid=$courseId&cwid=$courseWorkId&id=$userId",
             courseWorkType = CourseWorkType.ASSIGNMENT,
             assignmentSubmission = AssignmentSubmission(
                 attachments = uiState.studentSubmissionAttachments

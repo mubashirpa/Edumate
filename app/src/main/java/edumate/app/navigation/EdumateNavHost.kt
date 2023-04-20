@@ -114,6 +114,12 @@ fun EdumateNavHost(
         }
         composable(route = Screen.ProfileScreen.route) {
             ProfileScreen(
+                onSignOut = {
+                    navController.navigate(Routes.Graph.AUTHENTICATION) {
+                        launchSingleTop = true
+                        popUpTo(Screen.HomeScreen.route) { inclusive = true }
+                    }
+                },
                 onBackPressed = {
                     navController.navigateUp()
                 }
