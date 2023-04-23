@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
+import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
@@ -73,29 +74,33 @@ fun CreateClassworkScreen(
             scrollBehavior = scrollBehavior,
             onNavigationClick = onBackPressed
         )
-        when (uiState.workType) {
-            CourseWorkType.MATERIAL -> {
-                ContentMaterial(
-                    courseTitle = className,
-                    uiState = uiState,
-                    onEvent = onEvent
-                )
-            }
+        if (uiState.loading) {
+            LoadingIndicator(modifier = Modifier.fillMaxSize())
+        } else {
+            when (uiState.workType) {
+                CourseWorkType.MATERIAL -> {
+                    ContentMaterial(
+                        courseTitle = className,
+                        uiState = uiState,
+                        onEvent = onEvent
+                    )
+                }
 
-            CourseWorkType.ASSIGNMENT -> {
-                ContentAssignment(
-                    courseTitle = className,
-                    uiState = uiState,
-                    onEvent = onEvent
-                )
-            }
+                CourseWorkType.ASSIGNMENT -> {
+                    ContentAssignment(
+                        courseTitle = className,
+                        uiState = uiState,
+                        onEvent = onEvent
+                    )
+                }
 
-            else -> {
-                ContentQuestion(
-                    courseTitle = className,
-                    uiState = uiState,
-                    onEvent = onEvent
-                )
+                else -> {
+                    ContentQuestion(
+                        courseTitle = className,
+                        uiState = uiState,
+                        onEvent = onEvent
+                    )
+                }
             }
         }
     }

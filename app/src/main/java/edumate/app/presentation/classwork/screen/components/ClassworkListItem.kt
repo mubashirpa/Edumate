@@ -102,7 +102,6 @@ fun ClassworkListItem(
                         Text(text = stringResource(id = Strings.posted_, posted))
                     }
                 }
-                UserType.UNKNOWN -> {}
             }
         },
         leadingContent = {

@@ -67,6 +67,7 @@ class PeopleViewModel @Inject constructor(
                             peoples = peoples
                         )
                     }
+
                     PeopleFilterType.TEACHERS -> {
                         uiState = uiState.copy(
                             dataState = DataState.SUCCESS,
@@ -75,6 +76,7 @@ class PeopleViewModel @Inject constructor(
                             peoples = teachers()
                         )
                     }
+
                     PeopleFilterType.STUDENTS -> {
                         val students = students()
                         uiState = uiState.copy(
@@ -94,35 +96,43 @@ class PeopleViewModel @Inject constructor(
                     }
                 }
             }
+
             is PeopleUiEvent.OnLeaveClass -> {
                 deleteTeacher(event.uid, true)
             }
+
             is PeopleUiEvent.OnOpenFabMenuChange -> {
                 uiState = uiState.copy(openFabMenu = event.open)
             }
+
             is PeopleUiEvent.OnOpenLeaveClassDialogChange -> {
                 uiState = uiState.copy(openLeaveClassDialog = event.open)
             }
+
             is PeopleUiEvent.OnOpenRemoveUserDialogChange -> {
                 uiState = uiState.copy(removeUser = event.user)
             }
+
             is PeopleUiEvent.OnRemoveUser -> {
                 when (event.userType) {
                     UserType.STUDENT -> {
                         deleteStudent(event.uid)
                     }
+
                     UserType.TEACHER -> {
                         deleteTeacher(event.uid, false)
                     }
-                    UserType.UNKNOWN -> {}
                 }
             }
+
             is PeopleUiEvent.OnRefresh -> {
                 fetchPeoples(true)
             }
+
             is PeopleUiEvent.OnRetry -> {
                 fetchPeoples(false)
             }
+
             is PeopleUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
@@ -144,6 +154,7 @@ class PeopleViewModel @Inject constructor(
                             uiState.copy(dataState = DataState.LOADING)
                         }
                     }
+
                     is Resource.Success -> {
                         peoples = resource.data ?: emptyList()
                         peoples = peoples.moveItemToFirstPosition { it.id == ownerId }
@@ -157,6 +168,7 @@ class PeopleViewModel @Inject constructor(
                                     refreshing = false
                                 )
                             }
+
                             PeopleFilterType.TEACHERS -> {
                                 uiState = uiState.copy(
                                     dataState = DataState.SUCCESS,
@@ -165,6 +177,7 @@ class PeopleViewModel @Inject constructor(
                                     refreshing = false
                                 )
                             }
+
                             PeopleFilterType.STUDENTS -> {
                                 val students = students()
                                 uiState = uiState.copy(
@@ -184,6 +197,7 @@ class PeopleViewModel @Inject constructor(
                             }
                         }
                     }
+
                     is Resource.Error -> {
                         uiState = if (refreshing) {
                             uiState.copy(
@@ -220,6 +234,7 @@ class PeopleViewModel @Inject constructor(
                             removeUser = null
                         )
                     }
+
                     is Resource.Success -> {
                         if (isLeaving) {
                             uiState = uiState.copy(
@@ -231,6 +246,7 @@ class PeopleViewModel @Inject constructor(
                             fetchPeoples(true)
                         }
                     }
+
                     is Resource.Error -> {
                         uiState = uiState.copy(
                             openProgressDialog = false,
@@ -252,10 +268,12 @@ class PeopleViewModel @Inject constructor(
                             removeUser = null
                         )
                     }
+
                     is Resource.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchPeoples(true)
                     }
+
                     is Resource.Error -> {
                         uiState = uiState.copy(
                             openProgressDialog = false,

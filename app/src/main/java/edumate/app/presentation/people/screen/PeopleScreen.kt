@@ -85,10 +85,8 @@ fun PeopleScreen(
     val currentUserType =
         if (course.teachers.contains(viewModel.uiState.currentUser?.uid)) {
             UserType.TEACHER
-        } else if (course.students.contains(viewModel.uiState.currentUser?.uid)) {
-            UserType.STUDENT
         } else {
-            UserType.UNKNOWN
+            UserType.STUDENT
         }
     val jumpToBottomButtonEnabled by remember {
         derivedStateOf {
@@ -373,7 +371,11 @@ fun PeopleScreen(
             viewModel.onEvent(PeopleUiEvent.OnOpenRemoveUserDialogChange(null))
         },
         user = viewModel.uiState.removeUser,
-        course = course,
+        userType = if (course.teachers.contains(viewModel.uiState.removeUser?.id)) {
+            UserType.TEACHER
+        } else {
+            UserType.STUDENT
+        },
         onConfirmClick = { userType, uid ->
             viewModel.onEvent(
                 PeopleUiEvent.OnRemoveUser(
@@ -418,7 +420,7 @@ private fun LeaveClassDialog(
 private fun RemoveUserDialog(
     onDismissRequest: () -> Unit,
     user: User?,
-    course: Course,
+    userType: UserType,
     onConfirmClick: (userType: UserType, uid: String) -> Unit
 ) {
     if (user != null) {
@@ -431,12 +433,6 @@ private fun RemoveUserDialog(
                 lastName = ""
             )
         }
-        val userType =
-            if (course.teachers.contains(user.id)) {
-                UserType.TEACHER
-            } else {
-                UserType.STUDENT
-            }
         val title = if (userType == UserType.TEACHER) {
             stringResource(id = Strings.remove_teacher)
         } else {

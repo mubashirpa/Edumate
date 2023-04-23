@@ -69,10 +69,8 @@ fun ClassworkScreen(
     val currentUserType =
         if (course.teachers.contains(uiState.currentUser?.uid)) {
             UserType.TEACHER
-        } else if (course.students.contains(uiState.currentUser?.uid)) {
-            UserType.STUDENT
         } else {
-            UserType.UNKNOWN
+            UserType.STUDENT
         }
     val jumpToBottomButtonEnabled by remember {
         derivedStateOf {

@@ -116,7 +116,6 @@ fun CreateClassScreen(
                             .verticalScroll(rememberScrollState())
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
-                        @Suppress("SENSELESS_COMPARISON")
                         TextField(
                             value = viewModel.uiState.course.name,
                             onValueChange = {

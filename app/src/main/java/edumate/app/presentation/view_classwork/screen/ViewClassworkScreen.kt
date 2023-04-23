@@ -17,7 +17,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -137,161 +136,147 @@ fun ContentAssignment(
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         ) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                if (isTeacher) {
-                    TabRow(selectedTabIndex = pagerState.currentPage) {
-                        tabs.forEachIndexed { index, screen ->
-                            Tab(
-                                selected = pagerState.currentPage == index,
-                                onClick = {
-                                    coroutineScope.launch {
-                                        pagerState.animateScrollToPage(index)
-                                    }
-                                },
-                                text = {
-                                    Text(
-                                        text = stringResource(id = screen.title),
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
+            if (isTeacher) {
+                TabRow(selectedTabIndex = pagerState.currentPage) {
+                    tabs.forEachIndexed { index, screen ->
+                        Tab(
+                            selected = pagerState.currentPage == index,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
                                 }
-                            )
-                        }
-                    }
-                }
-                HorizontalPager(
-                    pageCount = tabs.size,
-                    modifier = Modifier.fillMaxSize(),
-                    state = pagerState,
-                    userScrollEnabled = isTeacher
-                ) { page ->
-                    when (page) {
-                        0 -> {
-                            LazyVerticalGrid(
-                                columns = GridCells.Adaptive(minSize = 128.dp),
-                                modifier = Modifier.fillMaxSize(),
-                                contentPadding = contentPadding,
-                                verticalArrangement = Arrangement.spacedBy(10.dp),
-                                horizontalArrangement = Arrangement.spacedBy(10.dp),
-                                content = {
-                                    header {
-                                        Column {
-                                            Spacer(modifier = Modifier.height(6.dp))
-                                            val dueDate = uiState.classwork.dueTime
-                                            if (dueDate != null) {
-                                                val date =
-                                                    DateUtils.getRelativeTimeSpanString(
-                                                        dueDate.time
-                                                    )
-                                                Text(
-                                                    text = stringResource(
-                                                        id = Strings.due_,
-                                                        date.toString()
-                                                    ),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                                Spacer(modifier = Modifier.height(4.dp))
-                                            }
-                                            Text(
-                                                text = uiState.classwork.title,
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.headlineSmall
-                                            )
-                                            val points = uiState.classwork.maxPoints
-                                            if (points != null && points > 0) {
-                                                Spacer(modifier = Modifier.height(4.dp))
-                                                Text(
-                                                    text = stringResource(
-                                                        id = Strings._points,
-                                                        points
-                                                    ),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                            }
-                                        }
-                                    }
-                                    val description = uiState.classwork.description
-                                    if (description != null) {
-                                        header {
-                                            Text(
-                                                text = description,
-                                                modifier = Modifier.padding(top = 6.dp),
-                                                color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.bodyLarge
-                                            )
-                                        }
-                                    }
-                                    val attachments = uiState.classwork.materials
-                                    if (attachments.isNotEmpty()) {
-                                        header {
-                                            Text(
-                                                text = stringResource(id = Strings.attachments),
-                                                modifier = Modifier.padding(top = 6.dp),
-                                                style = MaterialTheme.typography.titleMedium
-                                            )
-                                        }
-                                        items(attachments) {
-                                            when {
-                                                it.link != null -> {
-                                                    AttachmentsListItem(
-                                                        title = it.link.title ?: it.link.url,
-                                                        icon = Icons.Default.Link,
-                                                        onClick = {}
-                                                    )
-                                                }
-
-                                                it.driveFile != null -> {
-                                                    val icon =
-                                                        when (
-                                                            fileUtils.getFileType(
-                                                                it.driveFile.type
-                                                            )
-                                                        ) {
-                                                            FileType.IMAGE -> Icons.Default.Image
-                                                            FileType.VIDEO -> Icons.Default.VideoFile
-                                                            FileType.AUDIO -> Icons.Default.AudioFile
-                                                            FileType.PDF -> Icons.Default.PictureAsPdf
-                                                            FileType.UNKNOWN -> Icons.Default.InsertDriveFile
-                                                        }
-                                                    AttachmentsListItem(
-                                                        title = it.driveFile.title
-                                                            ?: it.driveFile.url,
-                                                        driveFile = it.driveFile,
-                                                        icon = icon,
-                                                        onClick = {}
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            )
-                        }
-
-                        1 -> {
-                            StudentWorkScreen()
-                        }
+                            },
+                            text = {
+                                Text(
+                                    text = stringResource(id = screen.title),
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        )
                     }
                 }
             }
+            HorizontalPager(
+                pageCount = tabs.size,
+                modifier = Modifier.fillMaxSize(),
+                state = pagerState,
+                userScrollEnabled = isTeacher
+            ) { page ->
+                when (page) {
+                    0 -> {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = 128.dp),
+                            modifier = Modifier.fillMaxSize(),
+                            contentPadding = contentPadding,
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            content = {
+                                header {
+                                    Column {
+                                        Spacer(modifier = Modifier.height(6.dp))
+                                        val dueDate = uiState.classwork.dueTime
+                                        if (dueDate != null) {
+                                            val date =
+                                                DateUtils.getRelativeTimeSpanString(
+                                                    dueDate.time
+                                                )
+                                            Text(
+                                                text = stringResource(
+                                                    id = Strings.due_,
+                                                    date.toString()
+                                                ),
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                        }
+                                        Text(
+                                            text = uiState.classwork.title,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            style = MaterialTheme.typography.headlineSmall
+                                        )
+                                        val points = uiState.classwork.maxPoints
+                                        if (points != null && points > 0) {
+                                            Spacer(modifier = Modifier.height(4.dp))
+                                            Text(
+                                                text = stringResource(
+                                                    id = Strings._points,
+                                                    points
+                                                ),
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                style = MaterialTheme.typography.bodyMedium
+                                            )
+                                        }
+                                    }
+                                }
+                                val description = uiState.classwork.description
+                                if (description != null) {
+                                    header {
+                                        Text(
+                                            text = description,
+                                            modifier = Modifier.padding(top = 6.dp),
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            style = MaterialTheme.typography.bodyLarge
+                                        )
+                                    }
+                                }
+                                val attachments = uiState.classwork.materials
+                                if (attachments.isNotEmpty()) {
+                                    header {
+                                        Text(
+                                            text = stringResource(id = Strings.attachments),
+                                            modifier = Modifier.padding(top = 6.dp),
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                    }
+                                    items(attachments) {
+                                        when {
+                                            it.link != null -> {
+                                                AttachmentsListItem(
+                                                    title = it.link.title ?: it.link.url,
+                                                    icon = Icons.Default.Link,
+                                                    onClick = {}
+                                                )
+                                            }
 
-            FloatingActionButton(
-                onClick = {},
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Comment,
-                    contentDescription = stringResource(id = Strings.add_class_comment)
-                )
+                                            it.driveFile != null -> {
+                                                val icon =
+                                                    when (
+                                                        fileUtils.getFileType(
+                                                            it.driveFile.type
+                                                        )
+                                                    ) {
+                                                        FileType.IMAGE -> Icons.Default.Image
+                                                        FileType.VIDEO -> Icons.Default.VideoFile
+                                                        FileType.AUDIO -> Icons.Default.AudioFile
+                                                        FileType.PDF -> Icons.Default.PictureAsPdf
+                                                        FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                    }
+                                                AttachmentsListItem(
+                                                    title = it.driveFile.title
+                                                        ?: it.driveFile.url,
+                                                    driveFile = it.driveFile,
+                                                    icon = icon,
+                                                    onClick = {}
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        )
+                    }
+
+                    1 -> {
+                        StudentWorkScreen(courseWork = uiState.classwork)
+                    }
+                }
             }
         }
 

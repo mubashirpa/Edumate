@@ -12,6 +12,7 @@ data class CreateClassworkUiState(
     val choices: SnapshotStateList<String> = mutableStateListOf("Option 1"),
     val description: String = "",
     val dueDate: Date? = null,
+    val loading: Boolean = false,
     val openAddLinkDialog: Boolean = false,
     val openAttachmentMenu: Boolean = false,
     val openDatePickerDialog: Boolean = false,

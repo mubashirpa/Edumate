@@ -4,11 +4,13 @@ import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import edumate.app.presentation.class_details.ClassDetailsViewModel
 import edumate.app.presentation.class_details.screen.ClassDetailsScreen
 import edumate.app.presentation.create_class.screen.CreateClassScreen
 import edumate.app.presentation.home.screen.HomeScreen
@@ -99,11 +101,11 @@ fun EdumateNavHost(
                     defaultValue = Routes.Args.CLASS_DETAILS_DEFAULT_COURSE_ID
                 }
             )
-        ) { backStackEntry ->
-            val courseId =
-                backStackEntry.arguments?.getString(Routes.Args.CLASS_DETAILS_COURSE_ID).orEmpty()
+        ) {
+            val viewModel: ClassDetailsViewModel = hiltViewModel()
             ClassDetailsScreen(
-                courseId = courseId,
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
                 onLeaveClass = {
                     navController.navigateUp()
                 },

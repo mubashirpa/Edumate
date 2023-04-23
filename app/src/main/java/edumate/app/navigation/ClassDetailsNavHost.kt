@@ -58,12 +58,19 @@ fun ClassDetailsNavHost(
                     navController.navigate(
                         Screen.CreateClassworkScreen.withArgs(
                             courseId,
+                            null,
                             workType.toString()
                         )
                     )
                 },
-                navigateToEditClasswork = { _, _, _ ->
-                    // TODO("Not yet implemented")
+                navigateToEditClasswork = { courseId, classworkId, workType ->
+                    navController.navigate(
+                        Screen.CreateClassworkScreen.withArgs(
+                            courseId,
+                            classworkId,
+                            workType.toString()
+                        )
+                    )
                 },
                 navigateToViewClasswork = { courseId, classworkId, workType, userType ->
                     navController.navigate(
@@ -101,12 +108,9 @@ fun ClassDetailsNavHost(
         composable(
             route = "${Screen.CreateClassworkScreen.route}${Routes.Args.CREATE_CLASSWORK_SCREEN}",
             arguments = listOf(
-                navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_ID) {
-                    type = NavType.StringType
-                },
-                navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) {
-                    type = NavType.StringType
-                }
+                navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_ID) { type = NavType.StringType },
+                navArgument(Routes.Args.CREATE_CLASSWORK_ID) { type = NavType.StringType },
+                navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) { type = NavType.StringType }
             )
         ) {
             val viewModel: CreateClassworkViewModel = hiltViewModel()
@@ -144,7 +148,7 @@ fun ClassDetailsNavHost(
                     .enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)
             val currentUserType: UserType? =
                 backStackEntry.arguments?.getString(Routes.Args.VIEW_CLASSWORK_USER_TYPE).orEmpty()
-                    .enumValueOf(UserType.UNKNOWN)
+                    .enumValueOf(UserType.STUDENT)
 
             ViewClassworkScreen(
                 uiState = viewModel.uiState,

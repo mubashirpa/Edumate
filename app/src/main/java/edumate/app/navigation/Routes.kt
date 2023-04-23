@@ -37,9 +37,10 @@ object Routes {
 
         // CreateClassworkScreen
         const val CREATE_CLASSWORK_COURSE_ID = "course_id"
+        const val CREATE_CLASSWORK_ID = "course_work_id"
         const val CREATE_CLASSWORK_TYPE = "work_type"
         const val CREATE_CLASSWORK_SCREEN =
-            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_TYPE}"
+            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_ID}/{$CREATE_CLASSWORK_TYPE}"
 
         // PeopleScreen
         const val PEOPLE_COURSE_ID = "course_id"

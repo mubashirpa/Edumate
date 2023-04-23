@@ -8,7 +8,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
@@ -30,6 +29,7 @@ import edumate.app.domain.model.course_work.SubmissionModificationMode
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.course_work.CreateCourseWorkUseCase
+import edumate.app.domain.usecase.course_work.GetCourseWorkUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -48,6 +48,7 @@ class CreateClassworkViewModel @Inject constructor(
     getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val createCourseWorkUseCase: CreateCourseWorkUseCase,
+    private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField
@@ -61,26 +62,37 @@ class CreateClassworkViewModel @Inject constructor(
 
     private val courseWork = mutableStateOf(CourseWork())
     private var urlUseCaseJob: Job? = null
-    private val courseId: String? = try {
+    private val courseId: String =
         checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_COURSE_ID])
-    } catch (e: IllegalStateException) {
-        null
-    }
-    private val type: String = try {
-        checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
-    } catch (e: IllegalStateException) {
-        "${CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED}"
-    }
-    private var currentUser: FirebaseUser? = null
+    private val classworkId: String =
+        checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID])
+    private val type: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
 
     init {
         val workType: CourseWorkType? = type.enumValueOf(
             CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
         )
         uiState = uiState.copy(workType = workType!!)
+
+        val id = generateClassworkId()
+        courseWork.value = courseWork.value.copy(
+            courseId = courseId,
+            id = id,
+            state = CourseWorkState.PUBLISHED,
+            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/details?cid=$courseId&cwid=$id",
+            assigneeMode = AssigneeMode.ALL_STUDENTS,
+            submissionModificationMode = SubmissionModificationMode.MODIFIABLE
+        )
+
         getCurrentUserUseCase().map { user ->
-            currentUser = user
+            user?.uid?.let {
+                courseWork.value = courseWork.value.copy(creatorUserId = it)
+            }
         }.launchIn(viewModelScope)
+
+        if (classworkId != "null") {
+            fetchClasswork()
+        }
     }
 
     fun onEvent(event: CreateClassworkUiEvent) {
@@ -138,7 +150,18 @@ class CreateClassworkViewModel @Inject constructor(
             }
 
             is CreateClassworkUiEvent.OnRemoveAttachment -> {
-                deleteFile(event.index)
+                val attachment = uiState.attachments[event.position]
+                when {
+                    attachment.driveFile != null -> {
+                        deleteFile(event.position)
+                    }
+
+                    attachment.link != null -> {
+                        // Stop urlUseCaseJob to avoid conflict
+                        urlUseCaseJob?.cancel()
+                        uiState.attachments.removeAt(event.position)
+                    }
+                }
             }
 
             is CreateClassworkUiEvent.OnWorkTypeChange -> {
@@ -159,17 +182,51 @@ class CreateClassworkViewModel @Inject constructor(
         }
     }
 
+    private fun fetchClasswork() {
+        getCourseWorkUseCase(courseId, classworkId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(loading = true)
+                }
+
+                is Resource.Success -> {
+                    val classwork = resource.data
+                    if (classwork != null) {
+                        courseWork.value = classwork
+                        uiState.attachments.addAll(classwork.materials)
+                        val choices = classwork.multipleChoiceQuestion?.choices
+                        if (choices != null) {
+                            uiState.choices.addAll(choices)
+                        }
+                        uiState = uiState.copy(
+                            description = classwork.description.orEmpty(),
+                            dueDate = classwork.dueTime,
+                            loading = false,
+                            points = classwork.maxPoints?.toString(),
+                            title = classwork.title,
+                            workType = classwork.workType
+                        )
+                    } else {
+                        uiState = uiState.copy(loading = false)
+                    }
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        loading = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
     private fun createClasswork() {
         val title = uiState.title
         val titleResult = validateTextField.execute(title)
 
         if (!titleResult.successful) {
             uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
-            return
-        }
-
-        if (courseId == null || currentUser == null) {
-            uiState = uiState.copy(userMessage = UiText.StringResource(Strings.error_unknown))
             return
         }
 
@@ -184,31 +241,21 @@ class CreateClassworkViewModel @Inject constructor(
             } else {
                 null
             }
-        val id = FirebaseFirestore.getInstance()
-            .collection(FirebaseConstants.Firestore.COURSES_COLLECTION).document(courseId)
-            .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document().id
         val assignment = if (uiState.workType == CourseWorkType.ASSIGNMENT) {
             Assignment(
-                studentWorkFolder = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/$id"
+                studentWorkFolder = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/${courseWork.value.id}"
             )
         } else {
             null
         }
 
         courseWork.value = courseWork.value.copy(
-            courseId = courseId,
-            id = id,
             title = uiState.title,
             description = uiState.description.ifEmpty { null },
             materials = uiState.attachments,
-            state = CourseWorkState.PUBLISHED,
-            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/details?cid=$courseId&cwid=$id",
             dueTime = uiState.dueDate,
             maxPoints = maxPoints,
             workType = uiState.workType,
-            assigneeMode = AssigneeMode.ALL_STUDENTS,
-            submissionModificationMode = SubmissionModificationMode.MODIFIABLE,
-            creatorUserId = currentUser!!.uid,
             assignment = assignment,
             multipleChoiceQuestion = multipleChoiceQuestion
         )
@@ -222,7 +269,6 @@ class CreateClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     val classwork = resource.data
                     uiState = uiState.copy(openProgressDialog = false)
-                    // TODO("Add error message if classwork is null")
                     resultChannel.send(classwork?.id.orEmpty())
                 }
 
@@ -268,8 +314,8 @@ class CreateClassworkViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteFile(index: Int) {
-        val fileName = uiState.attachments[index].driveFile?.title
+    private fun deleteFile(position: Int) {
+        val fileName = uiState.attachments[position].driveFile?.title
         val filePath = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
 
         deleteFileUseCase(filePath).onEach { resource ->
@@ -281,7 +327,7 @@ class CreateClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     // Stop urlUseCaseJob to avoid conflict
                     urlUseCaseJob?.cancel()
-                    uiState.attachments.removeAt(index)
+                    uiState.attachments.removeAt(position)
                     uiState.copy(openProgressDialog = false)
                 }
 
@@ -302,5 +348,11 @@ class CreateClassworkViewModel @Inject constructor(
                 uiState.attachments[position] = Material(link = resource.data)
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun generateClassworkId(): String {
+        return FirebaseFirestore.getInstance()
+            .collection(FirebaseConstants.Firestore.COURSES_COLLECTION).document(courseId)
+            .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document().id
     }
 }

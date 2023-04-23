@@ -17,7 +17,7 @@ sealed class CreateClassworkUiEvent {
     data class OnOpenTimePickerDialogChange(val open: Boolean) : CreateClassworkUiEvent()
     data class OnPointsChange(val points: String?) : CreateClassworkUiEvent()
     data class OnTitleChange(val title: String) : CreateClassworkUiEvent()
-    data class OnRemoveAttachment(val index: Int) : CreateClassworkUiEvent()
+    data class OnRemoveAttachment(val position: Int) : CreateClassworkUiEvent()
     data class OnWorkTypeChange(val workType: CourseWorkType) : CreateClassworkUiEvent()
     object CreateClasswork : CreateClassworkUiEvent()
     object UserMessageShown : CreateClassworkUiEvent()
