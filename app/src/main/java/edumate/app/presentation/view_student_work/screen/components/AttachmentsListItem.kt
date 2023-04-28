@@ -1,4 +1,4 @@
-package edumate.app.presentation.view_classwork.screen.components
+package edumate.app.presentation.view_student_work.screen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -15,7 +15,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.Icon
@@ -38,11 +37,11 @@ import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.course_work.Material
+import edumate.app.domain.model.student_submission.Attachment
 
 @Composable
 fun AttachmentsListItem(
-    attachment: Material,
+    attachment: Attachment,
     onClick: (url: String?) -> Unit
 ) {
     val context = LocalContext.current
@@ -55,31 +54,15 @@ fun AttachmentsListItem(
         FileType.PDF -> Icons.Default.PictureAsPdf
         FileType.UNKNOWN -> Icons.Default.InsertDriveFile
     }
-    val title: String = when {
-        attachment.driveFile != null -> {
-            attachment.driveFile.title ?: attachment.driveFile.url
-        }
-
-        attachment.link != null -> {
-            attachment.link.title ?: attachment.link.url
-        }
-
-        else -> {
-            ""
-        }
+    val title: String = if (attachment.driveFile != null) {
+        attachment.driveFile.title ?: attachment.driveFile.url
+    } else {
+        ""
     }
-    val url = when {
-        attachment.driveFile != null -> {
-            attachment.driveFile.url
-        }
-
-        attachment.link != null -> {
-            attachment.link.url
-        }
-
-        else -> {
-            null
-        }
+    val url = if (attachment.driveFile != null) {
+        attachment.driveFile.url
+    } else {
+        null
     }
 
     Column(
@@ -88,48 +71,29 @@ fun AttachmentsListItem(
             .clickable(enabled = url != null, onClick = { onClick(url) })
     ) {
         OutlinedCard(modifier = Modifier.aspectRatio(16f / 9f)) {
-            when {
-                attachment.driveFile != null -> {
-                    when (fileType) {
-                        FileType.IMAGE -> {
-                            ImageThumbnail(
-                                url = attachment.driveFile.url,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-
-                        FileType.VIDEO -> {
-                            VideoThumbnail(
-                                url = attachment.driveFile.url,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-
-                        else -> {
-                            Box(
-                                modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
-                            ) {
-                                Icon(imageVector = icon, contentDescription = null)
-                            }
-                        }
+            if (attachment.driveFile != null) {
+                when (fileType) {
+                    FileType.IMAGE -> {
+                        ImageThumbnail(
+                            url = attachment.driveFile.url,
+                            modifier = Modifier.fillMaxSize()
+                        )
                     }
-                }
 
-                attachment.link != null -> {
-                    val thumbnail = attachment.link.thumbnailUrl
-                    if (thumbnail.isNullOrEmpty()) {
+                    FileType.VIDEO -> {
+                        VideoThumbnail(
+                            url = attachment.driveFile.url,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                    else -> {
                         Box(
                             modifier = Modifier.fillMaxSize(),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(imageVector = Icons.Default.Link, contentDescription = null)
+                            Icon(imageVector = icon, contentDescription = null)
                         }
-                    } else {
-                        ImageThumbnail(
-                            url = thumbnail,
-                            modifier = Modifier.fillMaxSize()
-                        )
                     }
                 }
             }

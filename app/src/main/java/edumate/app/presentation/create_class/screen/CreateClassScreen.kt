@@ -104,9 +104,11 @@ fun CreateClassScreen(
                 viewModel.uiState.loading -> {
                     LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
+
                 viewModel.uiState.error != null -> {
                     ErrorScreen(modifier = Modifier.fillMaxSize())
                 }
+
                 else -> {
                     Column(
                         modifier = Modifier
@@ -116,6 +118,7 @@ fun CreateClassScreen(
                             .verticalScroll(rememberScrollState())
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
+                        @Suppress("SENSELESS_COMPARISON")
                         TextField(
                             value = viewModel.uiState.course.name,
                             onValueChange = {
@@ -127,8 +130,12 @@ fun CreateClassScreen(
                             label = {
                                 Text(text = stringResource(id = Strings.class_name))
                             },
-                            supportingText = {
-                                Text(text = stringResource(id = Strings.required))
+                            supportingText = if (nameError != null) {
+                                {
+                                    Text(text = stringResource(id = Strings.enter_a_class_name))
+                                }
+                            } else {
+                                null
                             },
                             isError = nameError != null,
                             keyboardOptions = KeyboardOptions(

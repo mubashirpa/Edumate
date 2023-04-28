@@ -9,6 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -103,7 +104,7 @@ fun YourWorkBottomSheet(
                                 uiState.studentSubmissionAttachments
 
                             Text(
-                                text = "Attachments",
+                                text = stringResource(id = Strings.attachments),
                                 style = MaterialTheme.typography.titleMedium
                             )
                             Spacer(modifier = Modifier.height(10.dp))
@@ -152,13 +153,15 @@ fun YourWorkBottomSheet(
                                                 )
                                             },
                                             trailingContent = {
-                                                IconButton(
-                                                    onClick = { onRemoveAttachmentClick(index) }
-                                                ) {
-                                                    Icon(
-                                                        imageVector = Icons.Default.Clear,
-                                                        contentDescription = null
-                                                    )
+                                                if (uiState.studentSubmission?.state != SubmissionState.TURNED_IN) {
+                                                    IconButton(
+                                                        onClick = { onRemoveAttachmentClick(index) }
+                                                    ) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Clear,
+                                                            contentDescription = null
+                                                        )
+                                                    }
                                                 }
                                             }
                                         )
@@ -170,8 +173,7 @@ fun YourWorkBottomSheet(
                             }
                             Spacer(modifier = Modifier.height(16.dp))
                             YourWorkActionButtons(
-                                state = uiState.studentSubmissionState,
-                                attachmentsSize = attachments.size,
+                                uiState = uiState,
                                 onAddWorkClick = onAddAttachmentClick,
                                 onSubmitClick = onSubmitClick,
                                 onUnSubmitClick = onUnSubmitClick
@@ -186,33 +188,48 @@ fun YourWorkBottomSheet(
 
 @Composable
 private fun YourWorkActionButtons(
-    state: SubmissionState?,
-    attachmentsSize: Int,
+    uiState: ViewClassworkUiState,
     onAddWorkClick: () -> Unit,
     onSubmitClick: () -> Unit,
     onUnSubmitClick: () -> Unit
 ) {
-    when (state) {
+    when (uiState.studentSubmission?.state) {
         SubmissionState.TURNED_IN -> {
             Button(
                 onClick = onUnSubmitClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(id = Strings.un_submit))
+                Text(text = stringResource(id = Strings.unsubmit))
             }
         }
 
         SubmissionState.RETURNED -> {
+            OutlinedButton(
+                onClick = onAddWorkClick,
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+            ) {
+                Icon(
+                    Icons.Filled.Add,
+                    contentDescription = null,
+                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                )
+                Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                Text(text = stringResource(id = Strings.add_work))
+            }
+            Spacer(modifier = Modifier.height(10.dp))
             Button(
-                onClick = onUnSubmitClick,
+                onClick = onSubmitClick,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text(text = stringResource(id = Strings.un_submit))
+                Text(text = stringResource(id = Strings.resubmit))
             }
         }
 
-        else -> {
-            if (attachmentsSize == 0) {
+        SubmissionState.RECLAIMED_BY_STUDENT -> {
+            val assignedGrade = uiState.studentSubmission.assignedGrade
+
+            if (uiState.studentSubmissionAttachments.isEmpty()) {
                 Button(
                     onClick = onAddWorkClick,
                     modifier = Modifier.fillMaxWidth(),
@@ -220,7 +237,63 @@ private fun YourWorkActionButtons(
                 ) {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = stringResource(id = Strings.add_work),
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = Strings.add_work))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                OutlinedButton(
+                    onClick = onSubmitClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val text = if (assignedGrade != null) {
+                        Strings.resubmit
+                    } else {
+                        Strings.mark_as_done
+                    }
+                    Text(text = stringResource(id = text))
+                }
+            } else {
+                OutlinedButton(
+                    onClick = onAddWorkClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                ) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                    )
+                    Spacer(Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = Strings.add_work))
+                }
+                Spacer(modifier = Modifier.height(10.dp))
+                Button(
+                    onClick = onSubmitClick,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    val text = if (assignedGrade != null) {
+                        Strings.resubmit
+                    } else {
+                        Strings.turn_in
+                    }
+                    Text(text = stringResource(id = text))
+                }
+            }
+        }
+
+        else -> {
+            if (uiState.studentSubmissionAttachments.isEmpty()) {
+                Button(
+                    onClick = onAddWorkClick,
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                ) {
+                    Icon(
+                        Icons.Filled.Add,
+                        contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -241,7 +314,7 @@ private fun YourWorkActionButtons(
                 ) {
                     Icon(
                         Icons.Filled.Add,
-                        contentDescription = stringResource(id = Strings.add_work),
+                        contentDescription = null,
                         modifier = Modifier.size(ButtonDefaults.IconSize)
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
@@ -252,7 +325,7 @@ private fun YourWorkActionButtons(
                     onClick = onSubmitClick,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(text = stringResource(id = Strings.hand_in))
+                    Text(text = stringResource(id = Strings.turn_in))
                 }
             }
         }
@@ -260,9 +333,7 @@ private fun YourWorkActionButtons(
 }
 
 @Composable
-private fun TopBarTrailingContent(
-    uiState: ViewClassworkUiState
-) {
+private fun TopBarTrailingContent(uiState: ViewClassworkUiState) {
     val dueDate = uiState.classwork.dueTime
     val date = if (dueDate != null) {
         DateUtils.getRelativeTimeSpanString(dueDate.time)
@@ -271,13 +342,23 @@ private fun TopBarTrailingContent(
     }
 
     Column {
-        when (uiState.studentSubmissionState) {
+        when (uiState.studentSubmission?.state) {
             SubmissionState.TURNED_IN -> {
-                Text(
-                    text = stringResource(id = Strings.handed_in),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                if (uiState.studentSubmissionLate) {
+                val maxPoints = uiState.classwork.maxPoints
+                val assignedGrade = uiState.studentSubmission.assignedGrade
+
+                if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
+                    Text(
+                        text = "$assignedGrade/$maxPoints",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                } else {
+                    Text(
+                        text = stringResource(id = Strings.turned_in),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                if (uiState.studentSubmission.late) {
                     Text(
                         text = stringResource(id = Strings.done_late),
                         style = MaterialTheme.typography.labelSmall
@@ -286,11 +367,28 @@ private fun TopBarTrailingContent(
             }
 
             SubmissionState.RETURNED -> {
-                Text(
-                    text = "${uiState.studentSubmissionPoint}/${uiState.classwork.maxPoints}",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                if (uiState.studentSubmissionLate) {
+                val maxPoints = uiState.classwork.maxPoints
+                val assignedGrade = uiState.studentSubmission.assignedGrade
+
+                if (maxPoints != null && maxPoints > 0) {
+                    if (assignedGrade != null) {
+                        Text(
+                            text = "$assignedGrade/$maxPoints",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    } else {
+                        Text(
+                            text = stringResource(id = Strings.unmarked),
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.Done,
+                        contentDescription = null
+                    )
+                }
+                if (uiState.studentSubmission.late) {
                     Text(
                         text = stringResource(id = Strings.done_late),
                         style = MaterialTheme.typography.labelSmall
@@ -299,12 +397,15 @@ private fun TopBarTrailingContent(
             }
 
             SubmissionState.RECLAIMED_BY_STUDENT -> {
-                if (uiState.studentSubmissionPoint != null) {
+                val maxPoints = uiState.classwork.maxPoints
+                val assignedGrade = uiState.studentSubmission.assignedGrade
+
+                if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
                     Text(
-                        text = "${uiState.studentSubmissionPoint}/${uiState.classwork.maxPoints}",
+                        text = "$assignedGrade/$maxPoints",
                         style = MaterialTheme.typography.bodyMedium
                     )
-                    if (uiState.studentSubmissionLate) {
+                    if (uiState.studentSubmission.late) {
                         Text(
                             text = stringResource(id = Strings.done_late),
                             style = MaterialTheme.typography.labelSmall

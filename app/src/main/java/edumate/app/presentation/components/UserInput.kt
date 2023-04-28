@@ -1,4 +1,4 @@
-package edumate.app.presentation.view_classwork.screen.components
+package edumate.app.presentation.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi

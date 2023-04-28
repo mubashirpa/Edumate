@@ -6,6 +6,9 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.StudentSubmissionDto
+import edumate.app.domain.model.student_submission.AssignmentSubmission
+import edumate.app.domain.model.student_submission.Attachment
+import edumate.app.domain.model.student_submission.SubmissionState
 import edumate.app.domain.repository.StudentSubmissionRepository
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
@@ -31,14 +34,42 @@ class StudentSubmissionRepositoryImpl @Inject constructor(
             }
     }
 
-    override suspend fun turnIn(
+    override suspend fun modifyAttachments(
+        courseId: String,
+        courseWorkId: String,
+        id: String,
+        addAttachments: List<Attachment>
+    ): StudentSubmissionDto? {
+        val assignmentSubmission = AssignmentSubmission(attachments = addAttachments)
+        studentSubmissions(courseId, courseWorkId).document(id)
+            .update(FirebaseConstants.Firestore.ASSIGNMENT_SUBMISSION, assignmentSubmission).await()
+        return get(courseId, courseWorkId, id)
+    }
+
+    override suspend fun patch(
         courseId: String,
         courseWorkId: String,
         id: String,
         studentSubmission: StudentSubmissionDto
-    ) {
+    ): StudentSubmissionDto? {
         studentSubmissions(courseId, courseWorkId).document(id).set(studentSubmission.toMap())
             .await()
+        return get(courseId, courseWorkId, id)
+    }
+
+    override suspend fun reclaim(courseId: String, courseWorkId: String, id: String) {
+        studentSubmissions(courseId, courseWorkId).document(id)
+            .update(FirebaseConstants.Firestore.STATE, SubmissionState.RECLAIMED_BY_STUDENT).await()
+    }
+
+    override suspend fun `return`(courseId: String, courseWorkId: String, id: String) {
+        studentSubmissions(courseId, courseWorkId).document(id)
+            .update(FirebaseConstants.Firestore.STATE, SubmissionState.RETURNED).await()
+    }
+
+    override suspend fun turnIn(courseId: String, courseWorkId: String, id: String) {
+        studentSubmissions(courseId, courseWorkId).document(id)
+            .update(FirebaseConstants.Firestore.STATE, SubmissionState.TURNED_IN).await()
     }
 
     private fun studentSubmissions(courseId: String, courseWorkId: String): CollectionReference =

@@ -6,6 +6,7 @@ import edumate.app.core.UiText
 import edumate.app.domain.model.User
 
 data class PeopleUiState(
+    val appBarMenuExpanded: Boolean = false,
     val currentUser: FirebaseUser? = null,
     val dataState: DataState = DataState.UNKNOWN,
     val filter: PeopleFilterType = PeopleFilterType.ALL,

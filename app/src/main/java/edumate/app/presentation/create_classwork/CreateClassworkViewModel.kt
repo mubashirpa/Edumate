@@ -60,21 +60,20 @@ class CreateClassworkViewModel @Inject constructor(
     private val resultChannel = Channel<String>()
     val createClassworkResults = resultChannel.receiveAsFlow()
 
-    private val courseWork = mutableStateOf(CourseWork())
-    private var urlUseCaseJob: Job? = null
     private val courseId: String =
         checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_COURSE_ID])
     private val classworkId: String =
         checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID])
     private val type: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
+    private val courseWork = mutableStateOf(CourseWork())
+    private var urlUseCaseJob: Job? = null
 
     init {
-        val workType: CourseWorkType? = type.enumValueOf(
-            CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
-        )
-        uiState = uiState.copy(workType = workType!!)
-
+        val workType: CourseWorkType =
+            type.enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)!!
+        uiState = uiState.copy(workType = workType)
         val id = generateClassworkId()
+
         courseWork.value = courseWork.value.copy(
             courseId = courseId,
             id = id,
@@ -207,7 +206,10 @@ class CreateClassworkViewModel @Inject constructor(
                             workType = classwork.workType
                         )
                     } else {
-                        uiState = uiState.copy(loading = false)
+                        uiState = uiState.copy(
+                            loading = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
                     }
                 }
 
@@ -268,8 +270,15 @@ class CreateClassworkViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     val classwork = resource.data
-                    uiState = uiState.copy(openProgressDialog = false)
-                    resultChannel.send(classwork?.id.orEmpty())
+                    if (classwork != null) {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        resultChannel.send(classwork.id)
+                    } else {
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
+                    }
                 }
 
                 is Resource.Error -> {
@@ -295,13 +304,21 @@ class CreateClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val driveFile = DriveFile(
-                        url = resource.data.toString(),
-                        title = fileName,
-                        type = mimeType
-                    )
-                    uiState = uiState.copy(openProgressDialog = false)
-                    uiState.attachments.add(Material(driveFile = driveFile))
+                    val fileUrl = resource.data
+                    uiState = if (fileUrl != null) {
+                        val driveFile = DriveFile(
+                            url = fileUrl.toString(),
+                            title = fileName,
+                            type = mimeType
+                        )
+                        uiState.attachments.add(Material(driveFile = driveFile))
+                        uiState.copy(openProgressDialog = false)
+                    } else {
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
+                    }
                 }
 
                 is Resource.Error -> {

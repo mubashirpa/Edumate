@@ -31,11 +31,7 @@ class ClassworkViewModel @Inject constructor(
     var uiState by mutableStateOf(ClassworkUiState())
         private set
 
-    private val courseId: String? = try {
-        checkNotNull(savedStateHandle[Routes.Args.CLASSWORK_COURSE_ID])
-    } catch (e: IllegalStateException) {
-        null
-    }
+    private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.CLASSWORK_COURSE_ID])
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -46,6 +42,10 @@ class ClassworkViewModel @Inject constructor(
 
     fun onEvent(event: ClassworkUiEvent) {
         when (event) {
+            is ClassworkUiEvent.OnAppBarMenuExpandedChange -> {
+                uiState = uiState.copy(appBarMenuExpanded = event.expanded)
+            }
+
             is ClassworkUiEvent.OnDeleteClasswork -> {
                 deleteClasswork(event.classworkId)
             }
@@ -77,81 +77,73 @@ class ClassworkViewModel @Inject constructor(
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry.
         // Otherwise show snackbar by using userMessage
-        if (courseId != null) {
-            getCourseWorksUseCase(courseId).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = if (refreshing) {
-                            uiState.copy(refreshing = true)
-                        } else {
-                            uiState.copy(dataState = DataState.LOADING)
-                        }
+        getCourseWorksUseCase(courseId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = if (refreshing) {
+                        uiState.copy(refreshing = true)
+                    } else {
+                        uiState.copy(dataState = DataState.LOADING)
                     }
+                }
 
-                    is Resource.Success -> {
-                        val classwork = resource.data ?: emptyList()
-                        uiState = uiState.copy(
-                            dataState = if (classwork.isEmpty()) {
-                                // Message is set from ui
-                                DataState.EMPTY(
-                                    message = UiText.Empty
-                                )
-                            } else {
-                                DataState.SUCCESS
-                            },
+                is Resource.Success -> {
+                    val classwork = resource.data
+                    uiState = if (classwork.isNullOrEmpty()) {
+                        if (refreshing) {
+                            uiState.copy(
+                                refreshing = false,
+                                userMessage = UiText.StringResource(Strings.error_unexpected)
+                            )
+                        } else {
+                            // Message is set from ui
+                            uiState.copy(dataState = DataState.EMPTY(UiText.Empty))
+                        }
+                    } else {
+                        uiState.copy(
                             classwork = classwork,
+                            dataState = DataState.SUCCESS,
                             refreshing = false
                         )
                     }
+                }
 
-                    is Resource.Error -> {
-                        uiState = if (refreshing) {
-                            uiState.copy(
-                                refreshing = false,
-                                userMessage = resource.message
-                            )
-                        } else {
-                            uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
-                        }
+                is Resource.Error -> {
+                    uiState = if (refreshing) {
+                        uiState.copy(
+                            refreshing = false,
+                            userMessage = resource.message
+                        )
+                    } else {
+                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
                     }
                 }
-            }.launchIn(viewModelScope)
-        } else {
-            uiState =
-                uiState.copy(
-                    dataState = DataState.ERROR(
-                        UiText.StringResource(
-                            Strings.cannot_retrieve_classwork_at_this_time_lease_try_again_later
-                        )
-                    )
-                )
-        }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteClasswork(classworkId: String) {
-        courseId?.let {
-            deleteCourseWorkUseCase(it, classworkId).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(
-                            deleteClasswork = null,
-                            openProgressDialog = true
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        uiState = uiState.copy(openProgressDialog = false)
-                        fetchClasswork(true)
-                    }
-
-                    is Resource.Error -> {
-                        uiState = uiState.copy(
-                            openProgressDialog = false,
-                            userMessage = resource.message
-                        )
-                    }
+        deleteCourseWorkUseCase(courseId, classworkId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(
+                        deleteClasswork = null,
+                        openProgressDialog = true
+                    )
                 }
-            }.launchIn(viewModelScope)
-        }
+
+                is Resource.Success -> {
+                    uiState = uiState.copy(openProgressDialog = false)
+                    fetchClasswork(true)
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }

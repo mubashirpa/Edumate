@@ -16,6 +16,7 @@ object Routes {
         const val REGISTER_SCREEN = "register_screen"
         const val STREAM_SCREEN = "stream_screen"
         const val VIEW_CLASSWORK_SCREEN = "view_classwork_screen"
+        const val VIEW_STUDENT_WORK_SCREEN = "view_student_work_screen"
     }
 
     object Graph {
@@ -38,7 +39,7 @@ object Routes {
         // CreateClassworkScreen
         const val CREATE_CLASSWORK_COURSE_ID = "course_id"
         const val CREATE_CLASSWORK_ID = "course_work_id"
-        const val CREATE_CLASSWORK_TYPE = "work_type"
+        const val CREATE_CLASSWORK_TYPE = "course_work_type"
         const val CREATE_CLASSWORK_SCREEN =
             "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_ID}/{$CREATE_CLASSWORK_TYPE}"
 
@@ -51,11 +52,18 @@ object Routes {
         const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
 
         // ViewClassworkScreen
-        const val VIEW_CLASSWORK_WORK_ID = "work_id"
-        const val VIEW_CLASSWORK_WORK_TYPE = "work_type"
-        const val VIEW_CLASSWORK_USER_TYPE = "user_type"
         const val VIEW_CLASSWORK_COURSE_ID = "course_id"
+        const val VIEW_CLASSWORK_ID = "course_work_id"
+        const val VIEW_CLASSWORK_TYPE = "course_work_type"
+        const val VIEW_CLASSWORK_USER_TYPE = "user_type"
         const val VIEW_CLASSWORK_SCREEN =
-            "/{$VIEW_CLASSWORK_WORK_ID}/{$VIEW_CLASSWORK_WORK_TYPE}/{$VIEW_CLASSWORK_USER_TYPE}/{$VIEW_CLASSWORK_COURSE_ID}"
+            "/{$VIEW_CLASSWORK_COURSE_ID}/{$VIEW_CLASSWORK_ID}/{$VIEW_CLASSWORK_TYPE}/{$VIEW_CLASSWORK_USER_TYPE}"
+
+        // ViewStudentWorkScreen
+        const val VIEW_STUDENT_WORK_COURSE_ID = "course_id"
+        const val VIEW_STUDENT_WORK_COURSE_WORK_ID = "course_work_id"
+        const val VIEW_STUDENT_WORK_ID = "student_submission_id"
+        const val VIEW_STUDENT_WORK_SCREEN =
+            "/{$VIEW_STUDENT_WORK_COURSE_ID}/{$VIEW_STUDENT_WORK_COURSE_WORK_ID}/{$VIEW_STUDENT_WORK_ID}"
     }
 }

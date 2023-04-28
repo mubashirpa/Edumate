@@ -187,9 +187,7 @@ private fun UserAvatar(
             id = user?.uid.orEmpty(),
             firstName = user?.displayName ?: user?.email.orEmpty(),
             lastName = "",
-            modifier = Modifier
-                .clip(CircleShape)
-                .clickable(onClick = onClick),
+            modifier = Modifier.clickable(onClick = onClick),
             size = 30.dp
         )
     }

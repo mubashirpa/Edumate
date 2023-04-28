@@ -1,6 +1,7 @@
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="app_name">Edumate</string>
-    <string name="_points">%1s points</string>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="_points">%1$s points</string>
+    <string name="_return">Return</string>
     <string name="add">Add</string>
     <string name="add_a_class_to_get_started">Add a class to get started</string>
     <string name="add_assignments_and_other_works_for_class">Add assignments and other works for the class</string>
@@ -10,15 +11,20 @@
     <string name="add_work">Add work</string>
     <string name="all">All</string>
     <string name="all_students">All students</string>
+    <string name="app_name" translatable="false">Edumate</string>
     <string name="ask">Ask</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
     <string name="assign">Assign</string>
+    <string name="assigned">Assigned</string>
     <string name="assignment">Assignment</string>
     <string name="assignment_title">Assignment title</string>
     <string name="attachments">Attachments</string>
     <string name="cancel">Cancel</string>
-    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">Cannot retrieve Classwork at this time, Please try again later.</string>
-    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">Cannot retrieve Peoples at this time, Please try again later.</string>
+    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">Cannot retrieve class works at this time, please try again later.</string>
+    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">Cannot retrieve classwork at this time, please try again later.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">Cannot retrieve peoples at this time, please try again later.</string>
+    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">Cannot retrieve Student work at this time, Please try again later.</string>
+    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">Cannot retrieve Student works at this time, Please try again later.</string>
     <string name="change_point_value">Change point value</string>
     <string name="class_code">Class code</string>
     <string name="class_code_shared_by_your_teacher">Class code shared by your teacher.</string>
@@ -37,23 +43,35 @@
     <string name="delete_material">Delete material?</string>
     <string name="delete_question">Delete question?</string>
     <string name="description">Description</string>
+    <string name="dialog_remove_attachment_text">Remove attachment?</string>
+    <string name="dialog_return_submission_text1">%1$s will be notified and can check any comments that you\'ve left.</string>
+    <string name="dialog_return_submission_text2">%1$s will be notified that their grade has changed.</string>
+    <string name="dialog_return_submission_text3">%1$s will be notified and can check any grade or comments that you\'ve left.</string>
+    <string name="dialog_return_submission_title1">Return work without marking?</string>
+    <string name="dialog_return_submission_title2">Update grade?</string>
+    <string name="dialog_return_submission_title3">Return work?</string>
+    <string name="dialog_turn_in_assignment_text1">%1$d attachment will be submitted for \"%2$s\".</string>
+    <string name="dialog_turn_in_assignment_text2">You didn\'t attach anything to \"%1$s\", so nothing will be turned in. Your teacher will see it\'s done.</string>
+    <string name="dialog_turn_in_assignment_title">Turn in your work?</string>
+    <string name="dialog_unsubmit_assignment_text">Unsubmit to add or change attachments. Don\'t forget to resubmit once you\'re done.</string>
+    <string name="dialog_unsubmit_assignment_title">Unsubmit your work?</string>
     <string name="done_late">Done late</string>
     <string name="dont_have_an_account">Don\'t have an Account?</string>
-    <string name="due_">Due %1s</string>
+    <string name="due_">Due %1$s</string>
     <string name="due_date">Due date</string>
-    <string name="due_today_">Due today, %1s</string>
+    <string name="due_today_">Due today, %1$s</string>
     <string name="edit">Edit</string>
     <string name="email">Email</string>
     <string name="empty_screen_subtitle">This screen is still under construction.</string>
     <string name="empty_screen_title">Screen under construction</string>
     <string name="enrolled">Enrolled</string>
+    <string name="enter_a_class_name">Enter a class name.</string>
     <string name="enter_time">Enter Time</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="full_name">Full name</string>
     <string name="get_started">Get started</string>
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
     <string name="google">Google</string>
-    <string name="hand_in">Hand in</string>
     <string name="handed_in">Handed in</string>
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
@@ -67,30 +85,37 @@
     <string name="joining_class">Joining class</string>
     <string name="leave_class">Leave class</string>
     <string name="leave_class_warning_message">You wont be able to open this class unless you\'re re-invited</string>
+    <string name="logout">Logout</string>
+    <string name="mark">Mark</string>
     <string name="mark_as_done">Mark as done</string>
+    <string name="marked">Marked</string>
     <string name="marks_and_comments_will_also_be_deleted">Marks and comments will also be deleted.</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
     <string name="missing">Missing</string>
     <string name="missing_title">Missing title</string>
+    <string name="name">Name</string>
     <string name="navigate_up" translatable="false">Navigate up</string>
     <string name="no_due_date">No due date</string>
+    <string name="no_files_attached">No files attached</string>
     <string name="ok">OK</string>
     <string name="password">Password</string>
     <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
     <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
     <string name="please_sign_in_to_your_account">Please sign in to your account</string>
     <string name="post">Post</string>
-    <string name="posted_">Posted %1s</string>
+    <string name="posted_">Posted %1$s</string>
     <string name="question">Question</string>
     <string name="question_title">Question title</string>
     <string name="recover">Recover</string>
+    <string name="refresh">Refresh</string>
     <string name="remove">Remove</string>
     <string name="remove_student">Remove student?</string>
     <string name="remove_teacher">Remove teacher?</string>
-    <string name="required">*required</string>
     <string name="reset_password">Reset password</string>
+    <string name="resubmit">Resubmit</string>
     <string name="retry">Retry</string>
+    <string name="returned">Returned</string>
     <string name="room">Room</string>
     <string name="save">Save</string>
     <string name="section">Section</string>
@@ -106,6 +131,7 @@
     <string name="signing_in">Signing in</string>
     <string name="student">Student</string>
     <string name="student_answers">Student answers</string>
+    <string name="student_not_yet_submitted">Student not yet submitted.</string>
     <string name="student_work">Student work</string>
     <string name="students">Students</string>
     <string name="subject">Subject</string>
@@ -113,9 +139,12 @@
     <string name="switch_to_touch_input">Switch to Touch Input</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
-    <string name="un_submit">Un-submit</string>
+    <string name="turn_in">Turn in</string>
+    <string name="turned_in">Turned in</string>
     <string name="unenrol">Unenrol</string>
     <string name="unmarked">Unmarked</string>
+    <string name="unsubmit">Unsubmit</string>
+    <string name="update">Update</string>
     <string name="updating_class">Updating class</string>
     <string name="upload_file">Upload file</string>
     <string name="url">URL</string>
@@ -128,6 +157,7 @@
     <string name="title_create_class_screen">Create class</string>
     <string name="title_edit_class_screen">Edit class</string>
     <string name="title_join_class_screen">Join class</string>
+    <string name="title_profile_screen">Profile</string>
 
     <!-- Screen labels -->
     <string name="label_stream_screen">Stream</string>
@@ -135,7 +165,7 @@
     <string name="label_people_screen">People</string>
 
     <!-- Success -->
-    <string name="success_send_password_reset_email">We sent an email to %1s with a link to get back into your account.</string>
+    <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
 
     <!-- Errors -->
     <string name="error_course_not_found">No class with that class code.</string>
@@ -145,7 +175,7 @@
     <!-- Authentication errors -->
     <string name="auth_invalid_user_exception">An unknown error has been occurred.</string>
     <string name="auth_error_user_disabled">User with this email has been disabled.</string>
-    <string name="auth_error_user_not_found">We can\'t find an account with %1s. try another email, or if you don\'t have an account, you can sign up.</string>
+    <string name="auth_error_user_not_found">We can\'t find an account with %1$s. try another email, or if you don\'t have an account, you can sign up.</string>
 
     <string name="auth_invalid_credentials_exception">The given data doesn\'t match.</string>
     <string name="auth_error_wrong_password">The password you entered is incorrect. Please try again.</string>

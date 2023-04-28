@@ -36,16 +36,8 @@ class PeopleViewModel @Inject constructor(
     var uiState by mutableStateOf(PeopleUiState())
         private set
 
-    private val courseId: String? = try {
-        checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_ID])
-    } catch (e: IllegalStateException) {
-        null
-    }
-    private val ownerId: String? = try {
-        checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_OWNER_ID])
-    } catch (e: IllegalStateException) {
-        null
-    }
+    private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_ID])
+    private val ownerId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_OWNER_ID])
     private var peoples: List<User> = emptyList()
 
     init {
@@ -57,6 +49,10 @@ class PeopleViewModel @Inject constructor(
 
     fun onEvent(event: PeopleUiEvent) {
         when (event) {
+            is PeopleUiEvent.OnAppBarMenuExpandedChange -> {
+                uiState = uiState.copy(appBarMenuExpanded = event.expanded)
+            }
+
             is PeopleUiEvent.OnFilterChange -> {
                 when (event.peopleFilterType) {
                     PeopleFilterType.ALL -> {
@@ -144,21 +140,21 @@ class PeopleViewModel @Inject constructor(
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry.
         // Otherwise show snackbar by using userMessage
-        if (courseId != null) {
-            getPeoplesUseCase(courseId).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = if (refreshing) {
-                            uiState.copy(refreshing = true)
-                        } else {
-                            uiState.copy(dataState = DataState.LOADING)
-                        }
+        getPeoplesUseCase(courseId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = if (refreshing) {
+                        uiState.copy(refreshing = true)
+                    } else {
+                        uiState.copy(dataState = DataState.LOADING)
                     }
+                }
 
-                    is Resource.Success -> {
-                        peoples = resource.data ?: emptyList()
-                        peoples = peoples.moveItemToFirstPosition { it.id == ownerId }
+                is Resource.Success -> {
+                    peoples = resource.data ?: emptyList()
+                    peoples = peoples.moveItemToFirstPosition { it.id == ownerId }
 
+                    if (peoples.isNotEmpty()) {
                         when (uiState.filter) {
                             PeopleFilterType.ALL -> {
                                 uiState = uiState.copy(
@@ -196,93 +192,93 @@ class PeopleViewModel @Inject constructor(
                                 )
                             }
                         }
-                    }
-
-                    is Resource.Error -> {
+                    } else {
                         uiState = if (refreshing) {
                             uiState.copy(
                                 refreshing = false,
                                 userMessage = resource.message
                             )
                         } else {
-                            uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                            uiState.copy(
+                                dataState = DataState.EMPTY(
+                                    UiText.StringResource(Strings.error_unexpected)
+                                )
+                            )
                         }
                     }
                 }
-            }.launchIn(viewModelScope)
-        } else {
-            uiState =
-                uiState.copy(
-                    dataState = DataState.ERROR(
-                        UiText.StringResource(
-                            Strings.cannot_retrieve_peoples_at_this_time_lease_try_again_later
+
+                is Resource.Error -> {
+                    uiState = if (refreshing) {
+                        uiState.copy(
+                            refreshing = false,
+                            userMessage = resource.message
                         )
-                    )
-                )
-        }
+                    } else {
+                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun deleteTeacher(uid: String, isLeaving: Boolean) {
         // if user is leaving exit page on success
         // else refresh peoples
-        courseId?.let { id ->
-            deleteTeacherUseCase(id, uid).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(
-                            openProgressDialog = true,
-                            removeUser = null
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        if (isLeaving) {
-                            uiState = uiState.copy(
-                                isUserLeaveClass = true,
-                                openProgressDialog = false
-                            )
-                        } else {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            fetchPeoples(true)
-                        }
-                    }
-
-                    is Resource.Error -> {
-                        uiState = uiState.copy(
-                            openProgressDialog = false,
-                            userMessage = resource.message
-                        )
-                    }
+        deleteTeacherUseCase(courseId, uid).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = true,
+                        removeUser = null
+                    )
                 }
-            }.launchIn(viewModelScope)
-        }
-    }
 
-    private fun deleteStudent(uid: String) {
-        courseId?.let { id ->
-            deleteStudentUseCase(id, uid).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
+                is Resource.Success -> {
+                    if (isLeaving) {
                         uiState = uiState.copy(
-                            openProgressDialog = true,
-                            removeUser = null
+                            isUserLeaveClass = true,
+                            openProgressDialog = false
                         )
-                    }
-
-                    is Resource.Success -> {
+                    } else {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchPeoples(true)
                     }
-
-                    is Resource.Error -> {
-                        uiState = uiState.copy(
-                            openProgressDialog = false,
-                            userMessage = resource.message
-                        )
-                    }
                 }
-            }.launchIn(viewModelScope)
-        }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteStudent(uid: String) {
+        deleteStudentUseCase(courseId, uid).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = true,
+                        removeUser = null
+                    )
+                }
+
+                is Resource.Success -> {
+                    uiState = uiState.copy(openProgressDialog = false)
+                    fetchPeoples(true)
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun teachers(): List<User> {

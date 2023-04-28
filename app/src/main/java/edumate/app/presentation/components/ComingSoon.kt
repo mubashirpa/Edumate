@@ -2,7 +2,6 @@ package edumate.app.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -15,11 +14,9 @@ import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 
 @Composable
-fun ComingSoon(
-    modifier: Modifier = Modifier
-) {
+fun ComingSoon(modifier: Modifier = Modifier) {
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

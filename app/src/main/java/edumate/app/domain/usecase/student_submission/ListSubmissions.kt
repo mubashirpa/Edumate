@@ -1,5 +1,6 @@
 package edumate.app.domain.usecase.student_submission
 
+import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toStudentSubmission
@@ -9,7 +10,7 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class ListSubmissionsUseCase @Inject constructor(
+class ListSubmissions @Inject constructor(
     private val studentSubmissionRepository: StudentSubmissionRepository
 ) {
     operator fun invoke(
@@ -22,7 +23,13 @@ class ListSubmissionsUseCase @Inject constructor(
                 .map { it.toStudentSubmission() }
             emit(Resource.Success(studentSubmissions))
         } catch (e: Exception) {
-            emit(Resource.Error(UiText.DynamicString("${e.message}")))
+            emit(
+                Resource.Error(
+                    UiText.StringResource(
+                        Strings.cannot_retrieve_student_works_at_this_time_lease_try_again_later
+                    )
+                )
+            )
         }
     }
 }

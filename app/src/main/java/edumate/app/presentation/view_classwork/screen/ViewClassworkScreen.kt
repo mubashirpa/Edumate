@@ -1,5 +1,7 @@
 package edumate.app.presentation.view_classwork.screen
 
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.text.format.DateUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -11,12 +13,18 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -25,8 +33,9 @@ import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.ext.header
-import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
+import edumate.app.domain.model.User
+import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.ComingSoon
@@ -38,18 +47,43 @@ import edumate.app.presentation.view_classwork.ViewClassworkTabsScreen
 import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
 import edumate.app.presentation.view_classwork.screen.components.AttachmentsListItem
+import edumate.app.presentation.view_classwork.screen.components.RemoveAttachmentDialog
+import edumate.app.presentation.view_classwork.screen.components.TurnInDialog
+import edumate.app.presentation.view_classwork.screen.components.UnSubmitDialog
 import edumate.app.presentation.view_classwork.screen.components.YourWorkBottomSheet
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun ViewClassworkScreen(
     uiState: ViewClassworkUiState,
     onEvent: (ViewClassworkUiEvent) -> Unit,
+    snackbarHostState: SnackbarHostState,
     classworkType: CourseWorkType,
     currentUserType: UserType,
+    navigateToViewStudentWork: (
+        classwork: CourseWork,
+        studentWorkId: String?,
+        assignedStudent: User
+    ) -> Unit,
     onBackPressed: () -> Unit
 ) {
+    val context = LocalContext.current
+    val refreshState = rememberPullRefreshState(
+        refreshing = uiState.refreshing,
+        onRefresh = {
+            onEvent(ViewClassworkUiEvent.OnRefresh)
+        }
+    )
+
+    uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            onEvent(ViewClassworkUiEvent.UserMessageShown)
+        }
+    }
+
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
             title = {},
@@ -60,15 +94,67 @@ fun ViewClassworkScreen(
                         contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
+            },
+            actions = {
+                IconButton(
+                    onClick = { share(context, uiState.classwork.alternateLink) }
+                ) {
+                    Icon(
+                        Icons.Default.Share,
+                        contentDescription = null
+                    )
+                }
+                Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
+                    if (currentUserType == UserType.TEACHER) {
+                        IconButton(
+                            onClick = {
+                                onEvent(
+                                    ViewClassworkUiEvent.OnAppBarMenuExpandedChange(
+                                        true
+                                    )
+                                )
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = null
+                            )
+                        }
+                    }
+                    DropdownMenu(
+                        expanded = uiState.appBarMenuExpanded,
+                        onDismissRequest = {
+                            onEvent(ViewClassworkUiEvent.OnAppBarMenuExpandedChange(false))
+                        }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = Strings.refresh)) },
+                            onClick = {
+                                onEvent(ViewClassworkUiEvent.OnAppBarMenuExpandedChange(false))
+                                onEvent(ViewClassworkUiEvent.OnRefresh)
+                            }
+                        )
+                        // TODO("Add edit and delete for teachers")
+                    }
+                }
             }
         )
-        when (uiState.dataState) {
+        when (val dataState = uiState.dataState) {
+            is DataState.EMPTY -> {
+                ErrorScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString()
+                )
+            }
+
             is DataState.ERROR -> {
                 ErrorScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .navigationBarsPadding(),
-                    errorMessage = uiState.dataState.message.asString()
+                    errorMessage = dataState.message.asString()
                 )
             }
 
@@ -81,38 +167,148 @@ fun ViewClassworkScreen(
             }
 
             DataState.SUCCESS -> {
-                when (classworkType) {
-                    CourseWorkType.MATERIAL -> {
-                        ContentMaterial(uiState = uiState)
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .pullRefresh(refreshState)
+                ) {
+                    when (classworkType) {
+                        CourseWorkType.MATERIAL -> {
+                            ContentMaterial(uiState = uiState)
+                        }
+
+                        CourseWorkType.ASSIGNMENT -> {
+                            ContentAssignment(
+                                uiState = uiState,
+                                onEvent = onEvent,
+                                currentUserType = currentUserType,
+                                navigateToViewStudentWork = navigateToViewStudentWork
+                            )
+                        }
+
+                        CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                            // TODO()
+                            ComingSoon(modifier = Modifier.navigationBarsPadding())
+                        }
+
+                        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                            // TODO()
+                            ComingSoon(modifier = Modifier.navigationBarsPadding())
+                        }
+
+                        else -> {}
                     }
 
-                    CourseWorkType.ASSIGNMENT -> {
-                        ContentAssignment(
-                            uiState = uiState,
-                            onEvent = onEvent,
-                            currentUserType = currentUserType
-                        )
-                    }
-
-                    else -> {
-                        ComingSoon(modifier = Modifier.navigationBarsPadding())
-                    }
+                    PullRefreshIndicator(
+                        uiState.refreshing,
+                        refreshState,
+                        Modifier.align(Alignment.TopCenter)
+                    )
                 }
             }
 
-            else -> {}
+            DataState.UNKNOWN -> {}
         }
     }
+
+    TurnInDialog(
+        uiState = uiState,
+        onDismissRequest = {
+            onEvent(ViewClassworkUiEvent.OnOpenTurnInDialog(false))
+        },
+        onConfirmClick = {
+            onEvent(ViewClassworkUiEvent.TurnIn)
+        }
+    )
+
+    UnSubmitDialog(
+        uiState = uiState,
+        onDismissRequest = {
+            onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(false))
+        },
+        onConfirmClick = {
+            onEvent(ViewClassworkUiEvent.UnSubmit)
+        }
+    )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
 }
 
+@Composable
+private fun ContentMaterial(uiState: ViewClassworkUiState) {
+    val context = LocalContext.current
+    val navigationBarHeight =
+        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomMargin = navigationBarHeight + 10.dp
+    val contentPadding = PaddingValues(
+        start = 16.dp,
+        top = 10.dp,
+        end = 16.dp,
+        bottom = bottomMargin
+    )
+
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(minSize = 128.dp),
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = contentPadding,
+        verticalArrangement = Arrangement.spacedBy(10.dp),
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        content = {
+            header {
+                Text(
+                    text = uiState.classwork.title,
+                    modifier = Modifier.padding(top = 6.dp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            }
+            val description = uiState.classwork.description
+            if (description != null) {
+                header {
+                    Text(
+                        text = description,
+                        modifier = Modifier.padding(top = 6.dp),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+            }
+            val attachments = uiState.classwork.materials
+            if (attachments.isNotEmpty()) {
+                header {
+                    Text(
+                        text = stringResource(id = Strings.attachments),
+                        modifier = Modifier.padding(top = 6.dp),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                items(attachments) {
+                    AttachmentsListItem(
+                        attachment = it,
+                        onClick = { url ->
+                            if (url != null) {
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(browserIntent)
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    )
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun ContentAssignment(
+private fun ContentAssignment(
     uiState: ViewClassworkUiState,
     onEvent: (ViewClassworkUiEvent) -> Unit,
-    currentUserType: UserType
+    currentUserType: UserType,
+    navigateToViewStudentWork: (
+        classwork: CourseWork,
+        studentWorkId: String?,
+        assignedStudent: User
+    ) -> Unit
 ) {
     val context = LocalContext.current
     val pagerState = rememberPagerState()
@@ -236,37 +432,16 @@ fun ContentAssignment(
                                         )
                                     }
                                     items(attachments) {
-                                        when {
-                                            it.link != null -> {
-                                                AttachmentsListItem(
-                                                    title = it.link.title ?: it.link.url,
-                                                    icon = Icons.Default.Link,
-                                                    onClick = {}
-                                                )
+                                        AttachmentsListItem(
+                                            attachment = it,
+                                            onClick = { url ->
+                                                if (url != null) {
+                                                    val browserIntent =
+                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                    context.startActivity(browserIntent)
+                                                }
                                             }
-
-                                            it.driveFile != null -> {
-                                                val icon =
-                                                    when (
-                                                        fileUtils.getFileType(
-                                                            it.driveFile.type
-                                                        )
-                                                    ) {
-                                                        FileType.IMAGE -> Icons.Default.Image
-                                                        FileType.VIDEO -> Icons.Default.VideoFile
-                                                        FileType.AUDIO -> Icons.Default.AudioFile
-                                                        FileType.PDF -> Icons.Default.PictureAsPdf
-                                                        FileType.UNKNOWN -> Icons.Default.InsertDriveFile
-                                                    }
-                                                AttachmentsListItem(
-                                                    title = it.driveFile.title
-                                                        ?: it.driveFile.url,
-                                                    driveFile = it.driveFile,
-                                                    icon = icon,
-                                                    onClick = {}
-                                                )
-                                            }
-                                        }
+                                        )
                                     }
                                 }
                             }
@@ -274,7 +449,17 @@ fun ContentAssignment(
                     }
 
                     1 -> {
-                        StudentWorkScreen(courseWork = uiState.classwork)
+                        // TODO("Fix: Refresh only working if page == 0")
+                        StudentWorkScreen(
+                            courseWork = uiState.classwork,
+                            navigateToViewStudentWork = { studentWorkId, assignedStudent ->
+                                navigateToViewStudentWork(
+                                    uiState.classwork,
+                                    studentWorkId,
+                                    assignedStudent
+                                )
+                            }
+                        )
                     }
                 }
             }
@@ -307,103 +492,33 @@ fun ContentAssignment(
             filePicker.launch("*/*")
         },
         onRemoveAttachmentClick = {
-            onEvent(ViewClassworkUiEvent.OnRemoveAttachment(it))
+            onEvent(ViewClassworkUiEvent.OnOpenRemoveAttachmentDialog(it))
         },
         onSubmitClick = {
-            onEvent(ViewClassworkUiEvent.TurnIn)
+            onEvent(ViewClassworkUiEvent.OnOpenTurnInDialog(true))
         },
         onUnSubmitClick = {
-            onEvent(ViewClassworkUiEvent.UnSubmit)
+            onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(true))
+        }
+    )
+
+    RemoveAttachmentDialog(
+        uiState = uiState,
+        onDismissRequest = {
+            onEvent(ViewClassworkUiEvent.OnOpenRemoveAttachmentDialog(null))
+        },
+        onConfirmClick = {
+            onEvent(ViewClassworkUiEvent.OnRemoveAttachment(it))
         }
     )
 }
 
-@Composable
-fun ContentMaterial(
-    uiState: ViewClassworkUiState
-) {
-    val context = LocalContext.current
-    val fileUtils = remember {
-        FileUtils(context)
+private fun share(context: Context, text: String) {
+    val sendIntent: Intent = Intent().apply {
+        action = Intent.ACTION_SEND
+        putExtra(Intent.EXTRA_TEXT, text)
+        type = "text/plain"
     }
-    val navigationBarHeight =
-        WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-    val bottomMargin = navigationBarHeight + 10.dp
-    val contentPadding = PaddingValues(
-        start = 16.dp,
-        top = 10.dp,
-        end = 16.dp,
-        bottom = bottomMargin
-    )
-
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp),
-        modifier = Modifier.fillMaxSize(),
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        content = {
-            header {
-                Text(
-                    text = uiState.classwork.title,
-                    modifier = Modifier.padding(top = 6.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    style = MaterialTheme.typography.headlineSmall
-                )
-            }
-            val description = uiState.classwork.description
-            if (description != null) {
-                header {
-                    Text(
-                        text = description,
-                        modifier = Modifier.padding(top = 6.dp),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-            }
-            val attachments = uiState.classwork.materials
-            if (attachments.isNotEmpty()) {
-                header {
-                    Text(
-                        text = stringResource(id = Strings.attachments),
-                        modifier = Modifier.padding(top = 6.dp),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                }
-                items(attachments) {
-                    when {
-                        it.link != null -> {
-                            AttachmentsListItem(
-                                title = it.link.title ?: it.link.url,
-                                icon = Icons.Default.Link,
-                                onClick = {}
-                            )
-                        }
-
-                        it.driveFile != null -> {
-                            val icon =
-                                when (
-                                    fileUtils.getFileType(
-                                        it.driveFile.type
-                                    )
-                                ) {
-                                    FileType.IMAGE -> Icons.Default.Image
-                                    FileType.VIDEO -> Icons.Default.VideoFile
-                                    FileType.AUDIO -> Icons.Default.AudioFile
-                                    FileType.PDF -> Icons.Default.PictureAsPdf
-                                    FileType.UNKNOWN -> Icons.Default.InsertDriveFile
-                                }
-                            AttachmentsListItem(
-                                title = it.driveFile.title ?: it.driveFile.url,
-                                driveFile = it.driveFile,
-                                icon = icon,
-                                onClick = {}
-                            )
-                        }
-                    }
-                }
-            }
-        }
-    )
+    val shareIntent = Intent.createChooser(sendIntent, null)
+    context.startActivity(shareIntent)
 }

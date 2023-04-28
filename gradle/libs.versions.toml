@@ -98,7 +98,7 @@ android-application = { id = "com.android.application", version.ref = "android-g
 android-library = { id = "com.android.library", version.ref = "android-gradle-plugin" }
 devtools-ksp = "com.google.devtools.ksp:1.8.20-1.0.11"
 google-services = "com.google.gms.google-services:4.3.15"
-gradle-ktlint = "org.jlleitschuh.gradle.ktlint:11.3.1"
+gradle-ktlint = "org.jlleitschuh.gradle.ktlint:11.3.2"
 gradle-versions = "com.github.ben-manes.versions:0.46.0"
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "com-google-dagger" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }

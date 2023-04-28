@@ -1,4 +1,202 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_points">%1$s പോയിന്റുകൾ</string>
+    <string name="_return">മടങ്ങുക</string>
+    <string name="add">ചേർക്കുക</string>
+    <string name="add_a_class_to_get_started">ആരംഭിക്കാൻ ഒരു ക്ലാസ് ചേർക്കുക</string>
+    <string name="add_assignments_and_other_works_for_class">ക്ലാസ്സിനായി അസൈൻമെന്റുകളും മറ്റ് വർക്കുകളും ചേർക്കുക</string>
+    <string name="add_attachment">അറ്റാച്ച്‌മെന്റ് ചേർക്കുക</string>
+    <string name="add_link">ലിങ്ക് ചേർക്കുക</string>
+    <string name="add_option">ഓപ്‌ഷൻ ചേർക്കുക</string>
+    <string name="add_work">ജോലി ചേർക്കുക</string>
+    <string name="all">എല്ലാം</string>
+    <string name="all_students">എല്ലാ വിദ്യാർത്ഥികളും</string>
+    <string name="ask">ചോദിക്കുക</string>
+    <string name="ask_your_teacher_for_the_class_code">ക്ലാസ് കോഡ് നിങ്ങളുടെ ടീച്ചറോട് ചോദിച്ച് അത് ഇവിടെ നൽകുക.</string>
+    <string name="assign">അസൈൻ ചെയ്യുക</string>
+    <string name="assigned">അസൈൻ ചെയ്‌തു</string>
+    <string name="assignment">അസൈൻമെന്റ്</string>
+    <string name="assignment_title">അസൈൻമെന്റ് ശീർഷകം</string>
+    <string name="attachments">അറ്റാച്ചുമെന്റുകൾ</string>
+    <string name="cancel">റദ്ദാക്കുക</string>
+    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">ഇപ്പോൾ ക്ലാസ് വർക്കുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">ഇപ്പോൾ ക്ലാസ് വർക്ക് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">ഈ സമയത്ത് ആളുകളെ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥികളുടെ ജോലി വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥി വർക്കുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="change_point_value">പോയിന്റ് മൂല്യം മാറ്റുക</string>
+    <string name="class_code">ക്ലാസ് കോഡ്</string>
+    <string name="class_code_shared_by_your_teacher">ക്ലാസ് കോഡ് നിങ്ങളുടെ അധ്യാപകൻ പങ്കിട്ടു.</string>
+    <string name="class_name">ക്ലാസ് നാമം</string>
+    <string name="comments_will_also_be_deleted">അഭിപ്രായങ്ങളും ഇല്ലാതാക്കപ്പെടും.</string>
+    <string name="copied_invitation_link">ക്ഷണ ലിങ്ക് പകർത്തി</string>
+    <string name="copy_link">ലിങ്ക് പകർത്തുക</string>
+    <string name="create">സൃഷ്ടിക്കുക</string>
+    <string name="create_class">ക്ലാസ് സൃഷ്‌ടിക്കുക</string>
+    <string name="create_classwork">ക്ലാസ് വർക്ക് സൃഷ്‌ടിക്കുക</string>
+    <string name="create_new_account">പുതിയ അക്കൗണ്ട് സൃഷ്‌ടിക്കുക</string>
+    <string name="creating_account">അക്കൗണ്ട് സൃഷ്‌ടിക്കുന്നു</string>
+    <string name="creating_class">ക്ലാസ് സൃഷ്‌ടിക്കുന്നു</string>
+    <string name="delete">ഇല്ലാതാക്കുക</string>
+    <string name="delete_assignment">അസൈൻമെന്റ് ഇല്ലാതാക്കണോ?</string>
+    <string name="delete_material">മെറ്റീരിയൽ ഇല്ലാതാക്കണോ?</string>
+    <string name="delete_question">ചോദ്യം ഇല്ലാതാക്കണോ?</string>
+    <string name="description">വിവരണം</string>
+    <string name="dialog_remove_attachment_text">അറ്റാച്ച്‌മെന്റ് നീക്കംചെയ്യണോ?</string>
+    <string name="dialog_return_submission_text1">%1$s-നെ അറിയിക്കും കൂടാതെ നിങ്ങൾ ഇട്ടിട്ടുള്ള അഭിപ്രായങ്ങൾ പരിശോധിക്കാനും കഴിയും.</string>
+    <string name="dialog_return_submission_text2">%1$s അവരുടെ ഗ്രേഡ് മാറിയതായി അറിയിക്കും.</string>
+    <string name="dialog_return_submission_text3">%1$s-ന് അറിയിപ്പ് ലഭിക്കും കൂടാതെ നിങ്ങൾ ഇട്ടിട്ടുള്ള ഗ്രേഡോ കമന്റുകളോ പരിശോധിക്കാൻ കഴിയും.</string>
+    <string name="dialog_return_submission_title1">അടയാളപ്പെടുത്താതെ ജോലി തിരികെ നൽകണോ?</string>
+    <string name="dialog_return_submission_title2">ഗ്രേഡ് അപ്‌ഡേറ്റ് ചെയ്യണോ?</string>
+    <string name="dialog_return_submission_title3">ജോലി തിരികെ നൽകണോ?</string>
+    <string name="dialog_turn_in_assignment_text1">%1$d അറ്റാച്ച്‌മെന്റ് \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</string>
+    <string name="dialog_turn_in_assignment_text2">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്‌തിട്ടില്ല, അതിനാൽ ഒന്നും നൽകില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</string>
+    <string name="dialog_turn_in_assignment_title">നിങ്ങളുടെ ജോലിയിൽ പ്രവേശിക്കണോ?</string>
+    <string name="dialog_unsubmit_assignment_text">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കുന്നതിനോ മാറ്റുന്നതിനോ സമർപ്പിക്കാതിരിക്കുക. നിങ്ങൾ പൂർത്തിയാക്കിക്കഴിഞ്ഞാൽ വീണ്ടും സമർപ്പിക്കാൻ മറക്കരുത്.</string>
+    <string name="dialog_unsubmit_assignment_title">നിങ്ങളുടെ ജോലി സമർപ്പിക്കാതിരിക്കണോ?</string>
+    <string name="done_late">വൈകി ചെയ്തു</string>
+    <string name="dont_have_an_account">ഒരു അക്കൗണ്ട് ഇല്ലേ?</string>
+    <string name="due_">അവസാന തീയതി %1$s</string>
+    <string name="due_date">അവസാന തീയതി</string>
+    <string name="due_today_">ഇന്ന്, %1$s</string>
+    <string name="edit">എഡിറ്റ്</string>
+    <string name="email">ഇമെയിൽ</string>
+    <string name="empty_screen_subtitle">ഈ സ്‌ക്രീൻ ഇപ്പോഴും നിർമ്മാണത്തിലാണ്.</string>
+    <string name="empty_screen_title">സ്‌ക്രീൻ നിർമ്മാണത്തിലാണ്</string>
+    <string name="enrolled">എൻറോൾ ചെയ്തു</string>
+    <string name="enter_a_class_name">ഒരു ക്ലാസ്സിന്റെ പേര് നൽകുക.</string>
+    <string name="enter_time">സമയം നൽകുക</string>
+    <string name="forgot_password">പാസ്‌വേഡ് മറന്നോ?</string>
+    <string name="full_name">പൂർണ്ണമായ പേര്</string>
     <string name="get_started">ആരംഭിക്കുക</string>
+    <string name="get_started_message">അധ്യാപകരെയും വിദ്യാർത്ഥികളെയും ആശയവിനിമയം നടത്താനും സമയം ലാഭിക്കാനും സംഘടിതരായി തുടരാനും സഹായിക്കുന്നു.</string>
+    <string name="google">Google</string>
+    <string name="handed_in">കൈനൽകി</string>
+    <string name="have_an_account">ഒരു അക്കൗണ്ട് ഉണ്ടോ?</string>
+    <string name="hide_password">പാസ്‌വേഡ് മറയ്ക്കുക</string>
+    <string name="insert_link">ലിങ്ക് ചേർക്കുക</string>
+    <string name="instructions">നിർദ്ദേശങ്ങൾ</string>
+    <string name="invite">ക്ഷണിക്കുക</string>
+    <string name="invite_students_to_your_class">നിങ്ങളുടെ ക്ലാസിലേക്ക് വിദ്യാർത്ഥികളെ ക്ഷണിക്കുക</string>
+    <string name="join">ചേരുക</string>
+    <string name="join_a_class_to_get_started">ആരംഭിക്കാൻ ഒരു ക്ലാസ്സിൽ ചേരുക</string>
+    <string name="join_class">ക്ലാസിൽ ചേരുക</string>
+    <string name="joining_class">ക്ലാസിൽ ചേരുന്നു</string>
+    <string name="leave_class">ക്ലാസ് വിടുക</string>
+    <string name="leave_class_warning_message">നിങ്ങളെ വീണ്ടും ക്ഷണിച്ചില്ലെങ്കിൽ നിങ്ങൾക്ക് ഈ ക്ലാസ് തുറക്കാൻ കഴിയില്ല</string>
+    <string name="logout">Logout</string>
+    <string name="mark">മാർക്ക്</string>
+    <string name="mark_as_done">പൂർത്തിയായതായി അടയാളപ്പെടുത്തുക</string>
+    <string name="marked">അടയാളപ്പെടുത്തി</string>
+    <string name="marks_and_comments_will_also_be_deleted">മാർക്കുകളും കമന്റുകളും ഇല്ലാതാക്കപ്പെടും.</string>
+    <string name="material">മെറ്റീരിയൽ</string>
+    <string name="material_title">മെറ്റീരിയൽ ശീർഷകം</string>
+    <string name="missing">കാണാതായിരിക്കുന്നു</string>
+    <string name="missing_title">തലക്കെട്ട് വിട്ടുപോയിരിക്കുന്നു</string>
+    <string name="name">പേര്</string>
+    <string name="no_due_date">അവസാന തീയതി ഇല്ല</string>
+    <string name="no_files_attached">ഫയലുകളൊന്നും അറ്റാച്ച് ചെയ്തിട്ടില്ല</string>
+    <string name="ok">ശരി</string>
+    <string name="password">പാസ്‌വേഡ്</string>
+    <string name="password_reset_description">നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക, നിങ്ങളുടെ പാസ്‌വേഡ് വീണ്ടെടുക്കാൻ ഞങ്ങൾ ഒരു ലിങ്ക് അയയ്ക്കും.</string>
+    <string name="please_fill_in_the_form_to_continue">തുടരുന്നതിന് ദയവായി ഫോം പൂരിപ്പിക്കുക</string>
+    <string name="please_sign_in_to_your_account">ദയവായി നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="post">പോസ്റ്റ്</string>
+    <string name="posted_">പോസ്‌റ്റ് ചെയ്‌ത %1$s</string>
+    <string name="question">ചോദ്യം</string>
+    <string name="question_title">ചോദ്യ ശീർഷകം</string>
+    <string name="recover">വീണ്ടെടുക്കുക</string>
+    <string name="refresh">പുതുക്കുക</string>
+    <string name="remove">നീക്കം ചെയ്യുക</string>
+    <string name="remove_student">വിദ്യാർത്ഥിയെ നീക്കം ചെയ്യണോ?</string>
+    <string name="remove_teacher">അധ്യാപകനെ നീക്കം ചെയ്യണോ?</string>
+    <string name="reset_password">പാസ്‌വേഡ് പുനഃസജ്ജമാക്കുക</string>
+    <string name="resubmit">വീണ്ടും സമർപ്പിക്കുക</string>
+    <string name="retry">വീണ്ടും ശ്രമിക്കുക</string>
+    <string name="returned">മടങ്ങി</string>
+    <string name="room">റൂം</string>
+    <string name="save">സംരക്ഷിക്കുക</string>
+    <string name="section">വിഭാഗം</string>
+    <string name="select_time">സമയം തിരഞ്ഞെടുക്കുക</string>
+    <string name="sending_recovery_email">ഇമെയിൽ അയയ്ക്കുന്നു</string>
+    <string name="share">പങ്കിടുക</string>
+    <string name="share_invitation_link">ക്ഷണ ലിങ്ക് പങ്കിടുക</string>
+    <string name="show_password">പാസ്‌വേഡ് കാണിക്കുക</string>
+    <string name="sign_in">സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="sign_in_with_google">Google ഉപയോഗിച്ച് സൈൻ ഇൻ ചെയ്യുക</string>
+    <string name="sign_up">സൈൻ അപ്പ്</string>
+    <string name="sign_up_with_google">Google ഉപയോഗിച്ച് സൈൻ അപ്പ് ചെയ്യുക</string>
+    <string name="signing_in">സൈൻ ഇൻ ചെയ്യുന്നു</string>
+    <string name="student">വിദ്യാർത്ഥി</string>
+    <string name="student_answers">വിദ്യാർത്ഥികളുടെ ഉത്തരങ്ങൾ</string>
+    <string name="student_not_yet_submitted">വിദ്യാർത്ഥി ഇതുവരെ സമർപ്പിച്ചിട്ടില്ല.</string>
+    <string name="student_work">വിദ്യാർത്ഥി ജോലി</string>
+    <string name="students">വിദ്യാർത്ഥികൾ</string>
+    <string name="subject">വിഷയം</string>
+    <string name="switch_to_text_input">ടെക്‌സ്റ്റ് ഇൻപുട്ടിലേക്ക് മാറുക</string>
+    <string name="switch_to_touch_input">ടച്ച് ഇൻപുട്ടിലേക്ക് മാറുക</string>
+    <string name="teachers">അധ്യാപകർ</string>
+    <string name="teaching">അധ്യാപനം</string>
+    <string name="turn_in">തിരിക്കുക</string>
+    <string name="turned_in">തിരിച്ചു</string>
+    <string name="unenrol">അൺഎൻറോൾ</string>
+    <string name="unmarked">അൺമാർക്ക് ചെയ്യാത്തത്</string>
+    <string name="unsubmit">സമർപ്പിക്കാതിരിക്കുക</string>
+    <string name="update">അപ്‌ഡേറ്റ് ചെയ്യുക</string>
+    <string name="updating_class">ക്ലാസ് അപ്‌ഡേറ്റ് ചെയ്യുന്നു</string>
+    <string name="upload_file">ഫയൽ അപ്‌ലോഡ് ചെയ്യുക</string>
+    <string name="url">URL</string>
+    <string name="welcome_back">വീണ്ടും സ്വാഗതം!</string>
+    <string name="you_have_no_attachments_uploaded">നിങ്ങൾക്ക് അപ്‌ലോഡ് ചെയ്‌ത അറ്റാച്ച്‌മെന്റുകളൊന്നുമില്ല.</string>
+    <string name="your_teacher_hasnt_assigned_any_classwork_yet">നിങ്ങളുടെ അധ്യാപകൻ ഇതുവരെ ക്ലാസ് വർക്കുകളൊന്നും നൽകിയിട്ടില്ല</string>
+    <string name="your_work">നിങ്ങളുടെ ജോലി</string>
+
+    <!-- Screen titles -->
+    <string name="title_create_class_screen">ക്ലാസ് സൃഷ്‌ടിക്കുക</string>
+    <string name="title_edit_class_screen">ക്ലാസ് എഡിറ്റ് ചെയ്യുക</string>
+    <string name="title_join_class_screen">ക്ലാസിൽ ചേരുക</string>
+    <string name="title_profile_screen">പ്രൊഫൈൽ</string>
+
+    <!-- Screen labels -->
+    <string name="label_stream_screen">സ്ട്രീം</string>
+    <string name="label_classwork_screen">ക്ലാസ് വർക്ക്</string>
+    <string name="label_people_screen">ആളുകൾ</string>
+
+    <!-- Success -->
+    <string name="success_send_password_reset_email">നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് തിരികെയെത്താൻ ഞങ്ങൾ %1$s-ന് ഒരു ലിങ്ക് സഹിതം ഒരു ഇമെയിൽ അയച്ചു.</string>
+
+    <!-- Errors -->
+    <string name="error_course_not_found">ആ ക്ലാസ് കോഡുള്ള ക്ലാസില്ല.</string>
+    <string name="error_unexpected">ഒരു അപ്രതീക്ഷിത പിശക് സംഭവിച്ചു.</string>
+    <string name="error_unknown">എന്തോ തെറ്റ് സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.</string>
+
+    <!-- Authentication errors -->
+    <string name="auth_invalid_user_exception">ഒരു അജ്ഞാത പിശക് സംഭവിച്ചു.</string>
+    <string name="auth_error_user_disabled">ഈ ഇമെയിൽ ഉള്ള ഉപയോക്താവിനെ പ്രവർത്തനരഹിതമാക്കി.</string>
+    <string name="auth_error_user_not_found">%1$s-ൽ ഞങ്ങൾക്ക് ഒരു അക്കൗണ്ട് കണ്ടെത്താനായില്ല. മറ്റൊരു ഇമെയിൽ പരീക്ഷിക്കുക, അല്ലെങ്കിൽ നിങ്ങൾക്ക് ഒരു അക്കൗണ്ട് ഇല്ലെങ്കിൽ, നിങ്ങൾക്ക് സൈൻ അപ്പ് ചെയ്യാം.</string>
+
+    <string name="auth_invalid_credentials_exception">നൽകിയ ഡാറ്റ പൊരുത്തപ്പെടുന്നില്ല.</string>
+    <string name="auth_error_wrong_password">നിങ്ങൾ നൽകിയ പാസ്‌വേഡ് തെറ്റാണ്. ദയവായി വീണ്ടും ശ്രമിക്കുക.</string>
+
+    <string name="auth_error_email_already_in_use">ഈ ഇമെയിൽ മറ്റൊരു അക്കൗണ്ടിലാണ്. ആ ഇമെയിലുമായി ബന്ധപ്പെട്ട അക്കൗണ്ടിലേക്ക് നിങ്ങൾക്ക് ലോഗിൻ ചെയ്യാം.</string>
+
+    <string name="auth_network_exception">ഒരു അജ്ഞാത നെറ്റ്‌വർക്ക് പിശക് സംഭവിച്ചു.</string>
+    <string name="auth_unknown_exception">ഒരു അജ്ഞാത പിശക് സംഭവിച്ചു.</string>
+    <string name="auth_error_too_many_requests">വളരെയധികം അഭ്യർത്ഥനകൾ, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+
+    <!-- Google authentication errors -->
+    <string name="error_auth_google_activity_not_found">Google പ്രാമാണീകരണം ആരംഭിക്കുന്നതിൽ പരാജയപ്പെട്ടു.</string>
+    <string name="error_auth_google_failed">പൊരുത്തമുള്ള ക്രെഡൻഷ്യൽ കണ്ടെത്താനായില്ല.</string>
+    <string name="error_auth_google_api_exception">എന്തോ കുഴപ്പം സംഭവിച്ചു. ദയവായി വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="error_auth_google_network_error">നിങ്ങളുടെ കണക്ഷൻ പരിശോധിച്ച് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="error_auth_google_no_token">എന്തോ ശരിയല്ല. നിങ്ങളുടെ അഭ്യർത്ഥന പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+
+    <!-- Validation errors -->
+    <string name="error_blank_email">ദയവായി നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക.</string>
+    <string name="error_blank_name">ദയവായി നിങ്ങളുടെ പേര് നൽകുക.</string>
+    <string name="error_blank_password">നിങ്ങളുടെ പാസ്‌വേഡിന് കുറഞ്ഞത് 6 അക്ഷരങ്ങളും അക്കങ്ങളും ഉണ്ടായിരിക്കണം.</string>
+    <string name="error_blank_value">ഈ ഫീൽഡ് ആവശ്യമാണ്.</string>
+    <string name="error_invalid_email">ദയവായി സാധുവായ ഒരു ഇമെയിൽ നൽകുക.</string>
+    <string name="error_invalid_password">നിങ്ങൾക്ക് ഓർമ്മിക്കാൻ കഴിയുന്ന അക്ഷരങ്ങളുടെയും അക്കങ്ങളുടെയും ഒരു മിശ്രിതം ഉപയോഗിക്കുക.</string>
+    <string name="error_invalid_repeated_password">അത് സ്ഥിരീകരിക്കുന്നതിന് നിങ്ങൾ ഒരേ പാസ്‌വേഡ് രണ്ടുതവണ നൽകണം.</string>
 </resources>

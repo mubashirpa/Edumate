@@ -38,6 +38,13 @@ class ClassDetailsViewModel @Inject constructor(
 
     fun onEvent(event: ClassDetailsUiEvent) {
         when (event) {
+            is ClassDetailsUiEvent.OnNavigateToViewStudentWork -> {
+                uiState = uiState.copy(
+                    courseWork = event.courseWork,
+                    courseWorkAssignedStudent = event.assignedStudent
+                )
+            }
+
             ClassDetailsUiEvent.OnRetry -> {
                 fetchCourse()
             }

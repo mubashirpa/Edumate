@@ -1,5 +1,6 @@
 package edumate.app.domain.usecase.courses
 
+import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toUser
@@ -24,7 +25,13 @@ class GetPeoplesUseCase @Inject constructor(
             peoples.addAll(students)
             emit(Resource.Success(peoples))
         } catch (e: Exception) {
-            emit(Resource.Error(UiText.DynamicString(e.message!!)))
+            emit(
+                Resource.Error(
+                    UiText.StringResource(
+                        Strings.cannot_retrieve_peoples_at_this_time_lease_try_again_later
+                    )
+                )
+            )
         }
     }
 }

@@ -69,8 +69,9 @@ fun ClassDetailsScreen(
                     ClassDetailsNavHost(
                         navController = classDetailsNavController,
                         modifier = Modifier.fillMaxSize(),
-                        course = uiState.course!!,
                         snackbarHostState = snackbarHostState,
+                        uiState = uiState,
+                        onEvent = onEvent,
                         onLeaveClass = onLeaveClass,
                         onBackPressed = onBackPressed
                     )

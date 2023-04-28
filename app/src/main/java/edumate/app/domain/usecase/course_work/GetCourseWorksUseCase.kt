@@ -1,5 +1,6 @@
 package edumate.app.domain.usecase.course_work
 
+import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toCourseWork
@@ -18,7 +19,13 @@ class GetCourseWorksUseCase @Inject constructor(
             val courseWorks = courseWorkRepository.list(courseId).map { it.toCourseWork() }
             emit(Resource.Success(courseWorks))
         } catch (e: Exception) {
-            emit(Resource.Error(UiText.DynamicString("${e.message}")))
+            emit(
+                Resource.Error(
+                    UiText.StringResource(
+                        Strings.cannot_retrieve_class_works_at_this_time_lease_try_again_later
+                    )
+                )
+            )
         }
     }
 }

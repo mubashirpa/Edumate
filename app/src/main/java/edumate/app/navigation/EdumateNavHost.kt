@@ -15,6 +15,7 @@ import edumate.app.presentation.class_details.screen.ClassDetailsScreen
 import edumate.app.presentation.create_class.screen.CreateClassScreen
 import edumate.app.presentation.home.screen.HomeScreen
 import edumate.app.presentation.join_class.screen.JoinClassScreen
+import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
 
 @Composable
@@ -115,7 +116,10 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.ProfileScreen.route) {
+            val viewModel: ProfileViewModel = hiltViewModel()
             ProfileScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
                 onSignOut = {
                     navController.navigate(Routes.Graph.AUTHENTICATION) {
                         launchSingleTop = true

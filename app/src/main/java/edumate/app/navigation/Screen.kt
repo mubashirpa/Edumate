@@ -15,6 +15,7 @@ sealed class Screen(val route: String) {
     object RegisterScreen : Screen(Routes.Screen.REGISTER_SCREEN)
     object StreamScreen : Screen(Routes.Screen.STREAM_SCREEN)
     object ViewClassworkScreen : Screen(Routes.Screen.VIEW_CLASSWORK_SCREEN)
+    object ViewStudentWorkScreen : Screen(Routes.Screen.VIEW_STUDENT_WORK_SCREEN)
 
     fun withArgs(vararg args: String?): String {
         return buildString {

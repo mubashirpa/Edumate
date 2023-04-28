@@ -10,7 +10,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
@@ -23,17 +22,20 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
-import edumate.app.R
+import edumate.app.R.string as Strings
+import edumate.app.core.utils.DevicePreviews
+import edumate.app.presentation.components.TextAvatar
 import edumate.app.presentation.profile.ProfileUiEvent
-import edumate.app.presentation.profile.ProfileViewModel
+import edumate.app.presentation.profile.ProfileUiState
+import edumate.app.presentation.ui.theme.EdumateTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    viewModel: ProfileViewModel = hiltViewModel(),
+    uiState: ProfileUiState,
+    onEvent: (ProfileUiEvent) -> Unit,
     onSignOut: () -> Unit,
     onBackPressed: () -> Unit
 ) {
@@ -47,13 +49,13 @@ fun ProfileScreen(
     ) {
         TopAppBar(
             title = {
-                Text(text = "Profile")
+                Text(text = stringResource(id = Strings.title_profile_screen))
             },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = stringResource(id = R.string.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
             },
@@ -68,7 +70,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             SubcomposeAsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data(viewModel.uiState.currentUser?.photoUrl)
+                    .data(uiState.currentUser?.photoUrl)
                     .crossfade(true)
                     .build(),
                 contentDescription = "Profile",
@@ -79,16 +81,22 @@ fun ProfileScreen(
                     CircularProgressIndicator()
                 },
                 error = {
-                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
+                    TextAvatar(
+                        id = uiState.currentUser?.uid.orEmpty(),
+                        firstName = uiState.currentUser?.displayName
+                            ?: uiState.currentUser?.email.orEmpty(),
+                        lastName = "",
+                        textStyle = MaterialTheme.typography.headlineLarge
+                    )
                 }
             )
             Spacer(modifier = Modifier.height(16.dp))
             ListItem(
                 headlineContent = {
-                    Text(text = viewModel.uiState.currentUser?.displayName.orEmpty())
+                    Text(text = uiState.currentUser?.displayName.orEmpty())
                 },
                 overlineContent = {
-                    Text(text = "Name")
+                    Text(text = stringResource(id = Strings.name))
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Default.Person, contentDescription = null)
@@ -97,10 +105,10 @@ fun ProfileScreen(
             Divider(modifier = Modifier.padding(start = 56.dp))
             ListItem(
                 headlineContent = {
-                    Text(text = viewModel.uiState.currentUser?.email.orEmpty())
+                    Text(text = uiState.currentUser?.email.orEmpty())
                 },
                 overlineContent = {
-                    Text(text = "Email")
+                    Text(text = stringResource(id = Strings.email))
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Default.Email, contentDescription = null)
@@ -109,13 +117,26 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    viewModel.onEvent(ProfileUiEvent.SignOut)
+                    onEvent(ProfileUiEvent.SignOut)
                     onSignOut()
                 }
             ) {
-                Text(text = "Logout")
+                Text(text = stringResource(id = Strings.logout))
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
+    }
+}
+
+@DevicePreviews
+@Composable
+private fun ProfileScreenPreview() {
+    EdumateTheme {
+        ProfileScreen(
+            uiState = ProfileUiState(),
+            onEvent = {},
+            onSignOut = {},
+            onBackPressed = {}
+        )
     }
 }
