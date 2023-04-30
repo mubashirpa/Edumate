@@ -5,10 +5,10 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.domain.model.student_submission.AssignmentSubmission
-import edumate.app.domain.model.student_submission.MultipleChoiceSubmission
-import edumate.app.domain.model.student_submission.ShortAnswerSubmission
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.AssignmentSubmission
+import edumate.app.domain.model.student_submissions.MultipleChoiceSubmission
+import edumate.app.domain.model.student_submissions.ShortAnswerSubmission
+import edumate.app.domain.model.student_submissions.SubmissionState
 import java.util.*
 import kotlin.collections.HashMap
 

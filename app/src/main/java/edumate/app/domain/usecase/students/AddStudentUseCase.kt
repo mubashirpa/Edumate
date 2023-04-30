@@ -19,7 +19,10 @@ class AddStudentUseCase @Inject constructor(
             emit(Resource.Loading())
             val studentId =
                 studentsRepository.addStudent(courseId, firebaseAuthRepository.currentUserId)
-            Log.d(TAG, "User $studentId was enrolled as student in the course with ID $courseId.")
+            Log.d(
+                TAG,
+                "UserProfile $studentId was enrolled as student in the course with ID $courseId."
+            )
             emit(Resource.Success(studentId))
         } catch (e: Exception) {
             emit(Resource.Error(UiText.StringResource(Strings.error_course_not_found)))

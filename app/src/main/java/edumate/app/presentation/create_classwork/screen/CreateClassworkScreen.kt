@@ -4,8 +4,13 @@ import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
@@ -14,9 +19,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import edumate.app.R
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.presentation.class_details.screen.components.ClassDetailsAppBar
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
@@ -69,10 +75,17 @@ fun CreateClassworkScreen(
             .navigationBarsPadding()
             .imePadding()
     ) {
-        ClassDetailsAppBar(
-            title = "",
-            scrollBehavior = scrollBehavior,
-            onNavigationClick = onBackPressed
+        TopAppBar(
+            title = {},
+            navigationIcon = {
+                IconButton(onClick = onBackPressed) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = stringResource(id = R.string.navigate_up)
+                    )
+                }
+            },
+            scrollBehavior = scrollBehavior
         )
         if (uiState.loading) {
             LoadingIndicator(modifier = Modifier.fillMaxSize())

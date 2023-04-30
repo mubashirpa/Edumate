@@ -9,69 +9,84 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import edumate.app.R.string as Strings
+import edumate.app.core.DataState
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.teaching.TeachingUiEvent
 import edumate.app.presentation.teaching.TeachingViewModel
 import edumate.app.presentation.teaching.screen.components.TeachingListItem
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
+    snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
     navigateToCreateClass: (courseId: String) -> Unit,
     navigateToClassDetails: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
-    val refreshScope = rememberCoroutineScope()
-    var refreshing by remember { mutableStateOf(false) }
+    val refreshState = rememberPullRefreshState(
+        refreshing = viewModel.uiState.refreshing,
+        onRefresh = {
+            viewModel.onEvent(TeachingUiEvent.OnRefresh)
+        }
+    )
 
-    fun refresh() = refreshScope.launch {
-        refreshing = true
-        viewModel.onEvent(TeachingUiEvent.FetchClasses)
-        delay(1500)
-        refreshing = false
+    viewModel.uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            viewModel.onEvent(TeachingUiEvent.UserMessageShown)
+        }
     }
 
-    val state = rememberPullRefreshState(refreshing, ::refresh)
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .pullRefresh(refreshState)
+    ) {
+        when (val dataState = viewModel.uiState.dataState) {
+            is DataState.EMPTY -> {
+                ErrorScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString()
+                )
+            }
 
-    when {
-        viewModel.uiState.loading -> {
-            LoadingIndicator(modifier = Modifier.fillMaxSize())
-        }
-        viewModel.uiState.error != null -> {
-            ErrorScreen(
-                modifier = Modifier.fillMaxSize(),
-                onRetry = {
-                    viewModel.onEvent(TeachingUiEvent.FetchClasses)
-                }
-            )
-        }
-        viewModel.uiState.classes.isEmpty() -> {
-            ErrorScreen(
-                modifier = Modifier.fillMaxSize(),
-                errorMessage = stringResource(id = Strings.add_a_class_to_get_started)
-            )
-        }
-        else -> {
-            Box(modifier = Modifier.pullRefresh(state)) {
+            is DataState.ERROR -> {
+                ErrorScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString()
+                )
+            }
+
+            DataState.LOADING -> {
+                LoadingIndicator(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .navigationBarsPadding()
+                )
+            }
+
+            DataState.SUCCESS -> {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
-                        items(viewModel.uiState.classes) { course ->
+                        items(viewModel.uiState.courses) { course ->
                             TeachingListItem(
                                 course = course,
                                 onShareClick = {
@@ -83,10 +98,16 @@ fun TeachingScreen(
                         }
                     }
                 )
-
-                PullRefreshIndicator(refreshing, state, Modifier.align(Alignment.TopCenter))
             }
+
+            DataState.UNKNOWN -> {}
         }
+
+        PullRefreshIndicator(
+            viewModel.uiState.refreshing,
+            refreshState,
+            Modifier.align(Alignment.TopCenter)
+        )
     }
 }
 

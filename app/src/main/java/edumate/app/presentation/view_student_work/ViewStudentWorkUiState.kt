@@ -2,7 +2,7 @@ package edumate.app.presentation.view_student_work
 
 import edumate.app.core.DataState
 import edumate.app.core.UiText
-import edumate.app.domain.model.student_submission.StudentSubmission
+import edumate.app.domain.model.student_submissions.StudentSubmission
 
 data class ViewStudentWorkUiState(
     val appBarMenuExpanded: Boolean = false,

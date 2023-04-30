@@ -18,7 +18,10 @@ class AddTeacherUseCase @Inject constructor(
             emit(Resource.Loading())
             val teacherId =
                 teachersRepository.addTeacher(courseId, firebaseAuthRepository.currentUserId)
-            Log.d(TAG, "User $teacherId was added as teacher to the course with ID $courseId.")
+            Log.d(
+                TAG,
+                "UserProfile $teacherId was added as teacher to the course with ID $courseId."
+            )
             emit(Resource.Success(teacherId))
         } catch (e: Exception) {
             emit(Resource.Error(UiText.DynamicString(e.message!!)))

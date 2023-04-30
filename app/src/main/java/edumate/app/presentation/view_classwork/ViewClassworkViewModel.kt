@@ -17,25 +17,26 @@ import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.domain.model.student_submission.AssignmentSubmission
-import edumate.app.domain.model.student_submission.Attachment
-import edumate.app.domain.model.student_submission.DriveFile
-import edumate.app.domain.model.student_submission.MultipleChoiceSubmission
-import edumate.app.domain.model.student_submission.ShortAnswerSubmission
-import edumate.app.domain.model.student_submission.StudentSubmission
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.AssignmentSubmission
+import edumate.app.domain.model.student_submissions.Attachment
+import edumate.app.domain.model.student_submissions.DriveFile
+import edumate.app.domain.model.student_submissions.MultipleChoiceSubmission
+import edumate.app.domain.model.student_submissions.ShortAnswerSubmission
+import edumate.app.domain.model.student_submissions.StudentSubmission
+import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.course_work.GetCourseWorkUseCase
+import edumate.app.domain.usecase.course_work.GetCourseWork
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
-import edumate.app.domain.usecase.student_submission.GetStudentSubmissionUseCase
-import edumate.app.domain.usecase.student_submission.ModifyAttachmentsStudentSubmission
-import edumate.app.domain.usecase.student_submission.PatchStudentSubmission
-import edumate.app.domain.usecase.student_submission.ReclaimStudentSubmission
+import edumate.app.domain.usecase.student_submissions.GetStudentSubmission
+import edumate.app.domain.usecase.student_submissions.ModifyAttachmentsStudentSubmission
+import edumate.app.domain.usecase.student_submissions.PatchStudentSubmission
+import edumate.app.domain.usecase.student_submissions.ReclaimStudentSubmission
 import edumate.app.navigation.Routes
 import edumate.app.presentation.class_details.UserType
 import java.util.Date
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -44,10 +45,10 @@ import kotlinx.coroutines.flow.onEach
 class ViewClassworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getCourseWorkUseCase: GetCourseWorkUseCase,
+    private val getCourseWork: GetCourseWork,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
-    private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
+    private val getStudentSubmission: GetStudentSubmission,
     private val patchStudentSubmission: PatchStudentSubmission,
     private val reclaimStudentSubmission: ReclaimStudentSubmission,
     private val modifyAttachmentsStudentSubmission: ModifyAttachmentsStudentSubmission
@@ -65,6 +66,7 @@ class ViewClassworkViewModel @Inject constructor(
     private var currentUser: FirebaseUser? = null
     private val studentSubmission = mutableStateOf(StudentSubmission())
     private var classworkType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
+    private var getCourseWorkJob: Job? = null
 
     init {
         classworkType = workType.enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)!!
@@ -121,8 +123,8 @@ class ViewClassworkViewModel @Inject constructor(
             }
 
             ViewClassworkUiEvent.OnRefresh -> {
-                fetchStudentSubmission()
                 fetchClasswork(true)
+                fetchStudentSubmission()
             }
 
             ViewClassworkUiEvent.TurnIn -> {
@@ -140,7 +142,9 @@ class ViewClassworkViewModel @Inject constructor(
     }
 
     private fun fetchClasswork(refreshing: Boolean) {
-        getCourseWorkUseCase(courseId, courseWorkId).onEach { resource ->
+        // Cancel ongoing getCourseWorkJob before recall.
+        getCourseWorkJob?.cancel()
+        getCourseWorkJob = getCourseWork(courseId, courseWorkId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -159,18 +163,12 @@ class ViewClassworkViewModel @Inject constructor(
                             refreshing = false
                         )
                     } else {
-                        if (refreshing) {
-                            uiState.copy(
-                                refreshing = false,
-                                userMessage = UiText.StringResource(Strings.error_unexpected)
-                            )
-                        } else {
-                            uiState.copy(
-                                dataState = DataState.EMPTY(
-                                    UiText.StringResource(Strings.error_unexpected)
-                                )
-                            )
-                        }
+                        uiState.copy(
+                            dataState = DataState.EMPTY(
+                                UiText.StringResource(Strings.classwork_not_found)
+                            ),
+                            refreshing = false
+                        )
                     }
                 }
 
@@ -188,6 +186,44 @@ class ViewClassworkViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun fetchStudentSubmission() {
+        if (currentUser != null) {
+            getStudentSubmission(
+                courseId,
+                courseWorkId,
+                currentUser!!.uid
+            ).onEach { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        uiState = uiState.copy(yourWorkDataState = DataState.LOADING)
+                    }
+
+                    is Resource.Success -> {
+                        val updatedStudentSubmission = resource.data
+                        if (updatedStudentSubmission != null) {
+                            updateStudentSubmission(
+                                updatedStudentSubmission,
+                                uiState.copy(yourWorkDataState = DataState.SUCCESS)
+                            )
+                        } else {
+                            // If student submission not found create a new student submission.
+                            createStudentSubmission()
+                        }
+                    }
+
+                    is Resource.Error -> {
+                        uiState =
+                            uiState.copy(yourWorkDataState = DataState.ERROR(resource.message!!))
+                    }
+                }
+            }.launchIn(viewModelScope)
+        } else {
+            uiState = uiState.copy(
+                yourWorkDataState = DataState.ERROR(UiText.StringResource(Strings.error_unexpected))
+            )
+        }
+    }
+
     private fun createStudentSubmission() {
         patchStudentSubmission(
             courseId,
@@ -196,18 +232,16 @@ class ViewClassworkViewModel @Inject constructor(
             studentSubmission.value
         ).onEach { resource ->
             when (resource) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                    uiState = uiState.copy(yourWorkDataState = DataState.LOADING)
+                }
+
                 is Resource.Success -> {
-                    val submission = resource.data
-                    if (submission != null) {
-                        studentSubmission.value = submission
-                        uiState.studentSubmissionAttachments.clear()
-                        uiState.studentSubmissionAttachments.addAll(
-                            submission.assignmentSubmission?.attachments.orEmpty()
-                        )
-                        uiState = uiState.copy(
-                            studentSubmission = submission,
-                            yourWorkDataState = DataState.SUCCESS
+                    val updatedStudentSubmission = resource.data
+                    if (updatedStudentSubmission != null) {
+                        updateStudentSubmission(
+                            updatedStudentSubmission,
+                            uiState.copy(yourWorkDataState = DataState.SUCCESS)
                         )
                     } else {
                         uiState = uiState.copy(
@@ -215,42 +249,6 @@ class ViewClassworkViewModel @Inject constructor(
                                 UiText.StringResource(Strings.error_unexpected)
                             )
                         )
-                    }
-                }
-
-                is Resource.Error -> {
-                    uiState =
-                        uiState.copy(yourWorkDataState = DataState.ERROR(resource.message!!))
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    private fun fetchStudentSubmission() {
-        getStudentSubmissionUseCase(
-            courseId,
-            courseWorkId,
-            currentUser!!.uid
-        ).onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    uiState = uiState.copy(yourWorkDataState = DataState.LOADING)
-                }
-
-                is Resource.Success -> {
-                    val submission = resource.data
-                    if (submission != null) {
-                        studentSubmission.value = submission
-                        uiState.studentSubmissionAttachments.clear()
-                        uiState.studentSubmissionAttachments.addAll(
-                            submission.assignmentSubmission?.attachments.orEmpty()
-                        )
-                        uiState = uiState.copy(
-                            studentSubmission = submission,
-                            yourWorkDataState = DataState.SUCCESS
-                        )
-                    } else {
-                        createStudentSubmission()
                     }
                 }
 
@@ -276,10 +274,12 @@ class ViewClassworkViewModel @Inject constructor(
             }
 
             CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                // TODO()
                 shortAnswerSubmission = ShortAnswerSubmission(answer = "")
             }
 
             CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                // TODO()
                 multipleChoiceSubmission = MultipleChoiceSubmission(answer = "")
             }
 
@@ -310,25 +310,19 @@ class ViewClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    val submission = resource.data
-                    if (submission != null) {
-                        studentSubmission.value = submission
-                        uiState.studentSubmissionAttachments.clear()
-                        uiState.studentSubmissionAttachments.addAll(
-                            submission.assignmentSubmission?.attachments.orEmpty()
-                        )
-                        uiState = uiState.copy(
-                            openProgressDialog = false,
-                            studentSubmission = submission
+                    val updatedStudentSubmission = resource.data
+                    if (updatedStudentSubmission != null) {
+                        updateStudentSubmission(
+                            updatedStudentSubmission,
+                            uiState.copy(openProgressDialog = false)
                         )
                     } else {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                yourWorkDataState = DataState.EMPTY(
-                                    UiText.StringResource(Strings.error_unexpected)
-                                )
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            yourWorkDataState = DataState.EMPTY(
+                                UiText.StringResource(Strings.error_unexpected)
                             )
+                        )
                     }
                 }
 
@@ -354,8 +348,25 @@ class ViewClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    uiState = uiState.copy(openProgressDialog = false)
-                    fetchStudentSubmission()
+                    if (uiState.studentSubmission != null) {
+                        val updatedStudentSubmission = mutableStateOf(uiState.studentSubmission!!)
+                        updatedStudentSubmission.value =
+                            updatedStudentSubmission.value.copy(
+                                state = SubmissionState.RECLAIMED_BY_STUDENT
+                            )
+
+                        updateStudentSubmission(
+                            updatedStudentSubmission.value,
+                            uiState.copy(openProgressDialog = false)
+                        )
+                    } else {
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            yourWorkDataState = DataState.EMPTY(
+                                UiText.StringResource(Strings.error_unexpected)
+                            )
+                        )
+                    }
                 }
 
                 is Resource.Error -> {
@@ -443,23 +454,24 @@ class ViewClassworkViewModel @Inject constructor(
             uiState.studentSubmissionAttachments
         ).onEach { resource ->
             when (resource) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
                 is Resource.Success -> {
-                    val submission = resource.data
-                    if (submission != null) {
-                        studentSubmission.value = submission
-                        uiState = uiState.copy(
-                            openProgressDialog = false,
-                            studentSubmission = submission
+                    val updatedStudentSubmission = resource.data
+                    if (updatedStudentSubmission != null) {
+                        updateStudentSubmission(
+                            updatedStudentSubmission,
+                            uiState.copy(openProgressDialog = false)
                         )
                     } else {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                yourWorkDataState = DataState.EMPTY(
-                                    UiText.StringResource(Strings.error_unexpected)
-                                )
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            yourWorkDataState = DataState.EMPTY(
+                                UiText.StringResource(Strings.error_unexpected)
                             )
+                        )
                     }
                 }
 
@@ -471,5 +483,19 @@ class ViewClassworkViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun updateStudentSubmission(
+        updatedStudentSubmission: StudentSubmission,
+        // updatedUiState is passed because in some places we need to change dataState
+        // while in some places we need to change openProgressDialog.
+        updatedUiState: ViewClassworkUiState
+    ) {
+        studentSubmission.value = updatedStudentSubmission
+        uiState.studentSubmissionAttachments.clear()
+        uiState.studentSubmissionAttachments.addAll(
+            updatedStudentSubmission.assignmentSubmission?.attachments.orEmpty()
+        )
+        uiState = updatedUiState.copy(studentSubmission = updatedStudentSubmission)
     }
 }

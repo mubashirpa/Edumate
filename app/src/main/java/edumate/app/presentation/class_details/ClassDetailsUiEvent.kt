@@ -1,10 +1,13 @@
 package edumate.app.presentation.class_details
 
-import edumate.app.domain.model.User
 import edumate.app.domain.model.course_work.CourseWork
+import edumate.app.domain.model.user_profiles.UserProfile
 
 sealed class ClassDetailsUiEvent {
-    data class OnNavigateToViewStudentWork(val courseWork: CourseWork, val assignedStudent: User) :
+    data class OnNavigateToViewStudentWork(
+        val courseWork: CourseWork,
+        val assignedStudent: UserProfile
+    ) :
         ClassDetailsUiEvent()
 
     object OnRetry : ClassDetailsUiEvent()

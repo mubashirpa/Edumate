@@ -117,8 +117,10 @@ fun HomeScreen(
                                 navigateToClassDetails = navigateToClassDetails
                             )
                         }
+
                         1 -> {
                             TeachingScreen(
+                                snackbarHostState = snackbarHostState,
                                 contentPadding = contentPadding,
                                 navigateToCreateClass = navigateToCreateClass,
                                 navigateToClassDetails = navigateToClassDetails

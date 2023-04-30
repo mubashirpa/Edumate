@@ -11,10 +11,10 @@ import edumate.app.presentation.view_student_work.ViewStudentWorkUiState
 
 @Composable
 fun ReturnDialog(
+    onDismissRequest: () -> Unit,
     uiState: ViewStudentWorkUiState,
     courseWork: CourseWork,
     userName: String,
-    onDismissRequest: () -> Unit,
     onConfirmClick: () -> Unit
 ) {
     if (uiState.openReturnDialog) {

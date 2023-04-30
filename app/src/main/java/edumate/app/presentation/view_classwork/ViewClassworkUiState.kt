@@ -5,8 +5,8 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import edumate.app.core.DataState
 import edumate.app.core.UiText
 import edumate.app.domain.model.course_work.CourseWork
-import edumate.app.domain.model.student_submission.Attachment
-import edumate.app.domain.model.student_submission.StudentSubmission
+import edumate.app.domain.model.student_submissions.Attachment
+import edumate.app.domain.model.student_submissions.StudentSubmission
 
 data class ViewClassworkUiState(
     val appBarMenuExpanded: Boolean = false,

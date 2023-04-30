@@ -6,9 +6,9 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.StudentSubmissionDto
-import edumate.app.domain.model.student_submission.AssignmentSubmission
-import edumate.app.domain.model.student_submission.Attachment
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.AssignmentSubmission
+import edumate.app.domain.model.student_submissions.Attachment
+import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.domain.repository.StudentSubmissionRepository
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
@@ -28,8 +28,8 @@ class StudentSubmissionRepositoryImpl @Inject constructor(
 
     override suspend fun list(courseId: String, courseWorkId: String): List<StudentSubmissionDto> {
         return studentSubmissions(courseId, courseWorkId)
-            .orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING)
-            .get().await().documents.mapNotNull { snapshot ->
+            .orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING).get()
+            .await().documents.mapNotNull { snapshot ->
                 snapshot.toObject<StudentSubmissionDto>()
             }
     }
@@ -72,8 +72,10 @@ class StudentSubmissionRepositoryImpl @Inject constructor(
             .update(FirebaseConstants.Firestore.STATE, SubmissionState.TURNED_IN).await()
     }
 
-    private fun studentSubmissions(courseId: String, courseWorkId: String): CollectionReference =
-        firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION).document(courseId)
-            .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document(courseWorkId)
+    private fun studentSubmissions(courseId: String, courseWorkId: String): CollectionReference {
+        return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
+            .document(courseId).collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION)
+            .document(courseWorkId)
             .collection(FirebaseConstants.Firestore.STUDENT_SUBMISSIONS_COLLECTION)
+    }
 }

@@ -104,7 +104,7 @@ fun LoginScreen(
         }
 
     LaunchedEffect(viewModel, lifecycle) {
-        // Whenever the uiState changes, check if the user is logged in and
+        // Whenever the uiState changes, check if the userProfile is logged in and
         // call the `onLoginSuccess` event when `lifecycle` is at least STARTED
         snapshotFlow { viewModel.uiState }.filter { it.isUserLoggedIn }.flowWithLifecycle(lifecycle)
             .collect {

@@ -12,14 +12,15 @@ import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.moveItemToFirstPosition
-import edumate.app.domain.model.User
+import edumate.app.domain.model.user_profiles.UserProfile
+import edumate.app.domain.usecase.GetPeoplesUseCase
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.courses.GetPeoplesUseCase
 import edumate.app.domain.usecase.students.DeleteStudentUseCase
 import edumate.app.domain.usecase.teachers.DeleteTeacherUseCase
 import edumate.app.navigation.Routes
 import edumate.app.presentation.class_details.UserType
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -38,7 +39,8 @@ class PeopleViewModel @Inject constructor(
 
     private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_ID])
     private val ownerId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_OWNER_ID])
-    private var peoples: List<User> = emptyList()
+    private var peoples: List<UserProfile> = emptyList()
+    private var getPeoplesJob: Job? = null
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -106,7 +108,7 @@ class PeopleViewModel @Inject constructor(
             }
 
             is PeopleUiEvent.OnOpenRemoveUserDialogChange -> {
-                uiState = uiState.copy(removeUser = event.user)
+                uiState = uiState.copy(removeUserProfile = event.userProfile)
             }
 
             is PeopleUiEvent.OnRemoveUser -> {
@@ -136,11 +138,13 @@ class PeopleViewModel @Inject constructor(
     }
 
     private fun fetchPeoples(refreshing: Boolean) {
-        // DataState.LOADING is only used when initial loading and retry.
+        // DataState.LOADING is only used when initial loading and retry
         // Otherwise show the PullRefreshIndicator using refreshing = true
-        // Likewise, DataState.ERROR is only used when initial loading and retry.
-        // Otherwise show snackbar by using userMessage
-        getPeoplesUseCase(courseId).onEach { resource ->
+        // Likewise, DataState.ERROR is only used when initial loading and retry
+        // Otherwise show snackbar by using userMessage.
+        // Cancel ongoing getPeoplesJob before recall.
+        getPeoplesJob?.cancel()
+        getPeoplesJob = getPeoplesUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -193,18 +197,11 @@ class PeopleViewModel @Inject constructor(
                             }
                         }
                     } else {
-                        uiState = if (refreshing) {
-                            uiState.copy(
-                                refreshing = false,
-                                userMessage = resource.message
+                        uiState = uiState.copy(
+                            dataState = DataState.ERROR(
+                                UiText.StringResource(Strings.error_unexpected)
                             )
-                        } else {
-                            uiState.copy(
-                                dataState = DataState.EMPTY(
-                                    UiText.StringResource(Strings.error_unexpected)
-                                )
-                            )
-                        }
+                        )
                     }
                 }
 
@@ -223,14 +220,14 @@ class PeopleViewModel @Inject constructor(
     }
 
     private fun deleteTeacher(uid: String, isLeaving: Boolean) {
-        // if user is leaving exit page on success
+        // if userProfile is leaving exit page on success
         // else refresh peoples
         deleteTeacherUseCase(courseId, uid).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(
                         openProgressDialog = true,
-                        removeUser = null
+                        removeUserProfile = null
                     )
                 }
 
@@ -262,7 +259,7 @@ class PeopleViewModel @Inject constructor(
                 is Resource.Loading -> {
                     uiState = uiState.copy(
                         openProgressDialog = true,
-                        removeUser = null
+                        removeUserProfile = null
                     )
                 }
 
@@ -281,13 +278,13 @@ class PeopleViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun teachers(): List<User> {
+    private fun teachers(): List<UserProfile> {
         return peoples.filter {
             it.teaching.contains(courseId)
         }
     }
 
-    private fun students(): List<User> {
+    private fun students(): List<UserProfile> {
         return peoples.filter {
             it.enrolled.contains(courseId)
         }

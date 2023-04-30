@@ -26,7 +26,6 @@ import androidx.compose.material.icons.outlined.LiveHelp
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,7 +36,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -55,13 +53,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
-import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkUiState
 import edumate.app.presentation.classwork.screen.components.ClassworkListItem
+import edumate.app.presentation.classwork.screen.components.DeleteClassworkDialog
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -96,7 +94,7 @@ fun ClassworkScreen(
         }
     )
     val currentUserType =
-        if (course.teachers.contains(uiState.currentUser?.uid)) {
+        if (course.teacherGroupId.contains(uiState.currentUser?.uid)) {
             UserType.TEACHER
         } else {
             UserType.STUDENT
@@ -155,8 +153,10 @@ fun ClassworkScreen(
             scrollBehavior = scrollBehavior
         )
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             when (val dataState = uiState.dataState) {
                 is DataState.EMPTY -> {
@@ -189,52 +189,39 @@ fun ClassworkScreen(
                 }
 
                 DataState.SUCCESS -> {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .pullRefresh(refreshState)
-                            .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    ) {
-                        LazyColumn(
-                            modifier = Modifier.fillMaxSize(),
-                            state = scrollState,
-                            content = {
-                                items(uiState.classwork) { classwork ->
-                                    val id = classwork.id
-                                    val type = classwork.workType
-                                    ClassworkListItem(
-                                        work = classwork,
-                                        currentUserType = currentUserType,
-                                        workType = type,
-                                        onEdit = {
-                                            navigateToEditClasswork(courseId, id, type)
-                                        },
-                                        onDelete = {
-                                            onEvent(
-                                                ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
-                                                    classwork
-                                                )
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        state = scrollState,
+                        content = {
+                            items(uiState.classwork) { classwork ->
+                                val id = classwork.id
+                                val type = classwork.workType
+                                ClassworkListItem(
+                                    work = classwork,
+                                    currentUserType = currentUserType,
+                                    workType = type,
+                                    onEdit = {
+                                        navigateToEditClasswork(courseId, id, type)
+                                    },
+                                    onDelete = {
+                                        onEvent(
+                                            ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
+                                                classwork
                                             )
-                                        },
-                                        onClick = {
-                                            navigateToViewClasswork(
-                                                courseId,
-                                                id,
-                                                type,
-                                                currentUserType
-                                            )
-                                        }
-                                    )
-                                }
+                                        )
+                                    },
+                                    onClick = {
+                                        navigateToViewClasswork(
+                                            courseId,
+                                            id,
+                                            type,
+                                            currentUserType
+                                        )
+                                    }
+                                )
                             }
-                        )
-
-                        PullRefreshIndicator(
-                            uiState.refreshing,
-                            refreshState,
-                            Modifier.align(Alignment.TopCenter)
-                        )
-                    }
+                        }
+                    )
                 }
 
                 DataState.UNKNOWN -> {}
@@ -262,6 +249,12 @@ fun ClassworkScreen(
                     }
                 }
             }
+
+            PullRefreshIndicator(
+                uiState.refreshing,
+                refreshState,
+                Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 
@@ -326,57 +319,4 @@ fun ClassworkScreen(
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
-}
-
-@Composable
-private fun DeleteClassworkDialog(
-    onDismissRequest: () -> Unit,
-    classwork: CourseWork?,
-    onConfirmClick: (workId: String) -> Unit
-) {
-    if (classwork != null) {
-        val title = when (classwork.workType) {
-            CourseWorkType.MATERIAL -> stringResource(id = Strings.delete_material)
-            CourseWorkType.ASSIGNMENT -> stringResource(id = Strings.delete_assignment)
-            CourseWorkType.SHORT_ANSWER_QUESTION -> stringResource(id = Strings.delete_question)
-            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> stringResource(id = Strings.delete_question)
-            else -> stringResource(id = Strings.delete)
-        }
-        val message = when (classwork.workType) {
-            CourseWorkType.MATERIAL -> stringResource(id = Strings.comments_will_also_be_deleted)
-            CourseWorkType.ASSIGNMENT -> stringResource(
-                id = Strings.marks_and_comments_will_also_be_deleted
-            )
-
-            CourseWorkType.SHORT_ANSWER_QUESTION -> stringResource(
-                id = Strings.marks_and_comments_will_also_be_deleted
-            )
-
-            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> stringResource(
-                id = Strings.marks_and_comments_will_also_be_deleted
-            )
-
-            else -> ""
-        }
-
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Text(text = title)
-            },
-            text = {
-                Text(text = message)
-            },
-            confirmButton = {
-                TextButton(onClick = { onConfirmClick(classwork.id) }) {
-                    Text(stringResource(id = Strings.delete))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismissRequest) {
-                    Text(stringResource(id = Strings.cancel))
-                }
-            }
-        )
-    }
 }

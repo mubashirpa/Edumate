@@ -1,7 +1,7 @@
 package edumate.app.domain.repository
 
 import edumate.app.data.remote.dto.StudentSubmissionDto
-import edumate.app.domain.model.student_submission.Attachment
+import edumate.app.domain.model.student_submissions.Attachment
 
 interface StudentSubmissionRepository {
 

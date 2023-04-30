@@ -19,15 +19,19 @@
     <string name="assignment_title">అసైన్‌మెంట్ శీర్షిక</string>
     <string name="attachments">అటాచ్‌మెంట్‌లు</string>
     <string name="cancel">రద్దు చేయి</string>
-    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">ఈ సమయంలో క్లాస్ వర్క్‌లను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
-    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">ఈ సమయంలో క్లాస్‌వర్క్‌ని తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
-    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">ఈ సమయంలో వ్యక్తులను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
-    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">ఈ సమయంలో విద్యార్థి పనిని తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
-    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">ఈ సమయంలో విద్యార్థి రచనలను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ఈ సమయంలో కోర్సును తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ఈ సమయంలో కోర్సు పనిని తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">ఈ సమయంలో కోర్సు పనులను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">ఈ సమయంలో కోర్సులను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">ఈ సమయంలో వ్యక్తులను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">ఈ సమయంలో విద్యార్థి సమర్పణను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
+    <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ఈ సమయంలో విద్యార్థి సమర్పణలను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
     <string name="change_point_value">పాయింట్ విలువను మార్చండి</string>
     <string name="class_code">తరగతి కోడ్</string>
     <string name="class_code_shared_by_your_teacher">క్లాస్ కోడ్ మీ టీచర్ ద్వారా షేర్ చేయబడింది.</string>
     <string name="class_name">తరగతి పేరు</string>
+    <string name="class_not_found">తరగతి కనుగొనబడలేదు.</string>
+    <string name="classwork_not_found">క్లాస్‌వర్క్ కనుగొనబడలేదు.</string>
     <string name="comments_will_also_be_deleted">వ్యాఖ్యలు కూడా తొలగించబడతాయి.</string>
     <string name="copied_invitation_link">కాపీ చేయబడిన ఆహ్వాన లింక్</string>
     <string name="copy_link">లింక్‌ని కాపీ చేయండి</string>
@@ -36,7 +40,6 @@
     <string name="create_classwork">క్లాస్‌వర్క్‌ని సృష్టించండి</string>
     <string name="create_new_account">కొత్త ఖాతాను సృష్టించండి</string>
     <string name="creating_account">ఖాతా సృష్టిస్తోంది</string>
-    <string name="creating_class">తరగతిని సృష్టిస్తోంది</string>
     <string name="delete">తొలగించు</string>
     <string name="delete_assignment">అసైన్‌మెంట్‌ను తొలగించాలా?</string>
     <string name="delete_material">మెటీరియల్‌ని తొలగించాలా?</string>
@@ -49,8 +52,6 @@
     <string name="dialog_return_submission_title1">మార్కింగ్ లేకుండా పనిని తిరిగి ఇవ్వాలా?</string>
     <string name="dialog_return_submission_title2">గ్రేడ్‌ను నవీకరించాలా?</string>
     <string name="dialog_return_submission_title3">పనిని తిరిగి ఇవ్వాలా?</string>
-    <string name="dialog_turn_in_assignment_text1">%1$d జోడింపు \"%2$s\" కోసం సమర్పించబడుతుంది.</string>
-    <string name="dialog_turn_in_assignment_text2">మీరు \"%1$s\"కి దేన్నీ జోడించలేదు, కాబట్టి ఏదీ చేర్చబడదు. మీ టీచర్ అది పూర్తయినట్లు చూస్తారు.</string>
     <string name="dialog_turn_in_assignment_title">మీ పనిని ప్రారంభించాలా?</string>
     <string name="dialog_unsubmit_assignment_text">జోడింపులను జోడించడానికి లేదా మార్చడానికి సమర్పించవద్దు. మీరు పూర్తి చేసిన తర్వాత మళ్లీ సమర్పించడం మర్చిపోవద్దు.</string>
     <string name="dialog_unsubmit_assignment_title">మీ పనిని సమర్పించాలా?</string>
@@ -69,6 +70,7 @@
     <string name="forgot_password">పాస్‌వర్డ్ మర్చిపోయారా?</string>
     <string name="full_name">పూర్తి పేరు</string>
     <string name="get_started">ప్రారంభించండి</string>
+    <string name="get_started_by_inviting_students">విద్యార్థులను ఆహ్వానించడం ద్వారా ప్రారంభించండి.</string>
     <string name="get_started_message">అధ్యాపకులు మరియు విద్యార్థులకు కమ్యూనికేట్ చేయడానికి, సమయాన్ని ఆదా చేయడానికి మరియు వ్యవస్థీకృతంగా ఉండటానికి సహాయం చేస్తుంది.</string>
     <string name="google">Google</string>
     <string name="handed_in">హ్యాండ్ ఇన్</string>
@@ -81,7 +83,6 @@
     <string name="join">చేరండి</string>
     <string name="join_a_class_to_get_started">ప్రారంభించడానికి తరగతిలో చేరండి</string>
     <string name="join_class">తరగతిలో చేరండి</string>
-    <string name="joining_class">క్లాస్‌లో చేరడం</string>
     <string name="leave_class">తరగతి నుండి నిష్క్రమించండి</string>
     <string name="leave_class_warning_message">మిమ్మల్ని మళ్లీ ఆహ్వానిస్తే తప్ప మీరు ఈ తరగతిని తెరవలేరు</string>
     <string name="logout">Logout</string>
@@ -127,7 +128,6 @@
     <string name="sign_up">సైన్ అప్</string>
     <string name="sign_up_with_google">Googleతో సైన్ అప్ చేయండి</string>
     <string name="signing_in">సైన్ ఇన్ చేయడం</string>
-    <string name="student">విద్యార్థి</string>
     <string name="student_answers">విద్యార్థి సమాధానాలు</string>
     <string name="student_not_yet_submitted">విద్యార్థి ఇంకా సమర్పించబడలేదు.</string>
     <string name="student_work">విద్యార్థి పని</string>
@@ -139,11 +139,21 @@
     <string name="teaching">బోధన</string>
     <string name="turn_in">ఇన్ చేయి</string>
     <string name="turned_in">తిరిగినది</string>
+    <string name="unable_to_add_attachments">జోడింపులను జోడించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_create_course">కోర్సును సృష్టించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_create_course_work">కోర్సు పనిని సృష్టించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_delete_course">కోర్సును తొలగించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_delete_course_work">కోర్సు పనిని తొలగించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_patch_course_work">కోర్సు పనిని నవీకరించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_reclaim_student_submission">సమర్పణను రద్దు చేయడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_return_student_submission">సమర్పణను వాపసు చేయడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_submit_student_submission">సమర్పణను సమర్పించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_update_course">కోర్సును నవీకరించడం సాధ్యం కాలేదు.</string>
+    <string name="unable_to_update_student_submission">సమర్పణను నవీకరించడం సాధ్యం కాదు.</string>
     <string name="unenrol">Unenrol</string>
     <string name="unmarked">గుర్తించబడలేదు</string>
     <string name="unsubmit">సమర్పించు</string>
     <string name="update">నవీకరణ</string>
-    <string name="updating_class">క్లాస్‌ని నవీకరిస్తోంది</string>
     <string name="upload_file">ఫైల్‌ను అప్‌లోడ్ చేయండి</string>
     <string name="url">URL</string>
     <string name="welcome_back">తిరిగి స్వాగతం!</string>
@@ -199,4 +209,14 @@
     <string name="error_invalid_email">దయచేసి చెల్లుబాటు అయ్యే ఇమెయిల్‌ను నమోదు చేయండి.</string>
     <string name="error_invalid_password">మీరు గుర్తుంచుకోగల అక్షరాలు మరియు సంఖ్యల మిశ్రమాన్ని ఉపయోగించండి.</string>
     <string name="error_invalid_repeated_password">మీరు ఒకే పాస్‌వర్డ్‌ని ధృవీకరించడానికి రెండుసార్లు నమోదు చేయాలి.</string>
+
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d విద్యార్థి</item>
+        <item quantity="other">%1$d విద్యార్థులు</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="zero">మీరు \"%1$s\"కి దేన్నీ జోడించలేదు, కాబట్టి ఏదీ ప్రారంభించబడదు. మీ ఉపాధ్యాయుడు అది పూర్తయినట్లు చూస్తారు.</item>
+        <item quantity="one">%1$d జోడింపు \"%2$s\" కోసం సమర్పించబడుతుంది.</item>
+        <item quantity="other">%1$d జోడింపులు \"%2$s\" కోసం సమర్పించబడతాయి.</item>
+    </plurals>
 </resources>

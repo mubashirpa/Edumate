@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import edumate.app.presentation.class_details.ClassDetailsViewModel
 import edumate.app.presentation.class_details.screen.ClassDetailsScreen
+import edumate.app.presentation.create_class.CreateClassViewModel
 import edumate.app.presentation.create_class.screen.CreateClassScreen
 import edumate.app.presentation.home.screen.HomeScreen
 import edumate.app.presentation.join_class.screen.JoinClassScreen
@@ -62,11 +63,14 @@ fun EdumateNavHost(
                 }
             )
         ) { backStackEntry ->
-            val courseId =
-                backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASS_COURSE_ID)
+            val viewModel: CreateClassViewModel = hiltViewModel()
+            val courseId = backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASS_COURSE_ID)
 
             CreateClassScreen(
                 courseId = courseId,
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                createClassResults = viewModel.createClassResults,
                 navigateToClassDetails = {
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(it)) {
                         popUpTo(Screen.HomeScreen.route)

@@ -1,6 +1,5 @@
 package edumate.app.presentation.teaching.screen.components
 
-import android.content.Context
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
@@ -8,10 +7,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import edumate.app.R.plurals as Plurals
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.courses.Course
 
@@ -23,7 +23,6 @@ fun TeachingListItem(
     onEditClick: (courseId: String) -> Unit,
     onClick: (courseId: String) -> Unit
 ) {
-    val context = LocalContext.current
     Card(
         onClick = {
             onClick(course.id)
@@ -54,7 +53,7 @@ fun TeachingListItem(
                 }
                 TeachingMenuButton(
                     onShareClick = {
-                        onShareClick(course.alternateLink.orEmpty())
+                        onShareClick(course.alternateLink)
                     },
                     onEditClick = {
                         onEditClick(course.id)
@@ -63,7 +62,11 @@ fun TeachingListItem(
             }
             Spacer(modifier = Modifier.weight(1f))
             Text(
-                text = studentSize(context, course.students.size),
+                text = pluralStringResource(
+                    id = Plurals.number_of_students,
+                    count = course.courseGroupId.size,
+                    course.courseGroupId.size
+                ),
                 style = MaterialTheme.typography.labelMedium
             )
         }
@@ -103,13 +106,5 @@ private fun TeachingMenuButton(
                 }
             )
         }
-    }
-}
-
-private fun studentSize(context: Context, size: Int): String {
-    return if (size == 1) {
-        "$size ${context.getString(Strings.student).lowercase()}"
-    } else {
-        "$size ${context.getString(Strings.students).lowercase()}"
     }
 }

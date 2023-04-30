@@ -28,8 +28,9 @@ import edumate.app.domain.model.course_work.MultipleChoiceQuestion
 import edumate.app.domain.model.course_work.SubmissionModificationMode
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.course_work.CreateCourseWorkUseCase
-import edumate.app.domain.usecase.course_work.GetCourseWorkUseCase
+import edumate.app.domain.usecase.course_work.CreateCourseWork
+import edumate.app.domain.usecase.course_work.GetCourseWork
+import edumate.app.domain.usecase.course_work.PatchCourseWork
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -47,8 +48,9 @@ class CreateClassworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
-    private val createCourseWorkUseCase: CreateCourseWorkUseCase,
-    private val getCourseWorkUseCase: GetCourseWorkUseCase,
+    private val createCourseWorkUseCase: CreateCourseWork,
+    private val getCourseWorkUseCase: GetCourseWork,
+    private val patchCourseWorkUseCase: PatchCourseWork,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField
@@ -84,8 +86,8 @@ class CreateClassworkViewModel @Inject constructor(
         )
 
         getCurrentUserUseCase().map { user ->
-            user?.uid?.let {
-                courseWork.value = courseWork.value.copy(creatorUserId = it)
+            if (user != null) {
+                courseWork.value = courseWork.value.copy(creatorUserId = user.uid)
             }
         }.launchIn(viewModelScope)
 
@@ -172,7 +174,11 @@ class CreateClassworkViewModel @Inject constructor(
             }
 
             CreateClassworkUiEvent.CreateClasswork -> {
-                createClasswork()
+                if (classworkId != "null") {
+                    updateClasswork()
+                } else {
+                    createClasswork()
+                }
             }
 
             CreateClassworkUiEvent.UserMessageShown -> {
@@ -192,11 +198,12 @@ class CreateClassworkViewModel @Inject constructor(
                     val classwork = resource.data
                     if (classwork != null) {
                         courseWork.value = classwork
-                        uiState.attachments.addAll(classwork.materials)
                         val choices = classwork.multipleChoiceQuestion?.choices
                         if (choices != null) {
                             uiState.choices.addAll(choices)
                         }
+                        uiState.attachments.addAll(classwork.materials)
+
                         uiState = uiState.copy(
                             description = classwork.description.orEmpty(),
                             dueDate = classwork.dueTime,
@@ -252,7 +259,7 @@ class CreateClassworkViewModel @Inject constructor(
         }
 
         courseWork.value = courseWork.value.copy(
-            title = uiState.title,
+            title = title,
             description = uiState.description.ifEmpty { null },
             materials = uiState.attachments,
             dueTime = uiState.dueDate,
@@ -263,6 +270,74 @@ class CreateClassworkViewModel @Inject constructor(
         )
 
         createCourseWorkUseCase(courseId, courseWork.value).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Resource.Success -> {
+                    val classwork = resource.data
+                    if (classwork != null) {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        resultChannel.send(classwork.id)
+                    } else {
+                        uiState = uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun updateClasswork() {
+        val title = uiState.title
+        val titleResult = validateTextField.execute(title)
+
+        if (!titleResult.successful) {
+            uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
+            return
+        }
+
+        val maxPoints = try {
+            uiState.points?.toInt()
+        } catch (e: NumberFormatException) {
+            null
+        }
+        val multipleChoiceQuestion =
+            if (uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
+                MultipleChoiceQuestion(choices = uiState.choices)
+            } else {
+                null
+            }
+        val assignment = if (uiState.workType == CourseWorkType.ASSIGNMENT) {
+            Assignment(
+                studentWorkFolder = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/course_work/${courseWork.value.id}"
+            )
+        } else {
+            null
+        }
+
+        courseWork.value = courseWork.value.copy(
+            title = title,
+            description = uiState.description.ifEmpty { null },
+            materials = uiState.attachments,
+            dueTime = uiState.dueDate,
+            maxPoints = maxPoints,
+            workType = uiState.workType,
+            assignment = assignment,
+            multipleChoiceQuestion = multipleChoiceQuestion
+        )
+
+        patchCourseWorkUseCase(courseId, courseWork.value.id, courseWork.value).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)
@@ -342,7 +417,7 @@ class CreateClassworkViewModel @Inject constructor(
                 }
 
                 is Resource.Success -> {
-                    // Stop urlUseCaseJob to avoid conflict
+                    // Stop urlUseCaseJob to avoid problems
                     urlUseCaseJob?.cancel()
                     uiState.attachments.removeAt(position)
                     uiState.copy(openProgressDialog = false)

@@ -19,15 +19,19 @@
     <string name="assignment_title">असाइनमेंट शीर्षक</string>
     <string name="attachments">संलग्नक</string>
     <string name="cancel">रद्द करना</string>
-    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">इस समय कक्षा के कार्यों को पुनः प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
-    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">इस समय क्लासवर्क पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
-    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">इस समय लोगों को पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुन: प्रयास करें।</string>
-    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">इस समय छात्र का कार्य पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
-    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">इस समय छात्र के कार्यों को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_course_at_this_time_please_try_again_later">इस समय पाठ्यक्रम पुनर्प्राप्त नहीं किया जा सकता, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">इस समय पाठ्यक्रम का काम पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">इस समय पाठ्यक्रम के कार्यों को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">इस समय पाठ्यक्रम पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">इस समय लोगों को पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुन: प्रयास करें।</string>
+    <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">इस समय छात्र सबमिशन पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">इस समय छात्र सबमिशन पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="change_point_value">बिंदु मान बदलें</string>
     <string name="class_code">वर्ग कोड</string>
     <string name="class_code_shared_by_your_teacher">आपके शिक्षक द्वारा साझा किया गया कक्षा कोड।</string>
     <string name="class_name">वर्ग का नाम</string>
+    <string name="class_not_found">कक्षा नहीं मिली।</string>
+    <string name="classwork_not_found">क्लासवर्क नहीं मिला।</string>
     <string name="comments_will_also_be_deleted">टिप्पणियां भी हटा दी जाएंगी।</string>
     <string name="copied_invitation_link">न्योते का लिंक कॉपी किया गया</string>
     <string name="copy_link">लिंक कॉपी करें</string>
@@ -36,7 +40,6 @@
     <string name="create_classwork">क्लासवर्क बनाएं</string>
     <string name="create_new_account">नया खाता बनाएं</string>
     <string name="creating_account">खाता बनाना</string>
-    <string name="creating_class">वर्ग बनाना</string>
     <string name="delete">मिटाना</string>
     <string name="delete_assignment">असाइनमेंट हटाएं?</string>
     <string name="delete_material">सामग्री हटाएं?</string>
@@ -49,8 +52,6 @@
     <string name="dialog_return_submission_title1">बिना निशान लगाए काम वापस करें?</string>
     <string name="dialog_return_submission_title2">ग्रेड अपडेट करें?</string>
     <string name="dialog_return_submission_title3">वापस काम?</string>
-    <string name="dialog_turn_in_assignment_text1">%1$d अटैचमेंट \"%2$s\" के लिए सबमिट किया जाएगा।</string>
-    <string name="dialog_turn_in_assignment_text2">आपने \"%1$s\" में कुछ भी अटैच नहीं किया है, इसलिए कुछ भी नहीं दिया जाएगा। आपके शिक्षक देखेंगे कि यह हो गया है।</string>
     <string name="dialog_turn_in_assignment_title">अपना काम चालू करें?</string>
     <string name="dialog_unsubmit_assignment_text">अटैचमेंट जोड़ने या बदलने के लिए सबमिट न करें। जब आप काम पूरा कर लें तो फिर से सबमिट करना न भूलें।</string>
     <string name="dialog_unsubmit_assignment_title">अपना काम अनसबमिट करें?</string>
@@ -69,6 +70,7 @@
     <string name="forgot_password">पासवर्ड भूल गए?</string>
     <string name="full_name">पूरा नाम</string>
     <string name="get_started">शुरू हो जाओ</string>
+    <string name="get_started_by_inviting_students">छात्रों को आमंत्रित करके आरंभ करें।</string>
     <string name="get_started_message">शिक्षकों और छात्रों को संवाद करने, समय बचाने और संगठित रहने में मदद करना।</string>
     <string name="google">गूगल</string>
     <string name="handed_in">में सौंप दिया</string>
@@ -81,7 +83,6 @@
     <string name="join">जोड़ना</string>
     <string name="join_a_class_to_get_started">आरंभ करने के लिए कक्षा में शामिल हों</string>
     <string name="join_class">कक्षा में शामिल हों</string>
-    <string name="joining_class">वर्ग में शामिल होना</string>
     <string name="leave_class">कक्षा छोड़ें</string>
     <string name="leave_class_warning_message">आप इस कक्षा को तब तक नहीं खोल पाएंगे जब तक आपको दोबारा आमंत्रित नहीं किया जाता</string>
     <string name="logout">लॉग आउट करें</string>
@@ -127,7 +128,6 @@
     <string name="sign_up">साइन अप करें</string>
     <string name="sign_up_with_google">Google के साथ साइन अप करें</string>
     <string name="signing_in">साइन इन करना</string>
-    <string name="student">student</string>
     <string name="student_answers">छात्रों के उत्तर</string>
     <string name="student_not_yet_submitted">छात्र ने अभी तक सबमिट नहीं किया है।</string>
     <string name="student_work">छात्र कार्य</string>
@@ -139,11 +139,21 @@
     <string name="teaching">शिक्षण</string>
     <string name="turn_in">अंदर चालू करें</string>
     <string name="turned_in">चालू किया गया</string>
+    <string name="unable_to_add_attachments">अटैचमेंट जोड़ने में असमर्थ।</string>
+    <string name="unable_to_create_course">पाठ्यक्रम बनाने में असमर्थ।</string>
+    <string name="unable_to_create_course_work">कोर्स वर्क बनाने में असमर्थ।</string>
+    <string name="unable_to_delete_course">पाठ्यक्रम हटाने में असमर्थ।</string>
+    <string name="unable_to_delete_course_work">पाठ्यक्रम के काम को हटाने में असमर्थ।</string>
+    <string name="unable_to_patch_course_work">कोर्स वर्क अपडेट करने में असमर्थ।</string>
+    <string name="unable_to_reclaim_student_submission">सबमिशन रद्द करने में असमर्थ।</string>
+    <string name="unable_to_return_student_submission">सबमिशन वापस करने में असमर्थ।</string>
+    <string name="unable_to_submit_student_submission">सबमिशन जमा करने में असमर्थ।</string>
+    <string name="unable_to_update_course">पाठ्यक्रम अपडेट करने में असमर्थ।</string>
+    <string name="unable_to_update_student_submission">सबमिशन अपडेट करने में असमर्थ।</string>
     <string name="unenrol">नामांकन रद्द करें</string>
     <string name="unmarked">अचिह्नित</string>
     <string name="unsubmit">सबमिट ना करें</string>
     <string name="update">अद्यतन</string>
-    <string name="updating_class">अपडेटिंग क्लास</string>
     <string name="upload_file">फ़ाइल अपलोड करें</string>
     <string name="url">यूआरएल</string>
     <string name="welcome_back">वापस स्वागत है!</string>
@@ -199,4 +209,14 @@
     <string name="error_invalid_email">कृपया एक मान्य ईमेल दर्ज करें।</string>
     <string name="error_invalid_password">अक्षरों और संख्याओं के मिश्रण का उपयोग करें जिन्हें आप याद रख सकें।</string>
     <string name="error_invalid_repeated_password">इसकी पुष्टि करने के लिए आपको एक ही पासवर्ड दो बार दर्ज करना होगा।</string>
+
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d विद्यार्थी</item>
+        <item quantity="other">%1$d छात्र</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="zero">आपने \"%1$s\" में कुछ भी अटैच नहीं किया, इसलिए कुछ भी नहीं दिया जाएगा। आपके शिक्षक इसे हो गया देख लेंगे।</item>
+        <item quantity="one">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किया जाएगा।</item>
+        <item quantity="other">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किए जाएंगे।</item>
+    </plurals>
 </resources>

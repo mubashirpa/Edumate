@@ -4,30 +4,26 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
+import edumate.app.R.plurals as Plurals
 import edumate.app.R.string as Strings
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
 
 @Composable
 fun TurnInDialog(
-    uiState: ViewClassworkUiState,
     onDismissRequest: () -> Unit,
+    uiState: ViewClassworkUiState,
     onConfirmClick: () -> Unit
 ) {
     if (uiState.openTurnInDialog) {
-        val text = if (uiState.studentSubmissionAttachments.isNotEmpty()) {
-            stringResource(
-                id = Strings.dialog_turn_in_assignment_text1,
-                uiState.studentSubmissionAttachments.size,
-                uiState.classwork.title
-            )
-        } else {
-            stringResource(
-                id = Strings.dialog_turn_in_assignment_text2,
-                uiState.classwork.title
-            )
-        }
+        val text = pluralStringResource(
+            id = Plurals.dialog_turn_in_assignment_text,
+            count = uiState.studentSubmissionAttachments.size,
+            uiState.studentSubmissionAttachments.size,
+            uiState.classwork.title
+        )
         val confirmButtonText =
             if (uiState.studentSubmission?.state == SubmissionState.RECLAIMED_BY_STUDENT || uiState.studentSubmission?.state == SubmissionState.RETURNED) {
                 stringResource(id = Strings.resubmit)
@@ -66,8 +62,8 @@ fun TurnInDialog(
 
 @Composable
 fun UnSubmitDialog(
-    uiState: ViewClassworkUiState,
     onDismissRequest: () -> Unit,
+    uiState: ViewClassworkUiState,
     onConfirmClick: () -> Unit
 ) {
     if (uiState.openUnSubmitDialog) {
@@ -98,8 +94,8 @@ fun UnSubmitDialog(
 
 @Composable
 fun RemoveAttachmentDialog(
-    uiState: ViewClassworkUiState,
     onDismissRequest: () -> Unit,
+    uiState: ViewClassworkUiState,
     onConfirmClick: (attachmentIndex: Int) -> Unit
 ) {
     if (uiState.openRemoveAttachmentDialog != null) {

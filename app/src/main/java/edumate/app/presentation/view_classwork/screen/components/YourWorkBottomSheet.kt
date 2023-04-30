@@ -27,7 +27,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.view_classwork.ViewClassworkUiState

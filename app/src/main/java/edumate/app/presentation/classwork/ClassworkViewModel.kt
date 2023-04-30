@@ -7,15 +7,15 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.course_work.DeleteCourseWorkUseCase
-import edumate.app.domain.usecase.course_work.GetCourseWorksUseCase
+import edumate.app.domain.usecase.course_work.DeleteCourseWork
+import edumate.app.domain.usecase.course_work.ListCourseWorks
 import edumate.app.navigation.Routes
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -24,14 +24,15 @@ import kotlinx.coroutines.flow.onEach
 class ClassworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getCourseWorksUseCase: GetCourseWorksUseCase,
-    private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase
+    private val listCourseWorks: ListCourseWorks,
+    private val deleteCourseWork: DeleteCourseWork
 ) : ViewModel() {
 
     var uiState by mutableStateOf(ClassworkUiState())
         private set
 
     private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.CLASSWORK_COURSE_ID])
+    private var getCourseWorksJob: Job? = null
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -73,11 +74,13 @@ class ClassworkViewModel @Inject constructor(
     }
 
     private fun fetchClasswork(refreshing: Boolean) {
-        // DataState.LOADING is only used when initial loading and retry.
+        // DataState.LOADING is only used when initial loading and retry
         // Otherwise show the PullRefreshIndicator using refreshing = true
-        // Likewise, DataState.ERROR is only used when initial loading and retry.
-        // Otherwise show snackbar by using userMessage
-        getCourseWorksUseCase(courseId).onEach { resource ->
+        // Likewise, DataState.ERROR is only used when initial loading and retry
+        // Otherwise show snackbar by using userMessage.
+        // Cancel ongoing getCourseWorksJob before recall.
+        getCourseWorksJob?.cancel()
+        getCourseWorksJob = listCourseWorks(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -90,15 +93,11 @@ class ClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     val classwork = resource.data
                     uiState = if (classwork.isNullOrEmpty()) {
-                        if (refreshing) {
-                            uiState.copy(
-                                refreshing = false,
-                                userMessage = UiText.StringResource(Strings.error_unexpected)
-                            )
-                        } else {
+                        uiState.copy(
                             // Message is set from ui
-                            uiState.copy(dataState = DataState.EMPTY(UiText.Empty))
-                        }
+                            dataState = DataState.EMPTY(UiText.Empty),
+                            refreshing = false
+                        )
                     } else {
                         uiState.copy(
                             classwork = classwork,
@@ -123,7 +122,7 @@ class ClassworkViewModel @Inject constructor(
     }
 
     private fun deleteClasswork(classworkId: String) {
-        deleteCourseWorkUseCase(courseId, classworkId).onEach { resource ->
+        deleteCourseWork(courseId, classworkId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(

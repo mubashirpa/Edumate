@@ -11,18 +11,21 @@ object FirebaseConstants {
 
         // Courses
         const val ALTERNATE_LINK = "alternateLink"
+        const val CALENDAR_ID = "calendarId"
+        const val COURSE_GROUP_ID = "courseGroupId"
         const val COURSE_STATE = "courseState"
         const val CREATION_TIME = "creationTime"
         const val DESCRIPTION = "description"
         const val DESCRIPTION_HEADING = "descriptionHeading"
+        const val ENROLLMENT_CODE = "enrollmentCode"
+        const val GRADE_BOOK_SETTINGS = "gradeBookSettings"
+        const val GUARDIANS_ENABLED = "guardiansEnabled"
         const val ID = "id"
         const val NAME = "name"
         const val OWNER_ID = "ownerId"
         const val ROOM = "room"
         const val SECTION = "section"
-        const val STUDENTS = "students"
-        const val SUBJECT = "subject"
-        const val TEACHERS = "teachers"
+        const val TEACHER_GROUP_ID = "teacherGroupId"
         const val UPDATE_TIME = "updateTime"
 
         // CourseWork

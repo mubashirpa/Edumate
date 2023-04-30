@@ -11,19 +11,20 @@ import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.model.student_submission.SubmissionState
-import edumate.app.domain.usecase.student_submission.GetStudentSubmissionUseCase
-import edumate.app.domain.usecase.student_submission.PatchStudentSubmission
-import edumate.app.domain.usecase.student_submission.ReturnStudentSubmission
+import edumate.app.domain.model.student_submissions.SubmissionState
+import edumate.app.domain.usecase.student_submissions.GetStudentSubmission
+import edumate.app.domain.usecase.student_submissions.PatchStudentSubmission
+import edumate.app.domain.usecase.student_submissions.ReturnStudentSubmission
 import edumate.app.navigation.Routes
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class ViewStudentWorkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
+    private val getStudentSubmission: GetStudentSubmission,
     private val patchStudentSubmission: PatchStudentSubmission,
     private val returnStudentSubmission: ReturnStudentSubmission
 ) : ViewModel() {
@@ -37,6 +38,7 @@ class ViewStudentWorkViewModel @Inject constructor(
         checkNotNull(savedStateHandle[Routes.Args.VIEW_STUDENT_WORK_COURSE_WORK_ID])
     private val studentWorkId: String =
         checkNotNull(savedStateHandle[Routes.Args.VIEW_STUDENT_WORK_ID])
+    private var getStudentSubmissionJob: Job? = null
 
     init {
         fetchStudentWork(false)
@@ -75,64 +77,61 @@ class ViewStudentWorkViewModel @Inject constructor(
     }
 
     private fun fetchStudentWork(refreshing: Boolean) {
-        getStudentSubmissionUseCase(courseId, courseWorkId, studentWorkId).onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    uiState = if (refreshing) {
-                        uiState.copy(refreshing = true)
-                    } else {
-                        uiState.copy(dataState = DataState.LOADING)
+        // Cancel ongoing getStudentSubmissionJob before recall.
+        getStudentSubmissionJob?.cancel()
+        getStudentSubmissionJob =
+            getStudentSubmission(courseId, courseWorkId, studentWorkId).onEach { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        uiState = if (refreshing) {
+                            uiState.copy(refreshing = true)
+                        } else {
+                            uiState.copy(dataState = DataState.LOADING)
+                        }
                     }
-                }
 
-                is Resource.Success -> {
-                    val studentWork = resource.data
-                    uiState = if (studentWork != null) {
-                        uiState.copy(
-                            dataState = DataState.SUCCESS,
-                            grade = studentWork.assignedGrade?.toString().orEmpty(),
-                            refreshing = false,
-                            studentWork = studentWork
-                        )
-                    } else {
-                        if (refreshing) {
+                    is Resource.Success -> {
+                        val studentWork = resource.data
+                        uiState = if (studentWork != null) {
                             uiState.copy(
+                                dataState = DataState.SUCCESS,
+                                grade = studentWork.assignedGrade?.toString().orEmpty(),
                                 refreshing = false,
-                                userMessage = UiText.StringResource(Strings.error_unexpected)
+                                studentWork = studentWork
                             )
                         } else {
                             uiState.copy(
                                 dataState = DataState.EMPTY(
                                     UiText.StringResource(Strings.student_not_yet_submitted)
-                                )
+                                ),
+                                refreshing = false
                             )
                         }
                     }
-                }
 
-                is Resource.Error -> {
-                    uiState = if (refreshing) {
-                        uiState.copy(
-                            refreshing = false,
-                            userMessage = resource.message
-                        )
-                    } else {
-                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                    is Resource.Error -> {
+                        uiState = if (refreshing) {
+                            uiState.copy(
+                                refreshing = false,
+                                userMessage = resource.message
+                            )
+                        } else {
+                            uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                        }
                     }
                 }
-            }
-        }.launchIn(viewModelScope)
+            }.launchIn(viewModelScope)
     }
 
     private fun patchStudentWork() {
-        val assignedGrade = try {
-            uiState.grade.toInt()
-        } catch (e: NumberFormatException) {
-            null
-        }
-
         if (uiState.studentWork != null) {
+            val assignedGrade = try {
+                uiState.grade.toInt()
+            } catch (e: NumberFormatException) {
+                null
+            }
             val studentWork = mutableStateOf(uiState.studentWork!!)
+
             studentWork.value = studentWork.value.copy(assignedGrade = assignedGrade)
 
             patchStudentSubmission(
@@ -147,12 +146,12 @@ class ViewStudentWorkViewModel @Inject constructor(
                     }
 
                     is Resource.Success -> {
-                        val work = resource.data
-                        if (work != null) {
+                        val updatedStudentWork = resource.data
+                        if (updatedStudentWork != null) {
                             val isTurnedIn = uiState.studentWork?.state == SubmissionState.TURNED_IN
                             uiState = uiState.copy(
                                 openProgressDialog = isTurnedIn,
-                                studentWork = work
+                                studentWork = updatedStudentWork
                             )
                             if (isTurnedIn) {
                                 returnStudentWork()
@@ -179,18 +178,17 @@ class ViewStudentWorkViewModel @Inject constructor(
     }
 
     private fun returnStudentWork() {
-        returnStudentSubmission(
-            courseId,
-            courseWorkId,
-            studentWorkId
-        ).onEach { resource ->
+        returnStudentSubmission(courseId, courseWorkId, studentWorkId).onEach { resource ->
             when (resource) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
 
                 is Resource.Success -> {
                     if (uiState.studentWork != null) {
                         val courseWork = mutableStateOf(uiState.studentWork!!)
                         courseWork.value = courseWork.value.copy(state = SubmissionState.RETURNED)
+
                         uiState = uiState.copy(
                             openProgressDialog = false,
                             studentWork = courseWork.value

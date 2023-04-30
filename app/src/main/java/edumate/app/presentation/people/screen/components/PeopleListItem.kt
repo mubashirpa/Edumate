@@ -20,13 +20,13 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import edumate.app.R.string as Strings
-import edumate.app.domain.model.User
+import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.TextAvatar
 
 @Composable
 fun PeopleListItem(
-    user: User,
+    userProfile: UserProfile,
     modifier: Modifier = Modifier,
     currentUserType: UserType,
     currentUserId: String,
@@ -35,17 +35,17 @@ fun PeopleListItem(
     onEmail: () -> Unit,
     onRemove: () -> Unit
 ) {
-    val photoUrl = user.photoUrl
-    val userId = user.id
+    val photoUrl = userProfile.photoUrl
+    val userId = userProfile.id
     val avatar: @Composable () -> Unit = {
         TextAvatar(
             id = userId,
-            firstName = user.displayName.orEmpty(),
+            firstName = userProfile.displayName.orEmpty(),
             lastName = ""
         )
     }
     val trailingContent: @Composable (() -> Unit)? =
-        if (currentUserType == UserType.TEACHER) { // Current user is a teacher
+        if (currentUserType == UserType.TEACHER) { // Current userProfile is a teacher
             val isCurrentUser = userId == currentUserId
             val isCourseOwner = userId == courseOwnerId
 
@@ -68,7 +68,7 @@ fun PeopleListItem(
 
     ListItem(
         headlineContent = {
-            Text(text = user.displayName.orEmpty())
+            Text(text = userProfile.displayName.orEmpty())
         },
         modifier = modifier,
         leadingContent = {

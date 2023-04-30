@@ -62,9 +62,9 @@ import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.ext.header
-import edumate.app.domain.model.User
 import edumate.app.domain.model.course_work.CourseWork
-import edumate.app.domain.model.student_submission.SubmissionState
+import edumate.app.domain.model.student_submissions.SubmissionState
+import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -86,17 +86,13 @@ fun ViewStudentWorkScreen(
     onEvent: (ViewStudentWorkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
-    assignedStudent: User,
+    assignedStudent: UserProfile,
     onBackPressed: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
     val refreshState = rememberPullRefreshState(
         refreshing = uiState.refreshing,
-        onRefresh = {
-            onEvent(ViewStudentWorkUiEvent.OnRefresh)
-        }
+        onRefresh = { onEvent(ViewStudentWorkUiEvent.OnRefresh) }
     )
 
     uiState.userMessage?.let { userMessage ->
@@ -149,222 +145,230 @@ fun ViewStudentWorkScreen(
                 }
             }
         )
-        when (val dataState = uiState.dataState) {
-            is DataState.EMPTY -> {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = dataState.message.asString()
-                )
-            }
-
-            is DataState.ERROR -> {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = dataState.message.asString()
-                )
-            }
-
-            DataState.LOADING -> {
-                LoadingIndicator(modifier = Modifier.fillMaxSize())
-            }
-
-            DataState.SUCCESS -> {
-                val photoUrl = assignedStudent.photoUrl
-                val userId = assignedStudent.id
-                val avatar: @Composable () -> Unit = {
-                    TextAvatar(
-                        id = userId,
-                        firstName = assignedStudent.displayName.orEmpty(),
-                        lastName = ""
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState),
+            contentAlignment = Alignment.TopCenter
+        ) {
+            when (val dataState = uiState.dataState) {
+                is DataState.EMPTY -> {
+                    ErrorScreen(
+                        modifier = Modifier.fillMaxSize(),
+                        errorMessage = dataState.message.asString()
                     )
                 }
 
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f)
-                        .pullRefresh(refreshState),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    LazyVerticalGrid(
-                        columns = GridCells.Adaptive(minSize = 128.dp),
+                is DataState.ERROR -> {
+                    ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
-                        horizontalArrangement = Arrangement.spacedBy(10.dp),
-                        content = {
-                            header {
-                                Row(modifier = Modifier.padding(top = 2.dp, bottom = 14.dp)) {
-                                    if (photoUrl != null) {
-                                        SubcomposeAsyncImage(
-                                            model = ImageRequest.Builder(LocalContext.current)
-                                                .data(photoUrl)
-                                                .crossfade(true)
-                                                .build(),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .clip(CircleShape),
-                                            contentScale = ContentScale.Crop
-                                        ) {
-                                            when (painter.state) {
-                                                is AsyncImagePainter.State.Loading -> {
-                                                    avatar()
+                        errorMessage = dataState.message.asString()
+                    )
+                }
+
+                DataState.LOADING -> {
+                    LoadingIndicator(modifier = Modifier.fillMaxSize())
+                }
+
+                DataState.SUCCESS -> {
+                    val focusManager = LocalFocusManager.current
+                    val keyboardController = LocalSoftwareKeyboardController.current
+                    val photoUrl = assignedStudent.photoUrl
+                    val userId = assignedStudent.id
+                    val avatar: @Composable () -> Unit = {
+                        TextAvatar(
+                            id = userId,
+                            firstName = assignedStudent.displayName.orEmpty(),
+                            lastName = ""
+                        )
+                    }
+
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        LazyVerticalGrid(
+                            columns = GridCells.Adaptive(minSize = 128.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .weight(1f),
+                            contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(10.dp),
+                            horizontalArrangement = Arrangement.spacedBy(10.dp),
+                            content = {
+                                header {
+                                    Row(modifier = Modifier.padding(top = 2.dp, bottom = 14.dp)) {
+                                        if (photoUrl != null) {
+                                            SubcomposeAsyncImage(
+                                                model = ImageRequest.Builder(LocalContext.current)
+                                                    .data(photoUrl)
+                                                    .crossfade(true)
+                                                    .build(),
+                                                contentDescription = null,
+                                                modifier = Modifier
+                                                    .size(40.dp)
+                                                    .clip(CircleShape),
+                                                contentScale = ContentScale.Crop
+                                            ) {
+                                                when (painter.state) {
+                                                    is AsyncImagePainter.State.Loading -> {
+                                                        avatar()
+                                                    }
+
+                                                    is AsyncImagePainter.State.Error -> {
+                                                        avatar()
+                                                    }
+
+                                                    else -> {
+                                                        SubcomposeAsyncImageContent()
+                                                    }
+                                                }
+                                            }
+                                        } else {
+                                            avatar()
+                                        }
+                                        Spacer(modifier = Modifier.width(16.dp))
+                                        Column {
+                                            Text(
+                                                text = assignedStudent.displayName
+                                                    ?: assignedStudent.emailAddress.orEmpty(),
+                                                color = MaterialTheme.colorScheme.onSurface,
+                                                style = MaterialTheme.typography.bodyLarge
+                                            )
+
+                                            val dueDate = courseWork.dueTime
+                                            when {
+                                                courseWork.maxPoints != null && courseWork.maxPoints > 0 && uiState.studentWork?.assignedGrade != null -> {
+                                                    Text(
+                                                        text = stringResource(id = Strings.marked),
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
                                                 }
 
-                                                is AsyncImagePainter.State.Error -> {
-                                                    avatar()
+                                                uiState.studentWork?.state == SubmissionState.TURNED_IN -> {
+                                                    Text(
+                                                        text = stringResource(
+                                                            id = Strings.handed_in
+                                                        ),
+                                                        color = MaterialTheme.colorScheme.primary,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
+
+                                                uiState.studentWork?.state == SubmissionState.RETURNED -> {
+                                                    Text(
+                                                        text = stringResource(id = Strings.returned),
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
+                                                }
+
+                                                dueDate?.before(Date()) == true -> {
+                                                    Text(
+                                                        text = stringResource(id = Strings.missing),
+                                                        color = MaterialTheme.colorScheme.error,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
                                                 }
 
                                                 else -> {
-                                                    SubcomposeAsyncImageContent()
+                                                    Text(
+                                                        text = stringResource(id = Strings.assigned),
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                        style = MaterialTheme.typography.bodyMedium
+                                                    )
                                                 }
                                             }
                                         }
-                                    } else {
-                                        avatar()
                                     }
-                                    Spacer(modifier = Modifier.width(16.dp))
-                                    Column {
-                                        Text(
-                                            text = assignedStudent.displayName
-                                                ?: assignedStudent.emailAddress.orEmpty(),
-                                            color = MaterialTheme.colorScheme.onSurface,
-                                            style = MaterialTheme.typography.bodyLarge
+                                }
+                                val attachments =
+                                    uiState.studentWork?.assignmentSubmission?.attachments
+                                if (attachments.isNullOrEmpty()) {
+                                    header {
+                                        ErrorScreen(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(128.dp),
+                                            errorMessage = stringResource(
+                                                id = Strings.no_files_attached
+                                            )
                                         )
-
-                                        val dueDate = courseWork.dueTime
-                                        when {
-                                            courseWork.maxPoints != null && courseWork.maxPoints > 0 && uiState.studentWork?.assignedGrade != null -> {
-                                                Text(
-                                                    text = stringResource(id = Strings.marked),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
+                                    }
+                                } else {
+                                    items(attachments) {
+                                        AttachmentsListItem(
+                                            attachment = it,
+                                            onClick = { url ->
+                                                if (url != null) {
+                                                    val browserIntent =
+                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                    context.startActivity(browserIntent)
+                                                }
                                             }
-
-                                            uiState.studentWork?.state == SubmissionState.TURNED_IN -> {
-                                                Text(
-                                                    text = stringResource(id = Strings.handed_in),
-                                                    color = MaterialTheme.colorScheme.primary,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                            }
-
-                                            uiState.studentWork?.state == SubmissionState.RETURNED -> {
-                                                Text(
-                                                    text = stringResource(id = Strings.returned),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                            }
-
-                                            dueDate?.before(Date()) == true -> {
-                                                Text(
-                                                    text = stringResource(id = Strings.missing),
-                                                    color = MaterialTheme.colorScheme.error,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                            }
-
-                                            else -> {
-                                                Text(
-                                                    text = stringResource(id = Strings.assigned),
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                            }
-                                        }
+                                        )
                                     }
                                 }
                             }
-                            val attachments = uiState.studentWork?.assignmentSubmission?.attachments
-                            if (attachments.isNullOrEmpty()) {
-                                header {
-                                    ErrorScreen(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .height(128.dp),
-                                        errorMessage = stringResource(
-                                            id = Strings.no_files_attached
-                                        )
-                                    )
-                                }
-                            } else {
-                                items(attachments) {
-                                    AttachmentsListItem(
-                                        attachment = it,
-                                        onClick = { url ->
-                                            if (url != null) {
-                                                val browserIntent =
-                                                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                context.startActivity(browserIntent)
-                                            }
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 10.dp)
+                                .imePadding(),
+                            horizontalArrangement = Arrangement.End,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (courseWork.maxPoints != null && courseWork.maxPoints > 0) {
+                                OutlinedTextField(
+                                    value = uiState.grade,
+                                    onValueChange = {
+                                        onEvent(ViewStudentWorkUiEvent.OnGradeChange(it))
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    label = {
+                                        Text(text = stringResource(id = Strings.mark))
+                                    },
+                                    suffix = {
+                                        Text(text = "/${courseWork.maxPoints}")
+                                    },
+                                    keyboardOptions = KeyboardOptions(
+                                        keyboardType = KeyboardType.Number,
+                                        imeAction = ImeAction.Done
+                                    ),
+                                    keyboardActions = KeyboardActions(
+                                        onDone = {
+                                            keyboardController?.hide()
+                                            focusManager.clearFocus()
                                         }
                                     )
-                                }
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                            }
+                            Button(
+                                onClick = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(true)) },
+                                enabled = uiState.studentWork?.state == SubmissionState.TURNED_IN || (uiState.grade != "" && uiState.studentWork?.assignedGrade.toString() != uiState.grade)
+                            ) {
+                                Text(text = stringResource(id = Strings._return))
                             }
                         }
-                    )
+                    }
+                }
 
-                    PullRefreshIndicator(
-                        uiState.refreshing,
-                        refreshState,
-                        Modifier.align(Alignment.TopCenter)
-                    )
-                }
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .imePadding(),
-                    horizontalArrangement = Arrangement.End,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (courseWork.maxPoints != null && courseWork.maxPoints > 0) {
-                        OutlinedTextField(
-                            value = uiState.grade,
-                            onValueChange = {
-                                onEvent(ViewStudentWorkUiEvent.OnGradeChange(it))
-                            },
-                            modifier = Modifier.weight(1f),
-                            label = {
-                                Text(text = stringResource(id = Strings.mark))
-                            },
-                            suffix = {
-                                Text(text = "/${courseWork.maxPoints}")
-                            },
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    keyboardController?.hide()
-                                    focusManager.clearFocus()
-                                }
-                            )
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                    }
-                    Button(
-                        onClick = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(true)) },
-                        enabled = uiState.studentWork?.state == SubmissionState.TURNED_IN || (uiState.grade != "" && uiState.studentWork?.assignedGrade.toString() != uiState.grade)
-                    ) {
-                        Text(text = stringResource(id = Strings._return))
-                    }
-                }
+                DataState.UNKNOWN -> {}
             }
 
-            DataState.UNKNOWN -> {}
+            PullRefreshIndicator(
+                uiState.refreshing,
+                refreshState,
+                Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 
     ReturnDialog(
+        onDismissRequest = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(false)) },
         uiState = uiState,
         courseWork = courseWork,
         userName = assignedStudent.displayName ?: assignedStudent.emailAddress.orEmpty(),
-        onDismissRequest = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(false)) },
         onConfirmClick = {
             val markedCourseWork = courseWork.maxPoints != null && courseWork.maxPoints > 0
             if (markedCourseWork) {

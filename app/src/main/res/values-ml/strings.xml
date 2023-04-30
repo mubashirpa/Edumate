@@ -19,15 +19,19 @@
     <string name="assignment_title">അസൈൻമെന്റ് ശീർഷകം</string>
     <string name="attachments">അറ്റാച്ചുമെന്റുകൾ</string>
     <string name="cancel">റദ്ദാക്കുക</string>
-    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">ഇപ്പോൾ ക്ലാസ് വർക്കുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
-    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">ഇപ്പോൾ ക്ലാസ് വർക്ക് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
-    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">ഈ സമയത്ത് ആളുകളെ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
-    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥികളുടെ ജോലി വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
-    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥി വർക്കുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ഈ സമയത്ത് കോഴ്‌സ് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ഇപ്പോൾ കോഴ്‌സ് വർക്ക് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">കോഴ്‌സ് വർക്കുകൾ ഇപ്പോൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">ഇപ്പോൾ കോഴ്‌സുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">ഈ സമയത്ത് ആളുകളെ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥികളുടെ സമർപ്പണം വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
+    <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥികളുടെ സമർപ്പിക്കലുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="change_point_value">പോയിന്റ് മൂല്യം മാറ്റുക</string>
     <string name="class_code">ക്ലാസ് കോഡ്</string>
     <string name="class_code_shared_by_your_teacher">ക്ലാസ് കോഡ് നിങ്ങളുടെ അധ്യാപകൻ പങ്കിട്ടു.</string>
     <string name="class_name">ക്ലാസ് നാമം</string>
+    <string name="class_not_found">ക്ലാസ് കണ്ടെത്തിയില്ല.</string>
+    <string name="classwork_not_found">ക്ലാസ് വർക്ക് കണ്ടെത്തിയില്ല.</string>
     <string name="comments_will_also_be_deleted">അഭിപ്രായങ്ങളും ഇല്ലാതാക്കപ്പെടും.</string>
     <string name="copied_invitation_link">ക്ഷണ ലിങ്ക് പകർത്തി</string>
     <string name="copy_link">ലിങ്ക് പകർത്തുക</string>
@@ -36,7 +40,6 @@
     <string name="create_classwork">ക്ലാസ് വർക്ക് സൃഷ്‌ടിക്കുക</string>
     <string name="create_new_account">പുതിയ അക്കൗണ്ട് സൃഷ്‌ടിക്കുക</string>
     <string name="creating_account">അക്കൗണ്ട് സൃഷ്‌ടിക്കുന്നു</string>
-    <string name="creating_class">ക്ലാസ് സൃഷ്‌ടിക്കുന്നു</string>
     <string name="delete">ഇല്ലാതാക്കുക</string>
     <string name="delete_assignment">അസൈൻമെന്റ് ഇല്ലാതാക്കണോ?</string>
     <string name="delete_material">മെറ്റീരിയൽ ഇല്ലാതാക്കണോ?</string>
@@ -49,8 +52,6 @@
     <string name="dialog_return_submission_title1">അടയാളപ്പെടുത്താതെ ജോലി തിരികെ നൽകണോ?</string>
     <string name="dialog_return_submission_title2">ഗ്രേഡ് അപ്‌ഡേറ്റ് ചെയ്യണോ?</string>
     <string name="dialog_return_submission_title3">ജോലി തിരികെ നൽകണോ?</string>
-    <string name="dialog_turn_in_assignment_text1">%1$d അറ്റാച്ച്‌മെന്റ് \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</string>
-    <string name="dialog_turn_in_assignment_text2">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്‌തിട്ടില്ല, അതിനാൽ ഒന്നും നൽകില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</string>
     <string name="dialog_turn_in_assignment_title">നിങ്ങളുടെ ജോലിയിൽ പ്രവേശിക്കണോ?</string>
     <string name="dialog_unsubmit_assignment_text">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കുന്നതിനോ മാറ്റുന്നതിനോ സമർപ്പിക്കാതിരിക്കുക. നിങ്ങൾ പൂർത്തിയാക്കിക്കഴിഞ്ഞാൽ വീണ്ടും സമർപ്പിക്കാൻ മറക്കരുത്.</string>
     <string name="dialog_unsubmit_assignment_title">നിങ്ങളുടെ ജോലി സമർപ്പിക്കാതിരിക്കണോ?</string>
@@ -69,6 +70,7 @@
     <string name="forgot_password">പാസ്‌വേഡ് മറന്നോ?</string>
     <string name="full_name">പൂർണ്ണമായ പേര്</string>
     <string name="get_started">ആരംഭിക്കുക</string>
+    <string name="get_started_by_inviting_students">വിദ്യാർത്ഥികളെ ക്ഷണിച്ചുകൊണ്ട് ആരംഭിക്കുക.</string>
     <string name="get_started_message">അധ്യാപകരെയും വിദ്യാർത്ഥികളെയും ആശയവിനിമയം നടത്താനും സമയം ലാഭിക്കാനും സംഘടിതരായി തുടരാനും സഹായിക്കുന്നു.</string>
     <string name="google">Google</string>
     <string name="handed_in">കൈനൽകി</string>
@@ -81,7 +83,6 @@
     <string name="join">ചേരുക</string>
     <string name="join_a_class_to_get_started">ആരംഭിക്കാൻ ഒരു ക്ലാസ്സിൽ ചേരുക</string>
     <string name="join_class">ക്ലാസിൽ ചേരുക</string>
-    <string name="joining_class">ക്ലാസിൽ ചേരുന്നു</string>
     <string name="leave_class">ക്ലാസ് വിടുക</string>
     <string name="leave_class_warning_message">നിങ്ങളെ വീണ്ടും ക്ഷണിച്ചില്ലെങ്കിൽ നിങ്ങൾക്ക് ഈ ക്ലാസ് തുറക്കാൻ കഴിയില്ല</string>
     <string name="logout">Logout</string>
@@ -127,7 +128,6 @@
     <string name="sign_up">സൈൻ അപ്പ്</string>
     <string name="sign_up_with_google">Google ഉപയോഗിച്ച് സൈൻ അപ്പ് ചെയ്യുക</string>
     <string name="signing_in">സൈൻ ഇൻ ചെയ്യുന്നു</string>
-    <string name="student">വിദ്യാർത്ഥി</string>
     <string name="student_answers">വിദ്യാർത്ഥികളുടെ ഉത്തരങ്ങൾ</string>
     <string name="student_not_yet_submitted">വിദ്യാർത്ഥി ഇതുവരെ സമർപ്പിച്ചിട്ടില്ല.</string>
     <string name="student_work">വിദ്യാർത്ഥി ജോലി</string>
@@ -139,11 +139,21 @@
     <string name="teaching">അധ്യാപനം</string>
     <string name="turn_in">തിരിക്കുക</string>
     <string name="turned_in">തിരിച്ചു</string>
+    <string name="unable_to_add_attachments">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കാനാവുന്നില്ല.</string>
+    <string name="unable_to_create_course">കോഴ്‌സ് സൃഷ്‌ടിക്കാനായില്ല.</string>
+    <string name="unable_to_create_course_work">കോഴ്‌സ് വർക്ക് സൃഷ്‌ടിക്കാനായില്ല.</string>
+    <string name="unable_to_delete_course">കോഴ്‌സ് ഇല്ലാതാക്കാൻ കഴിയുന്നില്ല.</string>
+    <string name="unable_to_delete_course_work">കോഴ്‌സ് വർക്ക് ഇല്ലാതാക്കാൻ കഴിയുന്നില്ല.</string>
+    <string name="unable_to_patch_course_work">കോഴ്‌സ് വർക്ക് അപ്‌ഡേറ്റ് ചെയ്യാനാവുന്നില്ല.</string>
+    <string name="unable_to_reclaim_student_submission">സമർപ്പിക്കുന്നത് അൺസമർപ്പിക്കാനായില്ല.</string>
+    <string name="unable_to_return_student_submission">സമർപ്പണം തിരികെ നൽകാനായില്ല.</string>
+    <string name="unable_to_submit_student_submission">സമർപ്പണം സമർപ്പിക്കാനായില്ല.</string>
+    <string name="unable_to_update_course">കോഴ്‌സ് അപ്‌ഡേറ്റ് ചെയ്യാനാവുന്നില്ല.</string>
+    <string name="unable_to_update_student_submission">സമർപ്പണം അപ്‌ഡേറ്റ് ചെയ്യാനാവുന്നില്ല.</string>
     <string name="unenrol">അൺഎൻറോൾ</string>
     <string name="unmarked">അൺമാർക്ക് ചെയ്യാത്തത്</string>
     <string name="unsubmit">സമർപ്പിക്കാതിരിക്കുക</string>
     <string name="update">അപ്‌ഡേറ്റ് ചെയ്യുക</string>
-    <string name="updating_class">ക്ലാസ് അപ്‌ഡേറ്റ് ചെയ്യുന്നു</string>
     <string name="upload_file">ഫയൽ അപ്‌ലോഡ് ചെയ്യുക</string>
     <string name="url">URL</string>
     <string name="welcome_back">വീണ്ടും സ്വാഗതം!</string>
@@ -199,4 +209,14 @@
     <string name="error_invalid_email">ദയവായി സാധുവായ ഒരു ഇമെയിൽ നൽകുക.</string>
     <string name="error_invalid_password">നിങ്ങൾക്ക് ഓർമ്മിക്കാൻ കഴിയുന്ന അക്ഷരങ്ങളുടെയും അക്കങ്ങളുടെയും ഒരു മിശ്രിതം ഉപയോഗിക്കുക.</string>
     <string name="error_invalid_repeated_password">അത് സ്ഥിരീകരിക്കുന്നതിന് നിങ്ങൾ ഒരേ പാസ്‌വേഡ് രണ്ടുതവണ നൽകണം.</string>
+
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d വിദ്യാർത്ഥി</item>
+        <item quantity="other">%1$d വിദ്യാർത്ഥികൾ</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="zero">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്തിട്ടില്ല, അതിനാൽ ഒന്നും ഓണാക്കില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</item>
+        <item quantity="one">%1$d അറ്റാച്ച്‌മെന്റ് \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
+        <item quantity="other">%1$d അറ്റാച്ച്‌മെന്റുകൾ \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
+    </plurals>
 </resources>

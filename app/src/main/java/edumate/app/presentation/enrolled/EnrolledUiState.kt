@@ -1,15 +1,13 @@
 package edumate.app.presentation.enrolled
 
-import com.google.firebase.auth.FirebaseUser
+import edumate.app.core.DataState
 import edumate.app.core.UiText
 import edumate.app.domain.model.courses.Course
 
 data class EnrolledUiState(
-    val classes: List<Course> = emptyList(),
-    val currentUser: FirebaseUser? = null,
-    val error: UiText? = null,
-    val loading: Boolean = false,
+    val courses: List<Course> = emptyList(),
+    val dataState: DataState = DataState.UNKNOWN,
     val openProgressDialog: Boolean = false,
-    val success: Boolean = false,
+    val refreshing: Boolean = false,
     val userMessage: UiText? = null
 )

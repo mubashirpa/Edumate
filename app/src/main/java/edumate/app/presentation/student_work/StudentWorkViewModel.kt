@@ -6,10 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.usecase.student_submission.ListSubmissions
+import edumate.app.domain.usecase.student_submissions.ListSubmissions
 import edumate.app.domain.usecase.students.GetStudentsUseCase
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
@@ -24,61 +25,98 @@ class StudentWorkViewModel @Inject constructor(
     var uiState by mutableStateOf(StudentWorkUiState())
         private set
 
+    private lateinit var courseId: String
+    private lateinit var courseWorkId: String
+
     fun onEvent(event: StudentWorkUiEvent) {
         when (event) {
             is StudentWorkUiEvent.OnInit -> {
+                courseId = event.courseId
+                courseWorkId = event.courseWorkId
                 if (uiState.dataState == DataState.UNKNOWN) {
-                    fetchAssignedStudents(event.courseId, event.courseWorkId)
+                    fetchAssignedStudents(false)
                 }
+            }
+
+            StudentWorkUiEvent.OnRefresh -> {
+                fetchAssignedStudents(true)
+            }
+
+            StudentWorkUiEvent.UserMessageShown -> {
+                uiState = uiState.copy(userMessage = null)
             }
         }
     }
 
-    private fun fetchAssignedStudents(courseId: String, courseWorkId: String) {
+    private fun fetchAssignedStudents(refreshing: Boolean) {
         getStudentsUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    uiState = uiState.copy(dataState = DataState.LOADING)
+                    uiState = if (refreshing) {
+                        uiState.copy(refreshing = true)
+                    } else {
+                        uiState.copy(dataState = DataState.LOADING)
+                    }
                 }
 
                 is Resource.Success -> {
                     val assignedStudents = resource.data
-                    uiState = if (assignedStudents.isNullOrEmpty()) {
-                        uiState.copy(
+                    if (assignedStudents.isNullOrEmpty()) {
+                        uiState = uiState.copy(
                             dataState = DataState.EMPTY(
-                                UiText.DynamicString("Get started by inviting students")
-                            )
+                                UiText.StringResource(Strings.get_started_by_inviting_students)
+                            ),
+                            refreshing = false
                         )
                     } else {
-                        fetchStudentSubmissions(courseId, courseWorkId)
-                        uiState.copy(assignedStudents = assignedStudents)
+                        uiState = uiState.copy(assignedStudents = assignedStudents)
+                        fetchStudentSubmissions(refreshing)
                     }
                 }
 
                 is Resource.Error -> {
-                    uiState = uiState.copy(dataState = DataState.ERROR(resource.message!!))
+                    uiState = if (refreshing) {
+                        uiState.copy(
+                            refreshing = false,
+                            userMessage = resource.message
+                        )
+                    } else {
+                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                    }
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun fetchStudentSubmissions(courseId: String, courseWorkId: String) {
+    private fun fetchStudentSubmissions(refreshing: Boolean) {
         listSubmissions(courseId, courseWorkId).onEach { resource ->
             when (resource) {
-                is Resource.Loading -> {}
-
-                is Resource.Success -> {
-                    val studentSubmissions = resource.data
-                    if (studentSubmissions != null) {
-                        uiState = uiState.copy(
-                            dataState = DataState.SUCCESS,
-                            studentSubmissions = studentSubmissions
-                        )
+                is Resource.Loading -> {
+                    uiState = if (refreshing) {
+                        uiState.copy(refreshing = true)
+                    } else {
+                        uiState.copy(dataState = DataState.LOADING)
                     }
                 }
 
+                is Resource.Success -> {
+                    val studentSubmissions = resource.data ?: emptyList()
+                    uiState = uiState.copy(
+                        dataState = DataState.SUCCESS,
+                        refreshing = false,
+                        studentSubmissions = studentSubmissions
+                    )
+                }
+
                 is Resource.Error -> {
-                    uiState = uiState.copy(dataState = DataState.ERROR(resource.message!!))
+                    uiState = if (refreshing) {
+                        uiState.copy(
+                            refreshing = false,
+                            userMessage = resource.message
+                        )
+                    } else {
+                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                    }
                 }
             }
         }.launchIn(viewModelScope)

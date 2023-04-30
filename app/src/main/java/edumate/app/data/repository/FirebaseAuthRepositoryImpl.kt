@@ -6,7 +6,7 @@ import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import edumate.app.core.FirebaseConstants
-import edumate.app.data.remote.dto.UsersDto
+import edumate.app.data.remote.dto.UserProfileDto
 import edumate.app.domain.repository.FirebaseAuthRepository
 import javax.inject.Inject
 import kotlinx.coroutines.channels.awaitClose
@@ -74,7 +74,7 @@ class FirebaseAuthRepositoryImpl @Inject constructor(
 
     private suspend fun createUserInFireStore() {
         firebaseAuth.currentUser?.apply {
-            val user = UsersDto(
+            val user = UserProfileDto(
                 displayName = displayName,
                 emailAddress = email,
                 id = uid,

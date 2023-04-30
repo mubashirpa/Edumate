@@ -19,15 +19,19 @@
     <string name="assignment_title">ನಿಯೋಜನೆ ಶೀರ್ಷಿಕೆ</string>
     <string name="attachments">ಲಗತ್ತುಗಳು</string>
     <string name="cancel">ರದ್ದುಮಾಡು</string>
-    <string name="cannot_retrieve_class_works_at_this_time_lease_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವರ್ಗ ಕೃತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="cannot_retrieve_classwork_at_this_time_lease_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕ್ಲಾಸ್‌ವರ್ಕ್ ಅನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="cannot_retrieve_peoples_at_this_time_lease_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಜನರನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="cannot_retrieve_student_work_at_this_time_lease_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಕೆಲಸವನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
-    <string name="cannot_retrieve_student_works_at_this_time_lease_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಕೃತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಅನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೃತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಜನರನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಸಲ್ಲಿಕೆಯನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಸಲ್ಲಿಕೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="change_point_value">ಪಾಯಿಂಟ್ ಮೌಲ್ಯವನ್ನು ಬದಲಾಯಿಸಿ</string>
     <string name="class_code">ಕ್ಲಾಸ್ ಕೋಡ್</string>
     <string name="class_code_shared_by_your_teacher">ಕ್ಲಾಸ್ ಕೋಡ್ ಅನ್ನು ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಹಂಚಿಕೊಂಡಿದ್ದಾರೆ.</string>
     <string name="class_name">ವರ್ಗದ ಹೆಸರು</string>
+    <string name="class_not_found">ವರ್ಗ ಕಂಡುಬಂದಿಲ್ಲ.</string>
+    <string name="classwork_not_found">ಕ್ಲಾಸ್‌ವರ್ಕ್ ಕಂಡುಬಂದಿಲ್ಲ.</string>
     <string name="comments_will_also_be_deleted">ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="copied_invitation_link">ನಕಲು ಮಾಡಿದ ಆಹ್ವಾನ ಲಿಂಕ್</string>
     <string name="copy_link">ಲಿಂಕ್ ನಕಲಿಸಿ</string>
@@ -36,7 +40,6 @@
     <string name="create_classwork">ಕ್ಲಾಸ್‌ವರ್ಕ್ ರಚಿಸಿ</string>
     <string name="create_new_account">ಹೊಸ ಖಾತೆಯನ್ನು ರಚಿಸಿ</string>
     <string name="creating_account">ಖಾತೆ ರಚಿಸಲಾಗುತ್ತಿದೆ</string>
-    <string name="creating_class">ಕ್ಲಾಸ್ ರಚಿಸಲಾಗುತ್ತಿದೆ</string>
     <string name="delete">ಅಳಿಸಿ</string>
     <string name="delete_assignment">ನಿಯೋಜನೆಯನ್ನು ಅಳಿಸುವುದೇ?</string>
     <string name="delete_material">ವಸ್ತುವನ್ನು ಅಳಿಸುವುದೇ?</string>
@@ -49,8 +52,6 @@
     <string name="dialog_return_submission_title1">ಗುರುತಿಸದೆ ಕೆಲಸವನ್ನು ಹಿಂತಿರುಗಿಸುವುದೇ?</string>
     <string name="dialog_return_submission_title2">ಗ್ರೇಡ್ ಅನ್ನು ನವೀಕರಿಸುವುದೇ?</string>
     <string name="dialog_return_submission_title3">ಕೆಲಸ ಹಿಂತಿರುಗಿಸುವುದೇ?</string>
-    <string name="dialog_turn_in_assignment_text1">%1$d ಲಗತ್ತನ್ನು \"%2$s\" ಗೆ ಸಲ್ಲಿಸಲಾಗುತ್ತದೆ.</string>
-    <string name="dialog_turn_in_assignment_text2">ನೀವು \"%1$s\" ಗೆ ಏನನ್ನೂ ಲಗತ್ತಿಸಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನನ್ನೂ ಸೇರಿಸಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇದನ್ನು ಮಾಡಿದ್ದಾರೆಂದು ನೋಡುತ್ತಾರೆ.</string>
     <string name="dialog_turn_in_assignment_title">ನಿಮ್ಮ ಕೆಲಸವನ್ನು ಆನ್ ಮಾಡುವುದೇ?</string>
     <string name="dialog_unsubmit_assignment_text">ಲಗತ್ತುಗಳನ್ನು ಸೇರಿಸಲು ಅಥವಾ ಬದಲಾಯಿಸಲು ಸಲ್ಲಿಸದಿರಿ. ಒಮ್ಮೆ ನೀವು ಪೂರ್ಣಗೊಳಿಸಿದ ನಂತರ ಮರುಸಲ್ಲಿಸುವುದನ್ನು ಮರೆಯಬೇಡಿ.</string>
     <string name="dialog_unsubmit_assignment_title">ನಿಮ್ಮ ಕೆಲಸವನ್ನು ಸಲ್ಲಿಸದಿರುವುದೇ?</string>
@@ -69,6 +70,7 @@
     <string name="forgot_password">ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರುವಿರಾ?</string>
     <string name="full_name">ಪೂರ್ಣ ಹೆಸರು</string>
     <string name="get_started">ಪ್ರಾರಂಭಿಸಿ</string>
+    <string name="get_started_by_inviting_students">ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸುವ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ.</string>
     <string name="get_started_message">ಶಿಕ್ಷಕರು ಮತ್ತು ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಂವಹನ ಮಾಡಲು, ಸಮಯವನ್ನು ಉಳಿಸಲು ಮತ್ತು ಸಂಘಟಿತರಾಗಿರಲು ಸಹಾಯ ಮಾಡುವುದು.</string>
     <string name="google">Google</string>
     <string name="handed_in">ಹಸ್ತಾಂತರಿಸಲಾಗಿದೆ</string>
@@ -81,7 +83,6 @@
     <string name="join">ಸೇರಿ</string>
     <string name="join_a_class_to_get_started">ಪ್ರಾರಂಭಿಸಲು ತರಗತಿಗೆ ಸೇರಿ</string>
     <string name="join_class">ವರ್ಗಕ್ಕೆ ಸೇರಿ</string>
-    <string name="joining_class">ವರ್ಗಕ್ಕೆ ಸೇರುವಿಕೆ</string>
     <string name="leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಿರಿ</string>
     <string name="leave_class_warning_message">ನಿಮ್ಮನ್ನು ಮರು-ಆಹ್ವಾನಿಸದ ಹೊರತು ಈ ತರಗತಿಯನ್ನು ತೆರೆಯಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ</string>
     <string name="logout">Logout</string>
@@ -127,7 +128,6 @@
     <string name="sign_up">ಸೈನ್ ಅಪ್</string>
     <string name="sign_up_with_google">Google ನೊಂದಿಗೆ ಸೈನ್ ಅಪ್ ಮಾಡಿ</string>
     <string name="signing_in">ಸೈನ್ ಇನ್</string>
-    <string name="student">ವಿದ್ಯಾರ್ಥಿ</string>
     <string name="student_answers">ವಿದ್ಯಾರ್ಥಿ ಉತ್ತರಗಳು</string>
     <string name="student_not_yet_submitted">ವಿದ್ಯಾರ್ಥಿ ಇನ್ನೂ ಸಲ್ಲಿಸಿಲ್ಲ.</string>
     <string name="student_work">ವಿದ್ಯಾರ್ಥಿ ಕೆಲಸ</string>
@@ -139,11 +139,21 @@
     <string name="teaching">ಬೋಧನೆ</string>
     <string name="turn_in">ತಿರುಗಿ</string>
     <string name="turned_in">ಇನ್ ಮಾಡಲಾಗಿದೆ</string>
+    <string name="unable_to_add_attachments">ಲಗತ್ತುಗಳನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_create_course">ಕೋರ್ಸ್ ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_create_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_delete_course">ಕೋರ್ಸ್ ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_delete_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_patch_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
+    <string name="unable_to_reclaim_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_return_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_submit_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_update_course">ಕೋರ್ಸ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_update_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unenrol">unenrol</string>
     <string name="unmarked">ಗುರುತಿಸಲಾಗಿಲ್ಲ</string>
     <string name="unsubmit">ಸಲ್ಲದಿಸು</string>
     <string name="update">ನವೀಕರಿಸಿ</string>
-    <string name="updating_class">ವರ್ಗವನ್ನು ನವೀಕರಿಸಲಾಗುತ್ತಿದೆ</string>
     <string name="upload_file">ಫೈಲ್ ಅಪ್‌ಲೋಡ್ ಮಾಡಿ</string>
     <string name="url">URL</string>
     <string name="welcome_back">ಮತ್ತೆ ಸ್ವಾಗತ!</string>
@@ -199,4 +209,14 @@
     <string name="error_invalid_email">ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಇಮೇಲ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="error_invalid_password">ನೀವು ನೆನಪಿಡುವ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಶ್ರಣವನ್ನು ಬಳಸಿ.</string>
     <string name="error_invalid_repeated_password">ಅದನ್ನು ಖಚಿತಪಡಿಸಲು ನೀವು ಒಂದೇ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಎರಡು ಬಾರಿ ನಮೂದಿಸಬೇಕು.</string>
+
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d ವಿದ್ಯಾರ್ಥಿ</item>
+        <item quantity="other">%1$d ವಿದ್ಯಾರ್ಥಿಗಳು</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="zero">ನೀವು \"%1$s\" ಗೆ ಏನನ್ನೂ ಲಗತ್ತಿಸಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನನ್ನೂ ಆನ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇದನ್ನು ಮಾಡಿದ್ದಾರೆ ಎಂದು ನೋಡುತ್ತಾರೆ.</item>
+        <item quantity="one">%1$d ಲಗತ್ತನ್ನು \"%2$s\" ಗೆ ಸಲ್ಲಿಸಲಾಗುತ್ತದೆ.</item>
+        <item quantity="other">%1$d ಲಗತ್ತುಗಳನ್ನು \"%2$s\" ಗೆ ಸಲ್ಲಿಸಲಾಗುತ್ತದೆ.</item>
+    </plurals>
 </resources>

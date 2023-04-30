@@ -44,9 +44,11 @@ class JoinClassViewModel @Inject constructor(
                     classCodeError = null
                 )
             }
+
             is JoinClassUiEvent.OnJoinClick -> {
                 joinClass()
             }
+
             is JoinClassUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
@@ -66,10 +68,12 @@ class JoinClassViewModel @Inject constructor(
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)
                 }
+
                 is Resource.Success -> {
                     uiState = uiState.copy(openProgressDialog = false)
                     resultChannel.send(uiState.classCode)
                 }
+
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,

@@ -29,15 +29,18 @@ fun ClassDetailsScreen(
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
-    when (uiState.dataState) {
+    when (val dataState = uiState.dataState) {
         is DataState.EMPTY -> {
-            ErrorScreen(modifier = Modifier.fillMaxSize())
+            ErrorScreen(
+                modifier = Modifier.fillMaxSize(),
+                errorMessage = dataState.message.asString()
+            )
         }
 
         is DataState.ERROR -> {
             ErrorScreen(
                 modifier = Modifier.fillMaxSize(),
-                errorMessage = uiState.dataState.message.asString(),
+                errorMessage = dataState.message.asString(),
                 onRetry = {
                     onEvent(ClassDetailsUiEvent.OnRetry)
                 }

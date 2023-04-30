@@ -59,8 +59,6 @@ fun JoinClassScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val currentUser = viewModel.uiState.currentUser
-    val classCodeError = viewModel.uiState.classCodeError
 
     LaunchedEffect(context) {
         viewModel.joinClassResults.collect { courseId ->
@@ -93,8 +91,8 @@ fun JoinClassScreen(
                 },
                 actions = {
                     UserAvatar(
-                        photoUrl = currentUser?.photoUrl,
-                        user = currentUser,
+                        photoUrl = viewModel.uiState.currentUser?.photoUrl,
+                        user = viewModel.uiState.currentUser,
                         onClick = navigateToProfile
                     )
                 },
@@ -112,12 +110,12 @@ fun JoinClassScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .fillMaxHeight()
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
                     .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(12.dp))
                 TextField(
                     value = viewModel.uiState.classCode,
                     onValueChange = {
@@ -129,7 +127,7 @@ fun JoinClassScreen(
                     label = {
                         Text(text = stringResource(id = Strings.class_code))
                     },
-                    supportingText = if (classCodeError != null) {
+                    supportingText = if (viewModel.uiState.classCodeError != null) {
                         {
                             Text(
                                 text = stringResource(
@@ -146,7 +144,7 @@ fun JoinClassScreen(
                             )
                         }
                     },
-                    isError = classCodeError != null,
+                    isError = viewModel.uiState.classCodeError != null,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done
                     ),
@@ -170,10 +168,7 @@ fun JoinClassScreen(
         }
     }
 
-    ProgressDialog(
-        text = stringResource(id = Strings.joining_class),
-        openDialog = viewModel.uiState.openProgressDialog
-    )
+    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
 }
 
 @Composable
@@ -213,9 +208,11 @@ private fun UserAvatar(
                     is AsyncImagePainter.State.Loading -> {
                         avatar()
                     }
+
                     is AsyncImagePainter.State.Error -> {
                         avatar()
                     }
+
                     else -> {
                         SubcomposeAsyncImageContent()
                     }

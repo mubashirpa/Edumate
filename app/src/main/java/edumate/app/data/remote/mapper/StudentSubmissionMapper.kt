@@ -1,7 +1,7 @@
 package edumate.app.data.remote.mapper
 
 import edumate.app.data.remote.dto.StudentSubmissionDto
-import edumate.app.domain.model.student_submission.StudentSubmission
+import edumate.app.domain.model.student_submissions.StudentSubmission
 
 fun StudentSubmissionDto.toStudentSubmission(): StudentSubmission {
     return StudentSubmission(

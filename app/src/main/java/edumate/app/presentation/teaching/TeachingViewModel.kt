@@ -5,55 +5,91 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.R.string as Strings
+import edumate.app.core.DataState
 import edumate.app.core.Resource
-import edumate.app.domain.usecase.courses.GetTeachingCoursesUseCase
+import edumate.app.core.UiText
+import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.courses.ListCourses
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class TeachingViewModel @Inject constructor(
-    private val getTeachingCoursesUseCase: GetTeachingCoursesUseCase
+    getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val listCoursesUseCase: ListCourses
 ) : ViewModel() {
 
     var uiState by mutableStateOf(TeachingUiState())
         private set
 
+    private var currentUser: FirebaseUser? = null
+    private var listCoursesJob: Job? = null
+
     init {
-        fetchClasses()
+        getCurrentUserUseCase().map { user ->
+            currentUser = user
+            fetchClasses(user?.uid, false)
+        }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: TeachingUiEvent) {
         when (event) {
-            is TeachingUiEvent.FetchClasses -> {
-                fetchClasses()
+            TeachingUiEvent.OnRefresh -> {
+                fetchClasses(currentUser?.uid, true)
+            }
+
+            TeachingUiEvent.UserMessageShown -> {
+                uiState = uiState.copy(userMessage = null)
             }
         }
     }
 
-    private fun fetchClasses() {
-        getTeachingCoursesUseCase().onEach { resource ->
+    private fun fetchClasses(teacherId: String?, refreshing: Boolean) {
+        // Cancel ongoing listCoursesJob before recall.
+        listCoursesJob?.cancel()
+        listCoursesJob = listCoursesUseCase(teacherId = teacherId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    uiState = uiState.copy(
-                        loading = true,
-                        error = null,
-                        success = false
-                    )
+                    uiState = if (refreshing) {
+                        uiState.copy(refreshing = true)
+                    } else {
+                        uiState.copy(dataState = DataState.LOADING)
+                    }
                 }
+
                 is Resource.Success -> {
-                    uiState = uiState.copy(
-                        loading = false,
-                        success = true,
-                        classes = resource.data ?: emptyList()
-                    )
+                    val courses = resource.data
+                    uiState = if (courses.isNullOrEmpty()) {
+                        uiState.copy(
+                            dataState = DataState.EMPTY(
+                                UiText.StringResource(Strings.add_a_class_to_get_started)
+                            ),
+                            refreshing = false
+                        )
+                    } else {
+                        uiState.copy(
+                            courses = courses,
+                            dataState = DataState.SUCCESS,
+                            refreshing = false
+                        )
+                    }
                 }
+
                 is Resource.Error -> {
-                    uiState = uiState.copy(
-                        loading = false,
-                        error = resource.message
-                    )
+                    uiState = if (refreshing) {
+                        uiState.copy(
+                            refreshing = false,
+                            userMessage = resource.message
+                        )
+                    } else {
+                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                    }
                 }
             }
         }.launchIn(viewModelScope)

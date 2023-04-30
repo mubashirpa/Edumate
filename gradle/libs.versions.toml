@@ -4,7 +4,7 @@ androidx-compose-material3 = "1.1.0-rc01"
 androidx-compose-ui = "1.3.3"
 androidx-lifecycle = "2.6.1"
 com-google-accompanist = "0.30.1"
-com-google-dagger = "2.45"
+com-google-dagger = "2.46"
 io-coil-kt = "2.3.0"
 kotlin = "1.8.20"
 kotlinCompilerExtensionVersion = "1.4.6"
@@ -51,7 +51,7 @@ google-play-services-auth = "com.google.android.gms:play-services-auth:20.5.0"
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "com-google-dagger" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "com-google-dagger" }
 hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
-jsoup = "org.jsoup:jsoup:1.15.4"
+jsoup = "org.jsoup:jsoup:1.16.1"
 junit = "junit:junit:4.13.2"
 
 [bundles]

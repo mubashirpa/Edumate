@@ -20,12 +20,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -35,7 +33,6 @@ import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -48,7 +45,6 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -62,32 +58,26 @@ import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
-import edumate.app.domain.model.User
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.components.TextAvatar
 import edumate.app.presentation.people.PeopleFilterType
 import edumate.app.presentation.people.PeopleUiEvent
 import edumate.app.presentation.people.PeopleViewModel
+import edumate.app.presentation.people.screen.components.LeaveClassDialog
 import edumate.app.presentation.people.screen.components.PeopleListItem
+import edumate.app.presentation.people.screen.components.RemoveUserDialog
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
@@ -118,7 +108,7 @@ fun PeopleScreen(
         }
     )
     val currentUserType =
-        if (course.teachers.contains(viewModel.uiState.currentUser?.uid)) {
+        if (course.teacherGroupId.contains(viewModel.uiState.currentUser?.uid)) {
             UserType.TEACHER
         } else {
             UserType.STUDENT
@@ -191,8 +181,10 @@ fun PeopleScreen(
             scrollBehavior = scrollBehavior
         )
         Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.TopCenter
+            modifier = Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState)
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             when (val dataState = viewModel.uiState.dataState) {
                 is DataState.ERROR -> {
@@ -308,56 +300,44 @@ fun PeopleScreen(
                                 errorMessage = dataState.message.asString()
                             )
                         } else {
-                            Box(
-                                modifier = Modifier
-                                    .pullRefresh(refreshState)
-                                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                            ) {
-                                LazyColumn(
-                                    modifier = Modifier.fillMaxSize(),
-                                    state = scrollState,
-                                    content = {
-                                        items(
-                                            items = viewModel.uiState.peoples,
-                                            key = { it.id }
-                                        ) { user ->
-                                            PeopleListItem(
-                                                user = user,
-                                                modifier = Modifier.animateItemPlacement(),
-                                                currentUserType = currentUserType,
-                                                currentUserId = "${viewModel.uiState.currentUser?.uid}",
-                                                courseOwnerId = course.ownerId,
-                                                onLeaveClass = {
-                                                    viewModel.onEvent(
-                                                        PeopleUiEvent.OnOpenLeaveClassDialogChange(
-                                                            true
-                                                        )
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                state = scrollState,
+                                content = {
+                                    items(
+                                        items = viewModel.uiState.peoples,
+                                        key = { it.id }
+                                    ) { user ->
+                                        PeopleListItem(
+                                            userProfile = user,
+                                            modifier = Modifier.animateItemPlacement(),
+                                            currentUserType = currentUserType,
+                                            currentUserId = "${viewModel.uiState.currentUser?.uid}",
+                                            courseOwnerId = course.ownerId,
+                                            onLeaveClass = {
+                                                viewModel.onEvent(
+                                                    PeopleUiEvent.OnOpenLeaveClassDialogChange(
+                                                        true
                                                     )
-                                                },
-                                                onEmail = {
-                                                    composeEmail(
-                                                        context,
-                                                        arrayOf(user.emailAddress.orEmpty())
+                                                )
+                                            },
+                                            onEmail = {
+                                                composeEmail(
+                                                    context,
+                                                    arrayOf(user.emailAddress.orEmpty())
+                                                )
+                                            },
+                                            onRemove = {
+                                                viewModel.onEvent(
+                                                    PeopleUiEvent.OnOpenRemoveUserDialogChange(
+                                                        user
                                                     )
-                                                },
-                                                onRemove = {
-                                                    viewModel.onEvent(
-                                                        PeopleUiEvent.OnOpenRemoveUserDialogChange(
-                                                            user
-                                                        )
-                                                    )
-                                                }
-                                            )
-                                        }
+                                                )
+                                            }
+                                        )
                                     }
-                                )
-
-                                PullRefreshIndicator(
-                                    viewModel.uiState.refreshing,
-                                    refreshState,
-                                    Modifier.align(Alignment.TopCenter)
-                                )
-                            }
+                                }
+                            )
                         }
                     }
                 }
@@ -388,6 +368,12 @@ fun PeopleScreen(
                     }
                 }
             }
+
+            PullRefreshIndicator(
+                viewModel.uiState.refreshing,
+                refreshState,
+                Modifier.align(Alignment.TopCenter)
+            )
         }
     }
 
@@ -397,7 +383,7 @@ fun PeopleScreen(
                 viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
             }
         ) {
-            val courseLink = course.alternateLink.orEmpty()
+            val courseLink = course.alternateLink
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.share)) },
                 modifier = Modifier.clickable {
@@ -422,13 +408,11 @@ fun PeopleScreen(
         }
     }
 
-    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
-
     LeaveClassDialog(
-        openDialog = viewModel.uiState.openLeaveClassDialog,
         onDismissRequest = {
             viewModel.onEvent(PeopleUiEvent.OnOpenLeaveClassDialogChange(false))
         },
+        openDialog = viewModel.uiState.openLeaveClassDialog,
         onConfirmClick = {
             viewModel.uiState.currentUser?.uid?.let {
                 viewModel.onEvent(PeopleUiEvent.OnLeaveClass(it))
@@ -440,8 +424,8 @@ fun PeopleScreen(
         onDismissRequest = {
             viewModel.onEvent(PeopleUiEvent.OnOpenRemoveUserDialogChange(null))
         },
-        user = viewModel.uiState.removeUser,
-        userType = if (course.teachers.contains(viewModel.uiState.removeUser?.id)) {
+        userProfile = viewModel.uiState.removeUserProfile,
+        userType = if (course.teacherGroupId.contains(viewModel.uiState.removeUserProfile?.id)) {
             UserType.TEACHER
         } else {
             UserType.STUDENT
@@ -455,115 +439,8 @@ fun PeopleScreen(
             )
         }
     )
-}
 
-@Composable
-private fun LeaveClassDialog(
-    openDialog: Boolean,
-    onDismissRequest: () -> Unit,
-    onConfirmClick: () -> Unit
-) {
-    if (openDialog) {
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Text(text = stringResource(id = Strings.leave_class))
-            },
-            text = {
-                Text(text = stringResource(id = Strings.leave_class_warning_message))
-            },
-            confirmButton = {
-                TextButton(onClick = onConfirmClick) {
-                    Text(stringResource(id = Strings.leave_class))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismissRequest) {
-                    Text(stringResource(id = Strings.cancel))
-                }
-            }
-        )
-    }
-}
-
-@Composable
-private fun RemoveUserDialog(
-    onDismissRequest: () -> Unit,
-    user: User?,
-    userType: UserType,
-    onConfirmClick: (userType: UserType, uid: String) -> Unit
-) {
-    if (user != null) {
-        val photoUrl = user.photoUrl
-        val userId = user.id
-        val avatar: @Composable () -> Unit = {
-            TextAvatar(
-                id = userId,
-                firstName = user.displayName.orEmpty(),
-                lastName = ""
-            )
-        }
-        val title = if (userType == UserType.TEACHER) {
-            stringResource(id = Strings.remove_teacher)
-        } else {
-            stringResource(id = Strings.remove_student)
-        }
-
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Text(text = title)
-            },
-            text = {
-                Row(
-                    modifier = Modifier.padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (photoUrl != null) {
-                        SubcomposeAsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(photoUrl)
-                                .crossfade(true)
-                                .build(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(40.dp)
-                                .clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        ) {
-                            when (painter.state) {
-                                is AsyncImagePainter.State.Loading -> {
-                                    avatar()
-                                }
-
-                                is AsyncImagePainter.State.Error -> {
-                                    avatar()
-                                }
-
-                                else -> {
-                                    SubcomposeAsyncImageContent()
-                                }
-                            }
-                        }
-                    } else {
-                        avatar()
-                    }
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Text(text = user.displayName.orEmpty())
-                }
-            },
-            confirmButton = {
-                TextButton(onClick = { onConfirmClick(userType, userId) }) {
-                    Text(stringResource(id = Strings.remove))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismissRequest) {
-                    Text(stringResource(id = Strings.cancel))
-                }
-            }
-        )
-    }
+    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
 }
 
 private fun share(context: Context, text: String) {

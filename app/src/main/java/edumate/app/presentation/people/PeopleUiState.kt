@@ -3,7 +3,7 @@ package edumate.app.presentation.people
 import com.google.firebase.auth.FirebaseUser
 import edumate.app.core.DataState
 import edumate.app.core.UiText
-import edumate.app.domain.model.User
+import edumate.app.domain.model.user_profiles.UserProfile
 
 data class PeopleUiState(
     val appBarMenuExpanded: Boolean = false,
@@ -15,8 +15,8 @@ data class PeopleUiState(
     val openFabMenu: Boolean = false,
     val openLeaveClassDialog: Boolean = false,
     val openProgressDialog: Boolean = false,
-    val peoples: List<User> = emptyList(),
+    val peoples: List<UserProfile> = emptyList(),
     val refreshing: Boolean = false,
-    val removeUser: User? = null,
+    val removeUserProfile: UserProfile? = null,
     val userMessage: UiText? = null
 )
