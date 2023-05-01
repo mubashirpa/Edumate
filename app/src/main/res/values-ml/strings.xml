@@ -52,6 +52,7 @@
     <string name="dialog_return_submission_title1">അടയാളപ്പെടുത്താതെ ജോലി തിരികെ നൽകണോ?</string>
     <string name="dialog_return_submission_title2">ഗ്രേഡ് അപ്‌ഡേറ്റ് ചെയ്യണോ?</string>
     <string name="dialog_return_submission_title3">ജോലി തിരികെ നൽകണോ?</string>
+    <string name="dialog_turn_in_assignment_text">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്തിട്ടില്ല, അതിനാൽ ഒന്നും ഓണാക്കില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</string>
     <string name="dialog_turn_in_assignment_title">നിങ്ങളുടെ ജോലിയിൽ പ്രവേശിക്കണോ?</string>
     <string name="dialog_unsubmit_assignment_text">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കുന്നതിനോ മാറ്റുന്നതിനോ സമർപ്പിക്കാതിരിക്കുക. നിങ്ങൾ പൂർത്തിയാക്കിക്കഴിഞ്ഞാൽ വീണ്ടും സമർപ്പിക്കാൻ മറക്കരുത്.</string>
     <string name="dialog_unsubmit_assignment_title">നിങ്ങളുടെ ജോലി സമർപ്പിക്കാതിരിക്കണോ?</string>
@@ -215,7 +216,6 @@
         <item quantity="other">%1$d വിദ്യാർത്ഥികൾ</item>
     </plurals>
     <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="zero">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്തിട്ടില്ല, അതിനാൽ ഒന്നും ഓണാക്കില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</item>
         <item quantity="one">%1$d അറ്റാച്ച്‌മെന്റ് \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
         <item quantity="other">%1$d അറ്റാച്ച്‌മെന്റുകൾ \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
     </plurals>

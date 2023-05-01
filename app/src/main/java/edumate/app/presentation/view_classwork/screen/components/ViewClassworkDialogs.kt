@@ -18,12 +18,16 @@ fun TurnInDialog(
     onConfirmClick: () -> Unit
 ) {
     if (uiState.openTurnInDialog) {
-        val text = pluralStringResource(
-            id = Plurals.dialog_turn_in_assignment_text,
-            count = uiState.studentSubmissionAttachments.size,
-            uiState.studentSubmissionAttachments.size,
-            uiState.classwork.title
-        )
+        val text = if (uiState.studentSubmissionAttachments.isEmpty()) {
+            stringResource(id = Strings.dialog_turn_in_assignment_text, uiState.classwork.title)
+        } else {
+            pluralStringResource(
+                id = Plurals.dialog_turn_in_assignment_text,
+                count = uiState.studentSubmissionAttachments.size,
+                uiState.studentSubmissionAttachments.size,
+                uiState.classwork.title
+            )
+        }
         val confirmButtonText =
             if (uiState.studentSubmission?.state == SubmissionState.RECLAIMED_BY_STUDENT || uiState.studentSubmission?.state == SubmissionState.RETURNED) {
                 stringResource(id = Strings.resubmit)

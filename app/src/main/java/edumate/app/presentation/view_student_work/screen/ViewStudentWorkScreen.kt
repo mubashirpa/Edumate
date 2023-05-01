@@ -94,6 +94,7 @@ fun ViewStudentWorkScreen(
         refreshing = uiState.refreshing,
         onRefresh = { onEvent(ViewStudentWorkUiEvent.OnRefresh) }
     )
+    val isCourseWorkMarked = courseWork.maxPoints != null && courseWork.maxPoints > 0
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -182,6 +183,14 @@ fun ViewStudentWorkScreen(
                             lastName = ""
                         )
                     }
+                    val dueDate = courseWork.dueTime
+                    val attachments = uiState.studentWork?.assignmentSubmission?.attachments
+                    val isReturnEnabled =
+                        if (isCourseWorkMarked) {
+                            uiState.grade.isNotBlank() && (uiState.studentWork?.state == SubmissionState.TURNED_IN || uiState.studentWork?.assignedGrade.toString() != uiState.grade)
+                        } else {
+                            uiState.studentWork?.state == SubmissionState.TURNED_IN
+                        }
 
                     Column(modifier = Modifier.fillMaxSize()) {
                         LazyVerticalGrid(
@@ -233,9 +242,8 @@ fun ViewStudentWorkScreen(
                                                 style = MaterialTheme.typography.bodyLarge
                                             )
 
-                                            val dueDate = courseWork.dueTime
                                             when {
-                                                courseWork.maxPoints != null && courseWork.maxPoints > 0 && uiState.studentWork?.assignedGrade != null -> {
+                                                isCourseWorkMarked && uiState.studentWork?.assignedGrade != null -> {
                                                     Text(
                                                         text = stringResource(id = Strings.marked),
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -280,8 +288,6 @@ fun ViewStudentWorkScreen(
                                         }
                                     }
                                 }
-                                val attachments =
-                                    uiState.studentWork?.assignmentSubmission?.attachments
                                 if (attachments.isNullOrEmpty()) {
                                     header {
                                         ErrorScreen(
@@ -317,7 +323,7 @@ fun ViewStudentWorkScreen(
                             horizontalArrangement = Arrangement.End,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
-                            if (courseWork.maxPoints != null && courseWork.maxPoints > 0) {
+                            if (isCourseWorkMarked) {
                                 OutlinedTextField(
                                     value = uiState.grade,
                                     onValueChange = {
@@ -345,7 +351,7 @@ fun ViewStudentWorkScreen(
                             }
                             Button(
                                 onClick = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(true)) },
-                                enabled = uiState.studentWork?.state == SubmissionState.TURNED_IN || (uiState.grade != "" && uiState.studentWork?.assignedGrade.toString() != uiState.grade)
+                                enabled = isReturnEnabled
                             ) {
                                 Text(text = stringResource(id = Strings._return))
                             }
@@ -370,8 +376,7 @@ fun ViewStudentWorkScreen(
         courseWork = courseWork,
         userName = assignedStudent.displayName ?: assignedStudent.emailAddress.orEmpty(),
         onConfirmClick = {
-            val markedCourseWork = courseWork.maxPoints != null && courseWork.maxPoints > 0
-            if (markedCourseWork) {
+            if (isCourseWorkMarked) {
                 onEvent(ViewStudentWorkUiEvent.PatchStudentWork)
             } else {
                 onEvent(ViewStudentWorkUiEvent.ReturnStudentWork)

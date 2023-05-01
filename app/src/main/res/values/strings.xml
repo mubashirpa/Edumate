@@ -53,6 +53,7 @@
     <string name="dialog_return_submission_title1">Return work without marking?</string>
     <string name="dialog_return_submission_title2">Update grade?</string>
     <string name="dialog_return_submission_title3">Return work?</string>
+    <string name="dialog_turn_in_assignment_text">You didn\'t attach anything to \"%1$s\", so nothing will be turned in. Your teacher will see it\'s done.</string>
     <string name="dialog_turn_in_assignment_title">Turn in your work?</string>
     <string name="dialog_unsubmit_assignment_text">Unsubmit to add or change attachments. Don\'t forget to resubmit once you\'re done.</string>
     <string name="dialog_unsubmit_assignment_title">Unsubmit your work?</string>
@@ -217,7 +218,6 @@
         <item quantity="other">%1$d students</item>
     </plurals>
     <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="zero">You didn\'t attach anything to \"%1$s\", so nothing will be turned in. Your teacher will see it\'s done.</item>
         <item quantity="one">%1$d attachment will be submitted for \"%2$s\".</item>
         <item quantity="other">%1$d attachments will be submitted for \"%2$s\".</item>
     </plurals>

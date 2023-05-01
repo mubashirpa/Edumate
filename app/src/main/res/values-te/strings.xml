@@ -52,6 +52,7 @@
     <string name="dialog_return_submission_title1">మార్కింగ్ లేకుండా పనిని తిరిగి ఇవ్వాలా?</string>
     <string name="dialog_return_submission_title2">గ్రేడ్‌ను నవీకరించాలా?</string>
     <string name="dialog_return_submission_title3">పనిని తిరిగి ఇవ్వాలా?</string>
+    <string name="dialog_turn_in_assignment_text">మీరు \"%1$s\"కి దేన్నీ జోడించలేదు, కాబట్టి ఏదీ ప్రారంభించబడదు. మీ ఉపాధ్యాయుడు అది పూర్తయినట్లు చూస్తారు.</string>
     <string name="dialog_turn_in_assignment_title">మీ పనిని ప్రారంభించాలా?</string>
     <string name="dialog_unsubmit_assignment_text">జోడింపులను జోడించడానికి లేదా మార్చడానికి సమర్పించవద్దు. మీరు పూర్తి చేసిన తర్వాత మళ్లీ సమర్పించడం మర్చిపోవద్దు.</string>
     <string name="dialog_unsubmit_assignment_title">మీ పనిని సమర్పించాలా?</string>
@@ -215,7 +216,6 @@
         <item quantity="other">%1$d విద్యార్థులు</item>
     </plurals>
     <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="zero">మీరు \"%1$s\"కి దేన్నీ జోడించలేదు, కాబట్టి ఏదీ ప్రారంభించబడదు. మీ ఉపాధ్యాయుడు అది పూర్తయినట్లు చూస్తారు.</item>
         <item quantity="one">%1$d జోడింపు \"%2$s\" కోసం సమర్పించబడుతుంది.</item>
         <item quantity="other">%1$d జోడింపులు \"%2$s\" కోసం సమర్పించబడతాయి.</item>
     </plurals>

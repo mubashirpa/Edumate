@@ -52,6 +52,7 @@
     <string name="dialog_return_submission_title1">बिना निशान लगाए काम वापस करें?</string>
     <string name="dialog_return_submission_title2">ग्रेड अपडेट करें?</string>
     <string name="dialog_return_submission_title3">वापस काम?</string>
+    <string name="dialog_turn_in_assignment_text">आपने \"%1$s\" में कुछ भी अटैच नहीं किया, इसलिए कुछ भी नहीं दिया जाएगा। आपके शिक्षक इसे हो गया देख लेंगे।</string>
     <string name="dialog_turn_in_assignment_title">अपना काम चालू करें?</string>
     <string name="dialog_unsubmit_assignment_text">अटैचमेंट जोड़ने या बदलने के लिए सबमिट न करें। जब आप काम पूरा कर लें तो फिर से सबमिट करना न भूलें।</string>
     <string name="dialog_unsubmit_assignment_title">अपना काम अनसबमिट करें?</string>
@@ -215,7 +216,6 @@
         <item quantity="other">%1$d छात्र</item>
     </plurals>
     <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="zero">आपने \"%1$s\" में कुछ भी अटैच नहीं किया, इसलिए कुछ भी नहीं दिया जाएगा। आपके शिक्षक इसे हो गया देख लेंगे।</item>
         <item quantity="one">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किया जाएगा।</item>
         <item quantity="other">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किए जाएंगे।</item>
     </plurals>

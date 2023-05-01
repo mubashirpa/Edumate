@@ -130,15 +130,14 @@ class ViewStudentWorkViewModel @Inject constructor(
             } catch (e: NumberFormatException) {
                 null
             }
-            val studentWork = mutableStateOf(uiState.studentWork!!)
-
-            studentWork.value = studentWork.value.copy(assignedGrade = assignedGrade)
+            val studentWork = uiState.studentWork!!.copy(assignedGrade = assignedGrade)
+            uiState = uiState.copy(studentWork = studentWork)
 
             patchStudentSubmission(
                 courseId,
                 courseWorkId,
                 studentWorkId,
-                studentWork.value
+                uiState.studentWork!!
             ).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
