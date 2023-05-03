@@ -14,37 +14,43 @@ class StudentsRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore
 ) : StudentsRepository {
 
-    override suspend fun addStudent(courseId: String, studentId: String): String {
+    override suspend fun create(courseId: String, userId: String) {
         // Add $uid in courses/$courseId/students array
-        coursesCollection().document(courseId)
-            .update(FirebaseConstants.Firestore.COURSE_GROUP_ID, FieldValue.arrayUnion(studentId))
+        courses().document(courseId)
+            .update(FirebaseConstants.Firestore.COURSE_GROUP_ID, FieldValue.arrayUnion(userId))
             .await()
         // After add $courseId in users/$uid/enrolled array
-        usersCollection().document(studentId)
+        users().document(userId)
             .update(FirebaseConstants.Firestore.ENROLLED, FieldValue.arrayUnion(courseId)).await()
-        return studentId
     }
 
-    override suspend fun deleteStudent(courseId: String, studentId: String) {
+    override suspend fun delete(courseId: String, userId: String) {
         // Remove $courseId from users/$uid/enrolled array
-        usersCollection().document(studentId)
+        users().document(userId)
             .update(FirebaseConstants.Firestore.ENROLLED, FieldValue.arrayRemove(courseId)).await()
         // After remove $uid from courses/$courseId/students array
-        coursesCollection().document(courseId)
-            .update(FirebaseConstants.Firestore.COURSE_GROUP_ID, FieldValue.arrayRemove(studentId))
+        courses().document(courseId)
+            .update(FirebaseConstants.Firestore.COURSE_GROUP_ID, FieldValue.arrayRemove(userId))
             .await()
     }
 
-    override suspend fun students(courseId: String): List<UserProfileDto> {
-        return usersCollection().whereArrayContains(FirebaseConstants.Firestore.ENROLLED, courseId)
+    override suspend fun get(courseId: String, userId: String): UserProfileDto {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun list(courseId: String, pageSize: Int): List<UserProfileDto> {
+        // TODO("Use pageSize")
+        return users().whereArrayContains(FirebaseConstants.Firestore.ENROLLED, courseId)
             .get().await().documents.mapNotNull { snapshot ->
                 snapshot.toObject<UserProfileDto>()
             }
     }
 
-    private fun coursesCollection(): CollectionReference =
-        firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
+    private fun courses(): CollectionReference {
+        return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
+    }
 
-    private fun usersCollection(): CollectionReference =
-        firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION)
+    private fun users(): CollectionReference {
+        return firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION)
+    }
 }

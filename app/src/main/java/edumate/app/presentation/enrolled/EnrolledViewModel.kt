@@ -13,7 +13,7 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.ListCourses
-import edumate.app.domain.usecase.students.DeleteStudentUseCase
+import edumate.app.domain.usecase.students.DeleteStudent
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -24,7 +24,7 @@ import kotlinx.coroutines.flow.onEach
 class EnrolledViewModel @Inject constructor(
     getCurrentUserUseCase: GetCurrentUserUseCase,
     private val listCoursesUseCase: ListCourses,
-    private val deleteStudentUseCase: DeleteStudentUseCase
+    private val deleteStudentUseCase: DeleteStudent
 ) : ViewModel() {
 
     var uiState by mutableStateOf(EnrolledUiState())
@@ -103,8 +103,8 @@ class EnrolledViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun unEnroll(courseId: String, uid: String) {
-        deleteStudentUseCase(courseId, uid).onEach { resource ->
+    private fun unEnroll(courseId: String, userId: String) {
+        deleteStudentUseCase(courseId, userId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(openProgressDialog = true)
@@ -118,7 +118,7 @@ class EnrolledViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
-                        userMessage = resource.message
+                        userMessage = UiText.StringResource(Strings.unable_to_leave_class)
                     )
                 }
             }

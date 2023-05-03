@@ -51,6 +51,9 @@ object Routes {
         const val RECOVER_EMAIL = "email"
         const val RECOVER_SCREEN = "?$RECOVER_EMAIL={$RECOVER_EMAIL}"
 
+        // StreamScreen
+        const val STREAM_SCREEN_COURSE_ID = "course_id"
+
         // ViewClassworkScreen
         const val VIEW_CLASSWORK_COURSE_ID = "course_id"
         const val VIEW_CLASSWORK_ID = "course_work_id"

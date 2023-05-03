@@ -11,15 +11,15 @@ import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.student_submissions.ListSubmissions
-import edumate.app.domain.usecase.students.GetStudentsUseCase
+import edumate.app.domain.usecase.students.ListStudents
 import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class StudentWorkViewModel @Inject constructor(
-    private val getStudentsUseCase: GetStudentsUseCase,
-    private val listSubmissions: ListSubmissions
+    private val listStudentsUseCase: ListStudents,
+    private val listSubmissionsUseCase: ListSubmissions
 ) : ViewModel() {
 
     var uiState by mutableStateOf(StudentWorkUiState())
@@ -49,7 +49,7 @@ class StudentWorkViewModel @Inject constructor(
     }
 
     private fun fetchAssignedStudents(refreshing: Boolean) {
-        getStudentsUseCase(courseId).onEach { resource ->
+        listStudentsUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -75,13 +75,17 @@ class StudentWorkViewModel @Inject constructor(
                 }
 
                 is Resource.Error -> {
+                    val message =
+                        UiText.StringResource(
+                            Strings.cannot_retrieve_student_submissions_at_this_time_please_try_again_later
+                        )
                     uiState = if (refreshing) {
                         uiState.copy(
                             refreshing = false,
-                            userMessage = resource.message
+                            userMessage = message
                         )
                     } else {
-                        uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
+                        uiState.copy(dataState = DataState.ERROR(message = message))
                     }
                 }
             }
@@ -89,7 +93,7 @@ class StudentWorkViewModel @Inject constructor(
     }
 
     private fun fetchStudentSubmissions(refreshing: Boolean) {
-        listSubmissions(courseId, courseWorkId).onEach { resource ->
+        listSubmissionsUseCase(courseId, courseWorkId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {

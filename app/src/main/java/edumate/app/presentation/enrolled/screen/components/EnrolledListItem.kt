@@ -24,7 +24,7 @@ fun EnrolledListItem(
         onClick = {
             onClick(course.id)
         },
-        modifier = Modifier.aspectRatio(21f / 9f)
+        modifier = Modifier.aspectRatio(327f / 121f)
     ) {
         Column(
             modifier = Modifier.padding(

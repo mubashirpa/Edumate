@@ -35,9 +35,9 @@ interface CourseWorkRepository {
      * Returns a list of course work that the requester is permitted to view.
      * @param courseId Identifier of the course.
      * @param courseWorkState Restriction on the work status to return.
-     * @param orderBy Optional sort ordering for results. Supported fields are updateTime and dueDate. Supported direction keywords are asc and desc. Examples: dueDate asc, updateTime desc, updateTime, dueDate desc.
+     * @param orderBy Optional sort ordering for results. Supported fields are updateTime and dueDate. Supported direction keywords are asc and desc. If not specified, updateTime desc is the default behavior. Examples: dueDate asc, updateTime desc, updateTime, dueDate desc.
      * @param pageSize Maximum number of items to return.
-     * @return If successful, the response body contains a list of [CourseWorkDto]
+     * @return If successful, the response body contains a list of [CourseWorkDto].
      */
     suspend fun list(
         courseId: String,
@@ -49,7 +49,7 @@ interface CourseWorkRepository {
     /**
      * Modifies assignee mode and options of a coursework.
      * @param courseId Identifier of the course.
-     * @param id Identifier of the course work.
+     * @param id Identifier of the coursework.
      * @param assigneeMode Mode of the coursework describing whether it will be assigned to all students or specified individual students.
      * @param modifyIndividualStudentsOptions Set which students are assigned or not assigned to the coursework. Must be specified only when [assigneeMode] is [INDIVIDUAL_STUDENTS].
      * @return If successful, the response body contains an instance of [CourseWorkDto].

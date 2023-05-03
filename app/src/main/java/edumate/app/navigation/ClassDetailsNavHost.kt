@@ -19,6 +19,7 @@ import edumate.app.presentation.classwork.screen.ClassworkScreen
 import edumate.app.presentation.create_classwork.CreateClassworkViewModel
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
+import edumate.app.presentation.stream.StreamViewModel
 import edumate.app.presentation.stream.screen.StreamScreen
 import edumate.app.presentation.view_classwork.ViewClassworkViewModel
 import edumate.app.presentation.view_classwork.screen.ViewClassworkScreen
@@ -41,8 +42,23 @@ fun ClassDetailsNavHost(
         startDestination = Screen.StreamScreen.route,
         modifier = modifier
     ) {
-        composable(route = Screen.StreamScreen.route) {
-            StreamScreen()
+        composable(
+            route = Screen.StreamScreen.route,
+            arguments = listOf(
+                navArgument(Routes.Args.STREAM_SCREEN_COURSE_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.id
+                }
+            )
+        ) {
+            val viewModel: StreamViewModel = hiltViewModel()
+            StreamScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                snackbarHostState = snackbarHostState,
+                course = course,
+                onBackPressed = onBackPressed
+            )
         }
         composable(
             route = Screen.ClassworkScreen.route,

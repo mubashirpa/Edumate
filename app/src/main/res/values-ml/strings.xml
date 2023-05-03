@@ -4,7 +4,7 @@
     <string name="_return">മടങ്ങുക</string>
     <string name="add">ചേർക്കുക</string>
     <string name="add_a_class_to_get_started">ആരംഭിക്കാൻ ഒരു ക്ലാസ് ചേർക്കുക</string>
-    <string name="add_assignments_and_other_works_for_class">ക്ലാസ്സിനായി അസൈൻമെന്റുകളും മറ്റ് വർക്കുകളും ചേർക്കുക</string>
+    <string name="add_assignments_and_other_works_for_class">ക്ലാസ്സിനായി അസൈൻമെന്റുകളും മറ്റ് വർക്കുകളും ചേർക്കുക.</string>
     <string name="add_attachment">അറ്റാച്ച്‌മെന്റ് ചേർക്കുക</string>
     <string name="add_link">ലിങ്ക് ചേർക്കുക</string>
     <string name="add_option">ഓപ്‌ഷൻ ചേർക്കുക</string>
@@ -19,6 +19,7 @@
     <string name="assignment_title">അസൈൻമെന്റ് ശീർഷകം</string>
     <string name="attachments">അറ്റാച്ചുമെന്റുകൾ</string>
     <string name="cancel">റദ്ദാക്കുക</string>
+    <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">ഇപ്പോൾ അറിയിപ്പുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ഈ സമയത്ത് കോഴ്‌സ് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ഇപ്പോൾ കോഴ്‌സ് വർക്ക് വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">കോഴ്‌സ് വർക്കുകൾ ഇപ്പോൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
@@ -80,7 +81,7 @@
     <string name="insert_link">ലിങ്ക് ചേർക്കുക</string>
     <string name="instructions">നിർദ്ദേശങ്ങൾ</string>
     <string name="invite">ക്ഷണിക്കുക</string>
-    <string name="invite_students_to_your_class">നിങ്ങളുടെ ക്ലാസിലേക്ക് വിദ്യാർത്ഥികളെ ക്ഷണിക്കുക</string>
+    <string name="invite_students_to_your_class">നിങ്ങളുടെ ക്ലാസിലേക്ക് വിദ്യാർത്ഥികളെ ക്ഷണിക്കുക.</string>
     <string name="join">ചേരുക</string>
     <string name="join_a_class_to_get_started">ആരംഭിക്കാൻ ഒരു ക്ലാസ്സിൽ ചേരുക</string>
     <string name="join_class">ക്ലാസിൽ ചേരുക</string>
@@ -129,6 +130,7 @@
     <string name="sign_up">സൈൻ അപ്പ്</string>
     <string name="sign_up_with_google">Google ഉപയോഗിച്ച് സൈൻ അപ്പ് ചെയ്യുക</string>
     <string name="signing_in">സൈൻ ഇൻ ചെയ്യുന്നു</string>
+    <string name="start_a_conversation_with_your_class">നിങ്ങളുടെ ക്ലാസുമായി ഒരു സംഭാഷണം ആരംഭിക്കുക.</string>
     <string name="student_answers">വിദ്യാർത്ഥികളുടെ ഉത്തരങ്ങൾ</string>
     <string name="student_not_yet_submitted">വിദ്യാർത്ഥി ഇതുവരെ സമർപ്പിച്ചിട്ടില്ല.</string>
     <string name="student_work">വിദ്യാർത്ഥി ജോലി</string>
@@ -141,12 +143,17 @@
     <string name="turn_in">തിരിക്കുക</string>
     <string name="turned_in">തിരിച്ചു</string>
     <string name="unable_to_add_attachments">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കാനാവുന്നില്ല.</string>
+    <string name="unable_to_create_announcement">പ്രഖ്യാപനം സൃഷ്‌ടിക്കാനായില്ല.</string>
     <string name="unable_to_create_course">കോഴ്‌സ് സൃഷ്‌ടിക്കാനായില്ല.</string>
     <string name="unable_to_create_course_work">കോഴ്‌സ് വർക്ക് സൃഷ്‌ടിക്കാനായില്ല.</string>
     <string name="unable_to_delete_course">കോഴ്‌സ് ഇല്ലാതാക്കാൻ കഴിയുന്നില്ല.</string>
     <string name="unable_to_delete_course_work">കോഴ്‌സ് വർക്ക് ഇല്ലാതാക്കാൻ കഴിയുന്നില്ല.</string>
+    <string name="unable_to_join_class">ക്ലാസിൽ ചേരാനായില്ല.</string>
+    <string name="unable_to_leave_class">ക്ലാസ് വിടാനാവുന്നില്ല.</string>
     <string name="unable_to_patch_course_work">കോഴ്‌സ് വർക്ക് അപ്‌ഡേറ്റ് ചെയ്യാനാവുന്നില്ല.</string>
     <string name="unable_to_reclaim_student_submission">സമർപ്പിക്കുന്നത് അൺസമർപ്പിക്കാനായില്ല.</string>
+    <string name="unable_to_remove_student">വിദ്യാർത്ഥിയെ നീക്കം ചെയ്യാനാവുന്നില്ല.</string>
+    <string name="unable_to_remove_teacher">അധ്യാപകനെ നീക്കം ചെയ്യാനാവുന്നില്ല.</string>
     <string name="unable_to_return_student_submission">സമർപ്പണം തിരികെ നൽകാനായില്ല.</string>
     <string name="unable_to_submit_student_submission">സമർപ്പണം സമർപ്പിക്കാനായില്ല.</string>
     <string name="unable_to_update_course">കോഴ്‌സ് അപ്‌ഡേറ്റ് ചെയ്യാനാവുന്നില്ല.</string>
@@ -159,7 +166,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">വീണ്ടും സ്വാഗതം!</string>
     <string name="you_have_no_attachments_uploaded">നിങ്ങൾക്ക് അപ്‌ലോഡ് ചെയ്‌ത അറ്റാച്ച്‌മെന്റുകളൊന്നുമില്ല.</string>
-    <string name="your_teacher_hasnt_assigned_any_classwork_yet">നിങ്ങളുടെ അധ്യാപകൻ ഇതുവരെ ക്ലാസ് വർക്കുകളൊന്നും നൽകിയിട്ടില്ല</string>
+    <string name="your_teacher_hasnt_assigned_any_classwork_yet">നിങ്ങളുടെ അധ്യാപകൻ ഇതുവരെ ക്ലാസ് വർക്കുകളൊന്നും നൽകിയിട്ടില്ല.</string>
     <string name="your_work">നിങ്ങളുടെ ജോലി</string>
 
     <!-- Screen titles -->

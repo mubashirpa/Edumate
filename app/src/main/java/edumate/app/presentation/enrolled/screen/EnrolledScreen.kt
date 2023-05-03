@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.core.DataState
+import edumate.app.core.ext.supportWideScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -80,7 +81,9 @@ fun EnrolledScreen(
 
             DataState.SUCCESS -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .supportWideScreen(),
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {

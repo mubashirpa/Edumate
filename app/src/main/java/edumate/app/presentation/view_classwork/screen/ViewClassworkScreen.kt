@@ -157,12 +157,20 @@ fun ViewClassworkScreen(
 
                     CourseWorkType.SHORT_ANSWER_QUESTION -> {
                         // TODO()
-                        ComingSoon(modifier = Modifier.navigationBarsPadding())
+                        ComingSoon(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .navigationBarsPadding()
+                        )
                     }
 
                     CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
                         // TODO()
-                        ComingSoon(modifier = Modifier.navigationBarsPadding())
+                        ComingSoon(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .navigationBarsPadding()
+                        )
                     }
 
                     else -> {}

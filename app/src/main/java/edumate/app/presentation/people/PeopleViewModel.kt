@@ -13,10 +13,10 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.moveItemToFirstPosition
 import edumate.app.domain.model.user_profiles.UserProfile
-import edumate.app.domain.usecase.GetPeoplesUseCase
+import edumate.app.domain.usecase.ListPeoples
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.students.DeleteStudentUseCase
-import edumate.app.domain.usecase.teachers.DeleteTeacherUseCase
+import edumate.app.domain.usecase.students.DeleteStudent
+import edumate.app.domain.usecase.teachers.DeleteTeacher
 import edumate.app.navigation.Routes
 import edumate.app.presentation.class_details.UserType
 import javax.inject.Inject
@@ -29,9 +29,9 @@ import kotlinx.coroutines.flow.onEach
 class PeopleViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getPeoplesUseCase: GetPeoplesUseCase,
-    private val deleteTeacherUseCase: DeleteTeacherUseCase,
-    private val deleteStudentUseCase: DeleteStudentUseCase
+    private val listPeoplesUseCase: ListPeoples,
+    private val deleteTeacherUseCase: DeleteTeacher,
+    private val deleteStudentUseCase: DeleteStudent
 ) : ViewModel() {
 
     var uiState by mutableStateOf(PeopleUiState())
@@ -40,7 +40,7 @@ class PeopleViewModel @Inject constructor(
     private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_ID])
     private val ownerId: String = checkNotNull(savedStateHandle[Routes.Args.PEOPLE_COURSE_OWNER_ID])
     private var peoples: List<UserProfile> = emptyList()
-    private var getPeoplesJob: Job? = null
+    private var listPeoplesJob: Job? = null
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -142,9 +142,9 @@ class PeopleViewModel @Inject constructor(
         // Otherwise show the PullRefreshIndicator using refreshing = true
         // Likewise, DataState.ERROR is only used when initial loading and retry
         // Otherwise show snackbar by using userMessage.
-        // Cancel ongoing getPeoplesJob before recall.
-        getPeoplesJob?.cancel()
-        getPeoplesJob = getPeoplesUseCase(courseId).onEach { resource ->
+        // Cancel ongoing listPeoplesJob before recall.
+        listPeoplesJob?.cancel()
+        listPeoplesJob = listPeoplesUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -219,10 +219,10 @@ class PeopleViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteTeacher(uid: String, isLeaving: Boolean) {
+    private fun deleteTeacher(userId: String, isLeaving: Boolean) {
         // if userProfile is leaving exit page on success
         // else refresh peoples
-        deleteTeacherUseCase(courseId, uid).onEach { resource ->
+        deleteTeacherUseCase(courseId, userId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(
@@ -246,15 +246,19 @@ class PeopleViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
-                        userMessage = resource.message
+                        userMessage = if (isLeaving) {
+                            UiText.StringResource(Strings.unable_to_leave_class)
+                        } else {
+                            UiText.StringResource(Strings.unable_to_remove_teacher)
+                        }
                     )
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteStudent(uid: String) {
-        deleteStudentUseCase(courseId, uid).onEach { resource ->
+    private fun deleteStudent(userId: String) {
+        deleteStudentUseCase(courseId, userId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(
@@ -271,7 +275,7 @@ class PeopleViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
-                        userMessage = resource.message
+                        userMessage = UiText.StringResource(Strings.unable_to_remove_student)
                     )
                 }
             }

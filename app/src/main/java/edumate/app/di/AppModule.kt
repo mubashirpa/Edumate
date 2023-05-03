@@ -22,6 +22,10 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideAnnouncementsRepository(): AnnouncementsRepository = AnnouncementsRepositoryImpl()
+
+    @Singleton
+    @Provides
     fun provideCoursesRepository(firestore: FirebaseFirestore): CoursesRepository =
         CoursesRepositoryImpl(firestore)
 

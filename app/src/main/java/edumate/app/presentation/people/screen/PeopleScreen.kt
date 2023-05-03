@@ -69,6 +69,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -295,7 +296,8 @@ fun PeopleScreen(
                             )
                         }
                         if (dataState is DataState.EMPTY) {
-                            ErrorScreen(
+                            AnimatedErrorScreen(
+                                url = "https://assets5.lottiefiles.com/private_files/lf30_TBKozE.json",
                                 modifier = Modifier.fillMaxSize(),
                                 errorMessage = dataState.message.asString()
                             )

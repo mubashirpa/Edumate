@@ -24,15 +24,15 @@ import kotlinx.coroutines.flow.onEach
 class ClassworkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val listCourseWorks: ListCourseWorks,
-    private val deleteCourseWork: DeleteCourseWork
+    private val listCourseWorksUseCase: ListCourseWorks,
+    private val deleteCourseWorkUseCase: DeleteCourseWork
 ) : ViewModel() {
 
     var uiState by mutableStateOf(ClassworkUiState())
         private set
 
     private val courseId: String = checkNotNull(savedStateHandle[Routes.Args.CLASSWORK_COURSE_ID])
-    private var getCourseWorksJob: Job? = null
+    private var listCourseWorksJob: Job? = null
 
     init {
         getCurrentUserUseCase().map { user ->
@@ -79,8 +79,8 @@ class ClassworkViewModel @Inject constructor(
         // Likewise, DataState.ERROR is only used when initial loading and retry
         // Otherwise show snackbar by using userMessage.
         // Cancel ongoing getCourseWorksJob before recall.
-        getCourseWorksJob?.cancel()
-        getCourseWorksJob = listCourseWorks(courseId).onEach { resource ->
+        listCourseWorksJob?.cancel()
+        listCourseWorksJob = listCourseWorksUseCase(courseId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = if (refreshing) {
@@ -122,7 +122,7 @@ class ClassworkViewModel @Inject constructor(
     }
 
     private fun deleteClasswork(classworkId: String) {
-        deleteCourseWork(courseId, classworkId).onEach { resource ->
+        deleteCourseWorkUseCase(courseId, classworkId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(

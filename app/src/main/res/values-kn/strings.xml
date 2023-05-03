@@ -4,7 +4,7 @@
     <string name="_return">ಹಿಂತಿರುಗಿ</string>
     <string name="add">ಸೇರಿಸು</string>
     <string name="add_a_class_to_get_started">ಪ್ರಾರಂಭಿಸಲು ತರಗತಿಯನ್ನು ಸೇರಿಸಿ</string>
-    <string name="add_assignments_and_other_works_for_class">ವರ್ಗಕ್ಕಾಗಿ ನಿಯೋಜನೆಗಳು ಮತ್ತು ಇತರ ಕೆಲಸಗಳನ್ನು ಸೇರಿಸಿ</string>
+    <string name="add_assignments_and_other_works_for_class">ವರ್ಗಕ್ಕಾಗಿ ನಿಯೋಜನೆಗಳು ಮತ್ತು ಇತರ ಕೆಲಸಗಳನ್ನು ಸೇರಿಸಿ.</string>
     <string name="add_attachment">ಲಗತ್ತನ್ನು ಸೇರಿಸಿ</string>
     <string name="add_link">ಲಿಂಕ್ ಸೇರಿಸಿ</string>
     <string name="add_option">ಆಯ್ಕೆಯನ್ನು ಸೇರಿಸಿ</string>
@@ -19,6 +19,7 @@
     <string name="assignment_title">ನಿಯೋಜನೆ ಶೀರ್ಷಿಕೆ</string>
     <string name="attachments">ಲಗತ್ತುಗಳು</string>
     <string name="cancel">ರದ್ದುಮಾಡು</string>
+    <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಪ್ರಕಟಣೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಅನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೃತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -80,7 +81,7 @@
     <string name="insert_link">ಲಿಂಕ್ ಸೇರಿಸಿ</string>
     <string name="instructions">ಸೂಚನೆಗಳು</string>
     <string name="invite">ಆಹ್ವಾನ</string>
-    <string name="invite_students_to_your_class">ನಿಮ್ಮ ತರಗತಿಗೆ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸಿ</string>
+    <string name="invite_students_to_your_class">ನಿಮ್ಮ ತರಗತಿಗೆ ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸಿ.</string>
     <string name="join">ಸೇರಿ</string>
     <string name="join_a_class_to_get_started">ಪ್ರಾರಂಭಿಸಲು ತರಗತಿಗೆ ಸೇರಿ</string>
     <string name="join_class">ವರ್ಗಕ್ಕೆ ಸೇರಿ</string>
@@ -129,6 +130,7 @@
     <string name="sign_up">ಸೈನ್ ಅಪ್</string>
     <string name="sign_up_with_google">Google ನೊಂದಿಗೆ ಸೈನ್ ಅಪ್ ಮಾಡಿ</string>
     <string name="signing_in">ಸೈನ್ ಇನ್</string>
+    <string name="start_a_conversation_with_your_class">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಸಂವಾದವನ್ನು ಪ್ರಾರಂಭಿಸಿ.</string>
     <string name="student_answers">ವಿದ್ಯಾರ್ಥಿ ಉತ್ತರಗಳು</string>
     <string name="student_not_yet_submitted">ವಿದ್ಯಾರ್ಥಿ ಇನ್ನೂ ಸಲ್ಲಿಸಿಲ್ಲ.</string>
     <string name="student_work">ವಿದ್ಯಾರ್ಥಿ ಕೆಲಸ</string>
@@ -141,12 +143,17 @@
     <string name="turn_in">ತಿರುಗಿ</string>
     <string name="turned_in">ಇನ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="unable_to_add_attachments">ಲಗತ್ತುಗಳನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_create_announcement">ಪ್ರಕಟಣೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course">ಕೋರ್ಸ್ ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_join_class">ವರ್ಗಕ್ಕೆ ಸೇರಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course">ಕೋರ್ಸ್ ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_patch_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
     <string name="unable_to_reclaim_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_remove_student">ವಿದ್ಯಾರ್ಥಿಯನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_remove_teacher">ಶಿಕ್ಷಕರನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_return_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_submit_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_course">ಕೋರ್ಸ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
@@ -159,7 +166,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">ಮತ್ತೆ ಸ್ವಾಗತ!</string>
     <string name="you_have_no_attachments_uploaded">ನೀವು ಯಾವುದೇ ಲಗತ್ತುಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿಲ್ಲ.</string>
-    <string name="your_teacher_hasnt_assigned_any_classwork_yet">ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇನ್ನೂ ಯಾವುದೇ ತರಗತಿಯನ್ನು ನಿಯೋಜಿಸಿಲ್ಲ</string>
+    <string name="your_teacher_hasnt_assigned_any_classwork_yet">ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇನ್ನೂ ಯಾವುದೇ ತರಗತಿಯನ್ನು ನಿಯೋಜಿಸಿಲ್ಲ.</string>
     <string name="your_work">ನಿಮ್ಮ ಕೆಲಸ</string>
 
     <!-- Screen titles -->

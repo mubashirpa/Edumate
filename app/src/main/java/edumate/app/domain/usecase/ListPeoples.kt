@@ -11,15 +11,15 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class GetPeoplesUseCase @Inject constructor(
+class ListPeoples @Inject constructor(
     private val teachersRepository: TeachersRepository,
     private val studentsRepository: StudentsRepository
 ) {
     operator fun invoke(courseId: String): Flow<Resource<List<UserProfile>>> = flow {
         try {
             emit(Resource.Loading())
-            val teachers = teachersRepository.teachers(courseId).map { it.toUser() }
-            val students = studentsRepository.students(courseId).map { it.toUser() }
+            val teachers = teachersRepository.list(courseId).map { it.toUser() }
+            val students = studentsRepository.list(courseId).map { it.toUser() }
             val peoples: MutableList<UserProfile> = mutableListOf()
             peoples.addAll(teachers)
             peoples.addAll(students)

@@ -60,6 +60,7 @@ import edumate.app.presentation.classwork.ClassworkUiEvent
 import edumate.app.presentation.classwork.ClassworkUiState
 import edumate.app.presentation.classwork.screen.components.ClassworkListItem
 import edumate.app.presentation.classwork.screen.components.DeleteClassworkDialog
+import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -160,7 +161,8 @@ fun ClassworkScreen(
         ) {
             when (val dataState = uiState.dataState) {
                 is DataState.EMPTY -> {
-                    ErrorScreen(
+                    AnimatedErrorScreen(
+                        url = "https://assets4.lottiefiles.com/packages/lf20_ikvz7qhc.json",
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = if (currentUserType == UserType.TEACHER) {
                             stringResource(

@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -17,11 +17,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import edumate.app.core.DataState
+import edumate.app.core.ext.supportWideScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.teaching.TeachingUiEvent
 import edumate.app.presentation.teaching.TeachingViewModel
-import edumate.app.presentation.teaching.screen.components.TeachingListItem
+import edumate.app.presentation.teaching.screen.components.TeachingListItemBeta
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -82,13 +83,16 @@ fun TeachingScreen(
 
             DataState.SUCCESS -> {
                 LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .supportWideScreen(),
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
-                        items(viewModel.uiState.courses) { course ->
-                            TeachingListItem(
+                        itemsIndexed(viewModel.uiState.courses) { index, course ->
+                            TeachingListItemBeta(
                                 course = course,
+                                index = index,
                                 onShareClick = {
                                     share(context, it)
                                 },

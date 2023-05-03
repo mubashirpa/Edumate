@@ -78,7 +78,7 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.accompanist)
     implementation(libs.jsoup)
-    implementation(libs.burnoutcrew.reorderable)
+    implementation(libs.airbnb.lottie.compose)
 }
 
 kapt {

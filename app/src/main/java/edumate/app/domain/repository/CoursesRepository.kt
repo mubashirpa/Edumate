@@ -26,12 +26,12 @@ interface CoursesRepository {
     suspend fun get(id: String): CourseDto?
 
     /**
-     * Returns a list of courses that the requesting userProfile is permitted to view.
+     * Returns a list of courses that the requesting user is permitted to view.
      * @param studentId Restricts returned courses to those having a student with the specified identifier.
      * @param teacherId Restricts returned courses to those having a teacher with the specified identifier.
      * @param courseState Restricts returned courses to the specified state.
      * @param pageSize Maximum number of items to return.
-     * @return @return If successful, the response body contains a list of [CourseDto]
+     * @return @return If successful, the response body contains a list of [CourseDto].
      */
     suspend fun list(
         studentId: String? = null,

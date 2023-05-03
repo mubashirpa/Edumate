@@ -4,7 +4,7 @@
     <string name="_return">वापसी</string>
     <string name="add">जोड़ें</string>
     <string name="add_a_class_to_get_started">आरंभ करने के लिए एक कक्षा जोड़ें</string>
-    <string name="add_assignments_and_other_works_for_class">कक्षा के लिए असाइनमेंट और अन्य कार्य जोड़ें</string>
+    <string name="add_assignments_and_other_works_for_class">कक्षा के लिए असाइनमेंट और अन्य कार्य जोड़ें।</string>
     <string name="add_attachment">अटैचमेंट जोड़ें</string>
     <string name="add_link">लिंक जोड़ें</string>
     <string name="add_option">विकल्प जोड़ें</string>
@@ -19,6 +19,7 @@
     <string name="assignment_title">असाइनमेंट शीर्षक</string>
     <string name="attachments">संलग्नक</string>
     <string name="cancel">रद्द करना</string>
+    <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">इस समय घोषणाओं को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">इस समय पाठ्यक्रम पुनर्प्राप्त नहीं किया जा सकता, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">इस समय पाठ्यक्रम का काम पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">इस समय पाठ्यक्रम के कार्यों को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
@@ -80,7 +81,7 @@
     <string name="insert_link">लिंक डालें</string>
     <string name="instructions">निर्देश</string>
     <string name="invite">आमंत्रित करें</string>
-    <string name="invite_students_to_your_class">छात्रों को अपनी कक्षा में आमंत्रित करें</string>
+    <string name="invite_students_to_your_class">छात्रों को अपनी कक्षा में आमंत्रित करें।</string>
     <string name="join">जोड़ना</string>
     <string name="join_a_class_to_get_started">आरंभ करने के लिए कक्षा में शामिल हों</string>
     <string name="join_class">कक्षा में शामिल हों</string>
@@ -129,6 +130,7 @@
     <string name="sign_up">साइन अप करें</string>
     <string name="sign_up_with_google">Google के साथ साइन अप करें</string>
     <string name="signing_in">साइन इन करना</string>
+    <string name="start_a_conversation_with_your_class">अपनी कक्षा के साथ बातचीत शुरू करें।</string>
     <string name="student_answers">छात्रों के उत्तर</string>
     <string name="student_not_yet_submitted">छात्र ने अभी तक सबमिट नहीं किया है।</string>
     <string name="student_work">छात्र कार्य</string>
@@ -141,12 +143,17 @@
     <string name="turn_in">अंदर चालू करें</string>
     <string name="turned_in">चालू किया गया</string>
     <string name="unable_to_add_attachments">अटैचमेंट जोड़ने में असमर्थ।</string>
+    <string name="unable_to_create_announcement">घोषणा करने में असमर्थ।</string>
     <string name="unable_to_create_course">पाठ्यक्रम बनाने में असमर्थ।</string>
     <string name="unable_to_create_course_work">कोर्स वर्क बनाने में असमर्थ।</string>
     <string name="unable_to_delete_course">पाठ्यक्रम हटाने में असमर्थ।</string>
     <string name="unable_to_delete_course_work">पाठ्यक्रम के काम को हटाने में असमर्थ।</string>
+    <string name="unable_to_join_class">कक्षा में शामिल होने में असमर्थ।</string>
+    <string name="unable_to_leave_class">कक्षा छोड़ने में असमर्थ।</string>
     <string name="unable_to_patch_course_work">कोर्स वर्क अपडेट करने में असमर्थ।</string>
     <string name="unable_to_reclaim_student_submission">सबमिशन रद्द करने में असमर्थ।</string>
+    <string name="unable_to_remove_student">विद्यार्थी को निकालने में असमर्थ।</string>
+    <string name="unable_to_remove_teacher">शिक्षक को हटाने में असमर्थ।</string>
     <string name="unable_to_return_student_submission">सबमिशन वापस करने में असमर्थ।</string>
     <string name="unable_to_submit_student_submission">सबमिशन जमा करने में असमर्थ।</string>
     <string name="unable_to_update_course">पाठ्यक्रम अपडेट करने में असमर्थ।</string>
@@ -159,7 +166,7 @@
     <string name="url">यूआरएल</string>
     <string name="welcome_back">वापस स्वागत है!</string>
     <string name="you_have_no_attachments_uploaded">आपके पास कोई अटैचमेंट अपलोड नहीं है।</string>
-    <string name="your_teacher_hasnt_assigned_any_classwork_yet">आपके शिक्षक ने अभी तक कोई क्लासवर्क असाइन नहीं किया है</string>
+    <string name="your_teacher_hasnt_assigned_any_classwork_yet">आपके शिक्षक ने अभी तक कोई क्लासवर्क असाइन नहीं किया है।</string>
     <string name="your_work">आपका काम</string>
 
     <!-- Screen titles -->

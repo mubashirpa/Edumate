@@ -5,7 +5,7 @@
     <string name="_return">Return</string>
     <string name="add">Add</string>
     <string name="add_a_class_to_get_started">Add a class to get started</string>
-    <string name="add_assignments_and_other_works_for_class">Add assignments and other works for the class</string>
+    <string name="add_assignments_and_other_works_for_class">Add assignments and other works for the class.</string>
     <string name="add_attachment">Add attachment</string>
     <string name="add_link">Add link</string>
     <string name="add_option">Add option</string>
@@ -20,6 +20,7 @@
     <string name="assignment_title">Assignment title</string>
     <string name="attachments">Attachments</string>
     <string name="cancel">Cancel</string>
+    <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">Cannot retrieve announcements at this time, please try again later.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">Cannot retrieve course at this time, please try again later.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">Cannot retrieve course work at this time, please try again later.</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">Cannot retrieve course works at this time, please try again later.</string>
@@ -81,7 +82,7 @@
     <string name="insert_link">Insert link</string>
     <string name="instructions">Instructions</string>
     <string name="invite">Invite</string>
-    <string name="invite_students_to_your_class">Invite students to your class</string>
+    <string name="invite_students_to_your_class">Invite students to your class.</string>
     <string name="join">Join</string>
     <string name="join_a_class_to_get_started">Join a class to get started</string>
     <string name="join_class">Join class</string>
@@ -131,6 +132,7 @@
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="signing_in">Signing in</string>
+    <string name="start_a_conversation_with_your_class">Start a conversation with your class.</string>
     <string name="student_answers">Student answers</string>
     <string name="student_not_yet_submitted">Student not yet submitted.</string>
     <string name="student_work">Student work</string>
@@ -143,12 +145,17 @@
     <string name="turn_in">Turn in</string>
     <string name="turned_in">Turned in</string>
     <string name="unable_to_add_attachments">Unable to add attachments.</string>
+    <string name="unable_to_create_announcement">Unable to create announcement.</string>
     <string name="unable_to_create_course">Unable to create course.</string>
     <string name="unable_to_create_course_work">Unable to create course work.</string>
     <string name="unable_to_delete_course">Unable to delete course.</string>
     <string name="unable_to_delete_course_work">Unable to delete course work.</string>
+    <string name="unable_to_join_class">Unable to join class.</string>
+    <string name="unable_to_leave_class">Unable to leave class.</string>
     <string name="unable_to_patch_course_work">Unable to update course work.</string>
     <string name="unable_to_reclaim_student_submission">Unable to unsubmit submission.</string>
+    <string name="unable_to_remove_student">Unable to remove student.</string>
+    <string name="unable_to_remove_teacher">Unable to remove teacher.</string>
     <string name="unable_to_return_student_submission">Unable to return submission.</string>
     <string name="unable_to_submit_student_submission">Unable to submit submission.</string>
     <string name="unable_to_update_course">Unable to update course.</string>
@@ -161,7 +168,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">Welcome back!</string>
     <string name="you_have_no_attachments_uploaded">You have no attachments uploaded.</string>
-    <string name="your_teacher_hasnt_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet</string>
+    <string name="your_teacher_hasnt_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
     <string name="your_work">Your work</string>
 
     <!-- Screen titles -->

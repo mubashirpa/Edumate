@@ -6,9 +6,11 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.R.string as Strings
 import edumate.app.core.Resource
+import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.students.AddStudentUseCase
+import edumate.app.domain.usecase.students.AddStudent
 import edumate.app.domain.usecase.validation.ValidateTextField
 import javax.inject.Inject
 import kotlinx.coroutines.channels.Channel
@@ -20,7 +22,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 @HiltViewModel
 class JoinClassViewModel @Inject constructor(
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val addStudentUseCase: AddStudentUseCase,
+    private val addStudentUseCase: AddStudent,
     private val validateTextField: ValidateTextField
 ) : ViewModel() {
 
@@ -77,7 +79,7 @@ class JoinClassViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
-                        userMessage = resource.message
+                        userMessage = UiText.StringResource(Strings.unable_to_join_class)
                     )
                 }
             }
