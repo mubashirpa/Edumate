@@ -1,6 +1,5 @@
 package edumate.app.presentation.create_classwork.screen
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
@@ -20,9 +19,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import edumate.app.R
+import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.presentation.components.AddLinkDialog
+import edumate.app.presentation.components.AttachmentMenuBottomSheet
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
@@ -44,13 +45,11 @@ fun CreateClassworkScreen(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
     val context = LocalContext.current
-    val fileUtils = remember {
-        FileUtils(context)
-    }
+    val fileUtils = remember { FileUtils(context) }
     val filePicker =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
-            uri?.let {
-                onEvent(CreateClassworkUiEvent.OnFilePicked(it, fileUtils))
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            if (uri != null) {
+                onEvent(CreateClassworkUiEvent.OnFilePicked(uri, fileUtils))
             }
         }
 
@@ -81,7 +80,7 @@ fun CreateClassworkScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
-                        contentDescription = stringResource(id = R.string.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
             },
@@ -119,22 +118,16 @@ fun CreateClassworkScreen(
     }
 
     AttachmentMenuBottomSheet(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(false)) },
         openBottomSheet = uiState.openAttachmentMenu,
-        onInsertLinkClick = {
-            onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(true))
-        },
-        onUploadFileClick = { filePicker.launch("*/*") },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(false))
-        }
+        onInsertLinkClick = { onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(true)) },
+        onUploadFileClick = { filePicker.launch("*/*") }
     )
 
     AddLinkDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(false)) },
         openDialog = uiState.openAddLinkDialog,
-        onConfirm = { onEvent(CreateClassworkUiEvent.OnAddLinkAttachment(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnAddLinkAttachment(it)) }
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)

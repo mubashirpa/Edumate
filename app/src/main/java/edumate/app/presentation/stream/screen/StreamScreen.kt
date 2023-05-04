@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -41,8 +40,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
+import edumate.app.core.DevicePreviews
 import edumate.app.core.UiText
-import edumate.app.core.utils.DevicePreviews
 import edumate.app.domain.model.announcements.Announcement
 import edumate.app.domain.model.announcements.Material
 import edumate.app.domain.model.courses.Course
@@ -53,6 +52,7 @@ import edumate.app.presentation.components.TextAvatar
 import edumate.app.presentation.stream.StreamUiEvent
 import edumate.app.presentation.stream.StreamUiState
 import edumate.app.presentation.stream.screen.components.AnnouncementsListItem
+import edumate.app.presentation.stream.screen.components.CourseTitleBanner
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -61,6 +61,7 @@ fun StreamScreen(
     onEvent: (StreamUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
+    navigateToCreateAnnouncement: () -> Unit,
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
@@ -81,25 +82,7 @@ fun StreamScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = {
-                if (course.section.isNullOrBlank()) {
-                    Text(text = course.name)
-                } else {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        Text(
-                            text = course.name,
-                            style = MaterialTheme.typography.titleMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                        Text(
-                            text = course.section,
-                            modifier = Modifier.padding(top = 4.dp),
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
-                }
-            },
+            title = {},
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
@@ -149,14 +132,6 @@ fun StreamScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             when (val dataState = uiState.dataState) {
-                is DataState.EMPTY -> {
-                    AnimatedErrorScreen(
-                        url = "https://assets4.lottiefiles.com/packages/lf20_hxart9lz.json",
-                        modifier = Modifier.fillMaxSize(),
-                        errorMessage = dataState.message.asString()
-                    )
-                }
-
                 is DataState.ERROR -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
@@ -168,14 +143,19 @@ fun StreamScreen(
                     LoadingIndicator(modifier = Modifier.fillMaxSize())
                 }
 
-                DataState.SUCCESS -> {
+                DataState.UNKNOWN -> {}
+
+                else -> {
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(10.dp),
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         content = {
                             item {
-                                ElevatedCard(onClick = { /*TODO*/ }) {
+                                CourseTitleBanner(course = course)
+                            }
+                            item {
+                                ElevatedCard(onClick = navigateToCreateAnnouncement) {
                                     ListItem(
                                         headlineContent = {
                                             Text(
@@ -194,14 +174,22 @@ fun StreamScreen(
                                     )
                                 }
                             }
-                            items(uiState.announcements) { announcement ->
-                                AnnouncementsListItem(announcement = announcement)
+                            if (dataState is DataState.EMPTY) {
+                                item {
+                                    AnimatedErrorScreen(
+                                        url = "https://assets4.lottiefiles.com/packages/lf20_hxart9lz.json",
+                                        modifier = Modifier.fillMaxSize(),
+                                        errorMessage = dataState.message.asString()
+                                    )
+                                }
+                            } else if (dataState == DataState.SUCCESS) {
+                                items(uiState.announcements) { announcement ->
+                                    AnnouncementsListItem(announcement = announcement)
+                                }
                             }
                         }
                     )
                 }
-
-                DataState.UNKNOWN -> {}
             }
 
             PullRefreshIndicator(
@@ -240,6 +228,7 @@ private fun StreamScreenPreview() {
             name = "Compiler Design",
             section = "CSE"
         ),
+        navigateToCreateAnnouncement = {},
         onBackPressed = {}
     )
 }

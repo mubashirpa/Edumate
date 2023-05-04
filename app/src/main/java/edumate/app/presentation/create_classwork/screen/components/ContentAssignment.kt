@@ -21,6 +21,7 @@ import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
+import edumate.app.presentation.components.FieldListItem
 import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
 import java.text.SimpleDateFormat
@@ -35,9 +36,7 @@ fun ContentAssignment(
     val context = LocalContext.current
     val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
     val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
-    val fileUtils = remember {
-        FileUtils(context)
-    }
+    val fileUtils = remember { FileUtils(context) }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -320,36 +319,28 @@ fun ContentAssignment(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-        ) {
-            Text(text = stringResource(id = Strings.assign))
-        }
+        ) { Text(text = stringResource(id = Strings.assign)) }
         Spacer(modifier = Modifier.height(20.dp))
     }
 
     ContentDatePickerDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false)) },
         date = uiState.dueDate,
         openDialog = uiState.openDatePickerDialog,
-        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) }
     )
 
     ContentTimePickerDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false)) },
         date = uiState.dueDate,
         openDialog = uiState.openTimePickerDialog,
-        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) }
     )
 
     PointsDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false)) },
         openDialog = uiState.openPointsDialog,
         currentPoint = uiState.points,
-        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(it)) }
     )
 }

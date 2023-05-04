@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import coil.request.ImageRequest
 import edumate.app.R.string as Strings
-import edumate.app.core.utils.DevicePreviews
+import edumate.app.core.DevicePreviews
 import edumate.app.presentation.components.TextAvatar
 import edumate.app.presentation.profile.ProfileUiEvent
 import edumate.app.presentation.profile.ProfileUiState

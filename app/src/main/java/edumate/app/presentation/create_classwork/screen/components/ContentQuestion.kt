@@ -33,6 +33,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
+import edumate.app.presentation.components.FieldListItem
 import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
 import java.text.SimpleDateFormat
@@ -48,9 +49,7 @@ fun ContentQuestion(
     val context = LocalContext.current
     val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
     val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
-    val fileUtils = remember {
-        FileUtils(context)
-    }
+    val fileUtils = remember { FileUtils(context) }
     val options = stringArrayResource(id = Arrays.question_type)
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
@@ -407,45 +406,35 @@ fun ContentQuestion(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
-        ) {
-            Text(text = stringResource(id = Strings.ask))
-        }
+        ) { Text(text = stringResource(id = Strings.ask)) }
         Spacer(modifier = Modifier.height(20.dp))
     }
 
     ContentDatePickerDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false)) },
         date = uiState.dueDate,
         openDialog = uiState.openDatePickerDialog,
-        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) }
     )
 
     ContentTimePickerDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false)) },
         date = uiState.dueDate,
         openDialog = uiState.openTimePickerDialog,
-        onConfirm = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnDueDateChange(it)) }
     )
 
     PointsDialog(
+        onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false)) },
         openDialog = uiState.openPointsDialog,
         currentPoint = uiState.points,
-        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(it)) },
-        onDismissRequest = {
-            onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false))
-        }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnPointsChange(it)) }
     )
 }
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-private fun AnswersListItem(
-    choices: SnapshotStateList<String>
-) {
+private fun AnswersListItem(choices: SnapshotStateList<String>) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 

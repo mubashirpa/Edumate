@@ -1,4 +1,4 @@
-package edumate.app.core.utils
+package edumate.app.core
 
 import android.content.res.Configuration
 import android.content.res.Configuration.UI_MODE_NIGHT_YES

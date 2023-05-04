@@ -4,6 +4,7 @@ object Routes {
     object Screen {
         const val CLASS_DETAILS_SCREEN = "class_details_screen"
         const val CLASSWORK_SCREEN = "classwork_screen"
+        const val CREATE_ANNOUNCEMENT_SCREEN = "create_announcement_screen"
         const val CREATE_CLASS_SCREEN = "create_class_screen"
         const val CREATE_CLASSWORK_SCREEN = "create_classwork_screen"
         const val GET_STARTED_SCREEN = "get_started_screen"

@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_classwork.screen.components
+package edumate.app.presentation.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable

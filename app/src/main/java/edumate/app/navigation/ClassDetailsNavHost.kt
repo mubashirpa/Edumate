@@ -16,6 +16,8 @@ import edumate.app.presentation.class_details.ClassDetailsUiState
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.classwork.screen.ClassworkScreen
+import edumate.app.presentation.create_announcement.CreateAnnouncementViewModel
+import edumate.app.presentation.create_announcement.screen.CreateAnnouncementScreen
 import edumate.app.presentation.create_classwork.CreateClassworkViewModel
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
 import edumate.app.presentation.people.screen.PeopleScreen
@@ -57,6 +59,11 @@ fun ClassDetailsNavHost(
                 onEvent = viewModel::onEvent,
                 snackbarHostState = snackbarHostState,
                 course = course,
+                navigateToCreateAnnouncement = {
+                    navController.navigate(
+                        Screen.CreateAnnouncementScreen.route
+                    )
+                },
                 onBackPressed = onBackPressed
             )
         }
@@ -212,6 +219,15 @@ fun ClassDetailsNavHost(
                 snackbarHostState = snackbarHostState,
                 courseWork = uiState.courseWork!!,
                 assignedStudent = uiState.courseWorkAssignedStudent!!,
+                onBackPressed = { navController.navigateUp() }
+            )
+        }
+        composable(route = Screen.CreateAnnouncementScreen.route) {
+            val viewModel: CreateAnnouncementViewModel = hiltViewModel()
+            CreateAnnouncementScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                className = course.name,
                 onBackPressed = { navController.navigateUp() }
             )
         }

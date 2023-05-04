@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_classwork.screen.components
+package edumate.app.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,10 +16,10 @@ import java.util.*
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AttachmentMenuBottomSheet(
+    onDismissRequest: () -> Unit,
     openBottomSheet: Boolean,
     onInsertLinkClick: () -> Unit,
-    onUploadFileClick: () -> Unit,
-    onDismissRequest: () -> Unit
+    onUploadFileClick: () -> Unit
 ) {
     if (openBottomSheet) {
         ModalBottomSheet(onDismissRequest = onDismissRequest) {
