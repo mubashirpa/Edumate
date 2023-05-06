@@ -7,7 +7,8 @@ import edumate.app.core.FirebaseConstants
 import java.util.*
 
 data class UserProfileDto(
-    @ServerTimestamp val createdAt: Date? = null,
+    @ServerTimestamp
+    val createdAt: Date? = null,
     val displayName: String? = null,
     val emailAddress: String? = null,
     val id: String = "",

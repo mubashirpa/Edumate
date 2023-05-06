@@ -1,28 +1,27 @@
 package edumate.app.presentation.people.screen.components
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
-import edumate.app.presentation.components.TextAvatar
+import edumate.app.presentation.components.UserAvatar
 
 @Composable
 fun PeopleListItem(
@@ -31,24 +30,16 @@ fun PeopleListItem(
     currentUserType: UserType,
     currentUserId: String,
     courseOwnerId: String,
-    onLeaveClass: () -> Unit,
-    onEmail: () -> Unit,
-    onRemove: () -> Unit
+    onLeaveClassClick: () -> Unit,
+    onEmailClick: () -> Unit,
+    onRemoveClick: () -> Unit
 ) {
-    val photoUrl = userProfile.photoUrl
     val userId = userProfile.id
-    val avatar: @Composable () -> Unit = {
-        TextAvatar(
-            id = userId,
-            firstName = userProfile.displayName.orEmpty(),
-            lastName = ""
-        )
-    }
     val trailingContent: @Composable (() -> Unit)? =
-        if (currentUserType == UserType.TEACHER) { // Current userProfile is a teacher
+        if (currentUserType == UserType.TEACHER) {
+            // Current userProfile is a teacher
             val isCurrentUser = userId == currentUserId
             val isCourseOwner = userId == courseOwnerId
-
             if (isCurrentUser && isCourseOwner) {
                 null
             } else {
@@ -56,9 +47,9 @@ fun PeopleListItem(
                     MenuButton(
                         isCurrentUser = isCurrentUser,
                         isCourseOwner = isCourseOwner,
-                        onLeaveClass = onLeaveClass,
-                        onEmail = onEmail,
-                        onRemove = onRemove
+                        onLeaveClassClick = onLeaveClassClick,
+                        onEmailClick = onEmailClick,
+                        onRemoveClick = onRemoveClick
                     )
                 }
             }
@@ -72,33 +63,11 @@ fun PeopleListItem(
         },
         modifier = modifier,
         leadingContent = {
-            if (photoUrl != null) {
-                SubcomposeAsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(photoUrl)
-                        .crossfade(true)
-                        .build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                ) {
-                    when (painter.state) {
-                        is AsyncImagePainter.State.Loading -> {
-                            avatar()
-                        }
-                        is AsyncImagePainter.State.Error -> {
-                            avatar()
-                        }
-                        else -> {
-                            SubcomposeAsyncImageContent()
-                        }
-                    }
-                }
-            } else {
-                avatar()
-            }
+            UserAvatar(
+                id = userId,
+                fullName = userProfile.displayName ?: userProfile.emailAddress.orEmpty(),
+                photoUrl = userProfile.photoUrl
+            )
         },
         trailingContent = trailingContent
     )
@@ -108,9 +77,9 @@ fun PeopleListItem(
 private fun MenuButton(
     isCurrentUser: Boolean,
     isCourseOwner: Boolean,
-    onLeaveClass: () -> Unit,
-    onEmail: () -> Unit,
-    onRemove: () -> Unit
+    onLeaveClassClick: () -> Unit,
+    onEmailClick: () -> Unit,
+    onRemoveClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -130,7 +99,7 @@ private fun MenuButton(
                     text = { Text(text = stringResource(id = Strings.leave_class)) },
                     onClick = {
                         expanded = false
-                        onLeaveClass()
+                        onLeaveClassClick()
                     }
                 )
             } else if (isCourseOwner) {
@@ -138,7 +107,7 @@ private fun MenuButton(
                     text = { Text(text = stringResource(id = Strings.email)) },
                     onClick = {
                         expanded = false
-                        onEmail()
+                        onEmailClick()
                     }
                 )
             } else {
@@ -146,14 +115,14 @@ private fun MenuButton(
                     text = { Text(text = stringResource(id = Strings.email)) },
                     onClick = {
                         expanded = false
-                        onEmail()
+                        onEmailClick()
                     }
                 )
                 DropdownMenuItem(
                     text = { Text(text = stringResource(id = Strings.remove)) },
                     onClick = {
                         expanded = false
-                        onRemove()
+                        onRemoveClick()
                     }
                 )
             }

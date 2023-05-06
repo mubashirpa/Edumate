@@ -16,14 +16,14 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.enumValueOf
-import edumate.app.domain.model.course_work.AssigneeMode
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.DriveFile
+import edumate.app.domain.model.Link
+import edumate.app.domain.model.Material
 import edumate.app.domain.model.course_work.Assignment
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkState
 import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.domain.model.course_work.DriveFile
-import edumate.app.domain.model.course_work.Link
-import edumate.app.domain.model.course_work.Material
 import edumate.app.domain.model.course_work.MultipleChoiceQuestion
 import edumate.app.domain.model.course_work.SubmissionModificationMode
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
@@ -68,19 +68,25 @@ class CreateClassworkViewModel @Inject constructor(
         checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID])
     private val type: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
     private val courseWork = mutableStateOf(CourseWork())
-    private var urlUseCaseJob: Job? = null
+    private var getUrlMetadataJob: Job? = null
 
     init {
         val workType: CourseWorkType =
             type.enumValueOf(CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED)!!
         uiState = uiState.copy(workType = workType)
         val id = generateClassworkId()
+        val urlWorkType = when (workType) {
+            CourseWorkType.ASSIGNMENT -> "a"
+            CourseWorkType.SHORT_ANSWER_QUESTION -> "sa"
+            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> "mc"
+            else -> "m"
+        }
 
         courseWork.value = courseWork.value.copy(
             courseId = courseId,
             id = id,
             state = CourseWorkState.PUBLISHED,
-            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/details?cid=$courseId&cwid=$id",
+            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/c/$urlWorkType/details?cid=$courseId&cwid=$id",
             assigneeMode = AssigneeMode.ALL_STUDENTS,
             submissionModificationMode = SubmissionModificationMode.MODIFIABLE
         )
@@ -159,7 +165,7 @@ class CreateClassworkViewModel @Inject constructor(
 
                     attachment.link != null -> {
                         // Stop urlUseCaseJob to avoid conflict
-                        urlUseCaseJob?.cancel()
+                        getUrlMetadataJob?.cancel()
                         uiState.attachments.removeAt(event.position)
                     }
                 }
@@ -185,49 +191,6 @@ class CreateClassworkViewModel @Inject constructor(
                 uiState = uiState.copy(userMessage = null)
             }
         }
-    }
-
-    private fun fetchClasswork() {
-        getCourseWorkUseCase(courseId, classworkId).onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    uiState = uiState.copy(loading = true)
-                }
-
-                is Resource.Success -> {
-                    val classwork = resource.data
-                    if (classwork != null) {
-                        courseWork.value = classwork
-                        val choices = classwork.multipleChoiceQuestion?.choices
-                        if (choices != null) {
-                            uiState.choices.addAll(choices)
-                        }
-                        uiState.attachments.addAll(classwork.materials)
-
-                        uiState = uiState.copy(
-                            description = classwork.description.orEmpty(),
-                            dueDate = classwork.dueTime,
-                            loading = false,
-                            points = classwork.maxPoints?.toString(),
-                            title = classwork.title,
-                            workType = classwork.workType
-                        )
-                    } else {
-                        uiState = uiState.copy(
-                            loading = false,
-                            userMessage = UiText.StringResource(Strings.error_unexpected)
-                        )
-                    }
-                }
-
-                is Resource.Error -> {
-                    uiState = uiState.copy(
-                        loading = false,
-                        userMessage = resource.message
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
     }
 
     private fun createClasswork() {
@@ -291,6 +254,49 @@ class CreateClassworkViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun fetchClasswork() {
+        getCourseWorkUseCase(courseId, classworkId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(loading = true)
+                }
+
+                is Resource.Success -> {
+                    val classwork = resource.data
+                    if (classwork != null) {
+                        courseWork.value = classwork
+                        val choices = classwork.multipleChoiceQuestion?.choices
+                        if (choices != null) {
+                            uiState.choices.addAll(choices)
+                        }
+                        uiState.attachments.addAll(classwork.materials)
+
+                        uiState = uiState.copy(
+                            description = classwork.description.orEmpty(),
+                            dueDate = classwork.dueTime,
+                            loading = false,
+                            points = classwork.maxPoints?.toString(),
+                            title = classwork.title,
+                            workType = classwork.workType
+                        )
+                    } else {
+                        uiState = uiState.copy(
+                            loading = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        loading = false,
                         userMessage = resource.message
                     )
                 }
@@ -370,7 +376,8 @@ class CreateClassworkViewModel @Inject constructor(
         val fileExtension = fileUtils.getFileExtension(uri)
         val fileName = fileUtils.getFileName(uri) ?: "${uri.lastPathSegment}.$fileExtension"
         val mimeType = fileUtils.getMimeType(uri)
-        val filePath = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
+        val filePath =
+            "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/courseWork/${courseWork.value.id}/$fileName"
 
         uploadFileUseCase(uri, filePath).onEach { resource ->
             when (resource) {
@@ -408,7 +415,8 @@ class CreateClassworkViewModel @Inject constructor(
 
     private fun deleteFile(position: Int) {
         val fileName = uiState.attachments[position].driveFile?.title
-        val filePath = "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/$fileName"
+        val filePath =
+            "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/courseWork/${courseWork.value.id}/$fileName"
 
         deleteFileUseCase(filePath).onEach { resource ->
             uiState = when (resource) {
@@ -418,7 +426,7 @@ class CreateClassworkViewModel @Inject constructor(
 
                 is Resource.Success -> {
                     // Stop urlUseCaseJob to avoid problems
-                    urlUseCaseJob?.cancel()
+                    getUrlMetadataJob?.cancel()
                     uiState.attachments.removeAt(position)
                     uiState.copy(openProgressDialog = false)
                 }
@@ -435,7 +443,7 @@ class CreateClassworkViewModel @Inject constructor(
 
     private fun fetchUrlMetadata(url: String) {
         val position = uiState.attachments.lastIndex
-        urlUseCaseJob = getUrlMetadataUseCase(url).onEach { resource ->
+        getUrlMetadataJob = getUrlMetadataUseCase(url).onEach { resource ->
             if (resource is Resource.Success) {
                 uiState.attachments[position] = Material(link = resource.data)
             }

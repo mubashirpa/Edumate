@@ -16,7 +16,8 @@ fun AnnouncementDto.toAnnouncement(): Announcement {
         scheduledTime,
         assigneeMode,
         individualStudentsOptions,
-        creatorUserId
+        creatorUserId,
+        creatorProfile
     )
 }
 
@@ -33,6 +34,7 @@ fun Announcement.toAnnouncementDto(): AnnouncementDto {
         scheduledTime,
         assigneeMode,
         individualStudentsOptions,
-        creatorUserId
+        creatorUserId,
+        creatorProfile
     )
 }

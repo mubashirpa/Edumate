@@ -3,8 +3,8 @@ package edumate.app.presentation.create_classwork
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import edumate.app.core.UiText
+import edumate.app.domain.model.Material
 import edumate.app.domain.model.course_work.CourseWorkType
-import edumate.app.domain.model.course_work.Material
 import java.util.Date
 
 data class CreateClassworkUiState(

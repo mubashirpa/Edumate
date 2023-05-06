@@ -10,7 +10,6 @@ data class PeopleUiState(
     val currentUser: FirebaseUser? = null,
     val dataState: DataState = DataState.UNKNOWN,
     val filter: PeopleFilterType = PeopleFilterType.ALL,
-    val isFabExpanded: Boolean = false,
     val isUserLeaveClass: Boolean = false,
     val openFabMenu: Boolean = false,
     val openLeaveClassDialog: Boolean = false,

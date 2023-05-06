@@ -59,15 +59,15 @@ class ClassworkViewModel @Inject constructor(
                 uiState = uiState.copy(openFabMenu = event.open)
             }
 
-            is ClassworkUiEvent.OnRefresh -> {
+            ClassworkUiEvent.OnRefresh -> {
                 fetchClasswork(true)
             }
 
-            is ClassworkUiEvent.OnRetry -> {
+            ClassworkUiEvent.OnRetry -> {
                 fetchClasswork(false)
             }
 
-            is ClassworkUiEvent.UserMessageShown -> {
+            ClassworkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
         }
@@ -121,8 +121,8 @@ class ClassworkViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteClasswork(classworkId: String) {
-        deleteCourseWorkUseCase(courseId, classworkId).onEach { resource ->
+    private fun deleteClasswork(id: String) {
+        deleteCourseWorkUseCase(courseId, id).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
                     uiState = uiState.copy(

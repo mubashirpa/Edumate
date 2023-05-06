@@ -19,6 +19,7 @@
     <string name="assignment_title">असाइनमेंट शीर्षक</string>
     <string name="attachments">संलग्नक</string>
     <string name="cancel">रद्द करना</string>
+    <string name="cannot_retrieve_announcement_at_this_time_please_try_again_later">इस समय घोषणा पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">इस समय घोषणाओं को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">इस समय पाठ्यक्रम पुनर्प्राप्त नहीं किया जा सकता, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">इस समय पाठ्यक्रम का काम पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
@@ -95,6 +96,7 @@
     <string name="material">सामग्री</string>
     <string name="material_title">सामग्री का शीर्षक</string>
     <string name="missing">मिसिंग</string>
+    <string name="missing_message">गुम संदेश</string>
     <string name="missing_title">अनुपलब्ध शीर्षक</string>
     <string name="name">नाम</string>
     <string name="no_due_date">कोई देय तिथि नहीं है</string>
@@ -124,6 +126,7 @@
     <string name="sending_recovery_email">ईमेल भेजा जा रहा है</string>
     <string name="share">साझा करें</string>
     <string name="share_invitation_link">आमंत्रण लिंक साझा करें</string>
+    <string name="share_with_your_class">अपनी कक्षा के साथ साझा करें</string>
     <string name="show_password">पासवर्ड दिखाएं</string>
     <string name="sign_in">साइन इन करें</string>
     <string name="sign_in_with_google">Google के साथ साइन इन करें</string>
@@ -156,6 +159,7 @@
     <string name="unable_to_remove_teacher">शिक्षक को हटाने में असमर्थ।</string>
     <string name="unable_to_return_student_submission">सबमिशन वापस करने में असमर्थ।</string>
     <string name="unable_to_submit_student_submission">सबमिशन जमा करने में असमर्थ।</string>
+    <string name="unable_to_update_announcement">घोषणा अपडेट करने में असमर्थ।</string>
     <string name="unable_to_update_course">पाठ्यक्रम अपडेट करने में असमर्थ।</string>
     <string name="unable_to_update_student_submission">सबमिशन अपडेट करने में असमर्थ।</string>
     <string name="unenrol">नामांकन रद्द करें</string>

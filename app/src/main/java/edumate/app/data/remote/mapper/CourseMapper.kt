@@ -21,7 +21,8 @@ fun CourseDto.toCourse(): Course {
         teacherGroupId,
         guardiansEnabled,
         calendarId,
-        gradeBookSettings
+        gradeBookSettings,
+        creatorProfile
     )
 }
 
@@ -43,6 +44,7 @@ fun Course.toCoursesDto(): CourseDto {
         teacherGroupId,
         guardiansEnabled,
         calendarId,
-        gradeBookSettings
+        gradeBookSettings,
+        creatorProfile
     )
 }

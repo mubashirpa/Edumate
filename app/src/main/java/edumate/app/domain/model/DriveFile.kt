@@ -1,4 +1,4 @@
-package edumate.app.domain.model.student_submissions
+package edumate.app.domain.model
 
 data class DriveFile(
     val type: String? = null,

@@ -1,10 +1,10 @@
 package edumate.app.domain.repository
 
 import edumate.app.data.remote.dto.CourseWorkDto
-import edumate.app.domain.model.course_work.AssigneeMode
-import edumate.app.domain.model.course_work.AssigneeMode.INDIVIDUAL_STUDENTS
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.AssigneeMode.INDIVIDUAL_STUDENTS
+import edumate.app.domain.model.IndividualStudentsOptions
 import edumate.app.domain.model.course_work.CourseWorkState
-import edumate.app.domain.model.course_work.IndividualStudentsOptions
 
 interface CourseWorkRepository {
 

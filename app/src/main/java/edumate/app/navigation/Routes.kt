@@ -1,6 +1,7 @@
 package edumate.app.navigation
 
 object Routes {
+
     object Screen {
         const val CLASS_DETAILS_SCREEN = "class_details_screen"
         const val CLASSWORK_SCREEN = "classwork_screen"
@@ -32,6 +33,12 @@ object Routes {
 
         // ClassworkScreen
         const val CLASSWORK_COURSE_ID = "course_id"
+
+        // CreateAnnouncementScreen
+        const val CREATE_ANNOUNCEMENT_COURSE_ID = "course_id"
+        const val CREATE_ANNOUNCEMENT_ID = "announcement_id"
+        const val CREATE_ANNOUNCEMENT_SCREEN =
+            "/{$CREATE_ANNOUNCEMENT_COURSE_ID}/{$CREATE_ANNOUNCEMENT_ID}"
 
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"

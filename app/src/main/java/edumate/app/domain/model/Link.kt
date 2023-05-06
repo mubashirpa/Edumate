@@ -1,4 +1,4 @@
-package edumate.app.domain.model.course_work
+package edumate.app.domain.model
 
 data class Link(
     val url: String = "",

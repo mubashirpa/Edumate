@@ -38,7 +38,7 @@ import coil.decode.VideoFrameDecoder
 import coil.request.ImageRequest
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.course_work.Material
+import edumate.app.domain.model.Material
 
 @Composable
 fun AttachmentsListItem(

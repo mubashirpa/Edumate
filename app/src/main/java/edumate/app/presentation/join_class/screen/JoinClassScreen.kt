@@ -1,27 +1,43 @@
 package edumate.app.presentation.join_class.screen
 
-import android.net.Uri
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material3.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -29,15 +45,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
-import com.google.firebase.auth.FirebaseUser
 import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.components.TextAvatar
+import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.join_class.JoinClassUiEvent
 import edumate.app.presentation.join_class.JoinClassViewModel
 
@@ -90,11 +101,20 @@ fun JoinClassScreen(
                     }
                 },
                 actions = {
-                    UserAvatar(
-                        photoUrl = viewModel.uiState.currentUser?.photoUrl,
-                        user = viewModel.uiState.currentUser,
-                        onClick = navigateToProfile
-                    )
+                    Box(
+                        modifier = Modifier.minimumInteractiveComponentSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        UserAvatar(
+                            id = viewModel.uiState.currentUser?.uid.orEmpty(),
+                            fullName = viewModel.uiState.currentUser?.displayName
+                                ?: viewModel.uiState.currentUser?.email.orEmpty(),
+                            photoUri = viewModel.uiState.currentUser?.photoUrl,
+                            modifier = Modifier.clickable(onClick = navigateToProfile),
+                            size = 30.dp,
+                            textStyle = MaterialTheme.typography.labelMedium
+                        )
+                    }
                 },
                 scrollBehavior = scrollBehavior
             )
@@ -169,57 +189,4 @@ fun JoinClassScreen(
     }
 
     ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
-}
-
-@Composable
-private fun UserAvatar(
-    photoUrl: Uri?,
-    user: FirebaseUser? = null,
-    onClick: () -> Unit
-) {
-    val avatar: @Composable () -> Unit = {
-        TextAvatar(
-            id = user?.uid.orEmpty(),
-            firstName = user?.displayName ?: user?.email.orEmpty(),
-            lastName = "",
-            modifier = Modifier.clickable(onClick = onClick),
-            size = 30.dp
-        )
-    }
-
-    Box(
-        modifier = Modifier.minimumInteractiveComponentSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        if (photoUrl != null) {
-            SubcomposeAsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(photoUrl)
-                    .crossfade(true)
-                    .build(),
-                contentDescription = null,
-                modifier = Modifier
-                    .size(30.dp)
-                    .clip(CircleShape)
-                    .clickable(onClick = onClick),
-                contentScale = ContentScale.Crop
-            ) {
-                when (painter.state) {
-                    is AsyncImagePainter.State.Loading -> {
-                        avatar()
-                    }
-
-                    is AsyncImagePainter.State.Error -> {
-                        avatar()
-                    }
-
-                    else -> {
-                        SubcomposeAsyncImageContent()
-                    }
-                }
-            }
-        } else {
-            avatar()
-        }
-    }
 }

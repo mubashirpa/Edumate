@@ -21,6 +21,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import edumate.app.R
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
@@ -34,9 +35,9 @@ fun ClassworkListItem(
     modifier: Modifier = Modifier,
     currentUserType: UserType,
     workType: CourseWorkType,
-    onEdit: () -> Unit,
-    onDelete: () -> Unit,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     val dateFormat = remember { SimpleDateFormat("dd MMM yyyy", Locale.getDefault()) }
     val timeFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
@@ -44,8 +45,8 @@ fun ClassworkListItem(
     val trailingContent: @Composable (() -> Unit)? = if (currentUserType == UserType.TEACHER) {
         {
             MenuButton(
-                onEdit = onEdit,
-                onDelete = onDelete
+                onEditClick = onEditClick,
+                onDeleteClick = onDeleteClick
             )
         }
     } else {
@@ -90,6 +91,7 @@ fun ClassworkListItem(
                         }
                     }
                 }
+
                 UserType.TEACHER -> {
                     val creationTime = work.creationTime
                     if (creationTime != null) {
@@ -141,8 +143,8 @@ private fun LeadingIcon(
 
 @Composable
 private fun MenuButton(
-    onEdit: () -> Unit,
-    onDelete: () -> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -158,17 +160,17 @@ private fun MenuButton(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = Strings.edit)) },
+                text = { Text(text = stringResource(id = R.string.edit)) },
                 onClick = {
                     expanded = false
-                    onEdit()
+                    onEditClick()
                 }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = Strings.delete)) },
+                text = { Text(text = stringResource(id = R.string.delete)) },
                 onClick = {
                     expanded = false
-                    onDelete()
+                    onDeleteClick()
                 }
             )
         }

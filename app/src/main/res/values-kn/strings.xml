@@ -19,6 +19,7 @@
     <string name="assignment_title">ನಿಯೋಜನೆ ಶೀರ್ಷಿಕೆ</string>
     <string name="attachments">ಲಗತ್ತುಗಳು</string>
     <string name="cancel">ರದ್ದುಮಾಡು</string>
+    <string name="cannot_retrieve_announcement_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಪ್ರಕಟಣೆಯನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಪ್ರಕಟಣೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಅನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -93,6 +94,7 @@
     <string name="marked">ಗುರುತಿಸಲಾಗಿದೆ</string>
     <string name="marks_and_comments_will_also_be_deleted">ಮಾರ್ಕ್‌ಗಳು ಮತ್ತು ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="material">ಮೆಟೀರಿಯಲ್</string>
+    <string name="missing_message">ಸಂದೇಶ ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="material_title">ಮೆಟೀರಿಯಲ್ ಶೀರ್ಷಿಕೆ</string>
     <string name="missing">ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="missing_title">ಕಾಣೆಯಾದ ಶೀರ್ಷಿಕೆ</string>
@@ -124,6 +126,7 @@
     <string name="sending_recovery_email">ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ</string>
     <string name="share">ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_invitation_link">ಆಮಂತ್ರಣ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="share_with_your_class">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="show_password">ಪಾಸ್ ವರ್ಡ್ ತೋರಿಸು</string>
     <string name="sign_in">ಸೈನ್ ಇನ್</string>
     <string name="sign_in_with_google">Google ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
@@ -156,6 +159,7 @@
     <string name="unable_to_remove_teacher">ಶಿಕ್ಷಕರನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_return_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಹಿಂತಿರುಗಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_submit_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_update_announcement">ಪ್ರಕಟಣೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_course">ಕೋರ್ಸ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unenrol">unenrol</string>

@@ -11,4 +11,5 @@ sealed class CreateAnnouncementUiEvent {
     data class OnRemoveAttachment(val position: Int) : CreateAnnouncementUiEvent()
     data class OnTextChange(val text: String) : CreateAnnouncementUiEvent()
     object PostAnnouncement : CreateAnnouncementUiEvent()
+    object UserMessageShown : CreateAnnouncementUiEvent()
 }

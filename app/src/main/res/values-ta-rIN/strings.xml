@@ -19,6 +19,7 @@
     <string name="assignment_title">அசைன்மென்ட் தலைப்பு</string>
     <string name="attachments">இணைப்புகள்</string>
     <string name="cancel">ரத்துசெய்</string>
+    <string name="cannot_retrieve_announcement_at_this_time_please_try_again_later">இந்த நேரத்தில் அறிவிப்பை மீட்டெடுக்க முடியவில்லை, தயவுசெய்து பிறகு முயற்சிக்கவும்.</string>
     <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">இந்த நேரத்தில் அறிவிப்புகளை மீட்டெடுக்க முடியாது, தயவுசெய்து பிறகு முயற்சிக்கவும்.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">இந்த நேரத்தில் பாடத்திட்டத்தை மீட்டெடுக்க முடியாது, தயவுசெய்து பிறகு முயற்சிக்கவும்.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">இந்த நேரத்தில் பாடநெறிப் பணியை மீட்டெடுக்க முடியவில்லை, தயவுசெய்து பிறகு முயற்சிக்கவும்.</string>
@@ -95,6 +96,7 @@
     <string name="material">பொருள்</string>
     <string name="material_title">பொருள் தலைப்பு</string>
     <string name="missing">காணவில்லை</string>
+    <string name="missing_message">செய்தியைக் காணவில்லை</string>
     <string name="missing_title">தலைப்பு விடுபட்டுள்ளது</string>
     <string name="name">பெயர்</string>
     <string name="no_due_date">நிலுவைத் தேதி இல்லை</string>
@@ -124,6 +126,7 @@
     <string name="sending_recovery_email">மின்னஞ்சலை அனுப்புகிறது</string>
     <string name="share">பகிர்</string>
     <string name="share_invitation_link">அழைப்பு இணைப்பைப் பகிர்</string>
+    <string name="share_with_your_class">உங்கள் வகுப்பில் பகிரவும்</string>
     <string name="show_password">கடவுச்சொல்லைக் காட்டு</string>
     <string name="sign_in">உள்நுழை</string>
     <string name="sign_in_with_google">Google மூலம் உள்நுழையவும்</string>
@@ -156,6 +159,7 @@
     <string name="unable_to_remove_teacher">ஆசிரியரை அகற்ற முடியவில்லை.</string>
     <string name="unable_to_return_student_submission">சமர்ப்பிப்பைத் திரும்பப் பெற முடியவில்லை.</string>
     <string name="unable_to_submit_student_submission">சமர்ப்பிப்பைச் சமர்ப்பிக்க முடியவில்லை.</string>
+    <string name="unable_to_update_announcement">அறிவிப்பை புதுப்பிக்க முடியவில்லை.</string>
     <string name="unable_to_update_course">பாடத்திட்டத்தை புதுப்பிக்க முடியவில்லை.</string>
     <string name="unable_to_update_student_submission">சமர்ப்பிப்பை புதுப்பிக்க முடியவில்லை.</string>
     <string name="unenrol">பதிவுநீக்கு</string>

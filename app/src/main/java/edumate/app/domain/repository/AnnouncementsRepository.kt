@@ -1,10 +1,10 @@
 package edumate.app.domain.repository
 
 import edumate.app.data.remote.dto.AnnouncementDto
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.AssigneeMode.INDIVIDUAL_STUDENTS
+import edumate.app.domain.model.IndividualStudentsOptions
 import edumate.app.domain.model.announcements.AnnouncementState
-import edumate.app.domain.model.announcements.AssigneeMode
-import edumate.app.domain.model.announcements.AssigneeMode.INDIVIDUAL_STUDENTS
-import edumate.app.domain.model.announcements.IndividualStudentsOptions
 
 interface AnnouncementsRepository {
 

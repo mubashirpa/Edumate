@@ -61,7 +61,6 @@ class PeopleViewModel @Inject constructor(
                         uiState = uiState.copy(
                             dataState = DataState.SUCCESS,
                             filter = event.peopleFilterType,
-                            isFabExpanded = false,
                             peoples = peoples
                         )
                     }
@@ -70,7 +69,6 @@ class PeopleViewModel @Inject constructor(
                         uiState = uiState.copy(
                             dataState = DataState.SUCCESS,
                             filter = event.peopleFilterType,
-                            isFabExpanded = false,
                             peoples = teachers()
                         )
                     }
@@ -88,7 +86,6 @@ class PeopleViewModel @Inject constructor(
                                 DataState.SUCCESS
                             },
                             filter = event.peopleFilterType,
-                            isFabExpanded = students.isEmpty(),
                             peoples = students
                         )
                     }
@@ -163,7 +160,6 @@ class PeopleViewModel @Inject constructor(
                             PeopleFilterType.ALL -> {
                                 uiState = uiState.copy(
                                     dataState = DataState.SUCCESS,
-                                    isFabExpanded = false,
                                     peoples = peoples,
                                     refreshing = false
                                 )
@@ -172,7 +168,6 @@ class PeopleViewModel @Inject constructor(
                             PeopleFilterType.TEACHERS -> {
                                 uiState = uiState.copy(
                                     dataState = DataState.SUCCESS,
-                                    isFabExpanded = false,
                                     peoples = teachers(),
                                     refreshing = false
                                 )
@@ -190,7 +185,6 @@ class PeopleViewModel @Inject constructor(
                                     } else {
                                         DataState.SUCCESS
                                     },
-                                    isFabExpanded = students.isEmpty(),
                                     peoples = students,
                                     refreshing = false
                                 )

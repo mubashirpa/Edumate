@@ -1,5 +1,6 @@
 package edumate.app.presentation.stream.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -39,29 +40,33 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
+import edumate.app.core.Constants
 import edumate.app.core.DataState
-import edumate.app.core.DevicePreviews
-import edumate.app.core.UiText
-import edumate.app.domain.model.announcements.Announcement
-import edumate.app.domain.model.announcements.Material
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
-import edumate.app.presentation.components.TextAvatar
+import edumate.app.presentation.components.ProgressDialog
+import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.stream.StreamUiEvent
 import edumate.app.presentation.stream.StreamUiState
 import edumate.app.presentation.stream.screen.components.AnnouncementsListItem
 import edumate.app.presentation.stream.screen.components.CourseTitleBanner
+import edumate.app.presentation.stream.screen.components.DeleteAnnouncementDialog
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun StreamScreen(
     uiState: StreamUiState,
     onEvent: (StreamUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
-    navigateToCreateAnnouncement: () -> Unit,
+    navigateToCreateAnnouncement: (courseId: String) -> Unit,
+    navigateToEditAnnouncement: (courseId: String, id: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
@@ -135,7 +140,8 @@ fun StreamScreen(
                 is DataState.ERROR -> {
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
-                        errorMessage = dataState.message.asString()
+                        errorMessage = dataState.message.asString(),
+                        onRetry = { onEvent(StreamUiEvent.OnRetry) }
                     )
                 }
 
@@ -155,20 +161,23 @@ fun StreamScreen(
                                 CourseTitleBanner(course = course)
                             }
                             item {
-                                ElevatedCard(onClick = navigateToCreateAnnouncement) {
+                                ElevatedCard(onClick = { navigateToCreateAnnouncement(course.id) }) {
                                     ListItem(
                                         headlineContent = {
                                             Text(
-                                                text = "Share with your class...",
+                                                text = stringResource(
+                                                    id = Strings.share_with_your_class___
+                                                ),
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         },
                                         modifier = Modifier.padding(vertical = 8.dp),
                                         leadingContent = {
-                                            TextAvatar(
-                                                id = "8714318638",
-                                                firstName = "Mubashir",
-                                                lastName = "P A"
+                                            UserAvatar(
+                                                id = uiState.currentUser?.uid.orEmpty(),
+                                                fullName = uiState.currentUser?.displayName
+                                                    ?: uiState.currentUser?.email.orEmpty(),
+                                                photoUri = uiState.currentUser?.photoUrl
                                             )
                                         }
                                     )
@@ -177,14 +186,32 @@ fun StreamScreen(
                             if (dataState is DataState.EMPTY) {
                                 item {
                                     AnimatedErrorScreen(
-                                        url = "https://assets4.lottiefiles.com/packages/lf20_hxart9lz.json",
+                                        url = Constants.STREAM_SCREEN_EMPTY_ANIM_URL,
                                         modifier = Modifier.fillMaxSize(),
                                         errorMessage = dataState.message.asString()
                                     )
                                 }
                             } else if (dataState == DataState.SUCCESS) {
-                                items(uiState.announcements) { announcement ->
-                                    AnnouncementsListItem(announcement = announcement)
+                                items(uiState.announcements, key = { it.id }) { announcement ->
+                                    AnnouncementsListItem(
+                                        announcement = announcement,
+                                        modifier = Modifier.animateItemPlacement(),
+                                        currentUserId = uiState.currentUser?.uid.orEmpty(),
+                                        onClick = { /*TODO*/ },
+                                        onEditClick = {
+                                            navigateToEditAnnouncement(
+                                                course.id,
+                                                announcement.id
+                                            )
+                                        },
+                                        onDeleteClick = {
+                                            onEvent(
+                                                StreamUiEvent.OnOpenDeleteAnnouncementDialogChange(
+                                                    announcement.id
+                                                )
+                                            )
+                                        }
+                                    )
                                 }
                             }
                         }
@@ -199,36 +226,12 @@ fun StreamScreen(
             )
         }
     }
-}
 
-@DevicePreviews
-@Composable
-private fun StreamScreenPreview() {
-    val announcements: List<Announcement> = listOf(
-        Announcement(
-            text = "This is the content with attachments",
-            materials = listOf(Material(), Material())
-        ),
-        Announcement(
-            text = "This is the second content shared with class."
-        ),
-        Announcement(
-            text = "This is the first content shared with class."
-        )
+    DeleteAnnouncementDialog(
+        onDismissRequest = { onEvent(StreamUiEvent.OnOpenDeleteAnnouncementDialogChange(null)) },
+        announcementId = uiState.deleteAnnouncementId,
+        onConfirmClick = { onEvent(StreamUiEvent.OnDeleteAnnouncement(it)) }
     )
-    val uiState = StreamUiState(
-        announcements = announcements,
-        dataState = DataState.EMPTY(UiText.Empty)
-    )
-    StreamScreen(
-        uiState = uiState,
-        onEvent = {},
-        snackbarHostState = SnackbarHostState(),
-        course = Course(
-            name = "Compiler Design",
-            section = "CSE"
-        ),
-        navigateToCreateAnnouncement = {},
-        onBackPressed = {}
-    )
+
+    ProgressDialog(openDialog = uiState.openProgressDialog)
 }

@@ -1,14 +1,12 @@
 package edumate.app.presentation.classwork.screen
 
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -29,7 +27,7 @@ import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -52,6 +50,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
+import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.courses.Course
@@ -65,7 +64,11 @@ import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalMaterialApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun ClassworkScreen(
     uiState: ClassworkUiState,
@@ -73,10 +76,10 @@ fun ClassworkScreen(
     snackbarHostState: SnackbarHostState,
     course: Course,
     navigateToCreateClasswork: (courseId: String, workType: CourseWorkType) -> Unit,
-    navigateToEditClasswork: (courseId: String, classworkId: String, workType: CourseWorkType) -> Unit,
+    navigateToEditClasswork: (courseId: String, id: String, workType: CourseWorkType) -> Unit,
     navigateToViewClasswork: (
         courseId: String,
-        classworkId: String,
+        id: String,
         workType: CourseWorkType,
         currentUserType: UserType
     ) -> Unit,
@@ -90,9 +93,7 @@ fun ClassworkScreen(
     val scrollState = rememberLazyListState()
     val refreshState = rememberPullRefreshState(
         refreshing = uiState.refreshing,
-        onRefresh = {
-            onEvent(ClassworkUiEvent.OnRefresh)
-        }
+        onRefresh = { onEvent(ClassworkUiEvent.OnRefresh) }
     )
     val currentUserType =
         if (course.teacherGroupId.contains(uiState.currentUser?.uid)) {
@@ -100,11 +101,7 @@ fun ClassworkScreen(
         } else {
             UserType.STUDENT
         }
-    val fabVisible by remember {
-        derivedStateOf {
-            scrollState.firstVisibleItemIndex == 0
-        }
-    }
+    val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -162,7 +159,7 @@ fun ClassworkScreen(
             when (val dataState = uiState.dataState) {
                 is DataState.EMPTY -> {
                     AnimatedErrorScreen(
-                        url = "https://assets4.lottiefiles.com/packages/lf20_ikvz7qhc.json",
+                        url = Constants.CLASSWORK_SCREEN_EMPTY_ANIM_URL,
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = if (currentUserType == UserType.TEACHER) {
                             stringResource(
@@ -180,9 +177,7 @@ fun ClassworkScreen(
                     ErrorScreen(
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = dataState.message.asString(),
-                        onRetry = {
-                            onEvent(ClassworkUiEvent.OnRetry)
-                        }
+                        onRetry = { onEvent(ClassworkUiEvent.OnRetry) }
                     )
                 }
 
@@ -194,30 +189,32 @@ fun ClassworkScreen(
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = scrollState,
+                        contentPadding = PaddingValues(bottom = 88.dp),
                         content = {
-                            items(uiState.classwork) { classwork ->
+                            items(uiState.classwork, key = { it.id }) { classwork ->
                                 val id = classwork.id
                                 val type = classwork.workType
                                 ClassworkListItem(
                                     work = classwork,
+                                    modifier = Modifier.animateItemPlacement(),
                                     currentUserType = currentUserType,
                                     workType = type,
-                                    onEdit = {
-                                        navigateToEditClasswork(courseId, id, type)
-                                    },
-                                    onDelete = {
-                                        onEvent(
-                                            ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
-                                                classwork
-                                            )
-                                        )
-                                    },
                                     onClick = {
                                         navigateToViewClasswork(
                                             courseId,
                                             id,
                                             type,
                                             currentUserType
+                                        )
+                                    },
+                                    onEditClick = {
+                                        navigateToEditClasswork(courseId, id, type)
+                                    },
+                                    onDeleteClick = {
+                                        onEvent(
+                                            ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
+                                                classwork
+                                            )
                                         )
                                     }
                                 )
@@ -230,26 +227,20 @@ fun ClassworkScreen(
             }
 
             if (currentUserType == UserType.TEACHER) {
-                Row(
+                ExtendedFloatingActionButton(
+                    text = { Text(text = stringResource(id = Strings.create)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = "Create classwork"
+                        )
+                    },
+                    onClick = { onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true)) },
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .padding(16.dp)
                         .align(Alignment.BottomEnd),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    AnimatedVisibility(visible = fabVisible) {
-                        FloatingActionButton(
-                            onClick = {
-                                onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true))
-                            },
-                            modifier = Modifier.padding(16.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = stringResource(id = Strings.create_classwork)
-                            )
-                        }
-                    }
-                }
+                    expanded = expandedFab
+                )
             }
 
             PullRefreshIndicator(

@@ -59,9 +59,15 @@ fun ClassDetailsNavHost(
                 onEvent = viewModel::onEvent,
                 snackbarHostState = snackbarHostState,
                 course = course,
-                navigateToCreateAnnouncement = {
+                navigateToCreateAnnouncement = { courseId ->
+                    navController.navigate(Screen.CreateAnnouncementScreen.withArgs(courseId, null))
+                },
+                navigateToEditAnnouncement = { courseId, announcementId ->
                     navController.navigate(
-                        Screen.CreateAnnouncementScreen.route
+                        Screen.CreateAnnouncementScreen.withArgs(
+                            courseId,
+                            announcementId
+                        )
                     )
                 },
                 onBackPressed = onBackPressed
@@ -222,12 +228,24 @@ fun ClassDetailsNavHost(
                 onBackPressed = { navController.navigateUp() }
             )
         }
-        composable(route = Screen.CreateAnnouncementScreen.route) {
+        composable(
+            route = "${Screen.CreateAnnouncementScreen.route}${Routes.Args.CREATE_ANNOUNCEMENT_SCREEN}",
+            arguments = listOf(
+                navArgument(Routes.Args.CREATE_ANNOUNCEMENT_COURSE_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.id
+                },
+                navArgument(Routes.Args.CREATE_ANNOUNCEMENT_ID) { type = NavType.StringType }
+            )
+        ) {
             val viewModel: CreateAnnouncementViewModel = hiltViewModel()
             CreateAnnouncementScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
+                snackbarHostState = snackbarHostState,
+                createAnnouncementResults = viewModel.createAnnouncementResults,
                 className = course.name,
+                onCreateAnnouncementSuccess = { navController.navigateUp() },
                 onBackPressed = { navController.navigateUp() }
             )
         }

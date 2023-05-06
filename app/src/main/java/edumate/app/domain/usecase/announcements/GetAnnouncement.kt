@@ -10,21 +10,20 @@ import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class ListAnnouncements @Inject constructor(
+class GetAnnouncement @Inject constructor(
     private val announcementsRepository: AnnouncementsRepository
 ) {
-    operator fun invoke(courseId: String): Flow<Resource<List<Announcement>>> =
+    operator fun invoke(courseId: String, id: String): Flow<Resource<Announcement?>> =
         flow {
             try {
                 emit(Resource.Loading())
-                val announcements =
-                    announcementsRepository.list(courseId).map { it.toAnnouncement() }
-                emit(Resource.Success(announcements.reversed()))
+                val announcement = announcementsRepository.get(courseId, id)?.toAnnouncement()
+                emit(Resource.Success(announcement))
             } catch (e: Exception) {
                 emit(
                     Resource.Error(
                         UiText.StringResource(
-                            Strings.cannot_retrieve_announcements_at_this_time_please_try_again_later
+                            Strings.cannot_retrieve_announcement_at_this_time_please_try_again_later
                         )
                     )
                 )

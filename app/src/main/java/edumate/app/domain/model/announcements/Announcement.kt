@@ -1,6 +1,9 @@
 package edumate.app.domain.model.announcements
 
-import java.util.Date
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.IndividualStudentsOptions
+import edumate.app.domain.model.Material
+import edumate.app.domain.model.user_profiles.UserProfile
 
 data class Announcement(
     val courseId: String = "",
@@ -9,10 +12,11 @@ data class Announcement(
     val materials: List<Material> = emptyList(),
     val state: AnnouncementState = AnnouncementState.ANNOUNCEMENT_STATE_UNSPECIFIED,
     val alternateLink: String = "",
-    val creationTime: Date? = null,
-    val updateTime: Date? = null,
-    val scheduledTime: Date? = null,
+    val creationTime: Long? = null,
+    val updateTime: Long? = null,
+    val scheduledTime: Long? = null,
     val assigneeMode: AssigneeMode = AssigneeMode.ASSIGNEE_MODE_UNSPECIFIED,
     val individualStudentsOptions: IndividualStudentsOptions? = null,
-    val creatorUserId: String = ""
+    val creatorUserId: String = "",
+    val creatorProfile: UserProfile? = null
 )

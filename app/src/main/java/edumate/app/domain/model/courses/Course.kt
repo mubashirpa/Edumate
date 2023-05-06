@@ -1,5 +1,6 @@
 package edumate.app.domain.model.courses
 
+import edumate.app.domain.model.user_profiles.UserProfile
 import java.util.*
 
 data class Course(
@@ -19,5 +20,6 @@ data class Course(
     val teacherGroupId: ArrayList<String> = arrayListOf(),
     val guardiansEnabled: Boolean = false,
     val calendarId: String = "",
-    val gradeBookSettings: GradeBookSettings? = null
+    val gradeBookSettings: GradeBookSettings? = null,
+    val creatorProfile: UserProfile? = null
 )

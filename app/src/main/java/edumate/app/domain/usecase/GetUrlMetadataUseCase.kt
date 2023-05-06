@@ -2,7 +2,7 @@ package edumate.app.domain.usecase
 
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.domain.model.course_work.Link
+import edumate.app.domain.model.Link
 import edumate.app.domain.repository.JsoupRepository
 import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow

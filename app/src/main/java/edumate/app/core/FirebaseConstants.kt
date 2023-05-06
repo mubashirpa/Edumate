@@ -2,6 +2,25 @@ package edumate.app.core
 
 object FirebaseConstants {
 
+    object Database {
+        const val ANNOUNCEMENTS_PATH = "announcements"
+
+        // Announcements
+        const val ALTERNATE_LINK = "alternateLink"
+        const val ASSIGNEE_MODE = "assigneeMode"
+        const val COURSE_ID = "courseId"
+        const val CREATION_TIME = "creationTime"
+        const val CREATOR_USER_ID = "creatorUserId"
+        const val CREATOR_PROFILE = "creatorProfile"
+        const val ID = "id"
+        const val INDIVIDUAL_STUDENTS_OPTIONS = "individualStudentsOptions"
+        const val MATERIALS = "materials"
+        const val SCHEDULED_TIME = "scheduledTime"
+        const val STATE = "state"
+        const val TEXT = "text"
+        const val UPDATE_TIME = "updateTime"
+    }
+
     object Firestore {
         // Collections
         const val COURSES_COLLECTION = "courses"
@@ -15,6 +34,7 @@ object FirebaseConstants {
         const val COURSE_GROUP_ID = "courseGroupId"
         const val COURSE_STATE = "courseState"
         const val CREATION_TIME = "creationTime"
+        const val CREATOR_PROFILE = "creatorProfile"
         const val DESCRIPTION = "description"
         const val DESCRIPTION_HEADING = "descriptionHeading"
         const val ENROLLMENT_CODE = "enrollmentCode"
@@ -65,7 +85,7 @@ object FirebaseConstants {
     }
 
     object Storage {
-        const val COURSE_STORAGE_PATH = "course"
+        const val COURSE_STORAGE_PATH = "courses"
     }
 
     object Hosting {

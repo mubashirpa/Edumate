@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Edumate</string>
+    <string name="_edited_">%1$s (Edited %2$s)</string>
     <string name="_points">%1$s points</string>
     <string name="_return">Return</string>
     <string name="add">Add</string>
@@ -20,6 +21,7 @@
     <string name="assignment_title">Assignment title</string>
     <string name="attachments">Attachments</string>
     <string name="cancel">Cancel</string>
+    <string name="cannot_retrieve_announcement_at_this_time_please_try_again_later">Cannot retrieve announcement at this time, please try again later.</string>
     <string name="cannot_retrieve_announcements_at_this_time_please_try_again_later">Cannot retrieve announcements at this time, please try again later.</string>
     <string name="cannot_retrieve_course_at_this_time_please_try_again_later">Cannot retrieve course at this time, please try again later.</string>
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">Cannot retrieve course work at this time, please try again later.</string>
@@ -47,6 +49,8 @@
     <string name="delete_material">Delete material?</string>
     <string name="delete_question">Delete question?</string>
     <string name="description">Description</string>
+    <string name="dialog_delete_announcement_text">Comments will also be deleted.</string>
+    <string name="dialog_delete_announcement_title">Delete announcement?</string>
     <string name="dialog_remove_attachment_text">Remove attachment?</string>
     <string name="dialog_return_submission_text1">%1$s will be notified and can check any comments that you\'ve left.</string>
     <string name="dialog_return_submission_text2">%1$s will be notified that their grade has changed.</string>
@@ -96,6 +100,7 @@
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
     <string name="missing">Missing</string>
+    <string name="missing_message">Missing message</string>
     <string name="missing_title">Missing title</string>
     <string name="name">Name</string>
     <string name="navigate_up" translatable="false">Navigate up</string>
@@ -126,6 +131,8 @@
     <string name="sending_recovery_email">Sending email</string>
     <string name="share">Share</string>
     <string name="share_invitation_link">Share invitation link</string>
+    <string name="share_with_your_class">Share with your class</string>
+    <string name="share_with_your_class...">Share with your class…</string>
     <string name="show_password">Show password</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_in_with_google">Sign in with Google</string>
@@ -148,6 +155,7 @@
     <string name="unable_to_create_announcement">Unable to create announcement.</string>
     <string name="unable_to_create_course">Unable to create course.</string>
     <string name="unable_to_create_course_work">Unable to create course work.</string>
+    <string name="unable_to_delete_announcement">Unable to delete announcement.</string>
     <string name="unable_to_delete_course">Unable to delete course.</string>
     <string name="unable_to_delete_course_work">Unable to delete course work.</string>
     <string name="unable_to_join_class">Unable to join class.</string>
@@ -158,6 +166,7 @@
     <string name="unable_to_remove_teacher">Unable to remove teacher.</string>
     <string name="unable_to_return_student_submission">Unable to return submission.</string>
     <string name="unable_to_submit_student_submission">Unable to submit submission.</string>
+    <string name="unable_to_update_announcement">Unable to update announcement.</string>
     <string name="unable_to_update_course">Unable to update course.</string>
     <string name="unable_to_update_student_submission">Unable to update submission.</string>
     <string name="unenrol">Unenrol</string>

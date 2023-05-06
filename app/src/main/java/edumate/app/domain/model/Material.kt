@@ -1,4 +1,4 @@
-package edumate.app.domain.model.announcements
+package edumate.app.domain.model
 
 data class Material(
     val driveFile: DriveFile? = null,

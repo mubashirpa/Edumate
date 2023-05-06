@@ -14,6 +14,7 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.model.courses.Course
 import edumate.app.domain.model.courses.CourseState
+import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.CreateCourse
 import edumate.app.domain.usecase.courses.DeleteCourse
@@ -58,14 +59,21 @@ class CreateClassViewModel @Inject constructor(
         course.value = course.value.copy(
             id = id,
             courseState = CourseState.ACTIVE,
-            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/c?cid=$id"
+            alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/c/details?cid=$id"
         )
 
         getCurrentUserUseCase().map { user ->
             if (user != null) {
                 course.value = course.value.copy(
                     ownerId = user.uid,
-                    teacherGroupId = arrayListOf(user.uid)
+                    teacherGroupId = arrayListOf(user.uid),
+                    creatorProfile = UserProfile(
+                        displayName = user.displayName,
+                        emailAddress = user.email,
+                        id = user.uid,
+                        photoUrl = user.photoUrl?.toString(),
+                        verified = user.isEmailVerified
+                    )
                 )
             }
         }.launchIn(viewModelScope)
@@ -185,6 +193,42 @@ class CreateClassViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun fetchCourse() {
+        getCourseUseCase(courseId!!).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(loading = true)
+                }
+
+                is Resource.Success -> {
+                    val updatedCourse = resource.data
+                    if (updatedCourse != null) {
+                        course.value = updatedCourse
+                        uiState = uiState.copy(
+                            loading = false,
+                            name = updatedCourse.name,
+                            room = updatedCourse.room.orEmpty(),
+                            section = updatedCourse.section.orEmpty(),
+                            subject = updatedCourse.descriptionHeading.orEmpty()
+                        )
+                    } else {
+                        uiState = uiState.copy(
+                            loading = false,
+                            userMessage = UiText.StringResource(Strings.error_unexpected)
+                        )
+                    }
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        loading = false,
+                        userMessage = resource.message
+                    )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
     private fun updateCourse() {
         val name = uiState.name
         val nameResult = validateTextField.execute(name)
@@ -223,42 +267,6 @@ class CreateClassViewModel @Inject constructor(
                 is Resource.Error -> {
                     uiState = uiState.copy(
                         openProgressDialog = false,
-                        userMessage = resource.message
-                    )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    private fun fetchCourse() {
-        getCourseUseCase(courseId!!).onEach { resource ->
-            when (resource) {
-                is Resource.Loading -> {
-                    uiState = uiState.copy(loading = true)
-                }
-
-                is Resource.Success -> {
-                    val updatedCourse = resource.data
-                    if (updatedCourse != null) {
-                        course.value = updatedCourse
-                        uiState = uiState.copy(
-                            loading = false,
-                            name = updatedCourse.name,
-                            room = updatedCourse.room.orEmpty(),
-                            section = updatedCourse.section.orEmpty(),
-                            subject = updatedCourse.descriptionHeading.orEmpty()
-                        )
-                    } else {
-                        uiState = uiState.copy(
-                            loading = false,
-                            userMessage = UiText.StringResource(Strings.error_unexpected)
-                        )
-                    }
-                }
-
-                is Resource.Error -> {
-                    uiState = uiState.copy(
-                        loading = false,
                         userMessage = resource.message
                     )
                 }

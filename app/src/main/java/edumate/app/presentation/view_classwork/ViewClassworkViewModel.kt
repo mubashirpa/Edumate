@@ -16,10 +16,10 @@ import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.enumValueOf
+import edumate.app.domain.model.DriveFile
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.student_submissions.AssignmentSubmission
 import edumate.app.domain.model.student_submissions.Attachment
-import edumate.app.domain.model.student_submissions.DriveFile
 import edumate.app.domain.model.student_submissions.MultipleChoiceSubmission
 import edumate.app.domain.model.student_submissions.ShortAnswerSubmission
 import edumate.app.domain.model.student_submissions.StudentSubmission

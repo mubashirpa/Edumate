@@ -14,13 +14,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
@@ -46,8 +44,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -55,10 +51,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImagePainter
-import coil.compose.SubcomposeAsyncImage
-import coil.compose.SubcomposeAsyncImageContent
-import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.ext.header
@@ -68,7 +60,7 @@ import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.components.TextAvatar
+import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.view_student_work.ViewStudentWorkUiEvent
 import edumate.app.presentation.view_student_work.ViewStudentWorkUiState
 import edumate.app.presentation.view_student_work.screen.components.AttachmentsListItem
@@ -174,15 +166,6 @@ fun ViewStudentWorkScreen(
                 DataState.SUCCESS -> {
                     val focusManager = LocalFocusManager.current
                     val keyboardController = LocalSoftwareKeyboardController.current
-                    val photoUrl = assignedStudent.photoUrl
-                    val userId = assignedStudent.id
-                    val avatar: @Composable () -> Unit = {
-                        TextAvatar(
-                            id = userId,
-                            firstName = assignedStudent.displayName.orEmpty(),
-                            lastName = ""
-                        )
-                    }
                     val dueDate = courseWork.dueTime
                     val attachments = uiState.studentWork?.assignmentSubmission?.attachments
                     val isReturnEnabled =
@@ -204,35 +187,12 @@ fun ViewStudentWorkScreen(
                             content = {
                                 header {
                                     Row(modifier = Modifier.padding(top = 2.dp, bottom = 14.dp)) {
-                                        if (photoUrl != null) {
-                                            SubcomposeAsyncImage(
-                                                model = ImageRequest.Builder(LocalContext.current)
-                                                    .data(photoUrl)
-                                                    .crossfade(true)
-                                                    .build(),
-                                                contentDescription = null,
-                                                modifier = Modifier
-                                                    .size(40.dp)
-                                                    .clip(CircleShape),
-                                                contentScale = ContentScale.Crop
-                                            ) {
-                                                when (painter.state) {
-                                                    is AsyncImagePainter.State.Loading -> {
-                                                        avatar()
-                                                    }
-
-                                                    is AsyncImagePainter.State.Error -> {
-                                                        avatar()
-                                                    }
-
-                                                    else -> {
-                                                        SubcomposeAsyncImageContent()
-                                                    }
-                                                }
-                                            }
-                                        } else {
-                                            avatar()
-                                        }
+                                        UserAvatar(
+                                            id = assignedStudent.id,
+                                            fullName = assignedStudent.displayName
+                                                ?: assignedStudent.emailAddress.orEmpty(),
+                                            photoUrl = assignedStudent.photoUrl
+                                        )
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Column {
                                             Text(

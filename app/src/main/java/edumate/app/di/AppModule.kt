@@ -1,6 +1,7 @@
 package edumate.app.di
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import dagger.Module
@@ -22,7 +23,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAnnouncementsRepository(): AnnouncementsRepository = AnnouncementsRepositoryImpl()
+    fun provideAnnouncementsRepository(database: DatabaseReference): AnnouncementsRepository =
+        AnnouncementsRepositoryImpl(database)
 
     @Singleton
     @Provides

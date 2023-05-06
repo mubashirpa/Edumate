@@ -7,16 +7,15 @@ import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -66,6 +65,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
 import edumate.app.R.string as Strings
+import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
 import edumate.app.presentation.class_details.UserType
@@ -114,11 +114,7 @@ fun PeopleScreen(
         } else {
             UserType.STUDENT
         }
-    val fabVisible by remember {
-        derivedStateOf {
-            scrollState.firstVisibleItemIndex == 0
-        }
-    }
+    val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the user is leave class and
@@ -297,7 +293,7 @@ fun PeopleScreen(
                         }
                         if (dataState is DataState.EMPTY) {
                             AnimatedErrorScreen(
-                                url = "https://assets5.lottiefiles.com/private_files/lf30_TBKozE.json",
+                                url = Constants.PEOPLE_SCREEN_EMPTY_ANIM_URL,
                                 modifier = Modifier.fillMaxSize(),
                                 errorMessage = dataState.message.asString()
                             )
@@ -305,31 +301,29 @@ fun PeopleScreen(
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 state = scrollState,
+                                contentPadding = PaddingValues(bottom = 88.dp),
                                 content = {
-                                    items(
-                                        items = viewModel.uiState.peoples,
-                                        key = { it.id }
-                                    ) { user ->
+                                    items(viewModel.uiState.peoples, key = { it.id }) { user ->
                                         PeopleListItem(
                                             userProfile = user,
                                             modifier = Modifier.animateItemPlacement(),
                                             currentUserType = currentUserType,
                                             currentUserId = "${viewModel.uiState.currentUser?.uid}",
                                             courseOwnerId = course.ownerId,
-                                            onLeaveClass = {
+                                            onLeaveClassClick = {
                                                 viewModel.onEvent(
                                                     PeopleUiEvent.OnOpenLeaveClassDialogChange(
                                                         true
                                                     )
                                                 )
                                             },
-                                            onEmail = {
+                                            onEmailClick = {
                                                 composeEmail(
                                                     context,
                                                     arrayOf(user.emailAddress.orEmpty())
                                                 )
                                             },
-                                            onRemove = {
+                                            onRemoveClick = {
                                                 viewModel.onEvent(
                                                     PeopleUiEvent.OnOpenRemoveUserDialogChange(
                                                         user
@@ -346,29 +340,20 @@ fun PeopleScreen(
             }
 
             if (currentUserType == UserType.TEACHER) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomEnd),
-                    horizontalArrangement = Arrangement.End
-                ) {
-                    AnimatedVisibility(visible = fabVisible) {
-                        ExtendedFloatingActionButton(
-                            onClick = {
-                                viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(true))
-                            },
-                            modifier = Modifier.padding(16.dp),
-                            expanded = viewModel.uiState.isFabExpanded,
-                            icon = {
-                                Icon(
-                                    imageVector = Icons.Default.PersonAddAlt,
-                                    contentDescription = stringResource(id = Strings.invite)
-                                )
-                            },
-                            text = { Text(text = stringResource(id = Strings.invite)) }
+                ExtendedFloatingActionButton(
+                    text = { Text(text = stringResource(id = Strings.invite)) },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.Default.PersonAddAlt,
+                            contentDescription = "Invite"
                         )
-                    }
-                }
+                    },
+                    onClick = { viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(true)) },
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .align(Alignment.BottomEnd),
+                    expanded = expandedFab
+                )
             }
 
             PullRefreshIndicator(

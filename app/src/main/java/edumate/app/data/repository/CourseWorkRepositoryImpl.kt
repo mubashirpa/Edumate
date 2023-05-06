@@ -6,9 +6,9 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.CourseWorkDto
-import edumate.app.domain.model.course_work.AssigneeMode
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.IndividualStudentsOptions
 import edumate.app.domain.model.course_work.CourseWorkState
-import edumate.app.domain.model.course_work.IndividualStudentsOptions
 import edumate.app.domain.repository.CourseWorkRepository
 import javax.inject.Inject
 import kotlinx.coroutines.tasks.await

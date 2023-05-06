@@ -6,6 +6,7 @@ import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import edumate.app.domain.model.courses.CourseState
 import edumate.app.domain.model.courses.GradeBookSettings
+import edumate.app.domain.model.user_profiles.UserProfile
 import java.util.ArrayList
 import java.util.Date
 
@@ -28,7 +29,8 @@ data class CourseDto(
     val teacherGroupId: ArrayList<String> = arrayListOf(),
     val guardiansEnabled: Boolean = false,
     val calendarId: String = "",
-    val gradeBookSettings: GradeBookSettings? = null
+    val gradeBookSettings: GradeBookSettings? = null,
+    val creatorProfile: UserProfile? = null
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
@@ -52,7 +54,8 @@ data class CourseDto(
             FirebaseConstants.Firestore.TEACHER_GROUP_ID to teacherGroupId,
             FirebaseConstants.Firestore.GUARDIANS_ENABLED to guardiansEnabled,
             FirebaseConstants.Firestore.CALENDAR_ID to calendarId,
-            FirebaseConstants.Firestore.GRADE_BOOK_SETTINGS to gradeBookSettings
+            FirebaseConstants.Firestore.GRADE_BOOK_SETTINGS to gradeBookSettings,
+            FirebaseConstants.Firestore.CREATOR_PROFILE to creatorProfile
         )
     }
 }

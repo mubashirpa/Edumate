@@ -1,5 +1,8 @@
 package edumate.app.domain.model.course_work
 
+import edumate.app.domain.model.AssigneeMode
+import edumate.app.domain.model.IndividualStudentsOptions
+import edumate.app.domain.model.Material
 import java.util.*
 
 data class CourseWork(
