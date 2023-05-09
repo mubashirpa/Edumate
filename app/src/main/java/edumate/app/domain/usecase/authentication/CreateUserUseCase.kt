@@ -3,6 +3,7 @@ package edumate.app.domain.usecase.authentication
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import com.onesignal.OneSignal
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
@@ -22,6 +23,12 @@ class CreateUserUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val user = repository.createUserWithEmailAndPassword(name, email, password)
+            if (user != null) {
+                OneSignal.setExternalUserId(user.uid)
+                if (user.email != null) {
+                    OneSignal.setEmail(user.email!!)
+                }
+            }
             emit(Resource.Success(user))
         } catch (e: FirebaseAuthException) {
             when (e.errorCode) {
@@ -32,6 +39,7 @@ class CreateUserUseCase @Inject constructor(
                         )
                     )
                 }
+
                 else -> {
                     emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
                 }

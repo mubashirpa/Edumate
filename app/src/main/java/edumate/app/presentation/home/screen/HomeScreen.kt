@@ -3,25 +3,53 @@ package edumate.app.presentation.home.screen
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.exclude
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material3.*
+import androidx.compose.material3.DrawerState
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.ScaffoldDefaults
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
+import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
 import edumate.app.presentation.home.HomeUiEvent
-import edumate.app.presentation.home.HomeViewModel
+import edumate.app.presentation.home.HomeUiState
 import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.launch
 
@@ -31,12 +59,14 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = viewModel(),
+    uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToCreateClass: (courseId: String?) -> Unit,
-    navigateToJoinClass: () -> Unit
+    navigateToJoinClass: () -> Unit,
+    navigateToProfile: () -> Unit
 ) {
     val tabs = listOf(
         HomeTabsScreen.Enrolled,
@@ -45,8 +75,8 @@ fun HomeScreen(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
 
-    BackHandler(viewModel.uiState.openFabMenu) {
-        viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+    BackHandler(uiState.openFabMenu) {
+        onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
     }
 
     Scaffold(
@@ -59,14 +89,28 @@ fun HomeScreen(
                     IconButton(onClick = { coroutineScope.launch { drawerState.open() } }) {
                         Icon(imageVector = Icons.Default.Menu, contentDescription = null)
                     }
+                },
+                actions = {
+                    Box(
+                        modifier = Modifier.minimumInteractiveComponentSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        UserAvatar(
+                            id = uiState.currentUser?.uid.orEmpty(),
+                            fullName = uiState.currentUser?.displayName
+                                ?: uiState.currentUser?.email.orEmpty(),
+                            photoUri = uiState.currentUser?.photoUrl,
+                            modifier = Modifier.clickable(onClick = navigateToProfile),
+                            size = 30.dp,
+                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp)
+                        )
+                    }
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = {
-                    viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(true))
-                },
+                onClick = { onEvent(HomeUiEvent.OnOpenFabMenuChange(true)) },
                 modifier = Modifier.navigationBarsPadding()
             ) { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
         },
@@ -101,7 +145,7 @@ fun HomeScreen(
                 }
                 HorizontalPager(pageCount = tabs.size, state = pagerState) { page ->
                     val bottomMargin = WindowInsets.navigationBars.asPaddingValues()
-                        .calculateBottomPadding() + 10.dp
+                        .calculateBottomPadding() + 88.dp
                     val contentPadding = PaddingValues(
                         start = 10.dp,
                         top = 10.dp,
@@ -130,26 +174,26 @@ fun HomeScreen(
                 }
             }
 
-            if (viewModel.uiState.openFabMenu) {
+            if (uiState.openFabMenu) {
                 val bottomMargin =
                     WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
 
                 ModalBottomSheet(
                     onDismissRequest = {
-                        viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                        onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                     }
                 ) {
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
                         modifier = Modifier.clickable {
-                            viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                             navigateToCreateClass(null)
                         }
                     )
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
                         modifier = Modifier.clickable {
-                            viewModel.onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                             navigateToJoinClass()
                         }
                     )

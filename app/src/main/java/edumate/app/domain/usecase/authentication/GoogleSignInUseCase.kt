@@ -5,6 +5,7 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseUser
+import com.onesignal.OneSignal
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
@@ -20,6 +21,12 @@ class GoogleSignInUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val user = repository.signInWithGoogle(idToken)
+            if (user != null) {
+                OneSignal.setExternalUserId(user.uid)
+                if (user.email != null) {
+                    OneSignal.setEmail(user.email!!)
+                }
+            }
             emit(Resource.Success(user))
         } catch (e: FirebaseAuthInvalidUserException) {
             if (e.errorCode == "ERROR_USER_DISABLED") {

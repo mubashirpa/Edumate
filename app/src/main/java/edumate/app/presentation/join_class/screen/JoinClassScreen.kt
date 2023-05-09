@@ -44,13 +44,14 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.join_class.JoinClassUiEvent
-import edumate.app.presentation.join_class.JoinClassViewModel
+import edumate.app.presentation.join_class.JoinClassUiState
+import kotlinx.coroutines.flow.Flow
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -59,7 +60,9 @@ import edumate.app.presentation.join_class.JoinClassViewModel
 )
 @Composable
 fun JoinClassScreen(
-    viewModel: JoinClassViewModel = hiltViewModel(),
+    uiState: JoinClassUiState,
+    onEvent: (JoinClassUiEvent) -> Unit,
+    joinClassResults: Flow<String>,
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToProfile: () -> Unit,
     onBackPressed: () -> Unit
@@ -72,16 +75,16 @@ fun JoinClassScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(context) {
-        viewModel.joinClassResults.collect { courseId ->
+        joinClassResults.collect { courseId ->
             navigateToClassDetails(courseId)
         }
     }
 
-    viewModel.uiState.userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
-            viewModel.onEvent(JoinClassUiEvent.UserMessageShown)
+            onEvent(JoinClassUiEvent.UserMessageShown)
         }
     }
 
@@ -106,13 +109,13 @@ fun JoinClassScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         UserAvatar(
-                            id = viewModel.uiState.currentUser?.uid.orEmpty(),
-                            fullName = viewModel.uiState.currentUser?.displayName
-                                ?: viewModel.uiState.currentUser?.email.orEmpty(),
-                            photoUri = viewModel.uiState.currentUser?.photoUrl,
+                            id = uiState.currentUser?.uid.orEmpty(),
+                            fullName = uiState.currentUser?.displayName
+                                ?: uiState.currentUser?.email.orEmpty(),
+                            photoUri = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = navigateToProfile),
                             size = 30.dp,
-                            textStyle = MaterialTheme.typography.labelMedium
+                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp)
                         )
                     }
                 },
@@ -137,9 +140,9 @@ fun JoinClassScreen(
             ) {
                 Spacer(modifier = Modifier.height(12.dp))
                 TextField(
-                    value = viewModel.uiState.classCode,
+                    value = uiState.classCode,
                     onValueChange = {
-                        viewModel.onEvent(JoinClassUiEvent.ClassCodeChanged(it))
+                        onEvent(JoinClassUiEvent.ClassCodeChanged(it))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -147,7 +150,7 @@ fun JoinClassScreen(
                     label = {
                         Text(text = stringResource(id = Strings.class_code))
                     },
-                    supportingText = if (viewModel.uiState.classCodeError != null) {
+                    supportingText = if (uiState.classCodeError != null) {
                         {
                             Text(
                                 text = stringResource(
@@ -164,7 +167,7 @@ fun JoinClassScreen(
                             )
                         }
                     },
-                    isError = viewModel.uiState.classCodeError != null,
+                    isError = uiState.classCodeError != null,
                     keyboardOptions = KeyboardOptions(
                         imeAction = ImeAction.Done
                     ),
@@ -177,7 +180,7 @@ fun JoinClassScreen(
                 Spacer(modifier = Modifier.height(30.dp))
                 Button(
                     onClick = {
-                        viewModel.onEvent(JoinClassUiEvent.OnJoinClick)
+                        onEvent(JoinClassUiEvent.OnJoinClick)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
@@ -188,5 +191,5 @@ fun JoinClassScreen(
         }
     }
 
-    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
+    ProgressDialog(openDialog = uiState.openProgressDialog)
 }

@@ -3,6 +3,7 @@ package edumate.app.domain.usecase.authentication
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
+import com.onesignal.OneSignal
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
@@ -18,12 +19,19 @@ class SignInUseCase @Inject constructor(
         try {
             emit(Resource.Loading())
             val user = repository.signInWithEmailAndPassword(email, password)
+            if (user != null) {
+                OneSignal.setExternalUserId(user.uid)
+                if (user.email != null) {
+                    OneSignal.setEmail(user.email!!)
+                }
+            }
             emit(Resource.Success(user))
         } catch (e: FirebaseAuthException) {
             when (e.errorCode) {
                 "ERROR_WRONG_PASSWORD" -> {
                     emit(Resource.Error(UiText.StringResource(Strings.auth_error_wrong_password)))
                 }
+
                 "ERROR_USER_NOT_FOUND" -> {
                     emit(
                         Resource.Error(
@@ -34,14 +42,17 @@ class SignInUseCase @Inject constructor(
                         )
                     )
                 }
+
                 "ERROR_USER_DISABLED" -> {
                     emit(Resource.Error(UiText.StringResource(Strings.auth_error_user_disabled)))
                 }
+
                 "ERROR_TOO_MANY_REQUESTS" -> {
                     emit(
                         Resource.Error(UiText.StringResource(Strings.auth_error_too_many_requests))
                     )
                 }
+
                 else -> {
                     emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
                 }

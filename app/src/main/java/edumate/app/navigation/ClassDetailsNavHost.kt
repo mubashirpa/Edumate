@@ -70,6 +70,7 @@ fun ClassDetailsNavHost(
                         )
                     )
                 },
+                navigateToViewAnnouncement = { _, _ -> /*TODO*/ },
                 onBackPressed = onBackPressed
             )
         }

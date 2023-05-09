@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_edited_">%1$s (திருத்தப்பட்டது %2$s)</string>
     <string name="_points">%1$s புள்ளிகள்</string>
     <string name="_return">திரும்ப</string>
     <string name="add">சேர்</string>
@@ -11,6 +12,7 @@
     <string name="add_work">வேலையைச் சேர்</string>
     <string name="all">அனைத்தும்</string>
     <string name="all_students">அனைத்து மாணவர்களும்</string>
+    <string name="answer">பதில்</string>
     <string name="ask">கேள்</string>
     <string name="ask_your_teacher_for_the_class_code">உங்கள் ஆசிரியரிடம் வகுப்புக் குறியீட்டைக் கேட்டு, அதை இங்கே உள்ளிடவும்.</string>
     <string name="assign">ஒதுக்கவும்</string>
@@ -47,6 +49,10 @@
     <string name="delete_material">பொருளை நீக்கவா?</string>
     <string name="delete_question">கேள்வியை நீக்கவா?</string>
     <string name="description">விளக்கம்</string>
+    <string name="dialog_delete_announcement_text">கருத்துகளும் நீக்கப்படும்.</string>
+    <string name="dialog_delete_announcement_title">அறிவிப்பை நீக்கவா?</string>
+    <string name="dialog_hand_in_question_text">உங்களால் மாற்றங்களைச் செய்ய முடியாது.</string>
+    <string name="dialog_hand_in_question_title">பதிலைச் சமர்ப்பிக்கவா?</string>
     <string name="dialog_remove_attachment_text">இணைப்பை அகற்றவா?</string>
     <string name="dialog_return_submission_text1">%1$s க்கு அறிவிக்கப்படும், மேலும் நீங்கள் விட்டுள்ள கருத்துகளை நீங்கள் பார்க்கலாம்.</string>
     <string name="dialog_return_submission_text2">%1$s அவர்களின் தரம் மாறியதாக அறிவிக்கப்படும்.</string>
@@ -76,6 +82,7 @@
     <string name="get_started_by_inviting_students">மாணவர்களை அழைப்பதன் மூலம் தொடங்கவும்.</string>
     <string name="get_started_message">கல்வியாளர்களுக்கும் மாணவர்களுக்கும் தொடர்பு கொள்ளவும், நேரத்தை மிச்சப்படுத்தவும், ஒழுங்காக இருக்கவும் உதவுகிறது.</string>
     <string name="google">Google</string>
+    <string name="hand_in">ஹேண்ட் இன்</string>
     <string name="handed_in">கையளித்தார்</string>
     <string name="have_an_account">கணக்கு உள்ளதா?</string>
     <string name="hide_password">கடவுச்சொல்லை மறை</string>
@@ -101,6 +108,7 @@
     <string name="name">பெயர்</string>
     <string name="no_due_date">நிலுவைத் தேதி இல்லை</string>
     <string name="no_files_attached">கோப்புகள் எதுவும் இணைக்கப்படவில்லை</string>
+    <string name="not_handed_in">ஒப்படைக்கப்படவில்லை</string>
     <string name="ok">சரி</string>
     <string name="password">கடவுச்சொல்</string>
     <string name="password_reset_description">உங்கள் மின்னஞ்சல் முகவரியை உள்ளிடவும், உங்கள் கடவுச்சொல்லை மீட்டெடுப்பதற்கான இணைப்பை நாங்கள் உங்களுக்கு அனுப்புவோம்.</string>
@@ -127,6 +135,7 @@
     <string name="share">பகிர்</string>
     <string name="share_invitation_link">அழைப்பு இணைப்பைப் பகிர்</string>
     <string name="share_with_your_class">உங்கள் வகுப்பில் பகிரவும்</string>
+    <string name="share_with_your_class...">உங்கள் வகுப்போடு பகிரவும்…</string>
     <string name="show_password">கடவுச்சொல்லைக் காட்டு</string>
     <string name="sign_in">உள்நுழை</string>
     <string name="sign_in_with_google">Google மூலம் உள்நுழையவும்</string>
@@ -139,16 +148,20 @@
     <string name="student_work">மாணவர் பணி</string>
     <string name="students">மாணவர்கள்</string>
     <string name="subject">பொருள்</string>
+    <string name="submit">சமர்ப்பி</string>
     <string name="switch_to_text_input">உரை உள்ளீட்டிற்கு மாறு</string>
     <string name="switch_to_touch_input">டச் உள்ளீட்டிற்கு மாறு</string>
     <string name="teachers">ஆசிரியர்கள்</string>
     <string name="teaching">கற்பித்தல்</string>
+    <string name="the_student_hasnt_answered_the_question_yet">மாணவர் கேள்விக்கு இன்னும் பதிலளிக்கவில்லை.</string>
     <string name="turn_in">உள்ளு</string>
     <string name="turned_in">உள்ளன</string>
+    <string name="type_your_answer">உங்கள் பதிலை உள்ளிடவும்</string>
     <string name="unable_to_add_attachments">இணைப்புகளைச் சேர்க்க முடியவில்லை.</string>
     <string name="unable_to_create_announcement">அறிவிப்பை உருவாக்க முடியவில்லை.</string>
     <string name="unable_to_create_course">பாடத்தை உருவாக்க முடியவில்லை.</string>
     <string name="unable_to_create_course_work">பாடப் பணியை உருவாக்க முடியவில்லை.</string>
+    <string name="unable_to_delete_announcement">அறிவிப்பை நீக்க முடியவில்லை.</string>
     <string name="unable_to_delete_course">பாடத்தை நீக்க முடியவில்லை.</string>
     <string name="unable_to_delete_course_work">பாடப் பணியை நீக்க முடியவில்லை.</string>
     <string name="unable_to_join_class">வகுப்பில் சேர முடியவில்லை.</string>
@@ -170,6 +183,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">மீண்டும் வருக!</string>
     <string name="you_have_no_attachments_uploaded">உங்களிடம் எந்த இணைப்புகளும் பதிவேற்றப்படவில்லை.</string>
+    <string name="your_answer">உங்கள் பதில்</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">உங்கள் ஆசிரியர் இதுவரை எந்த வகுப்புப் பாடத்தையும் ஒதுக்கவில்லை.</string>
     <string name="your_work">உங்கள் பணி</string>
 

@@ -18,16 +18,13 @@ import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
-import edumate.app.presentation.components.ComingSoon
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
-import edumate.app.presentation.view_classwork.screen.components.ContentAssignment
+import edumate.app.presentation.view_classwork.screen.components.ContentClasswork
 import edumate.app.presentation.view_classwork.screen.components.ContentMaterial
-import edumate.app.presentation.view_classwork.screen.components.TurnInDialog
-import edumate.app.presentation.view_classwork.screen.components.UnSubmitDialog
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -146,30 +143,35 @@ fun ViewClassworkScreen(
                     }
 
                     CourseWorkType.ASSIGNMENT -> {
-                        ContentAssignment(
+                        ContentClasswork(
                             uiState = uiState,
                             onEvent = onEvent,
                             snackbarHostState = snackbarHostState,
+                            classworkType = classworkType,
                             currentUserType = currentUserType,
                             navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }
 
                     CourseWorkType.SHORT_ANSWER_QUESTION -> {
-                        // TODO()
-                        ComingSoon(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .navigationBarsPadding()
+                        ContentClasswork(
+                            uiState = uiState,
+                            onEvent = onEvent,
+                            snackbarHostState = snackbarHostState,
+                            classworkType = classworkType,
+                            currentUserType = currentUserType,
+                            navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }
 
                     CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-                        // TODO()
-                        ComingSoon(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .navigationBarsPadding()
+                        ContentClasswork(
+                            uiState = uiState,
+                            onEvent = onEvent,
+                            snackbarHostState = snackbarHostState,
+                            classworkType = classworkType,
+                            currentUserType = currentUserType,
+                            navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }
 
@@ -180,26 +182,6 @@ fun ViewClassworkScreen(
             DataState.UNKNOWN -> {}
         }
     }
-
-    TurnInDialog(
-        onDismissRequest = {
-            onEvent(ViewClassworkUiEvent.OnOpenTurnInDialog(false))
-        },
-        uiState = uiState,
-        onConfirmClick = {
-            onEvent(ViewClassworkUiEvent.TurnIn)
-        }
-    )
-
-    UnSubmitDialog(
-        onDismissRequest = {
-            onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(false))
-        },
-        uiState = uiState,
-        onConfirmClick = {
-            onEvent(ViewClassworkUiEvent.UnSubmit)
-        }
-    )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
 }

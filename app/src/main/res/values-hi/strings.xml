@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_edited_">%1$s (संपादित %2$s)</string>
     <string name="_points">%1$s पॉइंट्स</string>
     <string name="_return">वापसी</string>
     <string name="add">जोड़ें</string>
@@ -11,6 +12,7 @@
     <string name="add_work">काम जोड़ें</string>
     <string name="all">सभी</string>
     <string name="all_students">सभी छात्र</string>
+    <string name="answer">जवाब</string>
     <string name="ask">पूछना</string>
     <string name="ask_your_teacher_for_the_class_code">अपने शिक्षक से कक्षा कोड के लिए पूछें और फिर उसे यहां दर्ज करें।</string>
     <string name="assign">सौंपना</string>
@@ -47,6 +49,10 @@
     <string name="delete_material">सामग्री हटाएं?</string>
     <string name="delete_question">प्रश्न हटाएं?</string>
     <string name="description">वर्णन</string>
+    <string name="dialog_delete_announcement_text">टिप्पणियां भी हटा दी जाएंगी।</string>
+    <string name="dialog_delete_announcement_title">घोषणा हटाएं?</string>
+    <string name="dialog_hand_in_question_text">आप बदलाव नहीं कर पाएंगे।</string>
+    <string name="dialog_hand_in_question_title">जवाब सबमिट करें?</string>
     <string name="dialog_remove_attachment_text">अटैचमेंट हटाएं?</string>
     <string name="dialog_return_submission_text1">%1$s को सूचित किया जाएगा और आपके द्वारा छोड़ी गई किसी भी टिप्पणी की जांच कर सकता है।</string>
     <string name="dialog_return_submission_text2">%1$s को सूचित किया जाएगा कि उनका ग्रेड बदल गया है।</string>
@@ -76,6 +82,7 @@
     <string name="get_started_by_inviting_students">छात्रों को आमंत्रित करके आरंभ करें।</string>
     <string name="get_started_message">शिक्षकों और छात्रों को संवाद करने, समय बचाने और संगठित रहने में मदद करना।</string>
     <string name="google">गूगल</string>
+    <string name="hand_in">हाथ डालें</string>
     <string name="handed_in">में सौंप दिया</string>
     <string name="have_an_account">खाता है?</string>
     <string name="hide_password">पासवर्ड छुपाएं</string>
@@ -101,6 +108,7 @@
     <string name="name">नाम</string>
     <string name="no_due_date">कोई देय तिथि नहीं है</string>
     <string name="no_files_attached">कोई फ़ाइल अटैच नहीं है</string>
+    <string name="not_handed_in">नहीं दिया गया</string>
     <string name="ok">ठीक</string>
     <string name="password">पासवर्ड</string>
     <string name="password_reset_description">अपना ईमेल पता दर्ज करें और हम आपको आपका पासवर्ड पुनर्प्राप्त करने के लिए एक लिंक भेजेंगे।</string>
@@ -127,6 +135,7 @@
     <string name="share">साझा करें</string>
     <string name="share_invitation_link">आमंत्रण लिंक साझा करें</string>
     <string name="share_with_your_class">अपनी कक्षा के साथ साझा करें</string>
+    <string name="share_with_your_class...">अपनी कक्षा के साथ साझा करें…</string>
     <string name="show_password">पासवर्ड दिखाएं</string>
     <string name="sign_in">साइन इन करें</string>
     <string name="sign_in_with_google">Google के साथ साइन इन करें</string>
@@ -139,16 +148,20 @@
     <string name="student_work">छात्र कार्य</string>
     <string name="students">छात्र</string>
     <string name="subject">विषय</string>
+    <string name="submit">जमा करना</string>
     <string name="switch_to_text_input">टेक्स्ट इनपुट पर स्विच करें</string>
     <string name="switch_to_touch_input">टच इनपुट पर स्विच करें</string>
     <string name="teachers">शिक्षक</string>
     <string name="teaching">शिक्षण</string>
+    <string name="the_student_hasnt_answered_the_question_yet">छात्र ने अभी तक प्रश्न का उत्तर नहीं दिया है।</string>
     <string name="turn_in">अंदर चालू करें</string>
     <string name="turned_in">चालू किया गया</string>
+    <string name="type_your_answer">अपना उत्तर लिखें</string>
     <string name="unable_to_add_attachments">अटैचमेंट जोड़ने में असमर्थ।</string>
     <string name="unable_to_create_announcement">घोषणा करने में असमर्थ।</string>
     <string name="unable_to_create_course">पाठ्यक्रम बनाने में असमर्थ।</string>
     <string name="unable_to_create_course_work">कोर्स वर्क बनाने में असमर्थ।</string>
+    <string name="unable_to_delete_announcement">घोषणा हटाने में असमर्थ।</string>
     <string name="unable_to_delete_course">पाठ्यक्रम हटाने में असमर्थ।</string>
     <string name="unable_to_delete_course_work">पाठ्यक्रम के काम को हटाने में असमर्थ।</string>
     <string name="unable_to_join_class">कक्षा में शामिल होने में असमर्थ।</string>
@@ -170,6 +183,7 @@
     <string name="url">यूआरएल</string>
     <string name="welcome_back">वापस स्वागत है!</string>
     <string name="you_have_no_attachments_uploaded">आपके पास कोई अटैचमेंट अपलोड नहीं है।</string>
+    <string name="your_answer">आपका जवाब</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">आपके शिक्षक ने अभी तक कोई क्लासवर्क असाइन नहीं किया है।</string>
     <string name="your_work">आपका काम</string>
 

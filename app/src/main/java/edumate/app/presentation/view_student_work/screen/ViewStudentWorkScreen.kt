@@ -36,14 +36,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -55,6 +59,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.ext.header
 import edumate.app.domain.model.course_work.CourseWork
+import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.components.ErrorScreen
@@ -81,6 +86,8 @@ fun ViewStudentWorkScreen(
     assignedStudent: UserProfile,
     onBackPressed: () -> Unit
 ) {
+    val topBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
     val refreshState = rememberPullRefreshState(
         refreshing = uiState.refreshing,
@@ -136,12 +143,14 @@ fun ViewStudentWorkScreen(
                         )
                     }
                 }
-            }
+            },
+            scrollBehavior = scrollBehavior
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .pullRefresh(refreshState),
+                .pullRefresh(refreshState)
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
             contentAlignment = Alignment.TopCenter
         ) {
             when (val dataState = uiState.dataState) {
@@ -181,12 +190,12 @@ fun ViewStudentWorkScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f),
-                            contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 16.dp),
+                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
                             content = {
                                 header {
-                                    Row(modifier = Modifier.padding(top = 2.dp, bottom = 14.dp)) {
+                                    Row(modifier = Modifier.padding(vertical = 2.dp)) {
                                         UserAvatar(
                                             id = assignedStudent.id,
                                             fullName = assignedStudent.displayName
@@ -248,30 +257,115 @@ fun ViewStudentWorkScreen(
                                         }
                                     }
                                 }
-                                if (attachments.isNullOrEmpty()) {
-                                    header {
-                                        ErrorScreen(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(128.dp),
-                                            errorMessage = stringResource(
-                                                id = Strings.no_files_attached
-                                            )
-                                        )
+                                when (courseWork.workType) {
+                                    CourseWorkType.ASSIGNMENT -> {
+                                        if (attachments.isNullOrEmpty()) {
+                                            header {
+                                                ErrorScreen(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(128.dp),
+                                                    errorMessage = stringResource(
+                                                        id = Strings.no_files_attached
+                                                    )
+                                                )
+                                            }
+                                        } else {
+                                            header {
+                                                Text(
+                                                    text = stringResource(id = Strings.attachments),
+                                                    modifier = Modifier.padding(
+                                                        top = 14.dp,
+                                                        bottom = 6.dp
+                                                    ),
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                            }
+                                            items(attachments) {
+                                                AttachmentsListItem(
+                                                    attachment = it,
+                                                    onClick = { url ->
+                                                        if (url != null) {
+                                                            val browserIntent = Intent(
+                                                                Intent.ACTION_VIEW,
+                                                                Uri.parse(url)
+                                                            )
+                                                            context.startActivity(browserIntent)
+                                                        }
+                                                    }
+                                                )
+                                            }
+                                        }
                                     }
-                                } else {
-                                    items(attachments) {
-                                        AttachmentsListItem(
-                                            attachment = it,
-                                            onClick = { url ->
-                                                if (url != null) {
-                                                    val browserIntent =
-                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                    context.startActivity(browserIntent)
+
+                                    CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                                        val submission = uiState.studentWork?.shortAnswerSubmission
+                                        header {
+                                            Column {
+                                                Text(
+                                                    text = stringResource(id = Strings.answer),
+                                                    modifier = Modifier.padding(
+                                                        top = 14.dp,
+                                                        bottom = 16.dp
+                                                    ),
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                                if (submission != null) {
+                                                    Text(text = submission.answer)
+                                                } else {
+                                                    ErrorScreen(
+                                                        modifier = Modifier
+                                                            .fillMaxWidth()
+                                                            .height(128.dp),
+                                                        errorMessage = stringResource(
+                                                            id = Strings.the_student_hasnt_answered_the_question_yet
+                                                        )
+                                                    )
                                                 }
                                             }
-                                        )
+                                        }
                                     }
+
+                                    CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                                        val submission =
+                                            uiState.studentWork?.multipleChoiceSubmission
+                                        header {
+                                            Column {
+                                                Text(
+                                                    text = stringResource(id = Strings.answer),
+                                                    modifier = Modifier.padding(
+                                                        top = 14.dp,
+                                                        bottom = 16.dp
+                                                    ),
+                                                    style = MaterialTheme.typography.titleMedium
+                                                )
+                                                if (courseWork.multipleChoiceQuestion != null) {
+                                                    courseWork.multipleChoiceQuestion.choices.forEach { text ->
+                                                        Row(
+                                                            Modifier
+                                                                .fillMaxWidth()
+                                                                .height(56.dp),
+                                                            verticalAlignment = Alignment.CenterVertically
+                                                        ) {
+                                                            RadioButton(
+                                                                selected = submission != null && text == submission.answer,
+                                                                onClick = null // null recommended for accessibility with screen readers
+                                                            )
+                                                            Text(
+                                                                text = text,
+                                                                style = MaterialTheme.typography.bodyLarge,
+                                                                modifier = Modifier.padding(
+                                                                    start = 16.dp
+                                                                )
+                                                            )
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    else -> {}
                                 }
                             }
                         )
@@ -290,12 +384,8 @@ fun ViewStudentWorkScreen(
                                         onEvent(ViewStudentWorkUiEvent.OnGradeChange(it))
                                     },
                                     modifier = Modifier.weight(1f),
-                                    label = {
-                                        Text(text = stringResource(id = Strings.mark))
-                                    },
-                                    suffix = {
-                                        Text(text = "/${courseWork.maxPoints}")
-                                    },
+                                    label = { Text(text = stringResource(id = Strings.mark)) },
+                                    suffix = { Text(text = "/${courseWork.maxPoints}") },
                                     keyboardOptions = KeyboardOptions(
                                         keyboardType = KeyboardType.Number,
                                         imeAction = ImeAction.Done
@@ -311,10 +401,9 @@ fun ViewStudentWorkScreen(
                             }
                             Button(
                                 onClick = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(true)) },
+                                modifier = Modifier.padding(top = 8.dp),
                                 enabled = isReturnEnabled
-                            ) {
-                                Text(text = stringResource(id = Strings._return))
-                            }
+                            ) { Text(text = stringResource(id = Strings._return)) }
                         }
                     }
                 }

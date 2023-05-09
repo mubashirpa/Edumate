@@ -22,7 +22,7 @@ fun ErrorScreen(
     errorMessage: String = stringResource(id = Strings.error_unexpected)
 ) {
     Box(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(
@@ -34,13 +34,13 @@ fun ErrorScreen(
 
 @Composable
 fun ErrorScreen(
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
     errorMessage: String = stringResource(id = Strings.error_unknown),
-    buttonTitle: String = stringResource(id = Strings.retry),
-    onRetry: () -> Unit
+    buttonTitle: String = stringResource(id = Strings.retry)
 ) {
     Column(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -49,7 +49,7 @@ fun ErrorScreen(
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(24.dp))
-        Button(onClick = onRetry) {
+        Button(onClick = onRetryClick) {
             Text(text = buttonTitle)
         }
     }
@@ -64,7 +64,7 @@ fun AnimatedErrorScreen(
     val composition by rememberLottieComposition(LottieCompositionSpec.Url(url))
 
     Column(
-        modifier = modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

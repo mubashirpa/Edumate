@@ -2,15 +2,21 @@ package edumate.app.presentation.teaching.screen
 
 import android.content.Context
 import android.content.Intent
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,7 +30,7 @@ import edumate.app.presentation.teaching.TeachingUiEvent
 import edumate.app.presentation.teaching.TeachingViewModel
 import edumate.app.presentation.teaching.screen.components.TeachingListItem
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
@@ -89,12 +95,15 @@ fun TeachingScreen(
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
-                        items(viewModel.uiState.courses) { course ->
+                        itemsIndexed(
+                            viewModel.uiState.courses,
+                            key = { _, item -> item.id }
+                        ) { index, course ->
                             TeachingListItem(
                                 course = course,
-                                onShareClick = {
-                                    share(context, it)
-                                },
+                                index = index,
+                                modifier = Modifier.animateItemPlacement(),
+                                onShareClick = { share(context, it) },
                                 onEditClick = navigateToCreateClass,
                                 onClick = navigateToClassDetails
                             )

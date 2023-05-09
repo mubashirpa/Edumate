@@ -80,7 +80,10 @@ fun ContentMaterial(
                     header {
                         Text(
                             text = stringResource(id = Strings.attachments),
-                            modifier = Modifier.padding(top = 6.dp),
+                            modifier = Modifier.padding(
+                                top = 14.dp,
+                                bottom = 6.dp
+                            ),
                             style = MaterialTheme.typography.titleMedium
                         )
                     }

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.profile.ProfileUiEvent
@@ -64,8 +65,9 @@ fun ProfileScreen(
                 id = uiState.currentUser?.uid.orEmpty(),
                 fullName = uiState.currentUser?.displayName ?: uiState.currentUser?.email.orEmpty(),
                 photoUri = uiState.currentUser?.photoUrl,
-                size = 114.dp,
-                textStyle = MaterialTheme.typography.displayMedium
+                size = 96.dp,
+                shape = MaterialTheme.shapes.extraLarge,
+                textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp)
             )
             Spacer(modifier = Modifier.height(16.dp))
             ListItem(

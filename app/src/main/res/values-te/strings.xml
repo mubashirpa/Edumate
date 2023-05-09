@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_edited_">%1$s (%2$s సవరించబడింది)</string>
     <string name="_points">%1$s పాయింట్లు</string>
     <string name="_return">రిటర్న్</string>
     <string name="add">జోడించు</string>
@@ -11,6 +12,7 @@
     <string name="add_work">పనిని జోడించు</string>
     <string name="all">అన్నీ</string>
     <string name="all_students">అందరు విద్యార్థులు</string>
+    <string name="answer">సమాధానం</string>
     <string name="ask">అడగండి</string>
     <string name="ask_your_teacher_for_the_class_code">తరగతి కోడ్ కోసం మీ టీచర్‌ని అడగండి, ఆపై దాన్ని ఇక్కడ నమోదు చేయండి.</string>
     <string name="assign">అసైన్ చేయండి</string>
@@ -47,6 +49,10 @@
     <string name="delete_material">మెటీరియల్‌ని తొలగించాలా?</string>
     <string name="delete_question">ప్రశ్నను తొలగించాలా?</string>
     <string name="description">వివరణ</string>
+    <string name="dialog_delete_announcement_text">వ్యాఖ్యలు కూడా తొలగించబడతాయి.</string>
+    <string name="dialog_delete_announcement_title">ప్రకటనను తొలగించాలా?</string>
+    <string name="dialog_hand_in_question_text">మీరు మార్పులు చేయలేరు.</string>
+    <string name="dialog_hand_in_question_title">సమాధానాన్ని సమర్పించాలా?</string>
     <string name="dialog_remove_attachment_text">అటాచ్‌మెంట్‌ను తీసివేయాలా?</string>
     <string name="dialog_return_submission_text1">%1$sకి తెలియజేయబడుతుంది మరియు మీరు వదిలిన ఏవైనా వ్యాఖ్యలను తనిఖీ చేయవచ్చు.</string>
     <string name="dialog_return_submission_text2">%1$sకి వారి గ్రేడ్ మారిందని తెలియజేయబడుతుంది.</string>
@@ -76,6 +82,7 @@
     <string name="get_started_by_inviting_students">విద్యార్థులను ఆహ్వానించడం ద్వారా ప్రారంభించండి.</string>
     <string name="get_started_message">అధ్యాపకులు మరియు విద్యార్థులకు కమ్యూనికేట్ చేయడానికి, సమయాన్ని ఆదా చేయడానికి మరియు వ్యవస్థీకృతంగా ఉండటానికి సహాయం చేస్తుంది.</string>
     <string name="google">Google</string>
+    <string name="hand_in">హ్యాండ్ ఇన్</string>
     <string name="handed_in">హ్యాండ్ ఇన్</string>
     <string name="have_an_account">ఖాతా ఉందా?</string>
     <string name="hide_password">పాస్‌వర్డ్‌ను దాచు</string>
@@ -88,7 +95,7 @@
     <string name="join_class">తరగతిలో చేరండి</string>
     <string name="leave_class">తరగతి నుండి నిష్క్రమించండి</string>
     <string name="leave_class_warning_message">మిమ్మల్ని మళ్లీ ఆహ్వానిస్తే తప్ప మీరు ఈ తరగతిని తెరవలేరు</string>
-    <string name="logout">Logout</string>
+    <string name="logout">లాగ్అవుట్</string>
     <string name="mark">మార్క్</string>
     <string name="mark_as_done">పూర్తయినట్లుగా గుర్తించండి</string>
     <string name="marked">మార్క్ చేయబడింది</string>
@@ -101,6 +108,7 @@
     <string name="name">పేరు</string>
     <string name="no_due_date">గడువు తేదీ లేదు</string>
     <string name="no_files_attached">ఫైళ్లు జోడించబడలేదు</string>
+    <string name="not_handed_in">అందుకోలేదు</string>
     <string name="ok">సరే</string>
     <string name="password">పాస్‌వర్డ్</string>
     <string name="password_reset_description">మీ ఇమెయిల్ చిరునామాను నమోదు చేయండి మరియు మీ పాస్‌వర్డ్‌ను పునరుద్ధరించడానికి మేము మీకు లింక్‌ను పంపుతాము.</string>
@@ -127,6 +135,7 @@
     <string name="share">భాగస్వామ్యం</string>
     <string name="share_invitation_link">ఆహ్వాన లింక్‌ను భాగస్వామ్యం చేయండి</string>
     <string name="share_with_your_class">మీ తరగతితో భాగస్వామ్యం చేయండి</string>
+    <string name="share_with_your_class...">మీ తరగతితో భాగస్వామ్యం చేయండి…</string>
     <string name="show_password">పాస్‌వర్డ్‌ను చూపు</string>
     <string name="sign_in">సైన్ ఇన్</string>
     <string name="sign_in_with_google">Googleతో సైన్ ఇన్ చేయండి</string>
@@ -139,16 +148,20 @@
     <string name="student_work">విద్యార్థి పని</string>
     <string name="students">విద్యార్థులు</string>
     <string name="subject">విషయం</string>
+    <string name="submit">సమర్పించు</string>
     <string name="switch_to_text_input">టెక్స్ట్ ఇన్‌పుట్‌కి మారండి</string>
     <string name="switch_to_touch_input">టచ్ ఇన్‌పుట్‌కి మారండి</string>
     <string name="teachers">ఉపాధ్యాయులు</string>
     <string name="teaching">బోధన</string>
+    <string name="the_student_hasnt_answered_the_question_yet">విద్యార్థి ఇంకా ప్రశ్నకు సమాధానం ఇవ్వలేదు.</string>
     <string name="turn_in">ఇన్ చేయి</string>
     <string name="turned_in">తిరిగినది</string>
+    <string name="type_your_answer">మీ సమాధానాన్ని టైప్ చేయండి</string>
     <string name="unable_to_add_attachments">జోడింపులను జోడించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_create_announcement">ప్రకటనను సృష్టించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_create_course">కోర్సును సృష్టించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_create_course_work">కోర్సు పనిని సృష్టించడం సాధ్యపడలేదు.</string>
+    <string name="unable_to_delete_announcement">ప్రకటనను తొలగించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_delete_course">కోర్సును తొలగించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_delete_course_work">కోర్సు పనిని తొలగించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_join_class">తరగతిలో చేరడం సాధ్యపడలేదు.</string>
@@ -162,7 +175,7 @@
     <string name="unable_to_update_announcement">ప్రకటనను నవీకరించడం సాధ్యపడలేదు.</string>
     <string name="unable_to_update_course">కోర్సును నవీకరించడం సాధ్యం కాలేదు.</string>
     <string name="unable_to_update_student_submission">సమర్పణను నవీకరించడం సాధ్యం కాదు.</string>
-    <string name="unenrol">Unenrol</string>
+    <string name="unenrol">నమోదు తీసివేయండి</string>
     <string name="unmarked">గుర్తించబడలేదు</string>
     <string name="unsubmit">సమర్పించు</string>
     <string name="update">నవీకరణ</string>
@@ -170,6 +183,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">తిరిగి స్వాగతం!</string>
     <string name="you_have_no_attachments_uploaded">మీకు ఎలాంటి జోడింపులు అప్‌లోడ్ చేయబడలేదు.</string>
+    <string name="your_answer">మీ సమాధానం</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">మీ టీచర్ ఇంకా ఏ క్లాస్‌వర్క్‌ను కేటాయించలేదు.</string>
     <string name="your_work">మీ పని</string>
 

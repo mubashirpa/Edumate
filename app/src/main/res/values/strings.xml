@@ -13,6 +13,7 @@
     <string name="add_work">Add work</string>
     <string name="all">All</string>
     <string name="all_students">All students</string>
+    <string name="answer">Answer</string>
     <string name="ask">Ask</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
     <string name="assign">Assign</string>
@@ -51,6 +52,8 @@
     <string name="description">Description</string>
     <string name="dialog_delete_announcement_text">Comments will also be deleted.</string>
     <string name="dialog_delete_announcement_title">Delete announcement?</string>
+    <string name="dialog_hand_in_question_text">You wont be able to make changes.</string>
+    <string name="dialog_hand_in_question_title">Submit answer?</string>
     <string name="dialog_remove_attachment_text">Remove attachment?</string>
     <string name="dialog_return_submission_text1">%1$s will be notified and can check any comments that you\'ve left.</string>
     <string name="dialog_return_submission_text2">%1$s will be notified that their grade has changed.</string>
@@ -80,6 +83,7 @@
     <string name="get_started_by_inviting_students">Get started by inviting students.</string>
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
     <string name="google">Google</string>
+    <string name="hand_in">Hand in</string>
     <string name="handed_in">Handed in</string>
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
@@ -106,6 +110,7 @@
     <string name="navigate_up" translatable="false">Navigate up</string>
     <string name="no_due_date">No due date</string>
     <string name="no_files_attached">No files attached</string>
+    <string name="not_handed_in">Not handed in</string>
     <string name="ok">OK</string>
     <string name="password">Password</string>
     <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
@@ -145,12 +150,15 @@
     <string name="student_work">Student work</string>
     <string name="students">Students</string>
     <string name="subject">Subject</string>
+    <string name="submit">Submit</string>
     <string name="switch_to_text_input">Switch to Text Input</string>
     <string name="switch_to_touch_input">Switch to Touch Input</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
+    <string name="the_student_hasnt_answered_the_question_yet">The student hasn\'t answered the question yet.</string>
     <string name="turn_in">Turn in</string>
     <string name="turned_in">Turned in</string>
+    <string name="type_your_answer">Type your answer</string>
     <string name="unable_to_add_attachments">Unable to add attachments.</string>
     <string name="unable_to_create_announcement">Unable to create announcement.</string>
     <string name="unable_to_create_course">Unable to create course.</string>
@@ -177,6 +185,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">Welcome back!</string>
     <string name="you_have_no_attachments_uploaded">You have no attachments uploaded.</string>
+    <string name="your_answer">Your answer</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
     <string name="your_work">Your work</string>
 

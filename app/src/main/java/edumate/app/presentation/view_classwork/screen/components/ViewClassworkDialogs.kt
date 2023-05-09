@@ -65,6 +65,38 @@ fun TurnInDialog(
 }
 
 @Composable
+fun HandInDialog(
+    onDismissRequest: () -> Unit,
+    uiState: ViewClassworkUiState,
+    onConfirmClick: () -> Unit
+) {
+    if (uiState.openHandInDialog) {
+        AlertDialog(
+            onDismissRequest = onDismissRequest,
+            title = {
+                Text(text = stringResource(id = Strings.dialog_hand_in_question_title))
+            },
+            text = {
+                Text(text = stringResource(id = Strings.dialog_hand_in_question_text))
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDismissRequest()
+                        onConfirmClick()
+                    }
+                ) { Text(stringResource(id = Strings.submit)) }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismissRequest) {
+                    Text(stringResource(id = Strings.cancel))
+                }
+            }
+        )
+    }
+}
+
+@Composable
 fun UnSubmitDialog(
     onDismissRequest: () -> Unit,
     uiState: ViewClassworkUiState,

@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
@@ -30,7 +31,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -50,6 +50,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.announcements.Announcement
+import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.UserAvatar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,21 +59,46 @@ fun AnnouncementsListItem(
     announcement: Announcement,
     modifier: Modifier = Modifier,
     currentUserId: String,
+    currentUserType: UserType,
     onClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
+    val isCreator = announcement.creatorUserId == currentUserId
 
     OutlinedCard(
         onClick = onClick,
         modifier = modifier,
         border = BorderStroke(width = Dp.Hairline, color = MaterialTheme.colorScheme.outline)
     ) {
-        ListItem(
-            headlineContent = { Text(text = announcement.creatorProfile?.displayName.orEmpty()) },
-            supportingContent = {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 72.dp)
+                .padding(start = 16.dp, end = 8.dp)
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // leadingContent
+            UserAvatar(
+                id = announcement.creatorUserId,
+                fullName = announcement.creatorProfile?.displayName
+                    ?: announcement.creatorProfile?.emailAddress.orEmpty(),
+                photoUrl = announcement.creatorProfile?.photoUrl
+            )
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                // headlineContent
+                Text(
+                    text = announcement.creatorProfile?.displayName.orEmpty(),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1,
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                // supportingContent
                 val creationTime = announcement.creationTime
                 val updateTime = announcement.updateTime
                 if (creationTime != null) {
@@ -83,38 +109,33 @@ fun AnnouncementsListItem(
                     } else {
                         "$date"
                     }
-                    Text(text = text)
-                }
-            },
-            leadingContent = {
-                UserAvatar(
-                    id = announcement.creatorUserId,
-                    fullName = announcement.creatorProfile?.displayName
-                        ?: announcement.creatorProfile?.emailAddress.orEmpty(),
-                    photoUrl = announcement.creatorProfile?.photoUrl
-                )
-            },
-            trailingContent = if (announcement.creatorUserId == currentUserId) {
-                {
-                    MenuButton(
-                        onEditClick = onEditClick,
-                        onDeleteClick = onDeleteClick
+                    Text(
+                        text = text,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                        style = MaterialTheme.typography.bodyMedium
                     )
                 }
-            } else {
-                null
             }
-        )
+            // trailingContent
+            if (isCreator || currentUserType == UserType.TEACHER) {
+                Spacer(modifier = Modifier.width(16.dp))
+                MenuButton(
+                    isCreator = isCreator,
+                    onEditClick = onEditClick,
+                    onDeleteClick = onDeleteClick
+                )
+            }
+        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 8.dp)
+                .padding(top = 8.dp, bottom = 16.dp)
         ) {
             Text(
                 text = announcement.text,
-                modifier = Modifier
-                    .padding(horizontal = 16.dp)
-                    .padding(top = 8.dp)
+                modifier = Modifier.padding(horizontal = 16.dp)
             )
             if (announcement.materials.isNotEmpty()) {
                 Row(
@@ -203,6 +224,7 @@ fun AnnouncementsListItem(
 
 @Composable
 private fun MenuButton(
+    isCreator: Boolean,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit
 ) {
@@ -212,20 +234,23 @@ private fun MenuButton(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = null
+                contentDescription = null,
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            DropdownMenuItem(
-                text = { Text(text = stringResource(id = Strings.edit)) },
-                onClick = {
-                    expanded = false
-                    onEditClick()
-                }
-            )
+            if (isCreator) {
+                DropdownMenuItem(
+                    text = { Text(text = stringResource(id = Strings.edit)) },
+                    onClick = {
+                        expanded = false
+                        onEditClick()
+                    }
+                )
+            }
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = Strings.delete)) },
                 onClick = {

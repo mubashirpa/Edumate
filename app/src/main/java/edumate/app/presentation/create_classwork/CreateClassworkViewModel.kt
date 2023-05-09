@@ -8,6 +8,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.R.string as Strings
@@ -31,6 +32,7 @@ import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.course_work.CreateCourseWork
 import edumate.app.domain.usecase.course_work.GetCourseWork
 import edumate.app.domain.usecase.course_work.PatchCourseWork
+import edumate.app.domain.usecase.notification.SendNotificationUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -53,7 +55,8 @@ class CreateClassworkViewModel @Inject constructor(
     private val patchCourseWorkUseCase: PatchCourseWork,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
-    private val validateTextField: ValidateTextField
+    private val validateTextField: ValidateTextField,
+    private val sendNotificationUseCase: SendNotificationUseCase
 ) : ViewModel() {
 
     var uiState by mutableStateOf(CreateClassworkUiState())
@@ -69,6 +72,7 @@ class CreateClassworkViewModel @Inject constructor(
     private val type: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
     private val courseWork = mutableStateOf(CourseWork())
     private var getUrlMetadataJob: Job? = null
+    private var currentUser: FirebaseUser? = null
 
     init {
         val workType: CourseWorkType =
@@ -92,6 +96,7 @@ class CreateClassworkViewModel @Inject constructor(
         )
 
         getCurrentUserUseCase().map { user ->
+            currentUser = user
             if (user != null) {
                 courseWork.value = courseWork.value.copy(creatorUserId = user.uid)
             }
@@ -241,6 +246,7 @@ class CreateClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     val classwork = resource.data
                     if (classwork != null) {
+                        sendNotification(classwork.workType, classwork.title)
                         uiState = uiState.copy(openProgressDialog = false)
                         resultChannel.send(classwork.id)
                     } else {
@@ -274,6 +280,7 @@ class CreateClassworkViewModel @Inject constructor(
                         courseWork.value = classwork
                         val choices = classwork.multipleChoiceQuestion?.choices
                         if (choices != null) {
+                            uiState.choices.clear()
                             uiState.choices.addAll(choices)
                         }
                         uiState.attachments.addAll(classwork.materials)
@@ -454,5 +461,44 @@ class CreateClassworkViewModel @Inject constructor(
         return FirebaseFirestore.getInstance()
             .collection(FirebaseConstants.Firestore.COURSES_COLLECTION).document(courseId)
             .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document().id
+    }
+
+    private suspend fun sendNotification(workType: CourseWorkType, workTitle: String) {
+        val title = when (workType) {
+            CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
+                ""
+            }
+
+            CourseWorkType.MATERIAL -> {
+                "New material from ${currentUser?.displayName}"
+            }
+
+            CourseWorkType.ASSIGNMENT -> {
+                "New assignment from ${currentUser?.displayName}"
+            }
+
+            else -> {
+                "New question from ${currentUser?.displayName}"
+            }
+        }
+        val description = when (workType) {
+            CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
+                ""
+            }
+
+            CourseWorkType.MATERIAL -> {
+                "$workTitle • See details"
+            }
+
+            CourseWorkType.ASSIGNMENT -> {
+                "$workTitle • See details"
+            }
+
+            else -> {
+                "$workTitle • Answer question"
+            }
+        }
+        // TODO("Add user id")
+        sendNotificationUseCase(title, description)
     }
 }

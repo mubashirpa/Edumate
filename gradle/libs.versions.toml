@@ -9,6 +9,7 @@ com-google-dagger = "2.46"
 io-coil-kt = "2.3.0"
 kotlin = "1.8.21"
 kotlinCompilerExtensionVersion = "1.4.7"
+ktor_version = "2.3.0"
 minSdk = "24"
 sdkVersion = "33"
 
@@ -55,6 +56,9 @@ hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", ve
 hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
 jsoup = "org.jsoup:jsoup:1.16.1"
 junit = "junit:junit:4.13.2"
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor_version" }
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor_version" }
+onesignal = "com.onesignal:OneSignal:[4.0.0, 4.99.99]"
 
 [bundles]
 accompanist = [
@@ -87,6 +91,10 @@ firebase = [
 hilt = [
     "hilt-android",
     "hilt-navigation-compose",
+]
+ktor = [
+    "ktor-client-cio",
+    "ktor-client-core",
 ]
 lifecycle = [
     "androidx-lifecycle-runtime-ktx",

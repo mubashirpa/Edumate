@@ -186,11 +186,11 @@ fun PeopleScreen(
             when (val dataState = viewModel.uiState.dataState) {
                 is DataState.ERROR -> {
                     ErrorScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        errorMessage = dataState.message.asString(),
-                        onRetry = {
-                            viewModel.onEvent(PeopleUiEvent.OnRetry)
-                        }
+                        onRetryClick = { viewModel.onEvent(PeopleUiEvent.OnRetry) },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString()
                     )
                 }
 
@@ -307,8 +307,8 @@ fun PeopleScreen(
                                         PeopleListItem(
                                             userProfile = user,
                                             modifier = Modifier.animateItemPlacement(),
+                                            currentUserId = viewModel.uiState.currentUser?.uid.orEmpty(),
                                             currentUserType = currentUserType,
-                                            currentUserId = "${viewModel.uiState.currentUser?.uid}",
                                             courseOwnerId = course.ownerId,
                                             onLeaveClassClick = {
                                                 viewModel.onEvent(

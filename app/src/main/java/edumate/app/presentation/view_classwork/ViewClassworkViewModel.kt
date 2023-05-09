@@ -98,8 +98,20 @@ class ViewClassworkViewModel @Inject constructor(
                 uiState = uiState.copy(appBarMenuExpanded = event.expanded)
             }
 
+            is ViewClassworkUiEvent.OnEditShortAnswerChange -> {
+                uiState = uiState.copy(editShortAnswer = event.edit)
+            }
+
             is ViewClassworkUiEvent.OnFilePicked -> {
                 uploadFile(event.uri, event.fileUtils)
+            }
+
+            is ViewClassworkUiEvent.OnMultipleChoiceAnswerChange -> {
+                uiState = uiState.copy(multipleChoiceAnswer = event.answer)
+            }
+
+            is ViewClassworkUiEvent.OnOpenHandInDialog -> {
+                uiState = uiState.copy(openHandInDialog = event.open)
             }
 
             is ViewClassworkUiEvent.OnOpenRemoveAttachmentDialog -> {
@@ -122,6 +134,10 @@ class ViewClassworkViewModel @Inject constructor(
                 deleteFile(event.index)
             }
 
+            is ViewClassworkUiEvent.OnShortAnswerChange -> {
+                uiState = uiState.copy(shortAnswer = event.answer)
+            }
+
             ViewClassworkUiEvent.OnRefresh -> {
                 fetchClasswork(true)
                 fetchStudentSubmission()
@@ -131,12 +147,12 @@ class ViewClassworkViewModel @Inject constructor(
                 submitStudentSubmission()
             }
 
-            ViewClassworkUiEvent.UserMessageShown -> {
-                uiState = uiState.copy(userMessage = null)
-            }
-
             ViewClassworkUiEvent.UnSubmit -> {
                 unSubmitStudentSubmission()
+            }
+
+            ViewClassworkUiEvent.UserMessageShown -> {
+                uiState = uiState.copy(userMessage = null)
             }
         }
     }
@@ -241,7 +257,10 @@ class ViewClassworkViewModel @Inject constructor(
                     if (updatedStudentSubmission != null) {
                         updateStudentSubmission(
                             updatedStudentSubmission,
-                            uiState.copy(yourWorkDataState = DataState.SUCCESS)
+                            uiState.copy(
+                                editShortAnswer = false,
+                                yourWorkDataState = DataState.SUCCESS
+                            )
                         )
                     } else {
                         uiState = uiState.copy(
@@ -268,19 +287,19 @@ class ViewClassworkViewModel @Inject constructor(
 
         when (classworkType) {
             CourseWorkType.MATERIAL -> {}
+
             CourseWorkType.ASSIGNMENT -> {
                 assignmentSubmission =
                     AssignmentSubmission(attachments = uiState.studentSubmissionAttachments)
             }
 
             CourseWorkType.SHORT_ANSWER_QUESTION -> {
-                // TODO()
-                shortAnswerSubmission = ShortAnswerSubmission(answer = "")
+                shortAnswerSubmission = ShortAnswerSubmission(answer = uiState.shortAnswer)
             }
 
             CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-                // TODO()
-                multipleChoiceSubmission = MultipleChoiceSubmission(answer = "")
+                multipleChoiceSubmission =
+                    MultipleChoiceSubmission(answer = uiState.multipleChoiceAnswer)
             }
 
             else -> {
@@ -496,6 +515,10 @@ class ViewClassworkViewModel @Inject constructor(
         uiState.studentSubmissionAttachments.addAll(
             updatedStudentSubmission.assignmentSubmission?.attachments.orEmpty()
         )
-        uiState = updatedUiState.copy(studentSubmission = updatedStudentSubmission)
+        uiState = updatedUiState.copy(
+            multipleChoiceAnswer = updatedStudentSubmission.multipleChoiceSubmission?.answer.orEmpty(),
+            shortAnswer = updatedStudentSubmission.shortAnswerSubmission?.answer.orEmpty(),
+            studentSubmission = updatedStudentSubmission
+        )
     }
 }

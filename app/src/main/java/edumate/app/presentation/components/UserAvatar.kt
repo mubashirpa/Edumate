@@ -17,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +37,7 @@ fun UserAvatar(
     photoUri: Uri?,
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
+    shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium
 ) {
     if (photoUri != null) {
@@ -45,6 +47,7 @@ fun UserAvatar(
             photoUrl = photoUri.toString(),
             modifier = modifier,
             size = size,
+            shape = shape,
             textStyle = textStyle
         )
     } else {
@@ -54,6 +57,7 @@ fun UserAvatar(
             photoUrl = null,
             modifier = modifier,
             size = size,
+            shape = shape,
             textStyle = textStyle
         )
     }
@@ -66,6 +70,7 @@ fun UserAvatar(
     photoUrl: String?,
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
+    shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium
 ) {
     val name = fullName.split(" ")
@@ -78,6 +83,7 @@ fun UserAvatar(
             lastName = lastName,
             modifier = modifier,
             size = size,
+            shape = shape,
             textStyle = textStyle
         )
     }
@@ -91,7 +97,7 @@ fun UserAvatar(
             contentDescription = null,
             modifier = Modifier
                 .size(size)
-                .clip(CircleShape)
+                .clip(shape)
                 .then(modifier),
             contentScale = ContentScale.Crop
         ) {
@@ -121,6 +127,7 @@ private fun TextAvatar(
     lastName: String,
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
+    shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium
 ) {
     val color = remember(id, firstName, lastName) {
@@ -134,7 +141,7 @@ private fun TextAvatar(
     Box(
         modifier = Modifier
             .size(size)
-            .clip(CircleShape)
+            .clip(shape)
             .background(color)
             .then(modifier),
         contentAlignment = Alignment.Center

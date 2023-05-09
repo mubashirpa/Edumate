@@ -1,6 +1,5 @@
 package edumate.app.presentation.view_classwork.screen.components
 
-import android.text.format.DateUtils
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -9,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -31,7 +29,6 @@ import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -66,11 +63,13 @@ fun YourWorkBottomSheet(
                 ) {
                     Text(
                         text = stringResource(id = Strings.your_work),
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(end = 16.dp),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.titleLarge
                     )
-                    TopBarTrailingContent(uiState = uiState)
+                    DueText(uiState = uiState)
                 }
 
                 when (uiState.yourWorkDataState) {
@@ -326,131 +325,6 @@ private fun YourWorkActionButtons(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(id = Strings.turn_in))
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun TopBarTrailingContent(uiState: ViewClassworkUiState) {
-    val dueDate = uiState.classwork.dueTime
-    val date = if (dueDate != null) {
-        DateUtils.getRelativeTimeSpanString(dueDate.time)
-    } else {
-        null
-    }
-
-    Column {
-        when (uiState.studentSubmission?.state) {
-            SubmissionState.TURNED_IN -> {
-                val maxPoints = uiState.classwork.maxPoints
-                val assignedGrade = uiState.studentSubmission.assignedGrade
-
-                if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
-                    Text(
-                        text = "$assignedGrade/$maxPoints",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                } else {
-                    Text(
-                        text = stringResource(id = Strings.turned_in),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-                if (uiState.studentSubmission.late) {
-                    Text(
-                        text = stringResource(id = Strings.done_late),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-
-            SubmissionState.RETURNED -> {
-                val maxPoints = uiState.classwork.maxPoints
-                val assignedGrade = uiState.studentSubmission.assignedGrade
-
-                if (maxPoints != null && maxPoints > 0) {
-                    if (assignedGrade != null) {
-                        Text(
-                            text = "$assignedGrade/$maxPoints",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    } else {
-                        Text(
-                            text = stringResource(id = Strings.unmarked),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                } else {
-                    Icon(
-                        imageVector = Icons.Default.Done,
-                        contentDescription = null
-                    )
-                }
-                if (uiState.studentSubmission.late) {
-                    Text(
-                        text = stringResource(id = Strings.done_late),
-                        style = MaterialTheme.typography.labelSmall
-                    )
-                }
-            }
-
-            SubmissionState.RECLAIMED_BY_STUDENT -> {
-                val maxPoints = uiState.classwork.maxPoints
-                val assignedGrade = uiState.studentSubmission.assignedGrade
-
-                if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
-                    Text(
-                        text = "$assignedGrade/$maxPoints",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    if (uiState.studentSubmission.late) {
-                        Text(
-                            text = stringResource(id = Strings.done_late),
-                            style = MaterialTheme.typography.labelSmall
-                        )
-                    }
-                } else if (dueDate != null) {
-                    if (dueDate.before(Date())) {
-                        Text(
-                            text = stringResource(id = Strings.missing),
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    } else if (date != null) {
-                        Text(
-                            text = stringResource(id = Strings.due_, date),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                } else {
-                    Text(
-                        text = stringResource(id = Strings.no_due_date),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            else -> {
-                if (dueDate != null) {
-                    if (dueDate.before(Date())) {
-                        Text(
-                            text = stringResource(id = Strings.missing),
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    } else if (date != null) {
-                        Text(
-                            text = stringResource(id = Strings.due_, date),
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                    }
-                } else {
-                    Text(
-                        text = stringResource(id = Strings.no_due_date),
-                        style = MaterialTheme.typography.bodyMedium
-                    )
                 }
             }
         }

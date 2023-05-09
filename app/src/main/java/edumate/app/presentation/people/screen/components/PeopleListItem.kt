@@ -27,8 +27,8 @@ import edumate.app.presentation.components.UserAvatar
 fun PeopleListItem(
     userProfile: UserProfile,
     modifier: Modifier = Modifier,
-    currentUserType: UserType,
     currentUserId: String,
+    currentUserType: UserType,
     courseOwnerId: String,
     onLeaveClassClick: () -> Unit,
     onEmailClick: () -> Unit,

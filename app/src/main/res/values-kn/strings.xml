@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="_edited_">%1$s (%2$s ಸಂಪಾದಿಸಲಾಗಿದೆ)</string>
     <string name="_points">%1$s ಅಂಕಗಳು</string>
     <string name="_return">ಹಿಂತಿರುಗಿ</string>
     <string name="add">ಸೇರಿಸು</string>
@@ -11,6 +12,7 @@
     <string name="add_work">ಕೆಲಸವನ್ನು ಸೇರಿಸಿ</string>
     <string name="all">ಎಲ್ಲಾ</string>
     <string name="all_students">ಎಲ್ಲಾ ವಿದ್ಯಾರ್ಥಿಗಳು</string>
+    <string name="answer">ಉತ್ತರ</string>
     <string name="ask">ಕೇಳಿ</string>
     <string name="ask_your_teacher_for_the_class_code">ಕ್ಲಾಸ್ ಕೋಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಶಿಕ್ಷಕರನ್ನು ಕೇಳಿ ನಂತರ ಅದನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ.</string>
     <string name="assign">ನಿಯೋಜಿಸು</string>
@@ -47,6 +49,10 @@
     <string name="delete_material">ವಸ್ತುವನ್ನು ಅಳಿಸುವುದೇ?</string>
     <string name="delete_question">ಪ್ರಶ್ನೆಯನ್ನು ಅಳಿಸುವುದೇ?</string>
     <string name="description">ವಿವರಣೆ</string>
+    <string name="dialog_delete_announcement_text">ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
+    <string name="dialog_delete_announcement_title">ಘೋಷಣೆಯನ್ನು ಅಳಿಸುವುದೇ?</string>
+    <string name="dialog_hand_in_question_text">ನೀವು ಬದಲಾವಣೆಗಳನ್ನು ಮಾಡಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.</string>
+    <string name="dialog_hand_in_question_title">ಉತ್ತರವನ್ನು ಸಲ್ಲಿಸುವುದೇ?</string>
     <string name="dialog_remove_attachment_text">ಲಗತ್ತನ್ನು ತೆಗೆದುಹಾಕುವುದೇ?</string>
     <string name="dialog_return_submission_text1">%1$s ಅವರಿಗೆ ಸೂಚಿಸಲಾಗುವುದು ಮತ್ತು ನೀವು ಬಿಟ್ಟಿರುವ ಯಾವುದೇ ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಪರಿಶೀಲಿಸಬಹುದು.</string>
     <string name="dialog_return_submission_text2">%1$s ಅವರ ಗ್ರೇಡ್ ಬದಲಾಗಿದೆ ಎಂದು ಸೂಚಿಸಲಾಗುವುದು.</string>
@@ -76,6 +82,7 @@
     <string name="get_started_by_inviting_students">ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸುವ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ.</string>
     <string name="get_started_message">ಶಿಕ್ಷಕರು ಮತ್ತು ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಂವಹನ ಮಾಡಲು, ಸಮಯವನ್ನು ಉಳಿಸಲು ಮತ್ತು ಸಂಘಟಿತರಾಗಿರಲು ಸಹಾಯ ಮಾಡುವುದು.</string>
     <string name="google">Google</string>
+    <string name="hand_in">ಹ್ಯಾಂಡ್ ಇನ್</string>
     <string name="handed_in">ಹಸ್ತಾಂತರಿಸಲಾಗಿದೆ</string>
     <string name="have_an_account">ಖಾತೆ ಹೊಂದಿರುವಿರಾ?</string>
     <string name="hide_password">ಪಾಸ್‌ವರ್ಡ್ ಮರೆಮಾಡಿ</string>
@@ -88,19 +95,20 @@
     <string name="join_class">ವರ್ಗಕ್ಕೆ ಸೇರಿ</string>
     <string name="leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಿರಿ</string>
     <string name="leave_class_warning_message">ನಿಮ್ಮನ್ನು ಮರು-ಆಹ್ವಾನಿಸದ ಹೊರತು ಈ ತರಗತಿಯನ್ನು ತೆರೆಯಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ</string>
-    <string name="logout">Logout</string>
+    <string name="logout">ಲಾಗ್ ಔಟ್</string>
     <string name="mark">ಗುರುತು</string>
     <string name="mark_as_done">ಮುಗಿದಂತೆ ಗುರುತಿಸಿ</string>
     <string name="marked">ಗುರುತಿಸಲಾಗಿದೆ</string>
     <string name="marks_and_comments_will_also_be_deleted">ಮಾರ್ಕ್‌ಗಳು ಮತ್ತು ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="material">ಮೆಟೀರಿಯಲ್</string>
-    <string name="missing_message">ಸಂದೇಶ ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="material_title">ಮೆಟೀರಿಯಲ್ ಶೀರ್ಷಿಕೆ</string>
     <string name="missing">ಕಾಣೆಯಾಗಿದೆ</string>
+    <string name="missing_message">ಸಂದೇಶ ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="missing_title">ಕಾಣೆಯಾದ ಶೀರ್ಷಿಕೆ</string>
     <string name="name">ಹೆಸರು</string>
     <string name="no_due_date">ಯಾವುದೇ ಅಂತಿಮ ದಿನಾಂಕವಿಲ್ಲ</string>
     <string name="no_files_attached">ಯಾವುದೇ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಲಾಗಿಲ್ಲ</string>
+    <string name="not_handed_in">ಹಸ್ತಾಂತರಿಸಲಾಗಿಲ್ಲ</string>
     <string name="ok">ಸರಿ</string>
     <string name="password">ಗುಪ್ತಪದ</string>
     <string name="password_reset_description">ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ ಮತ್ತು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಪಡೆಯಲು ನಾವು ನಿಮಗೆ ಲಿಂಕ್ ಅನ್ನು ಕಳುಹಿಸುತ್ತೇವೆ.</string>
@@ -127,6 +135,7 @@
     <string name="share">ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_invitation_link">ಆಮಂತ್ರಣ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_with_your_class">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ</string>
+    <string name="share_with_your_class...">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ...</string>
     <string name="show_password">ಪಾಸ್ ವರ್ಡ್ ತೋರಿಸು</string>
     <string name="sign_in">ಸೈನ್ ಇನ್</string>
     <string name="sign_in_with_google">Google ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
@@ -139,20 +148,24 @@
     <string name="student_work">ವಿದ್ಯಾರ್ಥಿ ಕೆಲಸ</string>
     <string name="students">ವಿದ್ಯಾರ್ಥಿಗಳು</string>
     <string name="subject">ವಿಷಯ</string>
+    <string name="submit">ಸಲ್ಲಿಸು</string>
     <string name="switch_to_text_input">ಪಠ್ಯ ಇನ್‌ಪುಟ್‌ಗೆ ಬದಲಿಸಿ</string>
     <string name="switch_to_touch_input">ಟಚ್ ಇನ್‌ಪುಟ್‌ಗೆ ಬದಲಿಸಿ</string>
     <string name="teachers">ಶಿಕ್ಷಕರು</string>
     <string name="teaching">ಬೋಧನೆ</string>
+    <string name="the_student_hasnt_answered_the_question_yet">ವಿದ್ಯಾರ್ಥಿಯು ಇನ್ನೂ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಿಲ್ಲ.</string>
     <string name="turn_in">ತಿರುಗಿ</string>
     <string name="turned_in">ಇನ್ ಮಾಡಲಾಗಿದೆ</string>
+    <string name="type_your_answer">ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ</string>
     <string name="unable_to_add_attachments">ಲಗತ್ತುಗಳನ್ನು ಸೇರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_announcement">ಪ್ರಕಟಣೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course">ಕೋರ್ಸ್ ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
-    <string name="unable_to_join_class">ವರ್ಗಕ್ಕೆ ಸೇರಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
-    <string name="unable_to_leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_delete_announcement">ಪ್ರಕಟಣೆಯನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course">ಕೋರ್ಸ್ ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_join_class">ವರ್ಗಕ್ಕೆ ಸೇರಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_patch_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
     <string name="unable_to_reclaim_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_remove_student">ವಿದ್ಯಾರ್ಥಿಯನ್ನು ತೆಗೆದುಹಾಕಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
@@ -162,7 +175,7 @@
     <string name="unable_to_update_announcement">ಪ್ರಕಟಣೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_course">ಕೋರ್ಸ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
-    <string name="unenrol">unenrol</string>
+    <string name="unenrol">ನೋಂದಣಿ ರದ್ದುಮಾಡಿ</string>
     <string name="unmarked">ಗುರುತಿಸಲಾಗಿಲ್ಲ</string>
     <string name="unsubmit">ಸಲ್ಲದಿಸು</string>
     <string name="update">ನವೀಕರಿಸಿ</string>
@@ -170,6 +183,7 @@
     <string name="url">URL</string>
     <string name="welcome_back">ಮತ್ತೆ ಸ್ವಾಗತ!</string>
     <string name="you_have_no_attachments_uploaded">ನೀವು ಯಾವುದೇ ಲಗತ್ತುಗಳನ್ನು ಅಪ್‌ಲೋಡ್ ಮಾಡಿಲ್ಲ.</string>
+    <string name="your_answer">ನಿಮ್ಮ ಉತ್ತರ</string>
     <string name="your_teacher_hasnt_assigned_any_classwork_yet">ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇನ್ನೂ ಯಾವುದೇ ತರಗತಿಯನ್ನು ನಿಯೋಜಿಸಿಲ್ಲ.</string>
     <string name="your_work">ನಿಮ್ಮ ಕೆಲಸ</string>
 

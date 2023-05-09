@@ -79,6 +79,8 @@ dependencies {
     implementation(libs.bundles.accompanist)
     implementation(libs.jsoup)
     implementation(libs.airbnb.lottie.compose)
+    implementation(libs.onesignal)
+    implementation(libs.bundles.ktor)
 }
 
 kapt {

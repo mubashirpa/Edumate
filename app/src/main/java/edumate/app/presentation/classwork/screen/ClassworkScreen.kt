@@ -175,9 +175,11 @@ fun ClassworkScreen(
 
                 is DataState.ERROR -> {
                     ErrorScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        errorMessage = dataState.message.asString(),
-                        onRetry = { onEvent(ClassworkUiEvent.OnRetry) }
+                        onRetryClick = { onEvent(ClassworkUiEvent.OnRetry) },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString()
                     )
                 }
 

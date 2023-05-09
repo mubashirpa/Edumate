@@ -13,6 +13,8 @@ import edumate.app.data.repository.*
 import edumate.app.domain.repository.*
 import edumate.app.domain.usecase.MailMatcher
 import edumate.app.domain.usecase.validation.*
+import io.ktor.client.HttpClient
+import io.ktor.client.engine.cio.CIO
 import javax.inject.Singleton
 
 @Module
@@ -55,6 +57,11 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideNotificationApiService(client: HttpClient): NotificationApiService =
+        NotificationApiServiceImpl(client)
+
+    @Singleton
+    @Provides
     fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository =
         StudentsRepositoryImpl(firestore)
 
@@ -93,4 +100,10 @@ object AppModule {
     @Provides
     @Singleton
     fun provideValidateTextField(): ValidateTextField = ValidateTextField()
+
+    // Ktor client
+
+    @Singleton
+    @Provides
+    fun provideHttpClient(): HttpClient = HttpClient(CIO)
 }

@@ -1,8 +1,9 @@
 package edumate.app.presentation.enrolled.screen
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -23,7 +24,7 @@ import edumate.app.presentation.enrolled.EnrolledUiEvent
 import edumate.app.presentation.enrolled.EnrolledViewModel
 import edumate.app.presentation.enrolled.screen.components.EnrolledListItem
 
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun EnrolledScreen(
     viewModel: EnrolledViewModel = hiltViewModel(),
@@ -87,12 +88,15 @@ fun EnrolledScreen(
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
-                        items(viewModel.uiState.courses) { course ->
+                        itemsIndexed(
+                            viewModel.uiState.courses,
+                            key = { _, item -> item.id }
+                        ) { index, course ->
                             EnrolledListItem(
                                 course = course,
-                                onUnEnrollClick = {
-                                    viewModel.onEvent(EnrolledUiEvent.Unenroll(it))
-                                },
+                                index = index,
+                                modifier = Modifier.animateItemPlacement(),
+                                onUnEnrollClick = { viewModel.onEvent(EnrolledUiEvent.Unenroll(it)) },
                                 onClick = navigateToClassDetails
                             )
                         }

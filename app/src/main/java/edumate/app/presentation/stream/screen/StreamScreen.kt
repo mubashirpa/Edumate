@@ -1,5 +1,6 @@
 package edumate.app.presentation.stream.screen
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,12 +21,12 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -38,11 +39,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
+import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
@@ -67,6 +70,7 @@ fun StreamScreen(
     course: Course,
     navigateToCreateAnnouncement: (courseId: String) -> Unit,
     navigateToEditAnnouncement: (courseId: String, id: String) -> Unit,
+    navigateToViewAnnouncement: (courseId: String, id: String) -> Unit,
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
@@ -76,6 +80,12 @@ fun StreamScreen(
         refreshing = uiState.refreshing,
         onRefresh = { onEvent(StreamUiEvent.OnRefresh) }
     )
+    val currentUserType =
+        if (course.teacherGroupId.contains(uiState.currentUser?.uid)) {
+            UserType.TEACHER
+        } else {
+            UserType.STUDENT
+        }
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -139,9 +149,11 @@ fun StreamScreen(
             when (val dataState = uiState.dataState) {
                 is DataState.ERROR -> {
                     ErrorScreen(
-                        modifier = Modifier.fillMaxSize(),
-                        errorMessage = dataState.message.asString(),
-                        onRetry = { onEvent(StreamUiEvent.OnRetry) }
+                        onRetryClick = { onEvent(StreamUiEvent.OnRetry) },
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString()
                     )
                 }
 
@@ -161,7 +173,13 @@ fun StreamScreen(
                                 CourseTitleBanner(course = course)
                             }
                             item {
-                                ElevatedCard(onClick = { navigateToCreateAnnouncement(course.id) }) {
+                                OutlinedCard(
+                                    onClick = { navigateToCreateAnnouncement(course.id) },
+                                    border = BorderStroke(
+                                        width = Dp.Hairline,
+                                        color = MaterialTheme.colorScheme.outline
+                                    )
+                                ) {
                                     ListItem(
                                         headlineContent = {
                                             Text(
@@ -197,7 +215,13 @@ fun StreamScreen(
                                         announcement = announcement,
                                         modifier = Modifier.animateItemPlacement(),
                                         currentUserId = uiState.currentUser?.uid.orEmpty(),
-                                        onClick = { /*TODO*/ },
+                                        currentUserType = currentUserType,
+                                        onClick = {
+                                            navigateToViewAnnouncement(
+                                                course.id,
+                                                announcement.id
+                                            )
+                                        },
                                         onEditClick = {
                                             navigateToEditAnnouncement(
                                                 course.id,

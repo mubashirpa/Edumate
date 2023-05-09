@@ -47,7 +47,12 @@ fun StudentWorkListItem(
                                 text = "${studentSubmission.assignedGrade}/${courseWork.maxPoints}",
                                 style = MaterialTheme.typography.bodyMedium
                             )
-                            if (studentSubmission.late) {
+                            if (studentSubmission.state == SubmissionState.CREATED || studentSubmission.state == SubmissionState.NEW) {
+                                Text(
+                                    text = stringResource(id = Strings.not_handed_in),
+                                    style = MaterialTheme.typography.labelSmall
+                                )
+                            } else if (studentSubmission.late) {
                                 Text(
                                     text = stringResource(id = Strings.done_late),
                                     style = MaterialTheme.typography.labelSmall

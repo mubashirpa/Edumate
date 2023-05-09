@@ -6,6 +6,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import edumate.app.core.DataState
@@ -39,11 +40,11 @@ fun ClassDetailsScreen(
 
         is DataState.ERROR -> {
             ErrorScreen(
-                modifier = Modifier.fillMaxSize(),
-                errorMessage = dataState.message.asString(),
-                onRetry = {
-                    onEvent(ClassDetailsUiEvent.OnRetry)
-                }
+                onRetryClick = { onEvent(ClassDetailsUiEvent.OnRetry) },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
+                errorMessage = dataState.message.asString()
             )
         }
 

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.InsertDriveFile
@@ -48,12 +49,18 @@ fun AttachmentsListItem(
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
     val fileType = fileUtils.getFileType(attachment.driveFile?.type)
-    val icon = when (fileType) {
-        FileType.IMAGE -> Icons.Default.Image
-        FileType.VIDEO -> Icons.Default.VideoFile
-        FileType.AUDIO -> Icons.Default.AudioFile
-        FileType.PDF -> Icons.Default.PictureAsPdf
-        FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+    val icon = if (attachment.driveFile != null) {
+        when (fileType) {
+            FileType.IMAGE -> Icons.Default.Image
+            FileType.VIDEO -> Icons.Default.VideoFile
+            FileType.AUDIO -> Icons.Default.AudioFile
+            FileType.PDF -> Icons.Default.PictureAsPdf
+            FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+        }
+    } else if (attachment.link != null) {
+        Icons.Default.Link
+    } else {
+        Icons.Default.Attachment
     }
     val title: String = when {
         attachment.driveFile != null -> {
