@@ -26,9 +26,17 @@ class HomeViewModel @Inject constructor(
     }
 
     fun onEvent(event: HomeUiEvent) {
-        when (event) {
+        uiState = when (event) {
+            is HomeUiEvent.OnAppBarMenuExpandedChange -> {
+                uiState.copy(appBarMenuExpanded = event.expanded)
+            }
+
             is HomeUiEvent.OnOpenFabMenuChange -> {
-                uiState = uiState.copy(openFabMenu = event.open)
+                uiState.copy(openFabMenu = event.open)
+            }
+
+            is HomeUiEvent.OnRefreshChange -> {
+                uiState.copy(refreshing = event.refreshing)
             }
         }
     }

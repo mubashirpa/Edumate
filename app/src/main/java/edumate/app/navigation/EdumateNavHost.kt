@@ -20,6 +20,7 @@ import edumate.app.presentation.join_class.JoinClassViewModel
 import edumate.app.presentation.join_class.screen.JoinClassScreen
 import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
+import edumate.app.presentation.settings.SettingsScreen
 
 @Composable
 fun EdumateNavHost(
@@ -146,6 +147,9 @@ fun EdumateNavHost(
                     navController.navigateUp()
                 }
             )
+        }
+        composable(route = Screen.SettingsScreen.route) {
+            SettingsScreen()
         }
     }
 }

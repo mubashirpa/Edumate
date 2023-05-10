@@ -32,7 +32,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ഇപ്പോൾ വിദ്യാർത്ഥികളുടെ സമർപ്പിക്കലുകൾ വീണ്ടെടുക്കാൻ കഴിയില്ല, ദയവായി പിന്നീട് വീണ്ടും ശ്രമിക്കുക.</string>
     <string name="change_point_value">പോയിന്റ് മൂല്യം മാറ്റുക</string>
     <string name="class_code">ക്ലാസ് കോഡ്</string>
-    <string name="class_code_shared_by_your_teacher">ക്ലാസ് കോഡ് നിങ്ങളുടെ അധ്യാപകൻ പങ്കിട്ടു.</string>
     <string name="class_name">ക്ലാസ് നാമം</string>
     <string name="class_not_found">ക്ലാസ് കണ്ടെത്തിയില്ല.</string>
     <string name="classwork_not_found">ക്ലാസ് വർക്ക് കണ്ടെത്തിയില്ല.</string>
@@ -51,6 +50,8 @@
     <string name="description">വിവരണം</string>
     <string name="dialog_delete_announcement_text">അഭിപ്രായങ്ങളും ഇല്ലാതാക്കപ്പെടും.</string>
     <string name="dialog_delete_announcement_title">പ്രഖ്യാപനം ഇല്ലാതാക്കണോ?</string>
+    <string name="dialog_delete_course_text">ഈ ക്ലാസിലേക്ക് ചേർത്തിട്ടുള്ള പോസ്റ്റുകളിലേക്കോ കമന്റുകളിലേക്കോ നിങ്ങൾക്ക് ഇനി ആക്‌സസ് ഉണ്ടാകില്ല.\n\n<b>മുന്നറിയിപ്പ്: നിങ്ങൾക്ക് ഈ പ്രവർത്തനം പഴയപടിയാക്കാനാകില്ല.</b></string>
+    <string name="dialog_delete_course_title">ക്ലാസ് ഇല്ലാതാക്കണോ?</string>
     <string name="dialog_hand_in_question_text">നിങ്ങൾക്ക് മാറ്റങ്ങൾ വരുത്താൻ കഴിയില്ല.</string>
     <string name="dialog_hand_in_question_title">ഉത്തരം സമർപ്പിക്കണോ?</string>
     <string name="dialog_remove_attachment_text">അറ്റാച്ച്‌മെന്റ് നീക്കംചെയ്യണോ?</string>
@@ -62,6 +63,8 @@
     <string name="dialog_return_submission_title3">ജോലി തിരികെ നൽകണോ?</string>
     <string name="dialog_turn_in_assignment_text">നിങ്ങൾ \"%1$s\" എന്നതിലേക്ക് ഒന്നും അറ്റാച്ച് ചെയ്തിട്ടില്ല, അതിനാൽ ഒന്നും ഓണാക്കില്ല. അത് പൂർത്തിയായതായി നിങ്ങളുടെ ടീച്ചർ കാണും.</string>
     <string name="dialog_turn_in_assignment_title">നിങ്ങളുടെ ജോലിയിൽ പ്രവേശിക്കണോ?</string>
+    <string name="dialog_unenrol_text">നിങ്ങൾക്ക് ഇനി ക്ലാസ് കാണാനോ അതിൽ പങ്കെടുക്കാനോ കഴിയില്ല.</string>
+    <string name="dialog_unenrol_title">ക്ലാസിൽ നിന്ന് അൺഎൻറോൾ ചെയ്യണോ?</string>
     <string name="dialog_unsubmit_assignment_text">അറ്റാച്ച്‌മെന്റുകൾ ചേർക്കുന്നതിനോ മാറ്റുന്നതിനോ സമർപ്പിക്കാതിരിക്കുക. നിങ്ങൾ പൂർത്തിയാക്കിക്കഴിഞ്ഞാൽ വീണ്ടും സമർപ്പിക്കാൻ മറക്കരുത്.</string>
     <string name="dialog_unsubmit_assignment_title">നിങ്ങളുടെ ജോലി സമർപ്പിക്കാതിരിക്കണോ?</string>
     <string name="done_late">വൈകി ചെയ്തു</string>
@@ -75,6 +78,7 @@
     <string name="empty_screen_title">സ്‌ക്രീൻ നിർമ്മാണത്തിലാണ്</string>
     <string name="enrolled">എൻറോൾ ചെയ്തു</string>
     <string name="enter_a_class_name">ഒരു ക്ലാസ്സിന്റെ പേര് നൽകുക.</string>
+    <string name="enter_the_code_shared_by_your_teacher">നിങ്ങളുടെ അധ്യാപകൻ പങ്കിട്ട കോഡ് നൽകുക.</string>
     <string name="enter_time">സമയം നൽകുക</string>
     <string name="forgot_password">പാസ്‌വേഡ് മറന്നോ?</string>
     <string name="full_name">പൂർണ്ണമായ പേര്</string>
@@ -116,6 +120,7 @@
     <string name="please_sign_in_to_your_account">ദയവായി നിങ്ങളുടെ അക്കൗണ്ടിലേക്ക് സൈൻ ഇൻ ചെയ്യുക</string>
     <string name="post">പോസ്റ്റ്</string>
     <string name="posted_">പോസ്‌റ്റ് ചെയ്‌ത %1$s</string>
+    <string name="profile">പ്രൊഫൈൽ</string>
     <string name="question">ചോദ്യം</string>
     <string name="question_title">ചോദ്യ ശീർഷകം</string>
     <string name="recover">വീണ്ടെടുക്കുക</string>
@@ -132,6 +137,7 @@
     <string name="section">വിഭാഗം</string>
     <string name="select_time">സമയം തിരഞ്ഞെടുക്കുക</string>
     <string name="sending_recovery_email">ഇമെയിൽ അയയ്ക്കുന്നു</string>
+    <string name="settings">ക്രമീകരണങ്ങൾ</string>
     <string name="share">പങ്കിടുക</string>
     <string name="share_invitation_link">ക്ഷണ ലിങ്ക് പങ്കിടുക</string>
     <string name="share_with_your_class">നിങ്ങളുടെ ക്ലാസുമായി പങ്കിടുക</string>

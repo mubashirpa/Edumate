@@ -72,11 +72,19 @@ private fun MPSNavigationWrapper(
     ModalNavigationDrawer(
         drawerContent = {
             EdumateDrawerContent(
-                onProfileClicked = {
+                onItemClick = { index ->
                     coroutineScope.launch {
                         drawerState.close()
                     }
-                    rootNavController.navigate(Screen.ProfileScreen.route)
+                    when (index) {
+                        0 -> {
+                            rootNavController.navigate(Screen.ProfileScreen.route)
+                        }
+
+                        1 -> {
+                            rootNavController.navigate(Screen.SettingsScreen.route)
+                        }
+                    }
                 }
             )
         },

@@ -42,7 +42,11 @@ class EnrolledViewModel @Inject constructor(
 
     fun onEvent(event: EnrolledUiEvent) {
         when (event) {
-            is EnrolledUiEvent.Unenroll -> {
+            is EnrolledUiEvent.OnOpenUnEnrolDialogChange -> {
+                uiState = uiState.copy(unEnrolCourseId = event.courseId)
+            }
+
+            is EnrolledUiEvent.OnUnenroll -> {
                 if (currentUser != null) {
                     unEnroll(event.courseId, currentUser!!.uid)
                 }
@@ -104,10 +108,14 @@ class EnrolledViewModel @Inject constructor(
     }
 
     private fun unEnroll(courseId: String, userId: String) {
+        // TODO("Delete other resources related to course")
         deleteStudentUseCase(courseId, userId).onEach { resource ->
             when (resource) {
                 is Resource.Loading -> {
-                    uiState = uiState.copy(openProgressDialog = true)
+                    uiState = uiState.copy(
+                        openProgressDialog = true,
+                        unEnrolCourseId = null
+                    )
                 }
 
                 is Resource.Success -> {

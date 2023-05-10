@@ -106,11 +106,10 @@ fun CreateClassScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 16.dp)
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
                         .imePadding()
                         .verticalScroll(rememberScrollState())
                 ) {
-                    Spacer(modifier = Modifier.height(12.dp))
                     @Suppress("SENSELESS_COMPARISON")
                     TextField(
                         value = uiState.name,
@@ -202,7 +201,7 @@ fun CreateClassScreen(
                         }),
                         singleLine = true
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.height(24.dp))
                     val buttonText = if (courseId == null) {
                         Strings.create
                     } else {
@@ -216,7 +215,7 @@ fun CreateClassScreen(
                     ) {
                         Text(text = stringResource(id = buttonText))
                     }
-                    Spacer(modifier = Modifier.height(20.dp))
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

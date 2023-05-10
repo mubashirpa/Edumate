@@ -14,6 +14,7 @@ sealed class Screen(val route: String) {
     object ProfileScreen : Screen(Routes.Screen.PROFILE_SCREEN)
     object RecoverScreen : Screen(Routes.Screen.RECOVER_SCREEN)
     object RegisterScreen : Screen(Routes.Screen.REGISTER_SCREEN)
+    object SettingsScreen : Screen(Routes.Screen.SETTINGS_SCREEN)
     object StreamScreen : Screen(Routes.Screen.STREAM_SCREEN)
     object ViewClassworkScreen : Screen(Routes.Screen.VIEW_CLASSWORK_SCREEN)
     object ViewStudentWorkScreen : Screen(Routes.Screen.VIEW_STUDENT_WORK_SCREEN)

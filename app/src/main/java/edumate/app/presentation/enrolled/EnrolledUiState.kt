@@ -9,5 +9,6 @@ data class EnrolledUiState(
     val dataState: DataState = DataState.UNKNOWN,
     val openProgressDialog: Boolean = false,
     val refreshing: Boolean = false,
+    val unEnrolCourseId: String? = null,
     val userMessage: UiText? = null
 )

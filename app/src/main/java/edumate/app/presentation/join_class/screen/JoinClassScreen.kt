@@ -134,11 +134,13 @@ fun JoinClassScreen(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp, vertical = 10.dp)
                     .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
-                Spacer(modifier = Modifier.height(12.dp))
+                Text(text = stringResource(id = Strings.enter_the_code_shared_by_your_teacher))
+                Spacer(modifier = Modifier.height(16.dp))
+                @Suppress("SENSELESS_COMPARISON")
                 TextField(
                     value = uiState.classCode,
                     onValueChange = {
@@ -159,13 +161,7 @@ fun JoinClassScreen(
                             )
                         }
                     } else {
-                        {
-                            Text(
-                                text = stringResource(
-                                    id = Strings.class_code_shared_by_your_teacher
-                                )
-                            )
-                        }
+                        null
                     },
                     isError = uiState.classCodeError != null,
                     keyboardOptions = KeyboardOptions(
@@ -177,7 +173,7 @@ fun JoinClassScreen(
                     }),
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.height(30.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
                         onEvent(JoinClassUiEvent.OnJoinClick)
@@ -186,7 +182,7 @@ fun JoinClassScreen(
                 ) {
                     Text(text = stringResource(id = Strings.join))
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(10.dp))
             }
         }
     }

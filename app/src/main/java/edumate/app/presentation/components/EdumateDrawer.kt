@@ -1,5 +1,6 @@
 package edumate.app.presentation.components
 
+import androidx.annotation.StringRes
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -20,26 +22,29 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 
 @Composable
-fun EdumateDrawerContent(
-    onProfileClicked: () -> Unit
-) {
+fun EdumateDrawerContent(onItemClick: (Int) -> Unit) {
+    val items = listOf(DrawerItem.Profile, DrawerItem.Settings)
+
     ModalDrawerSheet {
         Spacer(Modifier.windowInsetsTopHeight(WindowInsets.statusBars))
         DrawerHeader()
         DividerItem()
         Spacer(Modifier.height(12.dp))
-        NavigationDrawerItem(
-            icon = { Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null) },
-            label = { Text("Profile") },
-            selected = false,
-            onClick = onProfileClicked,
-            modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
-        )
+        items.forEachIndexed { index, drawerItem ->
+            NavigationDrawerItem(
+                icon = { Icon(imageVector = drawerItem.icon, contentDescription = null) },
+                label = { Text(text = stringResource(id = drawerItem.label)) },
+                selected = false,
+                onClick = { onItemClick(index) },
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+            )
+        }
     }
 }
 
@@ -59,9 +64,17 @@ private fun DrawerHeader() {
 }
 
 @Composable
-fun DividerItem(modifier: Modifier = Modifier) {
+private fun DividerItem(modifier: Modifier = Modifier) {
     Divider(
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
+}
+
+private sealed class DrawerItem(
+    @StringRes var label: Int,
+    var icon: ImageVector
+) {
+    object Profile : DrawerItem(Strings.profile, Icons.Default.AccountCircle)
+    object Settings : DrawerItem(Strings.settings, Icons.Default.Settings)
 }

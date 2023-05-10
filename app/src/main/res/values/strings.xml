@@ -33,7 +33,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">Cannot retrieve student submissions at this time, please try again later.</string>
     <string name="change_point_value">Change point value</string>
     <string name="class_code">Class code</string>
-    <string name="class_code_shared_by_your_teacher">Class code shared by your teacher.</string>
     <string name="class_name">Class name</string>
     <string name="class_not_found">Class not found.</string>
     <string name="classwork_not_found">Classwork not found.</string>
@@ -52,6 +51,8 @@
     <string name="description">Description</string>
     <string name="dialog_delete_announcement_text">Comments will also be deleted.</string>
     <string name="dialog_delete_announcement_title">Delete announcement?</string>
+    <string name="dialog_delete_course_text">You will no longer have access to any posts or comments that have been added to this class.\n\n<b>Warning: You cannot undo this action.</b></string>
+    <string name="dialog_delete_course_title">Delete class?</string>
     <string name="dialog_hand_in_question_text">You wont be able to make changes.</string>
     <string name="dialog_hand_in_question_title">Submit answer?</string>
     <string name="dialog_remove_attachment_text">Remove attachment?</string>
@@ -63,6 +64,8 @@
     <string name="dialog_return_submission_title3">Return work?</string>
     <string name="dialog_turn_in_assignment_text">You didn\'t attach anything to \"%1$s\", so nothing will be turned in. Your teacher will see it\'s done.</string>
     <string name="dialog_turn_in_assignment_title">Turn in your work?</string>
+    <string name="dialog_unenrol_text">You\'ll no longer be able to see the class or participate in it.</string>
+    <string name="dialog_unenrol_title">Unenrol from class?</string>
     <string name="dialog_unsubmit_assignment_text">Unsubmit to add or change attachments. Don\'t forget to resubmit once you\'re done.</string>
     <string name="dialog_unsubmit_assignment_title">Unsubmit your work?</string>
     <string name="done_late">Done late</string>
@@ -76,6 +79,7 @@
     <string name="empty_screen_title">Screen under construction</string>
     <string name="enrolled">Enrolled</string>
     <string name="enter_a_class_name">Enter a class name.</string>
+    <string name="enter_the_code_shared_by_your_teacher">Enter the code shared by your teacher.</string>
     <string name="enter_time">Enter Time</string>
     <string name="forgot_password">Forgot password?</string>
     <string name="full_name">Full name</string>
@@ -118,6 +122,7 @@
     <string name="please_sign_in_to_your_account">Please sign in to your account</string>
     <string name="post">Post</string>
     <string name="posted_">Posted %1$s</string>
+    <string name="profile">Profile</string>
     <string name="question">Question</string>
     <string name="question_title">Question title</string>
     <string name="recover">Recover</string>
@@ -134,6 +139,7 @@
     <string name="section">Section</string>
     <string name="select_time">Select Time</string>
     <string name="sending_recovery_email">Sending email</string>
+    <string name="settings">Settings</string>
     <string name="share">Share</string>
     <string name="share_invitation_link">Share invitation link</string>
     <string name="share_with_your_class">Share with your class</string>

@@ -32,7 +32,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">இந்த நேரத்தில் மாணவர் சமர்ப்பிப்புகளை மீட்டெடுக்க முடியாது, பிறகு மீண்டும் முயற்சிக்கவும்.</string>
     <string name="change_point_value">புள்ளி மதிப்பை மாற்று</string>
     <string name="class_code">வகுப்புக் குறியீடு</string>
-    <string name="class_code_shared_by_your_teacher">வகுப்புக் குறியீடு உங்கள் ஆசிரியரால் பகிரப்பட்டது.</string>
     <string name="class_name">வகுப்பு பெயர்</string>
     <string name="class_not_found">வகுப்பு கிடைக்கவில்லை.</string>
     <string name="classwork_not_found">வகுப்பு வேலை கிடைக்கவில்லை.</string>
@@ -51,6 +50,8 @@
     <string name="description">விளக்கம்</string>
     <string name="dialog_delete_announcement_text">கருத்துகளும் நீக்கப்படும்.</string>
     <string name="dialog_delete_announcement_title">அறிவிப்பை நீக்கவா?</string>
+    <string name="dialog_delete_course_text">இந்த வகுப்பில் சேர்க்கப்பட்டுள்ள எந்த இடுகைகள் அல்லது கருத்துகளை இனி நீங்கள் அணுக முடியாது.\n\n<b>எச்சரிக்கை: இந்தச் செயலைச் செயல்தவிர்க்க முடியாது.</b></string>
+    <string name="dialog_delete_course_title">வகுப்பை நீக்கவா?</string>
     <string name="dialog_hand_in_question_text">உங்களால் மாற்றங்களைச் செய்ய முடியாது.</string>
     <string name="dialog_hand_in_question_title">பதிலைச் சமர்ப்பிக்கவா?</string>
     <string name="dialog_remove_attachment_text">இணைப்பை அகற்றவா?</string>
@@ -62,6 +63,8 @@
     <string name="dialog_return_submission_title3">பணியைத் திரும்பப் பெறவா?</string>
     <string name="dialog_turn_in_assignment_text">நீங்கள் \"%1$s\" உடன் எதையும் இணைக்கவில்லை, எனவே எதுவும் உள்ளிடப்படாது. அது முடிந்ததை உங்கள் ஆசிரியர் பார்ப்பார்.</string>
     <string name="dialog_turn_in_assignment_title">உங்கள் வேலையைத் தொடங்கவா?</string>
+    <string name="dialog_unenrol_text">இனி நீங்கள் வகுப்பைப் பார்க்கவோ அல்லது அதில் பங்கேற்கவோ முடியாது.</string>
+    <string name="dialog_unenrol_title">வகுப்பிலிருந்து நீக்கவா?</string>
     <string name="dialog_unsubmit_assignment_text">இணைப்புகளைச் சேர்க்க அல்லது மாற்றச் சமர்ப்பிக்க வேண்டாம். நீங்கள் முடித்ததும் மீண்டும் சமர்ப்பிக்க மறக்காதீர்கள்.</string>
     <string name="dialog_unsubmit_assignment_title">உங்கள் வேலையைச் சமர்ப்பிக்க வேண்டாமா?</string>
     <string name="done_late">தாமதமாக முடிந்தது</string>
@@ -75,6 +78,7 @@
     <string name="empty_screen_title">கட்டுமானத்தில் உள்ள திரை</string>
     <string name="enrolled">பதிவுசெய்யப்பட்டது</string>
     <string name="enter_a_class_name">வகுப்பின் பெயரை உள்ளிடவும்.</string>
+    <string name="enter_the_code_shared_by_your_teacher">உங்கள் ஆசிரியர் பகிர்ந்த குறியீட்டை உள்ளிடவும்.</string>
     <string name="enter_time">நேரத்தை உள்ளிடவும்</string>
     <string name="forgot_password">கடவுச்சொல்லை மறந்துவிட்டீர்களா?</string>
     <string name="full_name">முழு பெயர்</string>
@@ -116,6 +120,7 @@
     <string name="please_sign_in_to_your_account">உங்கள் கணக்கில் உள்நுழையவும்</string>
     <string name="post">இடுகை</string>
     <string name="posted_">இடுகையிடப்பட்டது %1$s</string>
+    <string name="profile">சுயவிவரம்</string>
     <string name="question">கேள்வி</string>
     <string name="question_title">கேள்வி தலைப்பு</string>
     <string name="recover">மீட்பு</string>
@@ -132,6 +137,7 @@
     <string name="section">பிரிவு</string>
     <string name="select_time">நேரத்தைத் தேர்ந்தெடு</string>
     <string name="sending_recovery_email">மின்னஞ்சலை அனுப்புகிறது</string>
+    <string name="settings">அமைப்புகள்</string>
     <string name="share">பகிர்</string>
     <string name="share_invitation_link">அழைப்பு இணைப்பைப் பகிர்</string>
     <string name="share_with_your_class">உங்கள் வகுப்பில் பகிரவும்</string>

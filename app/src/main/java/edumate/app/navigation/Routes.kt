@@ -16,6 +16,7 @@ object Routes {
         const val PROFILE_SCREEN = "profile_screen"
         const val RECOVER_SCREEN = "recover_screen"
         const val REGISTER_SCREEN = "register_screen"
+        const val SETTINGS_SCREEN = "settings_screen"
         const val STREAM_SCREEN = "stream_screen"
         const val VIEW_CLASSWORK_SCREEN = "view_classwork_screen"
         const val VIEW_STUDENT_WORK_SCREEN = "view_student_work_screen"

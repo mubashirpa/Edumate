@@ -15,12 +15,16 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DrawerState
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -51,6 +55,7 @@ import edumate.app.presentation.home.HomeTabsScreen
 import edumate.app.presentation.home.HomeUiEvent
 import edumate.app.presentation.home.HomeUiState
 import edumate.app.presentation.teaching.screen.TeachingScreen
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -74,6 +79,7 @@ fun HomeScreen(
     )
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
+    val refreshScope = rememberCoroutineScope()
 
     BackHandler(uiState.openFabMenu) {
         onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
@@ -104,6 +110,36 @@ fun HomeScreen(
                             size = 30.dp,
                             textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp)
                         )
+                    }
+                    Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
+                        IconButton(
+                            onClick = {
+                                onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(true))
+                            }
+                        ) {
+                            Icon(
+                                Icons.Default.MoreVert,
+                                contentDescription = null
+                            )
+                        }
+                        DropdownMenu(
+                            expanded = uiState.appBarMenuExpanded,
+                            onDismissRequest = {
+                                onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(false))
+                            }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text(stringResource(id = Strings.refresh)) },
+                                onClick = {
+                                    onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(false))
+                                    onEvent(HomeUiEvent.OnRefreshChange(true))
+                                    refreshScope.launch {
+                                        delay(500)
+                                        onEvent(HomeUiEvent.OnRefreshChange(false))
+                                    }
+                                }
+                            )
+                        }
                     }
                 }
             )
@@ -158,6 +194,7 @@ fun HomeScreen(
                             EnrolledScreen(
                                 snackbarHostState = snackbarHostState,
                                 contentPadding = contentPadding,
+                                refreshUsingActionButton = uiState.refreshing,
                                 navigateToClassDetails = navigateToClassDetails
                             )
                         }
@@ -166,6 +203,7 @@ fun HomeScreen(
                             TeachingScreen(
                                 snackbarHostState = snackbarHostState,
                                 contentPadding = contentPadding,
+                                refreshUsingActionButton = uiState.refreshing,
                                 navigateToCreateClass = navigateToCreateClass,
                                 navigateToClassDetails = navigateToClassDetails
                             )

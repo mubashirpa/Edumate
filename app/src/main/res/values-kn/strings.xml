@@ -32,7 +32,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಸಲ್ಲಿಕೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="change_point_value">ಪಾಯಿಂಟ್ ಮೌಲ್ಯವನ್ನು ಬದಲಾಯಿಸಿ</string>
     <string name="class_code">ಕ್ಲಾಸ್ ಕೋಡ್</string>
-    <string name="class_code_shared_by_your_teacher">ಕ್ಲಾಸ್ ಕೋಡ್ ಅನ್ನು ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಹಂಚಿಕೊಂಡಿದ್ದಾರೆ.</string>
     <string name="class_name">ವರ್ಗದ ಹೆಸರು</string>
     <string name="class_not_found">ವರ್ಗ ಕಂಡುಬಂದಿಲ್ಲ.</string>
     <string name="classwork_not_found">ಕ್ಲಾಸ್‌ವರ್ಕ್ ಕಂಡುಬಂದಿಲ್ಲ.</string>
@@ -51,6 +50,8 @@
     <string name="description">ವಿವರಣೆ</string>
     <string name="dialog_delete_announcement_text">ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="dialog_delete_announcement_title">ಘೋಷಣೆಯನ್ನು ಅಳಿಸುವುದೇ?</string>
+    <string name="dialog_delete_course_text">ಈ ತರಗತಿಗೆ ಸೇರಿಸಲಾದ ಯಾವುದೇ ಪೋಸ್ಟ್‌ಗಳು ಅಥವಾ ಕಾಮೆಂಟ್‌ಗಳಿಗೆ ನೀವು ಇನ್ನು ಮುಂದೆ ಪ್ರವೇಶವನ್ನು ಹೊಂದಿರುವುದಿಲ್ಲ.\n\n<b>ಎಚ್ಚರಿಕೆ: ನೀವು ಈ ಕ್ರಿಯೆಯನ್ನು ರದ್ದುಗೊಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</b></string>
+    <string name="dialog_delete_course_title">ವರ್ಗವನ್ನು ಅಳಿಸುವುದೇ?</string>
     <string name="dialog_hand_in_question_text">ನೀವು ಬದಲಾವಣೆಗಳನ್ನು ಮಾಡಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.</string>
     <string name="dialog_hand_in_question_title">ಉತ್ತರವನ್ನು ಸಲ್ಲಿಸುವುದೇ?</string>
     <string name="dialog_remove_attachment_text">ಲಗತ್ತನ್ನು ತೆಗೆದುಹಾಕುವುದೇ?</string>
@@ -62,6 +63,8 @@
     <string name="dialog_return_submission_title3">ಕೆಲಸ ಹಿಂತಿರುಗಿಸುವುದೇ?</string>
     <string name="dialog_turn_in_assignment_text">ನೀವು \"%1$s\" ಗೆ ಏನನ್ನೂ ಲಗತ್ತಿಸಿಲ್ಲ, ಆದ್ದರಿಂದ ಏನನ್ನೂ ಆನ್ ಮಾಡಲಾಗುವುದಿಲ್ಲ. ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಇದನ್ನು ಮಾಡಿದ್ದಾರೆ ಎಂದು ನೋಡುತ್ತಾರೆ.</string>
     <string name="dialog_turn_in_assignment_title">ನಿಮ್ಮ ಕೆಲಸವನ್ನು ಆನ್ ಮಾಡುವುದೇ?</string>
+    <string name="dialog_unenrol_text">ನೀವು ಇನ್ನು ಮುಂದೆ ತರಗತಿಯನ್ನು ನೋಡಲು ಅಥವಾ ಅದರಲ್ಲಿ ಭಾಗವಹಿಸಲು ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ.</string>
+    <string name="dialog_unenrol_title">ವರ್ಗದಿಂದ ನೋಂದಣಿ ರದ್ದು ಮಾಡುವುದೇ?</string>
     <string name="dialog_unsubmit_assignment_text">ಲಗತ್ತುಗಳನ್ನು ಸೇರಿಸಲು ಅಥವಾ ಬದಲಾಯಿಸಲು ಸಲ್ಲಿಸದಿರಿ. ಒಮ್ಮೆ ನೀವು ಪೂರ್ಣಗೊಳಿಸಿದ ನಂತರ ಮರುಸಲ್ಲಿಸುವುದನ್ನು ಮರೆಯಬೇಡಿ.</string>
     <string name="dialog_unsubmit_assignment_title">ನಿಮ್ಮ ಕೆಲಸವನ್ನು ಸಲ್ಲಿಸದಿರುವುದೇ?</string>
     <string name="done_late">ತಡವಾಗಿ ಮುಗಿದಿದೆ</string>
@@ -75,6 +78,7 @@
     <string name="empty_screen_title">ಸ್ಕ್ರೀನ್ ನಿರ್ಮಾಣ ಹಂತದಲ್ಲಿದೆ</string>
     <string name="enrolled">ನೋಂದಾಯಿತ</string>
     <string name="enter_a_class_name">ವರ್ಗದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.</string>
+    <string name="enter_the_code_shared_by_your_teacher">ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಹಂಚಿಕೊಂಡ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="enter_time">ಸಮಯವನ್ನು ನಮೂದಿಸಿ</string>
     <string name="forgot_password">ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರುವಿರಾ?</string>
     <string name="full_name">ಪೂರ್ಣ ಹೆಸರು</string>
@@ -116,6 +120,7 @@
     <string name="please_sign_in_to_your_account">ದಯವಿಟ್ಟು ನಿಮ್ಮ ಖಾತೆಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>
     <string name="post">ಪೋಸ್ಟ್</string>
     <string name="posted_">ಪೋಸ್ಟ್ %1$s</string>
+    <string name="profile">ಪ್ರೊಫೈಲ್</string>
     <string name="question">ಪ್ರಶ್ನೆ</string>
     <string name="question_title">ಪ್ರಶ್ನೆ ಶೀರ್ಷಿಕೆ</string>
     <string name="recover">ಚೇತರಿಸಿಕೊಳ್ಳಿ</string>
@@ -132,10 +137,11 @@
     <string name="section">ವಿಭಾಗ</string>
     <string name="select_time">ಸಮಯವನ್ನು ಆಯ್ಕೆಮಾಡಿ</string>
     <string name="sending_recovery_email">ಇಮೇಲ್ ಕಳುಹಿಸಲಾಗುತ್ತಿದೆ</string>
+    <string name="settings">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
     <string name="share">ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_invitation_link">ಆಮಂತ್ರಣ ಲಿಂಕ್ ಹಂಚಿಕೊಳ್ಳಿ</string>
     <string name="share_with_your_class">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ</string>
-    <string name="share_with_your_class...">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ...</string>
+    <string name="share_with_your_class...">ನಿಮ್ಮ ತರಗತಿಯೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಿ…</string>
     <string name="show_password">ಪಾಸ್ ವರ್ಡ್ ತೋರಿಸು</string>
     <string name="sign_in">ಸೈನ್ ಇನ್</string>
     <string name="sign_in_with_google">Google ನೊಂದಿಗೆ ಸೈನ್ ಇನ್ ಮಾಡಿ</string>

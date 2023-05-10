@@ -32,7 +32,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">इस समय छात्र सबमिशन पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="change_point_value">बिंदु मान बदलें</string>
     <string name="class_code">वर्ग कोड</string>
-    <string name="class_code_shared_by_your_teacher">आपके शिक्षक द्वारा साझा किया गया कक्षा कोड।</string>
     <string name="class_name">वर्ग का नाम</string>
     <string name="class_not_found">कक्षा नहीं मिली।</string>
     <string name="classwork_not_found">क्लासवर्क नहीं मिला।</string>
@@ -51,6 +50,8 @@
     <string name="description">वर्णन</string>
     <string name="dialog_delete_announcement_text">टिप्पणियां भी हटा दी जाएंगी।</string>
     <string name="dialog_delete_announcement_title">घोषणा हटाएं?</string>
+    <string name="dialog_delete_course_text">अब आप इस वर्ग में जोड़े गए किसी भी पोस्ट या टिप्पणी तक पहुंच नहीं पाएंगे।\n\n<b>चेतावनी: आप इस कार्रवाई को पूर्ववत नहीं कर सकते।</b></string>
+    <string name="dialog_delete_course_title">कक्षा हटाएं?</string>
     <string name="dialog_hand_in_question_text">आप बदलाव नहीं कर पाएंगे।</string>
     <string name="dialog_hand_in_question_title">जवाब सबमिट करें?</string>
     <string name="dialog_remove_attachment_text">अटैचमेंट हटाएं?</string>
@@ -62,6 +63,8 @@
     <string name="dialog_return_submission_title3">वापस काम?</string>
     <string name="dialog_turn_in_assignment_text">आपने \"%1$s\" में कुछ भी अटैच नहीं किया, इसलिए कुछ भी नहीं दिया जाएगा। आपके शिक्षक इसे हो गया देख लेंगे।</string>
     <string name="dialog_turn_in_assignment_title">अपना काम चालू करें?</string>
+    <string name="dialog_unenrol_text">अब आप कक्षा को देख या उसमें भाग नहीं ले पाएंगे।</string>
+    <string name="dialog_unenrol_title">कक्षा से नामांकन रद्द करें?</string>
     <string name="dialog_unsubmit_assignment_text">अटैचमेंट जोड़ने या बदलने के लिए सबमिट न करें। जब आप काम पूरा कर लें तो फिर से सबमिट करना न भूलें।</string>
     <string name="dialog_unsubmit_assignment_title">अपना काम अनसबमिट करें?</string>
     <string name="done_late">देर से हो गया</string>
@@ -75,6 +78,7 @@
     <string name="empty_screen_title">निर्माणाधीन स्क्रीन</string>
     <string name="enrolled">दाखिला लिया</string>
     <string name="enter_a_class_name">एक वर्ग का नाम दर्ज करें.</string>
+    <string name="enter_the_code_shared_by_your_teacher">अपने शिक्षक द्वारा साझा किया गया कोड दर्ज करें।</string>
     <string name="enter_time">समय दर्ज करें</string>
     <string name="forgot_password">पासवर्ड भूल गए?</string>
     <string name="full_name">पूरा नाम</string>
@@ -116,6 +120,7 @@
     <string name="please_sign_in_to_your_account">कृपया अपने खाते में साइन इन करें</string>
     <string name="post">पोस्ट</string>
     <string name="posted_">पोस्ट किया गया %1$s</string>
+    <string name="profile">प्रोफ़ाइल</string>
     <string name="question">प्रश्न</string>
     <string name="question_title">प्रश्न का शीर्षक</string>
     <string name="recover">वापस पाना</string>
@@ -132,6 +137,7 @@
     <string name="section">अनुभाग</string>
     <string name="select_time">समय चुनें</string>
     <string name="sending_recovery_email">ईमेल भेजा जा रहा है</string>
+    <string name="settings">समायोजन</string>
     <string name="share">साझा करें</string>
     <string name="share_invitation_link">आमंत्रण लिंक साझा करें</string>
     <string name="share_with_your_class">अपनी कक्षा के साथ साझा करें</string>

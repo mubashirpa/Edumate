@@ -32,7 +32,6 @@
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ఈ సమయంలో విద్యార్థి సమర్పణలను తిరిగి పొందడం సాధ్యం కాదు, దయచేసి తర్వాత మళ్లీ ప్రయత్నించండి.</string>
     <string name="change_point_value">పాయింట్ విలువను మార్చండి</string>
     <string name="class_code">తరగతి కోడ్</string>
-    <string name="class_code_shared_by_your_teacher">క్లాస్ కోడ్ మీ టీచర్ ద్వారా షేర్ చేయబడింది.</string>
     <string name="class_name">తరగతి పేరు</string>
     <string name="class_not_found">తరగతి కనుగొనబడలేదు.</string>
     <string name="classwork_not_found">క్లాస్‌వర్క్ కనుగొనబడలేదు.</string>
@@ -51,6 +50,8 @@
     <string name="description">వివరణ</string>
     <string name="dialog_delete_announcement_text">వ్యాఖ్యలు కూడా తొలగించబడతాయి.</string>
     <string name="dialog_delete_announcement_title">ప్రకటనను తొలగించాలా?</string>
+    <string name="dialog_delete_course_text">ఈ తరగతికి జోడించబడిన ఏ పోస్ట్‌లు లేదా వ్యాఖ్యలకు మీరు ఇకపై యాక్సెస్ చేయలేరు.\n\n<b>హెచ్చరిక: మీరు ఈ చర్యను రద్దు చేయలేరు.</b></string>
+    <string name="dialog_delete_course_title">తరగతిని తొలగించాలా?</string>
     <string name="dialog_hand_in_question_text">మీరు మార్పులు చేయలేరు.</string>
     <string name="dialog_hand_in_question_title">సమాధానాన్ని సమర్పించాలా?</string>
     <string name="dialog_remove_attachment_text">అటాచ్‌మెంట్‌ను తీసివేయాలా?</string>
@@ -62,6 +63,8 @@
     <string name="dialog_return_submission_title3">పనిని తిరిగి ఇవ్వాలా?</string>
     <string name="dialog_turn_in_assignment_text">మీరు \"%1$s\"కి దేన్నీ జోడించలేదు, కాబట్టి ఏదీ ప్రారంభించబడదు. మీ ఉపాధ్యాయుడు అది పూర్తయినట్లు చూస్తారు.</string>
     <string name="dialog_turn_in_assignment_title">మీ పనిని ప్రారంభించాలా?</string>
+    <string name="dialog_unenrol_text">మీరు ఇకపై తరగతిని చూడలేరు లేదా అందులో పాల్గొనలేరు.</string>
+    <string name="dialog_unenrol_title">తరగతి నుండి నమోదును తీసివేయాలా?</string>
     <string name="dialog_unsubmit_assignment_text">జోడింపులను జోడించడానికి లేదా మార్చడానికి సమర్పించవద్దు. మీరు పూర్తి చేసిన తర్వాత మళ్లీ సమర్పించడం మర్చిపోవద్దు.</string>
     <string name="dialog_unsubmit_assignment_title">మీ పనిని సమర్పించాలా?</string>
     <string name="done_late">ఆలస్యంగా పూర్తయింది</string>
@@ -75,6 +78,7 @@
     <string name="empty_screen_title">స్క్రీన్ నిర్మాణంలో ఉంది</string>
     <string name="enrolled">నమోదు చేయబడింది</string>
     <string name="enter_a_class_name">తరగతి పేరును నమోదు చేయండి.</string>
+    <string name="enter_the_code_shared_by_your_teacher">మీ టీచర్ షేర్ చేసిన కోడ్‌ని నమోదు చేయండి.</string>
     <string name="enter_time">సమయాన్ని నమోదు చేయండి</string>
     <string name="forgot_password">పాస్‌వర్డ్ మర్చిపోయారా?</string>
     <string name="full_name">పూర్తి పేరు</string>
@@ -116,6 +120,7 @@
     <string name="please_sign_in_to_your_account">దయచేసి మీ ఖాతాకు సైన్ ఇన్ చేయండి</string>
     <string name="post">పోస్ట్</string>
     <string name="posted_">పోస్ట్ చేసిన %1$s</string>
+    <string name="profile">ప్రొఫైల్</string>
     <string name="question">ప్రశ్న</string>
     <string name="question_title">ప్రశ్న శీర్షిక</string>
     <string name="recover">రికవర్</string>
@@ -132,6 +137,7 @@
     <string name="section">విభాగం</string>
     <string name="select_time">సమయాన్ని ఎంచుకోండి</string>
     <string name="sending_recovery_email">ఇమెయిల్ పంపుతోంది</string>
+    <string name="settings">సెట్టింగ్‌లు</string>
     <string name="share">భాగస్వామ్యం</string>
     <string name="share_invitation_link">ఆహ్వాన లింక్‌ను భాగస్వామ్యం చేయండి</string>
     <string name="share_with_your_class">మీ తరగతితో భాగస్వామ్యం చేయండి</string>

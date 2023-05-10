@@ -12,6 +12,7 @@ import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.courses.DeleteCourse
 import edumate.app.domain.usecase.courses.ListCourses
 import javax.inject.Inject
 import kotlinx.coroutines.Job
@@ -22,7 +23,8 @@ import kotlinx.coroutines.flow.onEach
 @HiltViewModel
 class TeachingViewModel @Inject constructor(
     getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val listCoursesUseCase: ListCourses
+    private val listCoursesUseCase: ListCourses,
+    private val deleteCourseUseCase: DeleteCourse
 ) : ViewModel() {
 
     var uiState by mutableStateOf(TeachingUiState())
@@ -34,14 +36,22 @@ class TeachingViewModel @Inject constructor(
     init {
         getCurrentUserUseCase().map { user ->
             currentUser = user
-            fetchClasses(user?.uid, false)
+            fetchCourses(user?.uid, false)
         }.launchIn(viewModelScope)
     }
 
     fun onEvent(event: TeachingUiEvent) {
         when (event) {
+            is TeachingUiEvent.OnDeleteCourse -> {
+                deleteCourse(event.courseId)
+            }
+
+            is TeachingUiEvent.OnOpenDeleteCourseDialogChange -> {
+                uiState = uiState.copy(deleteCourseId = event.courseId)
+            }
+
             TeachingUiEvent.OnRefresh -> {
-                fetchClasses(currentUser?.uid, true)
+                fetchCourses(currentUser?.uid, true)
             }
 
             TeachingUiEvent.UserMessageShown -> {
@@ -50,7 +60,7 @@ class TeachingViewModel @Inject constructor(
         }
     }
 
-    private fun fetchClasses(teacherId: String?, refreshing: Boolean) {
+    private fun fetchCourses(teacherId: String?, refreshing: Boolean) {
         // Cancel ongoing listCoursesJob before recall.
         listCoursesJob?.cancel()
         listCoursesJob = listCoursesUseCase(teacherId = teacherId).onEach { resource ->
@@ -90,6 +100,32 @@ class TeachingViewModel @Inject constructor(
                     } else {
                         uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
                     }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteCourse(courseId: String) {
+        // TODO("Delete other resources related to course like announcements")
+        deleteCourseUseCase(courseId).onEach { resource ->
+            when (resource) {
+                is Resource.Loading -> {
+                    uiState = uiState.copy(
+                        deleteCourseId = null,
+                        openProgressDialog = true
+                    )
+                }
+
+                is Resource.Success -> {
+                    uiState = uiState.copy(openProgressDialog = false)
+                    fetchCourses(currentUser?.uid, true)
+                }
+
+                is Resource.Error -> {
+                    uiState = uiState.copy(
+                        openProgressDialog = false,
+                        userMessage = resource.message
+                    )
                 }
             }
         }.launchIn(viewModelScope)

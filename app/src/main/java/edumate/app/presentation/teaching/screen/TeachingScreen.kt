@@ -26,8 +26,10 @@ import edumate.app.core.DataState
 import edumate.app.core.ext.supportWideScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
+import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.teaching.TeachingUiEvent
 import edumate.app.presentation.teaching.TeachingViewModel
+import edumate.app.presentation.teaching.screen.components.DeleteCourseDialog
 import edumate.app.presentation.teaching.screen.components.TeachingListItem
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -36,6 +38,7 @@ fun TeachingScreen(
     viewModel: TeachingViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
+    refreshUsingActionButton: Boolean,
     navigateToCreateClass: (courseId: String) -> Unit,
     navigateToClassDetails: (courseId: String) -> Unit
 ) {
@@ -46,6 +49,12 @@ fun TeachingScreen(
             viewModel.onEvent(TeachingUiEvent.OnRefresh)
         }
     )
+
+    LaunchedEffect(refreshUsingActionButton) {
+        if (refreshUsingActionButton) {
+            viewModel.onEvent(TeachingUiEvent.OnRefresh)
+        }
+    }
 
     viewModel.uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -105,6 +114,13 @@ fun TeachingScreen(
                                 modifier = Modifier.animateItemPlacement(),
                                 onShareClick = { share(context, it) },
                                 onEditClick = navigateToCreateClass,
+                                onDeleteClick = {
+                                    viewModel.onEvent(
+                                        TeachingUiEvent.OnOpenDeleteCourseDialogChange(
+                                            it
+                                        )
+                                    )
+                                },
                                 onClick = navigateToClassDetails
                             )
                         }
@@ -121,6 +137,18 @@ fun TeachingScreen(
             Modifier.align(Alignment.TopCenter)
         )
     }
+
+    DeleteCourseDialog(
+        onDismissRequest = {
+            viewModel.onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(null))
+        },
+        courseId = viewModel.uiState.deleteCourseId,
+        onConfirmClick = {
+            viewModel.onEvent(TeachingUiEvent.OnDeleteCourse(it))
+        }
+    )
+
+    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
 }
 
 private fun share(context: Context, text: String) {

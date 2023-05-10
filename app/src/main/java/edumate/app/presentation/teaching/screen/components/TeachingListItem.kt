@@ -28,6 +28,7 @@ fun TeachingListItem(
     modifier: Modifier = Modifier,
     onShareClick: (link: String) -> Unit,
     onEditClick: (courseId: String) -> Unit,
+    onDeleteClick: (courseId: String) -> Unit,
     onClick: (courseId: String) -> Unit
 ) {
     val images = remember {
@@ -87,7 +88,8 @@ fun TeachingListItem(
                     // trailingContent
                     TeachingMenuButton(
                         onShareClick = { onShareClick(course.alternateLink) },
-                        onEditClick = { onEditClick(course.id) }
+                        onEditClick = { onEditClick(course.id) },
+                        onDeleteClick = { onDeleteClick(course.id) }
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -108,7 +110,8 @@ fun TeachingListItem(
 @Composable
 private fun TeachingMenuButton(
     onShareClick: () -> Unit,
-    onEditClick: () -> Unit
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -136,6 +139,13 @@ private fun TeachingMenuButton(
                 onClick = {
                     expanded = false
                     onEditClick()
+                }
+            )
+            DropdownMenuItem(
+                text = { Text(stringResource(id = Strings.delete)) },
+                onClick = {
+                    expanded = false
+                    onDeleteClick()
                 }
             )
         }

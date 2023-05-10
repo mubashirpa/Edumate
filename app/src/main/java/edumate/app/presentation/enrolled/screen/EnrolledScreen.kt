@@ -1,7 +1,11 @@
 package edumate.app.presentation.enrolled.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
@@ -9,7 +13,8 @@ import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +28,7 @@ import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.enrolled.EnrolledUiEvent
 import edumate.app.presentation.enrolled.EnrolledViewModel
 import edumate.app.presentation.enrolled.screen.components.EnrolledListItem
+import edumate.app.presentation.enrolled.screen.components.UnEnrolDialog
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
@@ -30,6 +36,7 @@ fun EnrolledScreen(
     viewModel: EnrolledViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
+    refreshUsingActionButton: Boolean,
     navigateToClassDetails: (courseId: String) -> Unit
 ) {
     val context = LocalContext.current
@@ -39,6 +46,12 @@ fun EnrolledScreen(
             viewModel.onEvent(EnrolledUiEvent.OnRefresh)
         }
     )
+
+    LaunchedEffect(refreshUsingActionButton) {
+        if (refreshUsingActionButton) {
+            viewModel.onEvent(EnrolledUiEvent.OnRefresh)
+        }
+    }
 
     viewModel.uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -96,7 +109,9 @@ fun EnrolledScreen(
                                 course = course,
                                 index = index,
                                 modifier = Modifier.animateItemPlacement(),
-                                onUnEnrollClick = { viewModel.onEvent(EnrolledUiEvent.Unenroll(it)) },
+                                onUnEnrollClick = {
+                                    viewModel.onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(it))
+                                },
                                 onClick = navigateToClassDetails
                             )
                         }
@@ -113,6 +128,16 @@ fun EnrolledScreen(
             Modifier.align(Alignment.TopCenter)
         )
     }
+
+    UnEnrolDialog(
+        onDismissRequest = {
+            viewModel.onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(null))
+        },
+        courseId = viewModel.uiState.unEnrolCourseId,
+        onConfirmClick = {
+            viewModel.onEvent(EnrolledUiEvent.OnUnenroll(it))
+        }
+    )
 
     ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
 }
