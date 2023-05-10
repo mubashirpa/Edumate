@@ -294,7 +294,9 @@ fun PeopleScreen(
                         if (dataState is DataState.EMPTY) {
                             AnimatedErrorScreen(
                                 url = Constants.PEOPLE_SCREEN_EMPTY_ANIM_URL,
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 16.dp, vertical = 10.dp),
                                 errorMessage = dataState.message.asString()
                             )
                         } else {

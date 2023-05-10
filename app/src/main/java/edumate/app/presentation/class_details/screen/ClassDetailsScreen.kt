@@ -33,7 +33,9 @@ fun ClassDetailsScreen(
     when (val dataState = uiState.dataState) {
         is DataState.EMPTY -> {
             ErrorScreen(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp, vertical = 10.dp),
                 errorMessage = dataState.message.asString()
             )
         }

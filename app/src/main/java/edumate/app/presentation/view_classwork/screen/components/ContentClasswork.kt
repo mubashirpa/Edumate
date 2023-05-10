@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.pager.HorizontalPager
@@ -50,12 +51,15 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
+import edumate.app.core.DataState
 import edumate.app.core.ext.header
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.components.ErrorScreen
+import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.student_work.screen.StudentWorkScreen
 import edumate.app.presentation.view_classwork.ViewClassworkTabsScreen
 import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
@@ -248,172 +252,18 @@ fun ContentClasswork(
                                             )
                                         }
                                     }
-                                    if (!isTeacher && classworkType == CourseWorkType.SHORT_ANSWER_QUESTION) {
-                                        header {
-                                            Column {
-                                                Row(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .padding(
-                                                            top = 14.dp,
-                                                            bottom = 16.dp
-                                                        )
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(
-                                                            id = Strings.your_answer
-                                                        ),
-                                                        modifier = Modifier
-                                                            .padding(end = 16.dp)
-                                                            .weight(1f),
-                                                        style = MaterialTheme.typography.titleMedium
-                                                    )
-                                                    DueText(uiState = uiState)
-                                                }
-                                                if (uiState.studentSubmission?.shortAnswerSubmission?.answer == null || uiState.editShortAnswer) {
-                                                    TextField(
-                                                        value = uiState.shortAnswer,
-                                                        onValueChange = {
-                                                            onEvent(
-                                                                ViewClassworkUiEvent.OnShortAnswerChange(
-                                                                    it
-                                                                )
-                                                            )
-                                                        },
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        label = {
-                                                            Text(
-                                                                text = stringResource(
-                                                                    id = Strings.type_your_answer
-                                                                )
-                                                            )
-                                                        },
-                                                        keyboardOptions = KeyboardOptions(
-                                                            capitalization = KeyboardCapitalization.Sentences,
-                                                            autoCorrect = true
-                                                        )
-                                                    )
-                                                    Spacer(modifier = Modifier.height(16.dp))
-                                                    Button(
-                                                        onClick = {
-                                                            onEvent(ViewClassworkUiEvent.TurnIn)
-                                                        },
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        enabled = uiState.shortAnswer.isNotEmpty()
-                                                    ) {
-                                                        Text(
-                                                            text = stringResource(
-                                                                id = Strings.hand_in
-                                                            )
-                                                        )
-                                                    }
-                                                } else {
-                                                    Text(
-                                                        text = uiState.studentSubmission.shortAnswerSubmission.answer
-                                                    )
-                                                    Spacer(modifier = Modifier.height(16.dp))
-                                                    OutlinedButton(
-                                                        onClick = {
-                                                            onEvent(
-                                                                ViewClassworkUiEvent.OnEditShortAnswerChange(
-                                                                    true
-                                                                )
-                                                            )
-                                                        },
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        enabled = uiState.shortAnswer.isNotEmpty()
-                                                    ) {
-                                                        Text(
-                                                            text = stringResource(
-                                                                id = Strings.edit
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    if (!isTeacher && classworkType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
-                                        header {
-                                            Column {
-                                                Row(
-                                                    modifier = Modifier.padding(
-                                                        top = 14.dp,
-                                                        bottom = 16.dp
-                                                    )
-                                                ) {
-                                                    Text(
-                                                        text = stringResource(
-                                                            id = Strings.your_answer
-                                                        ),
-                                                        modifier = Modifier
-                                                            .padding(end = 16.dp)
-                                                            .weight(1f),
-                                                        style = MaterialTheme.typography.titleMedium
-                                                    )
-                                                    DueText(uiState = uiState)
-                                                }
-                                                val choices =
-                                                    uiState.classwork.multipleChoiceQuestion?.choices.orEmpty()
-                                                val choiceSelectable =
-                                                    uiState.studentSubmission?.multipleChoiceSubmission?.answer == null
-                                                Column(modifier = Modifier.selectableGroup()) {
-                                                    choices.forEach { text ->
-                                                        Row(
-                                                            Modifier
-                                                                .fillMaxWidth()
-                                                                .height(56.dp)
-                                                                .selectable(
-                                                                    selected = (text == uiState.multipleChoiceAnswer),
-                                                                    enabled = choiceSelectable,
-                                                                    role = Role.RadioButton,
-                                                                    onClick = {
-                                                                        onEvent(
-                                                                            ViewClassworkUiEvent.OnMultipleChoiceAnswerChange(
-                                                                                text
-                                                                            )
-                                                                        )
-                                                                    }
-                                                                ),
-                                                            verticalAlignment = Alignment.CenterVertically
-                                                        ) {
-                                                            RadioButton(
-                                                                selected = (text == uiState.multipleChoiceAnswer),
-                                                                onClick = null // null recommended for accessibility with screen readers
-                                                            )
-                                                            Text(
-                                                                text = text,
-                                                                style = MaterialTheme.typography.bodyLarge,
-                                                                modifier = Modifier.padding(
-                                                                    start = 16.dp
-                                                                )
-                                                            )
-                                                        }
-                                                    }
-                                                }
-                                                if (choiceSelectable) {
-                                                    Spacer(modifier = Modifier.height(16.dp))
-                                                    Button(
-                                                        onClick = {
-                                                            onEvent(
-                                                                ViewClassworkUiEvent.OnOpenHandInDialog(
-                                                                    true
-                                                                )
-                                                            )
-                                                        },
-                                                        modifier = Modifier.fillMaxWidth(),
-                                                        enabled = uiState.multipleChoiceAnswer.isNotEmpty()
-                                                    ) {
-                                                        Text(
-                                                            text = stringResource(
-                                                                id = Strings.hand_in
-                                                            )
-                                                        )
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                                    shortAnswerContent(
+                                        uiState = uiState,
+                                        onEvent = onEvent,
+                                        classworkType = classworkType,
+                                        isTeacher = isTeacher
+                                    )
+                                    multipleChoiceContent(
+                                        uiState = uiState,
+                                        onEvent = onEvent,
+                                        classworkType = classworkType,
+                                        isTeacher = isTeacher
+                                    )
                                 }
                             )
 
@@ -493,4 +343,250 @@ fun ContentClasswork(
         uiState = uiState,
         onConfirmClick = { onEvent(ViewClassworkUiEvent.OnRemoveAttachment(it)) }
     )
+}
+
+private fun LazyGridScope.shortAnswerContent(
+    uiState: ViewClassworkUiState,
+    onEvent: (ViewClassworkUiEvent) -> Unit,
+    classworkType: CourseWorkType,
+    isTeacher: Boolean
+) {
+    if (!isTeacher && classworkType == CourseWorkType.SHORT_ANSWER_QUESTION) {
+        header {
+            Column {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            top = 14.dp,
+                            bottom = 16.dp
+                        )
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = Strings.your_answer
+                        ),
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .weight(1f),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    DueText(uiState = uiState)
+                }
+                when (uiState.yourWorkDataState) {
+                    is DataState.EMPTY -> {
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
+                    }
+
+                    is DataState.ERROR -> {
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
+                    }
+
+                    DataState.LOADING -> {
+                        LoadingIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp)
+                        )
+                    }
+
+                    DataState.SUCCESS -> {
+                        if (uiState.studentSubmission?.shortAnswerSubmission?.answer == null || uiState.editShortAnswer) {
+                            TextField(
+                                value = uiState.shortAnswer,
+                                onValueChange = {
+                                    onEvent(
+                                        ViewClassworkUiEvent.OnShortAnswerChange(
+                                            it
+                                        )
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                label = {
+                                    Text(
+                                        text = stringResource(
+                                            id = Strings.type_your_answer
+                                        )
+                                    )
+                                },
+                                keyboardOptions = KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Sentences,
+                                    autoCorrect = true
+                                )
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = {
+                                    onEvent(ViewClassworkUiEvent.TurnIn)
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = uiState.shortAnswer.isNotEmpty()
+                            ) {
+                                Text(
+                                    text = stringResource(
+                                        id = Strings.hand_in
+                                    )
+                                )
+                            }
+                        } else {
+                            Text(
+                                text = uiState.studentSubmission.shortAnswerSubmission.answer
+                            )
+                            Spacer(modifier = Modifier.height(16.dp))
+                            OutlinedButton(
+                                onClick = {
+                                    onEvent(
+                                        ViewClassworkUiEvent.OnEditShortAnswerChange(
+                                            true
+                                        )
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = uiState.shortAnswer.isNotEmpty()
+                            ) {
+                                Text(
+                                    text = stringResource(
+                                        id = Strings.edit
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    DataState.UNKNOWN -> {}
+                }
+            }
+        }
+    }
+}
+
+private fun LazyGridScope.multipleChoiceContent(
+    uiState: ViewClassworkUiState,
+    onEvent: (ViewClassworkUiEvent) -> Unit,
+    classworkType: CourseWorkType,
+    isTeacher: Boolean
+) {
+    if (!isTeacher && classworkType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
+        header {
+            Column {
+                Row(
+                    modifier = Modifier.padding(
+                        top = 14.dp,
+                        bottom = 16.dp
+                    )
+                ) {
+                    Text(
+                        text = stringResource(
+                            id = Strings.your_answer
+                        ),
+                        modifier = Modifier
+                            .padding(end = 16.dp)
+                            .weight(1f),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    DueText(uiState = uiState)
+                }
+                when (uiState.yourWorkDataState) {
+                    is DataState.EMPTY -> {
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
+                    }
+
+                    is DataState.ERROR -> {
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
+                    }
+
+                    DataState.LOADING -> {
+                        LoadingIndicator(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp)
+                        )
+                    }
+
+                    DataState.SUCCESS -> {
+                        val choices =
+                            uiState.classwork.multipleChoiceQuestion?.choices.orEmpty()
+                        val choiceSelectable =
+                            uiState.studentSubmission?.multipleChoiceSubmission?.answer == null
+                        Column(modifier = Modifier.selectableGroup()) {
+                            choices.forEach { text ->
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(56.dp)
+                                        .selectable(
+                                            selected = (text == uiState.multipleChoiceAnswer),
+                                            enabled = choiceSelectable,
+                                            role = Role.RadioButton,
+                                            onClick = {
+                                                onEvent(
+                                                    ViewClassworkUiEvent.OnMultipleChoiceAnswerChange(
+                                                        text
+                                                    )
+                                                )
+                                            }
+                                        ),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    RadioButton(
+                                        selected = (text == uiState.multipleChoiceAnswer),
+                                        onClick = null // null recommended for accessibility with screen readers
+                                    )
+                                    Text(
+                                        text = text,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        modifier = Modifier.padding(
+                                            start = 16.dp
+                                        )
+                                    )
+                                }
+                            }
+                        }
+                        if (choiceSelectable) {
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Button(
+                                onClick = {
+                                    onEvent(
+                                        ViewClassworkUiEvent.OnOpenHandInDialog(
+                                            true
+                                        )
+                                    )
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                enabled = uiState.multipleChoiceAnswer.isNotEmpty()
+                            ) {
+                                Text(
+                                    text = stringResource(
+                                        id = Strings.hand_in
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    DataState.UNKNOWN -> {}
+                }
+            }
+        }
+    }
 }

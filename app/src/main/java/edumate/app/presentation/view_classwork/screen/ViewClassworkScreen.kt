@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.domain.model.course_work.CourseWork
@@ -111,6 +112,7 @@ fun ViewClassworkScreen(
                 ErrorScreen(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
                         .navigationBarsPadding(),
                     errorMessage = dataState.message.asString()
                 )
@@ -120,6 +122,7 @@ fun ViewClassworkScreen(
                 ErrorScreen(
                     modifier = Modifier
                         .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
                         .navigationBarsPadding(),
                     errorMessage = dataState.message.asString()
                 )

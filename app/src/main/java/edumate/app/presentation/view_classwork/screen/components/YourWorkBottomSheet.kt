@@ -73,11 +73,22 @@ fun YourWorkBottomSheet(
                 }
 
                 when (uiState.yourWorkDataState) {
+                    is DataState.EMPTY -> {
+                        ErrorScreen(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(128.dp)
+                                .padding(horizontal = 16.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString()
+                        )
+                    }
+
                     is DataState.ERROR -> {
                         ErrorScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(128.dp),
+                                .height(128.dp)
+                                .padding(horizontal = 16.dp),
                             errorMessage = uiState.yourWorkDataState.message.asString()
                         )
                     }
@@ -90,9 +101,7 @@ fun YourWorkBottomSheet(
                         )
                     }
 
-                    DataState.UNKNOWN -> {}
-
-                    else -> {
+                    DataState.SUCCESS -> {
                         Column(
                             modifier = Modifier.padding(
                                 horizontal = 16.dp,
@@ -179,6 +188,8 @@ fun YourWorkBottomSheet(
                             )
                         }
                     }
+
+                    DataState.UNKNOWN -> {}
                 }
             }
         }

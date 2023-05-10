@@ -160,7 +160,9 @@ fun ClassworkScreen(
                 is DataState.EMPTY -> {
                     AnimatedErrorScreen(
                         url = Constants.CLASSWORK_SCREEN_EMPTY_ANIM_URL,
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
                         errorMessage = if (currentUserType == UserType.TEACHER) {
                             stringResource(
                                 id = Strings.add_assignments_and_other_works_for_class
