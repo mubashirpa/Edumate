@@ -14,6 +14,7 @@
     <string name="all">All</string>
     <string name="all_students">All students</string>
     <string name="answer">Answer</string>
+    <string name="app_language">App language</string>
     <string name="ask">Ask</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
     <string name="assign">Assign</string>
@@ -28,6 +29,7 @@
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">Cannot retrieve course work at this time, please try again later.</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">Cannot retrieve course works at this time, please try again later.</string>
     <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">Cannot retrieve courses at this time, please try again later.</string>
+    <string name="cannot_retrieve_meetings_at_this_time_please_try_again_later">Cannot retrieve meetings at this time, please try again later.</string>
     <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">Cannot retrieve peoples at this time, please try again later.</string>
     <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">Cannot retrieve student submission at this time, please try again later.</string>
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">Cannot retrieve student submissions at this time, please try again later.</string>
@@ -41,8 +43,8 @@
     <string name="copy_link">Copy link</string>
     <string name="create">Create</string>
     <string name="create_class">Create class</string>
-    <string name="create_classwork">Create classwork</string>
     <string name="create_new_account">Create new account</string>
+    <string name="created_">Created %1$s</string>
     <string name="creating_account">Creating account</string>
     <string name="delete">Delete</string>
     <string name="delete_assignment">Delete assignment?</string>
@@ -86,6 +88,7 @@
     <string name="get_started">Get started</string>
     <string name="get_started_by_inviting_students">Get started by inviting students.</string>
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
+    <string name="go_live_for_your_students_and_teach_them_anytime_anywhere">Go live for your students and teach them anytime, anywhere.</string>
     <string name="google">Google</string>
     <string name="hand_in">Hand in</string>
     <string name="handed_in">Handed in</string>
@@ -101,20 +104,25 @@
     <string name="leave_class">Leave class</string>
     <string name="leave_class_warning_message">You wont be able to open this class unless you\'re re-invited</string>
     <string name="logout">Logout</string>
+    <string name="manage_notification_settings">Manage notification settings</string>
     <string name="mark">Mark</string>
     <string name="mark_as_done">Mark as done</string>
     <string name="marked">Marked</string>
     <string name="marks_and_comments_will_also_be_deleted">Marks and comments will also be deleted.</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
+    <string name="meetings">Meetings</string>
     <string name="missing">Missing</string>
     <string name="missing_message">Missing message</string>
     <string name="missing_title">Missing title</string>
     <string name="name">Name</string>
     <string name="navigate_up" translatable="false">Navigate up</string>
+    <string name="new_meeting">New meeting</string>
     <string name="no_due_date">No due date</string>
     <string name="no_files_attached">No files attached</string>
+    <string name="no_ongoing_live_classes_right_now">No ongoing live classes right now.</string>
     <string name="not_handed_in">Not handed in</string>
+    <string name="notifications">Notifications</string>
     <string name="ok">OK</string>
     <string name="password">Password</string>
     <string name="password_reset_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
@@ -162,6 +170,7 @@
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
     <string name="the_student_hasnt_answered_the_question_yet">The student hasn\'t answered the question yet.</string>
+    <string name="theme">Theme</string>
     <string name="turn_in">Turn in</string>
     <string name="turned_in">Turned in</string>
     <string name="type_your_answer">Type your answer</string>
@@ -169,9 +178,11 @@
     <string name="unable_to_create_announcement">Unable to create announcement.</string>
     <string name="unable_to_create_course">Unable to create course.</string>
     <string name="unable_to_create_course_work">Unable to create course work.</string>
+    <string name="unable_to_create_meeting">Unable to create meeting.</string>
     <string name="unable_to_delete_announcement">Unable to delete announcement.</string>
     <string name="unable_to_delete_course">Unable to delete course.</string>
     <string name="unable_to_delete_course_work">Unable to delete course work.</string>
+    <string name="unable_to_delete_meeting">Unable to delete meeting.</string>
     <string name="unable_to_join_class">Unable to join class.</string>
     <string name="unable_to_leave_class">Unable to leave class.</string>
     <string name="unable_to_patch_course_work">Unable to update course work.</string>
@@ -182,6 +193,7 @@
     <string name="unable_to_submit_student_submission">Unable to submit submission.</string>
     <string name="unable_to_update_announcement">Unable to update announcement.</string>
     <string name="unable_to_update_course">Unable to update course.</string>
+    <string name="unable_to_update_meeting">Unable to update meeting.</string>
     <string name="unable_to_update_student_submission">Unable to update submission.</string>
     <string name="unenrol">Unenrol</string>
     <string name="unmarked">Unmarked</string>
@@ -199,18 +211,20 @@
     <string name="title_create_class_screen">Create class</string>
     <string name="title_edit_class_screen">Edit class</string>
     <string name="title_join_class_screen">Join class</string>
+    <string name="title_meet_screen">Meet</string>
     <string name="title_profile_screen">Profile</string>
+    <string name="title_settings_screen">Settings</string>
 
     <!-- Screen labels -->
-    <string name="label_stream_screen">Stream</string>
     <string name="label_classwork_screen">Classwork</string>
+    <string name="label_meet_screen">Meet</string>
     <string name="label_people_screen">People</string>
+    <string name="label_stream_screen">Stream</string>
 
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
 
     <!-- Errors -->
-    <string name="error_course_not_found">No class with that class code.</string>
     <string name="error_unexpected">An unexpected error occurred.</string>
     <string name="error_unknown">Something wrong happened. Please try again.</string>
 
@@ -243,13 +257,4 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
-
-    <plurals name="number_of_students">
-        <item quantity="one">%1$d student</item>
-        <item quantity="other">%1$d students</item>
-    </plurals>
-    <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="one">%1$d attachment will be submitted for \"%2$s\".</item>
-        <item quantity="other">%1$d attachments will be submitted for \"%2$s\".</item>
-    </plurals>
 </resources>

@@ -27,7 +27,8 @@ import edumate.app.presentation.view_classwork.ViewClassworkUiState
 @Composable
 fun ContentMaterial(
     uiState: ViewClassworkUiState,
-    onEvent: (ViewClassworkUiEvent) -> Unit
+    onEvent: (ViewClassworkUiEvent) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     val navigationBarHeight =
@@ -45,7 +46,7 @@ fun ContentMaterial(
     )
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .pullRefresh(refreshState)
     ) {

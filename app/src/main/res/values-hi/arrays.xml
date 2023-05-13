@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="question_type">
+        <item>संक्षिप्त जवाब</item>
+        <item>बहुविकल्पी</item>
+    </string-array>
+    <string-array name="app_theme">
+        <item>प्रणालीगत चूक</item>
+        <item>रोशनी</item>
+        <item>अँधेरा</item>
+    </string-array>
+</resources>

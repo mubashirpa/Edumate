@@ -4,4 +4,25 @@
         <item>Short answer</item>
         <item>Multiple choice</item>
     </string-array>
+    <string-array name="app_theme">
+        <item>System default</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
+    <string-array name="app_language" translatable="false">
+        <item>English</item>
+        <item>Hindi</item>
+        <item>Kannada</item>
+        <item>Malayalam</item>
+        <item>Tamil</item>
+        <item>Telugu</item>
+    </string-array>
+    <string-array name="app_language_values" translatable="false">
+        <item>en</item>
+        <item>hi</item>
+        <item>kn</item>
+        <item>ml</item>
+        <item>ta</item>
+        <item>te</item>
+    </string-array>
 </resources>

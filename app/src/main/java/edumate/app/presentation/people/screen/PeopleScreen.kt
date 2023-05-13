@@ -300,10 +300,12 @@ fun PeopleScreen(
                                 errorMessage = dataState.message.asString()
                             )
                         } else {
+                            val bottomMargin =
+                                if (currentUserType == UserType.TEACHER) 88.dp else 0.dp
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 state = scrollState,
-                                contentPadding = PaddingValues(bottom = 88.dp),
+                                contentPadding = PaddingValues(bottom = bottomMargin),
                                 content = {
                                     items(viewModel.uiState.peoples, key = { it.id }) { user ->
                                         PeopleListItem(

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="question_type">
+        <item>ചെറിയ ഉത്തരം</item>
+        <item>ഒന്നിലധികം തിരഞ്ഞെടുപ്പ്</item>
+    </string-array>
+    <string-array name="app_theme">
+        <item>സിസ്റ്റം ഡിഫോൾട്ട്</item>
+        <item>വെളിച്ചം</item>
+        <item>ഇരുണ്ട</item>
+    </string-array>
+</resources>

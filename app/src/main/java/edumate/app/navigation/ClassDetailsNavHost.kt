@@ -20,6 +20,8 @@ import edumate.app.presentation.create_announcement.CreateAnnouncementViewModel
 import edumate.app.presentation.create_announcement.screen.CreateAnnouncementScreen
 import edumate.app.presentation.create_classwork.CreateClassworkViewModel
 import edumate.app.presentation.create_classwork.screen.CreateClassworkScreen
+import edumate.app.presentation.meet.MeetViewModel
+import edumate.app.presentation.meet.screen.MeetScreen
 import edumate.app.presentation.people.screen.PeopleScreen
 import edumate.app.presentation.stream.StreamViewModel
 import edumate.app.presentation.stream.screen.StreamScreen
@@ -248,6 +250,24 @@ fun ClassDetailsNavHost(
                 className = course.name,
                 onCreateAnnouncementSuccess = { navController.navigateUp() },
                 onBackPressed = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = Screen.MeetScreen.route,
+            arguments = listOf(
+                navArgument(Routes.Args.MEET_SCREEN_COURSE_ID) {
+                    type = NavType.StringType
+                    defaultValue = course.id
+                }
+            )
+        ) {
+            val viewModel: MeetViewModel = hiltViewModel()
+            MeetScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                snackbarHostState = snackbarHostState,
+                course = course,
+                onBackPressed = onBackPressed
             )
         }
     }

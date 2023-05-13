@@ -95,6 +95,10 @@ fun ViewStudentWorkScreen(
     )
     val isCourseWorkMarked = courseWork.maxPoints != null && courseWork.maxPoints > 0
 
+    LaunchedEffect(Unit) {
+        onEvent(ViewStudentWorkUiEvent.OnCreate(courseWork))
+    }
+
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))

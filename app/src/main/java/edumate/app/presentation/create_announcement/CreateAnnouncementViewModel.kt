@@ -359,6 +359,7 @@ class CreateAnnouncementViewModel @Inject constructor(
 
     private fun generateAnnouncementId(): String {
         return FirebaseDatabase.getInstance()
-            .getReference(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).push().key.orEmpty()
+            .getReference(FirebaseConstants.Database.ANNOUNCEMENTS_PATH)
+            .child(courseId).push().key.orEmpty()
     }
 }

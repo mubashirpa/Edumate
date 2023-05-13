@@ -9,10 +9,11 @@ import kotlinx.coroutines.flow.Flow
 interface FirebaseAuthRepository {
 
     val currentUserId: String
+
     val hasUser: Boolean
 
     /**
-     * Returns the currently signed-in [FirebaseUser] or null if there is none.
+     * @return The currently signed-in [FirebaseUser] or null if there is none.
      */
     val currentUser: Flow<FirebaseUser?>
 
@@ -32,26 +33,21 @@ interface FirebaseAuthRepository {
 
     /**
      * Tries to sign in a userProfile with the given AuthCredential.
-     *
      * @throws FirebaseAuthInvalidUserException thrown if the userProfile account you are trying to sign in to has been disabled. Also thrown if credential is an EmailAuthCredential with an email address that does not correspond to an existing userProfile.
-     *
      * @throws FirebaseAuthInvalidCredentialsException thrown if the credential is malformed or has expired. If credential instance of EmailAuthCredential it will be thrown if the password is incorrect.
-     *
      * @throws FirebaseAuthUserCollisionException thrown if there already exists an account with the email address asserted by the credential. Resolve this case by calling fetchSignInMethodsForEmail(String) and then asking the userProfile to sign in using one of them.
      */
     suspend fun signInWithGoogle(idToken: String): FirebaseUser?
 
     /**
      * Triggers the Firebase Authentication backend to send a password-reset email to the given email address, which must correspond to an existing userProfile of your app.
-     *
-     * @param email the email of the account to which you wish to issue an account reset email
-     *
+     * @param email the email of the account to which you wish to issue an account reset email.
      * @throws FirebaseAuthInvalidUserException thrown if there is no userProfile corresponding to the given email address.
      */
     suspend fun sendPasswordResetEmail(email: String): String
 
     /**
-     * Signs out the current userProfile and clears it from the disk cache
+     * Signs out the current userProfile and clears it from the disk cache.
      */
     fun signOut()
 }

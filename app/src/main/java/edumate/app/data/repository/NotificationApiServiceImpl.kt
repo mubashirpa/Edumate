@@ -1,11 +1,16 @@
 package edumate.app.data.repository
 
+import android.util.Log
 import edumate.app.core.Constants
 import edumate.app.domain.repository.NotificationApiService
 import io.ktor.client.HttpClient
-import io.ktor.client.request.get
-import io.ktor.client.request.parameter
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
+import io.ktor.http.ContentType
+import io.ktor.http.contentType
 import javax.inject.Inject
+import kotlinx.serialization.Serializable
 
 class NotificationApiServiceImpl @Inject constructor(
     private val client: HttpClient
@@ -13,12 +18,36 @@ class NotificationApiServiceImpl @Inject constructor(
 
     override suspend fun send(title: String, description: String) {
         try {
-            client.get(Constants.NOTIFICATION_SERVER_URL) {
-                parameter("title", title)
-                parameter("description", description)
+            val response: HttpResponse = client.post(Constants.NOTIFICATION_SERVER_URL) {
+                contentType(ContentType.Application.Json)
+                setBody(NotificationRequest(title, description, listOf("All")))
             }
+            Log.d(TAG, response.status.description)
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.e(TAG, e.message.toString(), e)
         }
     }
+
+    override suspend fun send(title: String, description: String, userIds: List<String>) {
+        try {
+            val response: HttpResponse = client.post(Constants.NOTIFICATION_SERVER_URL) {
+                contentType(ContentType.Application.Json)
+                setBody(NotificationRequest(title, description, userIds))
+            }
+            Log.d(TAG, response.status.description)
+        } catch (e: Exception) {
+            Log.e(TAG, e.message.toString(), e)
+        }
+    }
+
+    companion object {
+        private val TAG = NotificationApiServiceImpl::class.java.simpleName
+    }
 }
+
+@Serializable
+data class NotificationRequest(
+    val title: String,
+    val description: String,
+    val userIds: List<String>
+)

@@ -13,6 +13,7 @@
     <string name="all">ಎಲ್ಲಾ</string>
     <string name="all_students">ಎಲ್ಲಾ ವಿದ್ಯಾರ್ಥಿಗಳು</string>
     <string name="answer">ಉತ್ತರ</string>
+    <string name="app_language">ಅಪ್ಲಿಕೇಶನ್ ಭಾಷೆ</string>
     <string name="ask">ಕೇಳಿ</string>
     <string name="ask_your_teacher_for_the_class_code">ಕ್ಲಾಸ್ ಕೋಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಶಿಕ್ಷಕರನ್ನು ಕೇಳಿ ನಂತರ ಅದನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ.</string>
     <string name="assign">ನಿಯೋಜಿಸು</string>
@@ -27,6 +28,7 @@
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್ ಕೃತಿಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಕೋರ್ಸ್‌ಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
+    <string name="cannot_retrieve_meetings_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಸಭೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ಜನರನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಸಲ್ಲಿಕೆಯನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">ಈ ಸಮಯದಲ್ಲಿ ವಿದ್ಯಾರ್ಥಿ ಸಲ್ಲಿಕೆಗಳನ್ನು ಹಿಂಪಡೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ, ದಯವಿಟ್ಟು ನಂತರ ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
@@ -40,8 +42,9 @@
     <string name="copy_link">ಲಿಂಕ್ ನಕಲಿಸಿ</string>
     <string name="create">ರಚಿಸಿ</string>
     <string name="create_class">ವರ್ಗವನ್ನು ರಚಿಸಿ</string>
-    <string name="create_classwork">ಕ್ಲಾಸ್‌ವರ್ಕ್ ರಚಿಸಿ</string>
     <string name="create_new_account">ಹೊಸ ಖಾತೆಯನ್ನು ರಚಿಸಿ</string>
+    <string name="created_">%1$s</string>
+    ರಚಿಸಲಾಗಿದೆ
     <string name="creating_account">ಖಾತೆ ರಚಿಸಲಾಗುತ್ತಿದೆ</string>
     <string name="delete">ಅಳಿಸಿ</string>
     <string name="delete_assignment">ನಿಯೋಜನೆಯನ್ನು ಅಳಿಸುವುದೇ?</string>
@@ -85,6 +88,7 @@
     <string name="get_started">ಪ್ರಾರಂಭಿಸಿ</string>
     <string name="get_started_by_inviting_students">ವಿದ್ಯಾರ್ಥಿಗಳನ್ನು ಆಹ್ವಾನಿಸುವ ಮೂಲಕ ಪ್ರಾರಂಭಿಸಿ.</string>
     <string name="get_started_message">ಶಿಕ್ಷಕರು ಮತ್ತು ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಸಂವಹನ ಮಾಡಲು, ಸಮಯವನ್ನು ಉಳಿಸಲು ಮತ್ತು ಸಂಘಟಿತರಾಗಿರಲು ಸಹಾಯ ಮಾಡುವುದು.</string>
+    <string name="go_live_for_your_students_and_teach_them_anytime_anywhere">ನಿಮ್ಮ ವಿದ್ಯಾರ್ಥಿಗಳಿಗೆ ಲೈವ್‌ಗೆ ಹೋಗಿ ಮತ್ತು ಅವರಿಗೆ ಯಾವುದೇ ಸಮಯದಲ್ಲಿ, ಎಲ್ಲಿಯಾದರೂ ಕಲಿಸಿ.</string>
     <string name="google">Google</string>
     <string name="hand_in">ಹ್ಯಾಂಡ್ ಇನ್</string>
     <string name="handed_in">ಹಸ್ತಾಂತರಿಸಲಾಗಿದೆ</string>
@@ -100,19 +104,24 @@
     <string name="leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಿರಿ</string>
     <string name="leave_class_warning_message">ನಿಮ್ಮನ್ನು ಮರು-ಆಹ್ವಾನಿಸದ ಹೊರತು ಈ ತರಗತಿಯನ್ನು ತೆರೆಯಲು ನಿಮಗೆ ಸಾಧ್ಯವಾಗುವುದಿಲ್ಲ</string>
     <string name="logout">ಲಾಗ್ ಔಟ್</string>
+    <string name="manage_notification_settings">ಅಧಿಸೂಚನೆ ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ</string>
     <string name="mark">ಗುರುತು</string>
     <string name="mark_as_done">ಮುಗಿದಂತೆ ಗುರುತಿಸಿ</string>
     <string name="marked">ಗುರುತಿಸಲಾಗಿದೆ</string>
     <string name="marks_and_comments_will_also_be_deleted">ಮಾರ್ಕ್‌ಗಳು ಮತ್ತು ಕಾಮೆಂಟ್‌ಗಳನ್ನು ಸಹ ಅಳಿಸಲಾಗುತ್ತದೆ.</string>
     <string name="material">ಮೆಟೀರಿಯಲ್</string>
     <string name="material_title">ಮೆಟೀರಿಯಲ್ ಶೀರ್ಷಿಕೆ</string>
+    <string name="meetings">ಸಭೆಗಳು</string>
     <string name="missing">ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="missing_message">ಸಂದೇಶ ಕಾಣೆಯಾಗಿದೆ</string>
     <string name="missing_title">ಕಾಣೆಯಾದ ಶೀರ್ಷಿಕೆ</string>
     <string name="name">ಹೆಸರು</string>
+    <string name="new_meeting">ಹೊಸ ಸಭೆ</string>
     <string name="no_due_date">ಯಾವುದೇ ಅಂತಿಮ ದಿನಾಂಕವಿಲ್ಲ</string>
     <string name="no_files_attached">ಯಾವುದೇ ಫೈಲ್‌ಗಳನ್ನು ಲಗತ್ತಿಸಲಾಗಿಲ್ಲ</string>
+    <string name="no_ongoing_live_classes_right_now">ಸದ್ಯಕ್ಕೆ ಯಾವುದೇ ಲೈವ್ ತರಗತಿಗಳಿಲ್ಲ.</string>
     <string name="not_handed_in">ಹಸ್ತಾಂತರಿಸಲಾಗಿಲ್ಲ</string>
+    <string name="notifications">ಅಧಿಸೂಚನೆಗಳು</string>
     <string name="ok">ಸರಿ</string>
     <string name="password">ಗುಪ್ತಪದ</string>
     <string name="password_reset_description">ನಿಮ್ಮ ಇಮೇಲ್ ವಿಳಾಸವನ್ನು ನಮೂದಿಸಿ ಮತ್ತು ನಿಮ್ಮ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಮರುಪಡೆಯಲು ನಾವು ನಿಮಗೆ ಲಿಂಕ್ ಅನ್ನು ಕಳುಹಿಸುತ್ತೇವೆ.</string>
@@ -160,6 +169,7 @@
     <string name="teachers">ಶಿಕ್ಷಕರು</string>
     <string name="teaching">ಬೋಧನೆ</string>
     <string name="the_student_hasnt_answered_the_question_yet">ವಿದ್ಯಾರ್ಥಿಯು ಇನ್ನೂ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಿಲ್ಲ.</string>
+    <string name="theme">ಥೀಮ್</string>
     <string name="turn_in">ತಿರುಗಿ</string>
     <string name="turned_in">ಇನ್ ಮಾಡಲಾಗಿದೆ</string>
     <string name="type_your_answer">ನಿಮ್ಮ ಉತ್ತರವನ್ನು ಟೈಪ್ ಮಾಡಿ</string>
@@ -167,9 +177,11 @@
     <string name="unable_to_create_announcement">ಪ್ರಕಟಣೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course">ಕೋರ್ಸ್ ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_create_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_create_meeting">ಸಭೆಯನ್ನು ರಚಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_announcement">ಪ್ರಕಟಣೆಯನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course">ಕೋರ್ಸ್ ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_delete_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_delete_meeting">ಸಭೆಯನ್ನು ಅಳಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_join_class">ವರ್ಗಕ್ಕೆ ಸೇರಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_leave_class">ವರ್ಗವನ್ನು ತೊರೆಯಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_patch_course_work">ಕೋರ್ಸ್ ಕೆಲಸವನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಾಗಲಿಲ್ಲ.</string>
@@ -180,6 +192,7 @@
     <string name="unable_to_submit_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ಸಲ್ಲಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_announcement">ಪ್ರಕಟಣೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_course">ಕೋರ್ಸ್ ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
+    <string name="unable_to_update_meeting">ಸಭೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unable_to_update_student_submission">ಸಲ್ಲಿಕೆಯನ್ನು ನವೀಕರಿಸಲು ಸಾಧ್ಯವಿಲ್ಲ.</string>
     <string name="unenrol">ನೋಂದಣಿ ರದ್ದುಮಾಡಿ</string>
     <string name="unmarked">ಗುರುತಿಸಲಾಗಿಲ್ಲ</string>
@@ -197,10 +210,13 @@
     <string name="title_create_class_screen">ವರ್ಗವನ್ನು ರಚಿಸಿ</string>
     <string name="title_edit_class_screen">ವರ್ಗ ಸಂಪಾದಿಸಿ</string>
     <string name="title_join_class_screen">ವರ್ಗಕ್ಕೆ ಸೇರಿ</string>
+    <string name="title_meet_screen">ಮೀಟ್</string>
     <string name="title_profile_screen">ಪ್ರೊಫೈಲ್</string>
+    <string name="title_settings_screen">ಸೆಟ್ಟಿಂಗ್‌ಗಳು</string>
 
     <!-- Screen labels -->
     <string name="label_stream_screen">ಸ್ಟ್ರೀಮ್</string>
+    <string name="label_meet_screen">ಮೀಟ್</string>
     <string name="label_classwork_screen">ಕ್ಲಾಸ್‌ವರ್ಕ್</string>
     <string name="label_people_screen">ಜನರು</string>
 
@@ -208,7 +224,6 @@
     <string name="success_send_password_reset_email">ನಿಮ್ಮ ಖಾತೆಗೆ ಹಿಂತಿರುಗಲು ಲಿಂಕ್‌ನೊಂದಿಗೆ ನಾವು %1$s ಗೆ ಇಮೇಲ್ ಕಳುಹಿಸಿದ್ದೇವೆ.</string>
 
     <!-- Errors -->
-    <string name="error_course_not_found">ಆ ವರ್ಗ ಕೋಡ್‌ನೊಂದಿಗೆ ಯಾವುದೇ ವರ್ಗವಿಲ್ಲ.</string>
     <string name="error_unexpected">ಅನಿರೀಕ್ಷಿತ ದೋಷ ಸಂಭವಿಸಿದೆ.</string>
     <string name="error_unknown">ಏನೋ ತಪ್ಪಾಗಿದೆ. ದಯವಿಟ್ಟು ಮತ್ತೆ ಪ್ರಯತ್ನಿಸಿ.</string>
 
@@ -241,13 +256,4 @@
     <string name="error_invalid_email">ದಯವಿಟ್ಟು ಮಾನ್ಯವಾದ ಇಮೇಲ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="error_invalid_password">ನೀವು ನೆನಪಿಡುವ ಅಕ್ಷರಗಳು ಮತ್ತು ಸಂಖ್ಯೆಗಳ ಮಿಶ್ರಣವನ್ನು ಬಳಸಿ.</string>
     <string name="error_invalid_repeated_password">ಅದನ್ನು ಖಚಿತಪಡಿಸಲು ನೀವು ಒಂದೇ ಪಾಸ್‌ವರ್ಡ್ ಅನ್ನು ಎರಡು ಬಾರಿ ನಮೂದಿಸಬೇಕು.</string>
-
-    <plurals name="number_of_students">
-        <item quantity="one">%1$d ವಿದ್ಯಾರ್ಥಿ</item>
-        <item quantity="other">%1$d ವಿದ್ಯಾರ್ಥಿಗಳು</item>
-    </plurals>
-    <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="one">%1$d ಲಗತ್ತನ್ನು \"%2$s\" ಗೆ ಸಲ್ಲಿಸಲಾಗುತ್ತದೆ.</item>
-        <item quantity="other">%1$d ಲಗತ್ತುಗಳನ್ನು \"%2$s\" ಗೆ ಸಲ್ಲಿಸಲಾಗುತ್ತದೆ.</item>
-    </plurals>
 </resources>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d విద్యార్థి</item>
+        <item quantity="other">%1$d విద్యార్థులు</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="one">%1$d జోడింపు \"%2$s\" కోసం సమర్పించబడుతుంది.</item>
+        <item quantity="other">%1$d జోడింపులు \"%2$s\" కోసం సమర్పించబడతాయి.</item>
+    </plurals>
+</resources>

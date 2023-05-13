@@ -2,10 +2,12 @@ package edumate.app.data.remote.dto
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import java.util.*
 
+@IgnoreExtraProperties
 data class UserProfileDto(
     @ServerTimestamp
     val createdAt: Date? = null,

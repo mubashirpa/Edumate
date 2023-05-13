@@ -77,7 +77,7 @@ fun HomeScreen(
         HomeTabsScreen.Enrolled,
         HomeTabsScreen.Teaching
     )
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
 
@@ -179,7 +179,10 @@ fun HomeScreen(
                         )
                     }
                 }
-                HorizontalPager(pageCount = tabs.size, state = pagerState) { page ->
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.fillMaxSize()
+                ) { page ->
                     val bottomMargin = WindowInsets.navigationBars.asPaddingValues()
                         .calculateBottomPadding() + 88.dp
                     val contentPadding = PaddingValues(

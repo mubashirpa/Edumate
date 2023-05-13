@@ -2,8 +2,13 @@ package edumate.app.presentation.ui.theme
 
 import android.app.Activity
 import android.os.Build
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.*
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.platform.LocalContext
@@ -77,7 +82,7 @@ private val DarkColors = darkColorScheme(
 
 @Composable
 fun EdumateTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Boolean = isAppInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -87,6 +92,7 @@ fun EdumateTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
+
         darkTheme -> DarkColors
         else -> LightColors
     }
@@ -99,7 +105,7 @@ fun EdumateTheme(
 
     if (!view.isInEditMode) {
         val systemUiController = rememberSystemUiController()
-        val useDarkIcons = !isSystemInDarkTheme()
+        val useDarkIcons = !darkTheme
         SideEffect {
             systemUiController.statusBarDarkContentEnabled = useDarkIcons
             systemUiController.navigationBarDarkContentEnabled = useDarkIcons
@@ -112,4 +118,11 @@ fun EdumateTheme(
         typography = Typography,
         content = content
     )
+}
+
+@Composable
+private fun isAppInDarkTheme() = when (AppCompatDelegate.getDefaultNightMode()) {
+    AppCompatDelegate.MODE_NIGHT_NO -> false
+    AppCompatDelegate.MODE_NIGHT_YES -> true
+    else -> isSystemInDarkTheme()
 }

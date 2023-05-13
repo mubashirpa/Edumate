@@ -16,6 +16,7 @@ import edumate.app.presentation.class_details.ClassDetailsNavigationBarScreen
 fun BottomNavigationBar(navController: NavController) {
     val screens = listOf(
         ClassDetailsNavigationBarScreen.Stream,
+        ClassDetailsNavigationBarScreen.Meet,
         ClassDetailsNavigationBarScreen.Classwork,
         ClassDetailsNavigationBarScreen.People
     )
@@ -52,7 +53,8 @@ fun BottomNavigationBar(navController: NavController) {
                             contentDescription = stringResource(id = screen.title)
                         )
                     },
-                    label = { Text(stringResource(id = screen.title)) }
+                    label = { Text(stringResource(id = screen.title)) },
+                    alwaysShowLabel = false
                 )
             }
         }

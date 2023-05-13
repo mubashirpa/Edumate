@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d student</item>
+        <item quantity="other">%1$d students</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="one">%1$d attachment will be submitted for \"%2$s\".</item>
+        <item quantity="other">%1$d attachments will be submitted for \"%2$s\".</item>
+    </plurals>
+</resources>

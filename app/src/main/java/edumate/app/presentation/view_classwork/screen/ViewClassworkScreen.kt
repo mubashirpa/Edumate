@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -42,6 +43,8 @@ fun ViewClassworkScreen(
     ) -> Unit,
     onBackPressed: () -> Unit
 ) {
+    val topBarState = rememberTopAppBarState()
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
 
     uiState.userMessage?.let { userMessage ->
@@ -105,7 +108,8 @@ fun ViewClassworkScreen(
                         // TODO("Add edit and delete for teachers")
                     }
                 }
-            }
+            },
+            scrollBehavior = scrollBehavior
         )
         when (val dataState = uiState.dataState) {
             is DataState.EMPTY -> {
@@ -141,7 +145,8 @@ fun ViewClassworkScreen(
                     CourseWorkType.MATERIAL -> {
                         ContentMaterial(
                             uiState = uiState,
-                            onEvent = onEvent
+                            onEvent = onEvent,
+                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
                         )
                     }
 
@@ -152,6 +157,15 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
+                            modifier = Modifier.then(
+                                if (currentUserType == UserType.STUDENT) {
+                                    Modifier.nestedScroll(
+                                        scrollBehavior.nestedScrollConnection
+                                    )
+                                } else {
+                                    Modifier
+                                }
+                            ),
                             navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }
@@ -163,6 +177,15 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
+                            modifier = Modifier.then(
+                                if (currentUserType == UserType.STUDENT) {
+                                    Modifier.nestedScroll(
+                                        scrollBehavior.nestedScrollConnection
+                                    )
+                                } else {
+                                    Modifier
+                                }
+                            ),
                             navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }
@@ -174,6 +197,15 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
+                            modifier = Modifier.then(
+                                if (currentUserType == UserType.STUDENT) {
+                                    Modifier.nestedScroll(
+                                        scrollBehavior.nestedScrollConnection
+                                    )
+                                } else {
+                                    Modifier
+                                }
+                            ),
                             navigateToViewStudentWork = navigateToViewStudentWork
                         )
                     }

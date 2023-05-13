@@ -1,33 +1,36 @@
 package edumate.app.presentation.classwork.screen.components
 
 import android.text.format.DateUtils
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.LiveHelp
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
-import edumate.app.R
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.components.FilledTonalIcon
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 @Composable
 fun ClassworkListItem(
@@ -113,32 +116,10 @@ fun ClassworkListItem(
                 CourseWorkType.SHORT_ANSWER_QUESTION -> Icons.Outlined.LiveHelp
                 else -> Icons.Outlined.Book
             }
-            LeadingIcon(imageVector = icon)
+            FilledTonalIcon(imageVector = icon)
         },
         trailingContent = trailingContent
     )
-}
-
-@Composable
-private fun LeadingIcon(
-    imageVector: ImageVector,
-    modifier: Modifier = Modifier
-) {
-    Box(
-        modifier = modifier
-            .minimumInteractiveComponentSize()
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(color = MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center
-    ) {
-        Icon(
-            imageVector = imageVector,
-            contentDescription = null,
-            modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
-        )
-    }
 }
 
 @Composable
@@ -160,14 +141,14 @@ private fun MenuButton(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.edit)) },
+                text = { Text(text = stringResource(id = Strings.edit)) },
                 onClick = {
                     expanded = false
                     onEditClick()
                 }
             )
             DropdownMenuItem(
-                text = { Text(text = stringResource(id = R.string.delete)) },
+                text = { Text(text = stringResource(id = Strings.delete)) },
                 onClick = {
                     expanded = false
                     onDeleteClick()

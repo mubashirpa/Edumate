@@ -2,6 +2,7 @@ package edumate.app.data.remote.dto
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import edumate.app.domain.model.course_work.CourseWorkType
@@ -12,6 +13,7 @@ import edumate.app.domain.model.student_submissions.SubmissionState
 import java.util.*
 import kotlin.collections.HashMap
 
+@IgnoreExtraProperties
 data class StudentSubmissionDto(
     val courseId: String = "",
     val courseWorkId: String = "",

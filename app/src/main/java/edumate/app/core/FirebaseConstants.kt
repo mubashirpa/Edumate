@@ -4,6 +4,7 @@ object FirebaseConstants {
 
     object Database {
         const val ANNOUNCEMENTS_PATH = "announcements"
+        const val MEETINGS_PATH = "meetings"
 
         // Announcements
         const val ALTERNATE_LINK = "alternateLink"
@@ -19,6 +20,10 @@ object FirebaseConstants {
         const val STATE = "state"
         const val TEXT = "text"
         const val UPDATE_TIME = "updateTime"
+
+        // Meeting
+        const val MEETING_ID = "meetingId"
+        const val TITLE = "title"
     }
 
     object Firestore {

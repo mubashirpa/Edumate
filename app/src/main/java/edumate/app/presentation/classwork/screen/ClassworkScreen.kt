@@ -190,10 +190,11 @@ fun ClassworkScreen(
                 }
 
                 DataState.SUCCESS -> {
+                    val bottomMargin = if (currentUserType == UserType.TEACHER) 88.dp else 0.dp
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         state = scrollState,
-                        contentPadding = PaddingValues(bottom = 88.dp),
+                        contentPadding = PaddingValues(bottom = bottomMargin),
                         content = {
                             items(uiState.classwork, key = { it.id }) { classwork ->
                                 val id = classwork.id

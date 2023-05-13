@@ -138,7 +138,10 @@ fun JoinClassScreen(
                     .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
-                Text(text = stringResource(id = Strings.enter_the_code_shared_by_your_teacher))
+                Text(
+                    text = stringResource(id = Strings.enter_the_code_shared_by_your_teacher),
+                    style = MaterialTheme.typography.bodyMedium
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 @Suppress("SENSELESS_COMPARISON")
                 TextField(

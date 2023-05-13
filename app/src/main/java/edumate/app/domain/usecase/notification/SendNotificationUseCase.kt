@@ -10,8 +10,15 @@ class SendNotificationUseCase @Inject constructor(
     private val notificationApiService: NotificationApiService
 ) {
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
-    suspend operator fun invoke(title: String, description: String) =
-        withContext(defaultDispatcher) {
+    suspend operator fun invoke(
+        title: String,
+        description: String,
+        userIds: List<String> = emptyList()
+    ) = withContext(defaultDispatcher) {
+        if (userIds.isEmpty()) {
             notificationApiService.send(title, description)
+        } else {
+            notificationApiService.send(title, description, userIds)
         }
+    }
 }

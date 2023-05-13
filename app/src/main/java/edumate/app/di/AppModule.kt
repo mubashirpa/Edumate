@@ -1,5 +1,6 @@
 package edumate.app.di
 
+import android.app.Application
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -15,6 +16,8 @@ import edumate.app.domain.usecase.MailMatcher
 import edumate.app.domain.usecase.validation.*
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
+import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.serialization.kotlinx.json.json
 import javax.inject.Singleton
 
 @Module
@@ -57,6 +60,11 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideMeetingsRepository(database: DatabaseReference): MeetingsRepository =
+        MeetingsRepositoryImpl(database)
+
+    @Singleton
+    @Provides
     fun provideNotificationApiService(client: HttpClient): NotificationApiService =
         NotificationApiServiceImpl(client)
 
@@ -74,6 +82,11 @@ object AppModule {
     @Provides
     fun provideTeachersRepository(firestore: FirebaseFirestore): TeachersRepository =
         TeachersRepositoryImpl(firestore)
+
+    @Singleton
+    @Provides
+    fun provideUserPreferencesRepository(applicationContext: Application): UserPreferencesRepository =
+        UserPreferencesRepositoryImpl(applicationContext)
 
     // Form validation
 
@@ -105,5 +118,12 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideHttpClient(): HttpClient = HttpClient(CIO)
+    fun provideHttpClient(): HttpClient {
+        val client = HttpClient(CIO) {
+            install(ContentNegotiation) {
+                json()
+            }
+        }
+        return client
+    }
 }

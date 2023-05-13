@@ -2,6 +2,7 @@ package edumate.app.data.remote.dto
 
 import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.IgnoreExtraProperties
 import com.google.firebase.firestore.ServerTimestamp
 import edumate.app.core.FirebaseConstants
 import edumate.app.domain.model.AssigneeMode
@@ -14,6 +15,7 @@ import edumate.app.domain.model.course_work.MultipleChoiceQuestion
 import edumate.app.domain.model.course_work.SubmissionModificationMode
 import java.util.Date
 
+@IgnoreExtraProperties
 data class CourseWorkDto(
     val courseId: String = "",
     val id: String = "",

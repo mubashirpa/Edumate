@@ -35,6 +35,7 @@ import edumate.app.domain.usecase.course_work.PatchCourseWork
 import edumate.app.domain.usecase.notification.SendNotificationUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
+import edumate.app.domain.usecase.students.ListStudents
 import edumate.app.domain.usecase.validation.ValidateTextField
 import edumate.app.navigation.Routes
 import javax.inject.Inject
@@ -56,7 +57,8 @@ class CreateClassworkViewModel @Inject constructor(
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField,
-    private val sendNotificationUseCase: SendNotificationUseCase
+    private val sendNotificationUseCase: SendNotificationUseCase,
+    private val listStudentsUseCase: ListStudents
 ) : ViewModel() {
 
     var uiState by mutableStateOf(CreateClassworkUiState())
@@ -246,9 +248,7 @@ class CreateClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     val classwork = resource.data
                     if (classwork != null) {
-                        sendNotification(classwork.workType, classwork.title)
-                        uiState = uiState.copy(openProgressDialog = false)
-                        resultChannel.send(classwork.id)
+                        fetchStudents(classwork)
                     } else {
                         uiState = uiState.copy(
                             openProgressDialog = false,
@@ -448,6 +448,28 @@ class CreateClassworkViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun fetchStudents(classwork: CourseWork) {
+        listStudentsUseCase(courseId).onEach { resource ->
+            if (resource is Resource.Success) {
+                val students = resource.data
+                if (!students.isNullOrEmpty()) {
+                    val studentIds: List<String> = students.map { it.id }
+                    sendNotification(
+                        currentUser?.displayName.orEmpty(),
+                        classwork.workType,
+                        classwork.title,
+                        studentIds
+                    )
+                }
+                uiState = uiState.copy(openProgressDialog = false)
+                resultChannel.send(classwork.id)
+            } else if (resource is Resource.Error) {
+                uiState = uiState.copy(openProgressDialog = false)
+                resultChannel.send(classwork.id)
+            }
+        }.launchIn(viewModelScope)
+    }
+
     private fun fetchUrlMetadata(url: String) {
         val position = uiState.attachments.lastIndex
         getUrlMetadataJob = getUrlMetadataUseCase(url).onEach { resource ->
@@ -463,42 +485,46 @@ class CreateClassworkViewModel @Inject constructor(
             .collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION).document().id
     }
 
-    private suspend fun sendNotification(workType: CourseWorkType, workTitle: String) {
-        val title = when (workType) {
+    private suspend fun sendNotification(
+        userName: String,
+        courseWorkType: CourseWorkType,
+        courseWorkTitle: String,
+        studentIds: List<String>
+    ) {
+        val title = when (courseWorkType) {
             CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
                 ""
             }
 
             CourseWorkType.MATERIAL -> {
-                "New material from ${currentUser?.displayName}"
+                "New material from $userName"
             }
 
             CourseWorkType.ASSIGNMENT -> {
-                "New assignment from ${currentUser?.displayName}"
+                "New assignment from $userName"
             }
 
             else -> {
-                "New question from ${currentUser?.displayName}"
+                "New question from $userName"
             }
         }
-        val description = when (workType) {
+        val description = when (courseWorkType) {
             CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
                 ""
             }
 
             CourseWorkType.MATERIAL -> {
-                "$workTitle • See details"
+                "$courseWorkTitle • See details"
             }
 
             CourseWorkType.ASSIGNMENT -> {
-                "$workTitle • See details"
+                "$courseWorkTitle • See details"
             }
 
             else -> {
-                "$workTitle • Answer question"
+                "$courseWorkTitle • Answer question"
             }
         }
-        // TODO("Add user id")
-        sendNotificationUseCase(title, description)
+        sendNotificationUseCase(title, description, studentIds)
     }
 }

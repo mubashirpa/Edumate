@@ -12,6 +12,8 @@ import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
 import edumate.app.domain.model.student_submissions.SubmissionState
+import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.notification.SendNotificationUseCase
 import edumate.app.domain.usecase.student_submissions.GetStudentSubmission
 import edumate.app.domain.usecase.student_submissions.PatchStudentSubmission
 import edumate.app.domain.usecase.student_submissions.ReturnStudentSubmission
@@ -19,14 +21,17 @@ import edumate.app.navigation.Routes
 import javax.inject.Inject
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 
 @HiltViewModel
 class ViewStudentWorkViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
+    getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getStudentSubmission: GetStudentSubmission,
     private val patchStudentSubmission: PatchStudentSubmission,
-    private val returnStudentSubmission: ReturnStudentSubmission
+    private val returnStudentSubmission: ReturnStudentSubmission,
+    private val sendNotificationUseCase: SendNotificationUseCase
 ) : ViewModel() {
 
     var uiState by mutableStateOf(ViewStudentWorkUiState())
@@ -41,6 +46,11 @@ class ViewStudentWorkViewModel @Inject constructor(
     private var getStudentSubmissionJob: Job? = null
 
     init {
+        getCurrentUserUseCase().map { user ->
+            if (user != null) {
+                uiState = uiState.copy(currentUser = user)
+            }
+        }.launchIn(viewModelScope)
         fetchStudentWork(false)
     }
 
@@ -48,6 +58,10 @@ class ViewStudentWorkViewModel @Inject constructor(
         when (event) {
             is ViewStudentWorkUiEvent.OnAppBarMenuExpandedChange -> {
                 uiState = uiState.copy(appBarMenuExpanded = event.expanded)
+            }
+
+            is ViewStudentWorkUiEvent.OnCreate -> {
+                uiState = uiState.copy(courseWork = event.courseWork)
             }
 
             is ViewStudentWorkUiEvent.OnGradeChange -> {
@@ -155,6 +169,11 @@ class ViewStudentWorkViewModel @Inject constructor(
                             if (isTurnedIn) {
                                 returnStudentWork()
                             }
+                            sendNotification(
+                                uiState.currentUser?.displayName.orEmpty(),
+                                uiState.courseWork?.title.orEmpty(),
+                                updatedStudentWork.userId
+                            )
                         } else {
                             uiState = uiState.copy(
                                 dataState = DataState.EMPTY(
@@ -208,5 +227,17 @@ class ViewStudentWorkViewModel @Inject constructor(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private suspend fun sendNotification(
+        userName: String,
+        courseWorkTitle: String,
+        studentId: String
+    ) {
+        sendNotificationUseCase(
+            "New grade from $userName",
+            "$courseWorkTitle • View grade",
+            listOf(studentId)
+        )
     }
 }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <plurals name="number_of_students">
+        <item quantity="one">%1$d വിദ്യാർത്ഥി</item>
+        <item quantity="other">%1$d വിദ്യാർത്ഥികൾ</item>
+    </plurals>
+    <plurals name="dialog_turn_in_assignment_text">
+        <item quantity="one">%1$d അറ്റാച്ച്‌മെന്റ് \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
+        <item quantity="other">%1$d അറ്റാച്ച്‌മെന്റുകൾ \"%2$s\" എന്നതിനായി സമർപ്പിക്കും.</item>
+    </plurals>
+</resources>

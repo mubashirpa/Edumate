@@ -26,12 +26,14 @@ import edumate.app.domain.model.student_submissions.StudentSubmission
 import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.course_work.GetCourseWork
+import edumate.app.domain.usecase.notification.SendNotificationUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.student_submissions.GetStudentSubmission
 import edumate.app.domain.usecase.student_submissions.ModifyAttachmentsStudentSubmission
 import edumate.app.domain.usecase.student_submissions.PatchStudentSubmission
 import edumate.app.domain.usecase.student_submissions.ReclaimStudentSubmission
+import edumate.app.domain.usecase.teachers.ListTeachers
 import edumate.app.navigation.Routes
 import edumate.app.presentation.class_details.UserType
 import java.util.Date
@@ -51,7 +53,9 @@ class ViewClassworkViewModel @Inject constructor(
     private val getStudentSubmission: GetStudentSubmission,
     private val patchStudentSubmission: PatchStudentSubmission,
     private val reclaimStudentSubmission: ReclaimStudentSubmission,
-    private val modifyAttachmentsStudentSubmission: ModifyAttachmentsStudentSubmission
+    private val modifyAttachmentsStudentSubmission: ModifyAttachmentsStudentSubmission,
+    private val sendNotificationUseCase: SendNotificationUseCase,
+    private val listTeachersUseCase: ListTeachers
 ) : ViewModel() {
 
     var uiState by mutableStateOf(ViewClassworkUiState())
@@ -257,10 +261,7 @@ class ViewClassworkViewModel @Inject constructor(
                     if (updatedStudentSubmission != null) {
                         updateStudentSubmission(
                             updatedStudentSubmission,
-                            uiState.copy(
-                                editShortAnswer = false,
-                                yourWorkDataState = DataState.SUCCESS
-                            )
+                            uiState.copy(yourWorkDataState = DataState.SUCCESS)
                         )
                     } else {
                         uiState = uiState.copy(
@@ -331,10 +332,7 @@ class ViewClassworkViewModel @Inject constructor(
                 is Resource.Success -> {
                     val updatedStudentSubmission = resource.data
                     if (updatedStudentSubmission != null) {
-                        updateStudentSubmission(
-                            updatedStudentSubmission,
-                            uiState.copy(openProgressDialog = false)
-                        )
+                        fetchTeachers(updatedStudentSubmission)
                     } else {
                         uiState = uiState.copy(
                             openProgressDialog = false,
@@ -504,6 +502,39 @@ class ViewClassworkViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
+    private fun fetchTeachers(updatedStudentSubmission: StudentSubmission) {
+        listTeachersUseCase(courseId).onEach { resource ->
+            if (resource is Resource.Success) {
+                val teachers = resource.data
+                if (!teachers.isNullOrEmpty()) {
+                    val teacherIds: List<String> = teachers.map { it.id }
+                    sendNotification(
+                        currentUser?.displayName.orEmpty(),
+                        updatedStudentSubmission.state,
+                        updatedStudentSubmission.assignedGrade,
+                        uiState.classwork.title,
+                        teacherIds
+                    )
+                }
+                updateStudentSubmission(
+                    updatedStudentSubmission,
+                    uiState.copy(
+                        editShortAnswer = false,
+                        openProgressDialog = false
+                    )
+                )
+            } else if (resource is Resource.Error) {
+                updateStudentSubmission(
+                    updatedStudentSubmission,
+                    uiState.copy(
+                        editShortAnswer = false,
+                        openProgressDialog = false
+                    )
+                )
+            }
+        }.launchIn(viewModelScope)
+    }
+
     private fun updateStudentSubmission(
         updatedStudentSubmission: StudentSubmission,
         // updatedUiState is passed because in some places we need to change dataState
@@ -519,6 +550,26 @@ class ViewClassworkViewModel @Inject constructor(
             multipleChoiceAnswer = updatedStudentSubmission.multipleChoiceSubmission?.answer.orEmpty(),
             shortAnswer = updatedStudentSubmission.shortAnswerSubmission?.answer.orEmpty(),
             studentSubmission = updatedStudentSubmission
+        )
+    }
+
+    private suspend fun sendNotification(
+        userName: String,
+        submissionState: SubmissionState,
+        assignedGrade: Int?,
+        courseWorkTitle: String,
+        teacherIds: List<String>
+    ) {
+        val title =
+            if (submissionState == SubmissionState.RETURNED || (submissionState == SubmissionState.RECLAIMED_BY_STUDENT && assignedGrade != null)) {
+                "$userName resubmitted"
+            } else {
+                "$userName submitted"
+            }
+        sendNotificationUseCase(
+            title,
+            "$courseWorkTitle • View their work",
+            teacherIds
         )
     }
 }

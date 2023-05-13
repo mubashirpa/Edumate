@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -74,6 +75,7 @@ fun ContentClasswork(
     snackbarHostState: SnackbarHostState,
     classworkType: CourseWorkType,
     currentUserType: UserType,
+    modifier: Modifier = Modifier,
     navigateToViewStudentWork: (
         classwork: CourseWork,
         studentWorkId: String?,
@@ -81,7 +83,6 @@ fun ContentClasswork(
     ) -> Unit
 ) {
     val context = LocalContext.current
-    val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val fileUtils = remember { FileUtils(context) }
     val isTeacher = currentUserType == UserType.TEACHER
@@ -111,6 +112,7 @@ fun ContentClasswork(
             emptyList()
         }
     }
+    val pagerState = rememberPagerState { if (isTeacher) tabs.size else 1 }
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
             uri?.let {
@@ -119,7 +121,7 @@ fun ContentClasswork(
         }
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .navigationBarsPadding()
     ) {
@@ -150,9 +152,8 @@ fun ContentClasswork(
                 }
             }
             HorizontalPager(
-                pageCount = if (isTeacher) tabs.size else 1,
-                modifier = Modifier.fillMaxSize(),
                 state = pagerState,
+                modifier = Modifier.fillMaxSize(),
                 userScrollEnabled = isTeacher
             ) { page ->
                 when (page) {
@@ -170,7 +171,9 @@ fun ContentClasswork(
                         ) {
                             LazyVerticalGrid(
                                 columns = GridCells.Adaptive(minSize = 128.dp),
-                                modifier = Modifier.fillMaxSize(),
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .imePadding(),
                                 contentPadding = contentPadding,
                                 verticalArrangement = Arrangement.spacedBy(10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),

@@ -13,6 +13,7 @@
     <string name="all">सभी</string>
     <string name="all_students">सभी छात्र</string>
     <string name="answer">जवाब</string>
+    <string name="app_language">ऐप की भाषा</string>
     <string name="ask">पूछना</string>
     <string name="ask_your_teacher_for_the_class_code">अपने शिक्षक से कक्षा कोड के लिए पूछें और फिर उसे यहां दर्ज करें।</string>
     <string name="assign">सौंपना</string>
@@ -27,6 +28,7 @@
     <string name="cannot_retrieve_course_work_at_this_time_please_try_again_later">इस समय पाठ्यक्रम का काम पुनर्प्राप्त नहीं कर सकता, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_course_works_at_this_time_please_try_again_later">इस समय पाठ्यक्रम के कार्यों को पुनः प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_courses_at_this_time_please_try_again_later">इस समय पाठ्यक्रम पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
+    <string name="cannot_retrieve_meetings_at_this_time_please_try_again_later">इस समय मीटिंग पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_peoples_at_this_time_please_try_again_later">इस समय लोगों को पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुन: प्रयास करें।</string>
     <string name="cannot_retrieve_student_submission_at_this_time_please_try_again_later">इस समय छात्र सबमिशन पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
     <string name="cannot_retrieve_student_submissions_at_this_time_please_try_again_later">इस समय छात्र सबमिशन पुनर्प्राप्त नहीं कर सकते, कृपया बाद में पुनः प्रयास करें।</string>
@@ -40,8 +42,8 @@
     <string name="copy_link">लिंक कॉपी करें</string>
     <string name="create">बनाएं</string>
     <string name="create_class">कक्षा बनाएं</string>
-    <string name="create_classwork">क्लासवर्क बनाएं</string>
     <string name="create_new_account">नया खाता बनाएं</string>
+    <string name="created_">बनाया गया %1$s</string>
     <string name="creating_account">खाता बनाना</string>
     <string name="delete">मिटाना</string>
     <string name="delete_assignment">असाइनमेंट हटाएं?</string>
@@ -85,6 +87,7 @@
     <string name="get_started">शुरू हो जाओ</string>
     <string name="get_started_by_inviting_students">छात्रों को आमंत्रित करके आरंभ करें।</string>
     <string name="get_started_message">शिक्षकों और छात्रों को संवाद करने, समय बचाने और संगठित रहने में मदद करना।</string>
+    <string name="go_live_for_your_students_and_teach_them_anytime_anywhere">अपने छात्रों के लिए लाइव जाएं और उन्हें कभी भी, कहीं भी पढ़ाएं।</string>
     <string name="google">गूगल</string>
     <string name="hand_in">हाथ डालें</string>
     <string name="handed_in">में सौंप दिया</string>
@@ -100,19 +103,24 @@
     <string name="leave_class">कक्षा छोड़ें</string>
     <string name="leave_class_warning_message">आप इस कक्षा को तब तक नहीं खोल पाएंगे जब तक आपको दोबारा आमंत्रित नहीं किया जाता</string>
     <string name="logout">लॉग आउट करें</string>
+    <string name="manage_notification_settings">सूचना सेटिंग प्रबंधित करें</string>
     <string name="mark">mark</string>
     <string name="mark_as_done">हो गया के रूप में चिह्नित करें</string>
     <string name="marked">चिह्नित</string>
     <string name="marks_and_comments_will_also_be_deleted">मार्क और टिप्‍पणियां भी हटा दी जाएंगी।</string>
     <string name="material">सामग्री</string>
     <string name="material_title">सामग्री का शीर्षक</string>
+    <string name="meetings">बैठक</string>
     <string name="missing">मिसिंग</string>
     <string name="missing_message">गुम संदेश</string>
     <string name="missing_title">अनुपलब्ध शीर्षक</string>
     <string name="name">नाम</string>
+    <string name="new_meeting">नई मीटिंग</string>
     <string name="no_due_date">कोई देय तिथि नहीं है</string>
     <string name="no_files_attached">कोई फ़ाइल अटैच नहीं है</string>
+    <string name="no_ongoing_live_classes_right_now">अभी कोई लाइव क्लास नहीं चल रही है।</string>
     <string name="not_handed_in">नहीं दिया गया</string>
+    <string name="notifications">सूचनाएं</string>
     <string name="ok">ठीक</string>
     <string name="password">पासवर्ड</string>
     <string name="password_reset_description">अपना ईमेल पता दर्ज करें और हम आपको आपका पासवर्ड पुनर्प्राप्त करने के लिए एक लिंक भेजेंगे।</string>
@@ -160,6 +168,7 @@
     <string name="teachers">शिक्षक</string>
     <string name="teaching">शिक्षण</string>
     <string name="the_student_hasnt_answered_the_question_yet">छात्र ने अभी तक प्रश्न का उत्तर नहीं दिया है।</string>
+    <string name="theme">थीम</string>
     <string name="turn_in">अंदर चालू करें</string>
     <string name="turned_in">चालू किया गया</string>
     <string name="type_your_answer">अपना उत्तर लिखें</string>
@@ -167,9 +176,11 @@
     <string name="unable_to_create_announcement">घोषणा करने में असमर्थ।</string>
     <string name="unable_to_create_course">पाठ्यक्रम बनाने में असमर्थ।</string>
     <string name="unable_to_create_course_work">कोर्स वर्क बनाने में असमर्थ।</string>
+    <string name="unable_to_create_meeting">मीटिंग बनाने में असमर्थ।</string>
     <string name="unable_to_delete_announcement">घोषणा हटाने में असमर्थ।</string>
     <string name="unable_to_delete_course">पाठ्यक्रम हटाने में असमर्थ।</string>
     <string name="unable_to_delete_course_work">पाठ्यक्रम के काम को हटाने में असमर्थ।</string>
+    <string name="unable_to_delete_meeting">मीटिंग हटाने में असमर्थ।</string>
     <string name="unable_to_join_class">कक्षा में शामिल होने में असमर्थ।</string>
     <string name="unable_to_leave_class">कक्षा छोड़ने में असमर्थ।</string>
     <string name="unable_to_patch_course_work">कोर्स वर्क अपडेट करने में असमर्थ।</string>
@@ -180,6 +191,7 @@
     <string name="unable_to_submit_student_submission">सबमिशन जमा करने में असमर्थ।</string>
     <string name="unable_to_update_announcement">घोषणा अपडेट करने में असमर्थ।</string>
     <string name="unable_to_update_course">पाठ्यक्रम अपडेट करने में असमर्थ।</string>
+    <string name="unable_to_update_meeting">मीटिंग अपडेट करने में असमर्थ।</string>
     <string name="unable_to_update_student_submission">सबमिशन अपडेट करने में असमर्थ।</string>
     <string name="unenrol">नामांकन रद्द करें</string>
     <string name="unmarked">अचिह्नित</string>
@@ -197,10 +209,13 @@
     <string name="title_create_class_screen">कक्षा बनाएं</string>
     <string name="title_edit_class_screen">कक्षा संपादित करें</string>
     <string name="title_join_class_screen">कक्षा में शामिल हों</string>
-    <string name="title_profile_screen">प्रोफाइल</string>
+    <string name="title_meet_screen">मिलना</string>
+    <string name="title_profile_screen">प्रोफ़ाइल</string>
+    <string name="title_settings_screen">समायोजन</string>
 
     <!-- Screen labels -->
     <string name="label_stream_screen">स्ट्रीम</string>
+    <string name="label_meet_screen">मिलना</string>
     <string name="label_classwork_screen">क्लासवर्क</string>
     <string name="label_people_screen">लोग</string>
 
@@ -208,7 +223,6 @@
     <string name="success_send_password_reset_email">हमने %1$s को आपके खाते में वापस जाने के लिए एक लिंक के साथ एक ईमेल भेजा है।</string>
 
     <!-- Errors -->
-    <string name="error_course_not_found">उस वर्ग कोड वाला कोई वर्ग नहीं।</string>
     <string name="error_unexpected">एक अनपेक्षित त्रुटि हुई।</string>
     <string name="error_unknown">कुछ गलत हुआ है। कृपया पुन: प्रयास करें।</string>
 
@@ -241,13 +255,4 @@
     <string name="error_invalid_email">कृपया एक मान्य ईमेल दर्ज करें।</string>
     <string name="error_invalid_password">अक्षरों और संख्याओं के मिश्रण का उपयोग करें जिन्हें आप याद रख सकें।</string>
     <string name="error_invalid_repeated_password">इसकी पुष्टि करने के लिए आपको एक ही पासवर्ड दो बार दर्ज करना होगा।</string>
-
-    <plurals name="number_of_students">
-        <item quantity="one">%1$d विद्यार्थी</item>
-        <item quantity="other">%1$d छात्र</item>
-    </plurals>
-    <plurals name="dialog_turn_in_assignment_text">
-        <item quantity="one">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किया जाएगा।</item>
-        <item quantity="other">\"%2$s\" के लिए %1$d अटैचमेंट सबमिट किए जाएंगे।</item>
-    </plurals>
 </resources>

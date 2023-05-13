@@ -20,7 +20,8 @@ import edumate.app.presentation.join_class.JoinClassViewModel
 import edumate.app.presentation.join_class.screen.JoinClassScreen
 import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
-import edumate.app.presentation.settings.SettingsScreen
+import edumate.app.presentation.settings.SettingsViewModel
+import edumate.app.presentation.settings.screen.SettingsScreen
 
 @Composable
 fun EdumateNavHost(
@@ -149,7 +150,14 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.SettingsScreen.route) {
-            SettingsScreen()
+            val viewModel: SettingsViewModel = hiltViewModel()
+            SettingsScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                onBackPressed = {
+                    navController.navigateUp()
+                }
+            )
         }
     }
 }

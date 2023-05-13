@@ -5,9 +5,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assignment
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.QuestionAnswer
+import androidx.compose.material.icons.filled.VideoCall
 import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.QuestionAnswer
+import androidx.compose.material.icons.outlined.VideoCall
 import androidx.compose.ui.graphics.vector.ImageVector
 import edumate.app.R.string as Strings
 import edumate.app.navigation.Screen
@@ -24,6 +26,14 @@ sealed class ClassDetailsNavigationBarScreen(
         Icons.Filled.QuestionAnswer,
         Icons.Outlined.QuestionAnswer
     )
+
+    object Meet :
+        ClassDetailsNavigationBarScreen(
+            Screen.MeetScreen.route,
+            Strings.label_meet_screen,
+            Icons.Filled.VideoCall,
+            Icons.Outlined.VideoCall
+        )
 
     object Classwork :
         ClassDetailsNavigationBarScreen(

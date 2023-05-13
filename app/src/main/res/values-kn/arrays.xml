@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="question_type">
+        <item>ಸಣ್ಣ ಉತ್ತರ</item>
+        <item>ಬಹು ಆಯ್ಕೆ</item>
+    </string-array>
+    <string-array name="app_theme">
+        <item>ಸಿಸ್ಟಮ್ ಡೀಫಾಲ್ಟ್</item>
+        <item>ಬೆಳಕು</item>
+        <item>ಡಾರ್ಕ್</item>
+    </string-array>
+</resources>

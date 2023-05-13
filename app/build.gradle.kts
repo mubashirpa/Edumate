@@ -1,11 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.devtools.ksp)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.gradle.ktlint)
+    alias(libs.plugins.hilt.android)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt) // TODO: Remove when hilt added support for ksp (https://github.com/google/dagger/issues/2349)
-    alias(libs.plugins.devtools.ksp)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.gradle.ktlint)
-    alias(libs.plugins.google.services)
+    alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -72,15 +73,16 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
 
-    implementation(libs.google.play.services.auth)
-    implementation(libs.coil.compose)
-    implementation(libs.coil.video)
-    implementation(libs.androidx.core.splashscreen)
     implementation(libs.bundles.accompanist)
+    implementation(libs.bundles.coil)
+    implementation(libs.bundles.ktor)
+    implementation(libs.google.play.services.auth)
+    implementation(libs.androidx.core.splashscreen)
     implementation(libs.jsoup)
     implementation(libs.airbnb.lottie.compose)
     implementation(libs.onesignal)
-    implementation(libs.bundles.ktor)
+    implementation(libs.androidx.datastore)
+    implementation(libs.kotlinx.serialization.json)
 }
 
 kapt {
