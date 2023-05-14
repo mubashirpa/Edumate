@@ -10,6 +10,7 @@ data class MeetUiState(
     val currentUser: FirebaseUser? = null,
     val dataState: DataState = DataState.UNKNOWN,
     val isCurrentUserTeacher: Boolean = false,
+    val launchMeeting: Meeting? = null,
     val meetings: List<Meeting> = emptyList(),
     val onCreate: Boolean = false,
     val openProgressDialog: Boolean = false,

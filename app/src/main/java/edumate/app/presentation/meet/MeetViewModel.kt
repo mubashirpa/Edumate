@@ -78,8 +78,16 @@ class MeetViewModel @Inject constructor(
                 }
             }
 
+            is MeetUiEvent.StartMeeting -> {
+                updateMeeting(event.meeting.copy(state = MeetingState.LIVE))
+            }
+
             MeetUiEvent.CreateMeeting -> {
                 createMeeting()
+            }
+
+            MeetUiEvent.OnLaunchMeetingSuccess -> {
+                uiState = uiState.copy(launchMeeting = null)
             }
 
             MeetUiEvent.OnRefresh -> {
@@ -90,7 +98,7 @@ class MeetViewModel @Inject constructor(
                 fetchMeetings(refreshing = false)
             }
 
-            MeetUiEvent.UserMessageShown -> {
+            MeetUiEvent.OnUserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
         }
@@ -216,7 +224,14 @@ class MeetViewModel @Inject constructor(
                 is Resource.Success -> {
                     val meetingResponse = resource.data
                     if (meetingResponse != null) {
-                        uiState = uiState.copy(openProgressDialog = false)
+                        uiState = uiState.copy(
+                            launchMeeting = if (meeting.state == MeetingState.LIVE) {
+                                meetingResponse
+                            } else {
+                                null
+                            },
+                            openProgressDialog = false
+                        )
                         fetchMeetings(true)
                     } else {
                         uiState = uiState.copy(

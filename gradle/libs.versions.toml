@@ -19,6 +19,7 @@ accompanist-pager-indicators = { module = "com.google.accompanist:accompanist-pa
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "com-google-accompanist" }
 airbnb-lottie-compose = "com.airbnb.android:lottie-compose:6.0.0"
 androidx-activity-compose = "androidx.activity:activity-compose:1.7.1"
+androidx-appcompat = "androidx.appcompat:appcompat:1.6.1"
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "androidx-compose-bom" }
 androidx-compose-material-icons-core = { module = "androidx.compose.material:material-icons-core" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
@@ -51,10 +52,12 @@ firebase-dynamic-links = { module = "com.google.firebase:firebase-dynamic-links-
 firebase-firestore = { module = "com.google.firebase:firebase-firestore-ktx" }
 firebase-messaging = { module = "com.google.firebase:firebase-messaging-ktx" }
 firebase-storage = { module = "com.google.firebase:firebase-storage-ktx" }
+google-android-material = "com.google.android.material:material:1.9.0"
 google-play-services-auth = "com.google.android.gms:play-services-auth:20.5.0"
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "com-google-dagger" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "com-google-dagger" }
 hilt-navigation-compose = "androidx.hilt:hilt-navigation-compose:1.0.0"
+jitsi-meet = "org.jitsi.react:jitsi-meet-sdk:8.1.2"
 jsoup = "org.jsoup:jsoup:1.16.1"
 junit = "junit:junit:4.13.2"
 kotlinx-serialization-json = "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"

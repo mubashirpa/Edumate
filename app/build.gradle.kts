@@ -49,6 +49,15 @@ android {
     packaging.resources {
         excludes.add("/META-INF/{AL2.0,LGPL2.1}")
     }
+
+    splits {
+        abi {
+            isEnable = true
+            reset()
+            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+            isUniversalApk = false
+        }
+    }
 }
 
 dependencies {
@@ -83,6 +92,9 @@ dependencies {
     implementation(libs.onesignal)
     implementation(libs.androidx.datastore)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.jitsi.meet) { isTransitive = true }
+    implementation(libs.androidx.appcompat)
+    implementation(libs.google.android.material)
 }
 
 kapt {

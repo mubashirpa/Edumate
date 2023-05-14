@@ -8,8 +8,10 @@ sealed class MeetUiEvent {
     data class EndMeeting(val meeting: Meeting) : MeetUiEvent()
     data class OnAppBarMenuExpandedChange(val expanded: Boolean) : MeetUiEvent()
     data class OnCreate(val course: Course) : MeetUiEvent()
+    data class StartMeeting(val meeting: Meeting) : MeetUiEvent()
     object CreateMeeting : MeetUiEvent()
+    object OnLaunchMeetingSuccess : MeetUiEvent()
     object OnRefresh : MeetUiEvent()
     object OnRetry : MeetUiEvent()
-    object UserMessageShown : MeetUiEvent()
+    object OnUserMessageShown : MeetUiEvent()
 }

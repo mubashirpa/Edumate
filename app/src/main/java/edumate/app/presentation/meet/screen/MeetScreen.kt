@@ -30,7 +30,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -41,6 +40,7 @@ import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
+import edumate.app.presentation.activities.MeetActivity
 import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
@@ -48,7 +48,6 @@ import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.meet.MeetUiEvent
 import edumate.app.presentation.meet.MeetUiState
 import edumate.app.presentation.meet.screen.components.MeetListItem
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -62,7 +61,6 @@ fun MeetScreen(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
-    val snackbarScope = rememberCoroutineScope()
     val refreshState = rememberPullRefreshState(
         refreshing = uiState.refreshing,
         onRefresh = { onEvent(MeetUiEvent.OnRefresh) }
@@ -76,7 +74,19 @@ fun MeetScreen(
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
-            onEvent(MeetUiEvent.UserMessageShown)
+            onEvent(MeetUiEvent.OnUserMessageShown)
+        }
+    }
+
+    uiState.launchMeeting?.let { meeting ->
+        LaunchedEffect(meeting) {
+            val intent =
+                Intent(context, MeetActivity::class.java).apply {
+                    putExtra("meetingId", meeting.meetingId)
+                    putExtra("title", meeting.title)
+                }
+            context.startActivity(intent)
+            onEvent(MeetUiEvent.OnLaunchMeetingSuccess)
         }
     }
 
@@ -181,23 +191,7 @@ fun MeetScreen(
                                         uiState = uiState,
                                         onEndClick = { onEvent(MeetUiEvent.EndMeeting(it)) },
                                         onDeleteClick = { onEvent(MeetUiEvent.DeleteMeeting(it)) },
-                                        onClick = {
-                                            val intent = Intent(Intent.ACTION_SEND).apply {
-                                                // setClassName("com.example.meet", "com.example.meet.MainActivity")
-                                                // component = ComponentName("com.example.meet", "com.example.meet.MainActivity")
-                                                setPackage("com.example.meet")
-                                                putExtra(Intent.EXTRA_TEXT, meeting.meetingId)
-                                            }
-                                            if (intent.resolveActivity(context.packageManager) != null) {
-                                                context.startActivity(intent)
-                                            } else {
-                                                snackbarScope.launch {
-                                                    snackbarHostState.showSnackbar(
-                                                        "No application can handle this intent"
-                                                    )
-                                                }
-                                            }
-                                        }
+                                        onClick = { onEvent(MeetUiEvent.StartMeeting(meeting)) }
                                     )
                                 }
                             }

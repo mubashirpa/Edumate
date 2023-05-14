@@ -10,7 +10,8 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // Sonatype repository for Lottie
+        maven(url = "https://oss.sonatype.org/content/repositories/snapshots/") // Sonatype Maven repository for Lottie
+        maven(url = "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases") // Jitsi Maven repository
     }
 }
 rootProject.name = "Edumate"
