@@ -1,5 +1,6 @@
 package edumate.app.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
@@ -10,8 +11,13 @@ import edumate.app.presentation.get_started.GetStartedScreen
 import edumate.app.presentation.login.screen.LoginScreen
 import edumate.app.presentation.recover.screen.RecoverScreen
 import edumate.app.presentation.register.screen.RegisterScreen
+import kotlinx.coroutines.CoroutineScope
 
-fun NavGraphBuilder.authentication(navController: NavController) {
+fun NavGraphBuilder.authentication(
+    navController: NavController,
+    rootSnackbarHostState: SnackbarHostState,
+    rootSnackbarScope: CoroutineScope
+) {
     navigation(
         startDestination = Screen.GetStartedScreen.route,
         route = Routes.Graph.AUTHENTICATION
@@ -67,6 +73,8 @@ fun NavGraphBuilder.authentication(navController: NavController) {
             )
         ) {
             RecoverScreen(
+                rootSnackbarHostState = rootSnackbarHostState,
+                rootSnackbarScope = rootSnackbarScope,
                 onPasswordResetEmailSent = {
                     navController.navigateUp()
                 }
