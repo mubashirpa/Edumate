@@ -48,6 +48,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.Constants
@@ -113,7 +114,13 @@ fun ClassworkScreen(
 
     Column(modifier = Modifier.fillMaxSize()) {
         TopAppBar(
-            title = { Text(text = course.name) },
+            title = {
+                Text(
+                    text = course.name,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(

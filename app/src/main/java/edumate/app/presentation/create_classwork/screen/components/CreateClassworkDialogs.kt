@@ -26,6 +26,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import edumate.app.R.string as Strings
@@ -173,6 +174,8 @@ fun PointsDialog(
                         )
                         Text(
                             text = stringResource(id = Strings._points, ""),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
                             style = MaterialTheme.typography.bodyLarge
                         )
                     }
@@ -194,8 +197,10 @@ fun PointsDialog(
                         )
                         Text(
                             text = stringResource(id = Strings.unmarked),
-                            style = MaterialTheme.typography.bodyLarge,
-                            modifier = Modifier.padding(start = 16.dp)
+                            modifier = Modifier.padding(start = 16.dp),
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            style = MaterialTheme.typography.bodyLarge
                         )
                     }
                     Spacer(modifier = Modifier.height(24.dp))

@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 import edumate.app.core.DataState
@@ -113,7 +114,13 @@ fun ViewStudentWorkScreen(
             .navigationBarsPadding()
     ) {
         TopAppBar(
-            title = { Text(text = courseWork.title) },
+            title = {
+                Text(
+                    text = courseWork.title,
+                    overflow = TextOverflow.Ellipsis,
+                    maxLines = 1
+                )
+            },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
