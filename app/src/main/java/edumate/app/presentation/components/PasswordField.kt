@@ -16,8 +16,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
-import edumate.app.core.ext.autofill
 import edumate.app.R.string as Strings
+import edumate.app.core.ext.autofill
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
