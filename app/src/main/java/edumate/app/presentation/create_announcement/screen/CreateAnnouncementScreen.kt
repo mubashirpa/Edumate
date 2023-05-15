@@ -53,6 +53,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -95,6 +97,11 @@ fun CreateAnnouncementScreen(
                 onEvent(CreateAnnouncementUiEvent.OnFilePicked(uri, fileUtils))
             }
         }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     LaunchedEffect(context) {
         createAnnouncementResults.collect {
@@ -175,7 +182,9 @@ fun CreateAnnouncementScreen(
                         OutlinedTextField(
                             value = uiState.text,
                             onValueChange = { onEvent(CreateAnnouncementUiEvent.OnTextChange(it)) },
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                             label = {
                                 Text(text = stringResource(id = Strings.share_with_your_class))
                             },
