@@ -15,6 +15,7 @@
     <string name="answer">ಉತ್ತರ</string>
     <string name="app_language">ಅಪ್ಲಿಕೇಶನ್ ಭಾಷೆ</string>
     <string name="ask">ಕೇಳಿ</string>
+    <string name="ask_the_class_owner_for_the_class_code">ಕ್ಲಾಸ್ ಕೋಡ್‌ಗಾಗಿ ವರ್ಗ ಮಾಲೀಕರನ್ನು ಕೇಳಿ ನಂತರ ಅದನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ.</string>
     <string name="ask_your_teacher_for_the_class_code">ಕ್ಲಾಸ್ ಕೋಡ್‌ಗಾಗಿ ನಿಮ್ಮ ಶಿಕ್ಷಕರನ್ನು ಕೇಳಿ ನಂತರ ಅದನ್ನು ಇಲ್ಲಿ ನಮೂದಿಸಿ.</string>
     <string name="assign">ನಿಯೋಜಿಸು</string>
     <string name="assigned">ನಿಯೋಜಿತ</string>
@@ -81,6 +82,7 @@
     <string name="empty_screen_title">ಸ್ಕ್ರೀನ್ ನಿರ್ಮಾಣ ಹಂತದಲ್ಲಿದೆ</string>
     <string name="enrolled">ನೋಂದಾಯಿತ</string>
     <string name="enter_a_class_name">ವರ್ಗದ ಹೆಸರನ್ನು ನಮೂದಿಸಿ.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">ವರ್ಗ ಮಾಲೀಕರು ಹಂಚಿಕೊಂಡ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="enter_the_code_shared_by_your_teacher">ನಿಮ್ಮ ಶಿಕ್ಷಕರು ಹಂಚಿಕೊಂಡ ಕೋಡ್ ಅನ್ನು ನಮೂದಿಸಿ.</string>
     <string name="enter_time">ಸಮಯವನ್ನು ನಮೂದಿಸಿ</string>
     <string name="forgot_password">ಪಾಸ್‌ವರ್ಡ್ ಮರೆತಿರುವಿರಾ?</string>
@@ -161,11 +163,13 @@
     <string name="student_answers">ವಿದ್ಯಾರ್ಥಿ ಉತ್ತರಗಳು</string>
     <string name="student_not_yet_submitted">ವಿದ್ಯಾರ್ಥಿ ಇನ್ನೂ ಸಲ್ಲಿಸಿಲ್ಲ.</string>
     <string name="student_work">ವಿದ್ಯಾರ್ಥಿ ಕೆಲಸ</string>
+    <string name="student">ವಿದ್ಯಾರ್ಥಿ</string>
     <string name="students">ವಿದ್ಯಾರ್ಥಿಗಳು</string>
     <string name="subject">ವಿಷಯ</string>
     <string name="submit">ಸಲ್ಲಿಸು</string>
     <string name="switch_to_text_input">ಪಠ್ಯ ಇನ್‌ಪುಟ್‌ಗೆ ಬದಲಿಸಿ</string>
     <string name="switch_to_touch_input">ಟಚ್ ಇನ್‌ಪುಟ್‌ಗೆ ಬದಲಿಸಿ</string>
+    <string name="teacher">ಶಿಕ್ಷಕ</string>
     <string name="teachers">ಶಿಕ್ಷಕರು</string>
     <string name="teaching">ಬೋಧನೆ</string>
     <string name="the_student_hasnt_answered_the_question_yet">ವಿದ್ಯಾರ್ಥಿಯು ಇನ್ನೂ ಪ್ರಶ್ನೆಗೆ ಉತ್ತರಿಸಿಲ್ಲ.</string>

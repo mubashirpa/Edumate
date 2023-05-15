@@ -15,6 +15,7 @@
     <string name="answer">जवाब</string>
     <string name="app_language">ऐप की भाषा</string>
     <string name="ask">पूछना</string>
+    <string name="ask_the_class_owner_for_the_class_code">कक्षा के मालिक से वर्ग कोड के लिए पूछें और फिर इसे यहां दर्ज करें।</string>
     <string name="ask_your_teacher_for_the_class_code">अपने शिक्षक से कक्षा कोड के लिए पूछें और फिर उसे यहां दर्ज करें।</string>
     <string name="assign">सौंपना</string>
     <string name="assigned">सौंपा गया</string>
@@ -80,6 +81,7 @@
     <string name="empty_screen_title">निर्माणाधीन स्क्रीन</string>
     <string name="enrolled">दाखिला लिया</string>
     <string name="enter_a_class_name">एक वर्ग का नाम दर्ज करें.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">वर्ग स्वामी द्वारा साझा किया गया कोड दर्ज करें।</string>
     <string name="enter_the_code_shared_by_your_teacher">अपने शिक्षक द्वारा साझा किया गया कोड दर्ज करें।</string>
     <string name="enter_time">समय दर्ज करें</string>
     <string name="forgot_password">पासवर्ड भूल गए?</string>
@@ -160,11 +162,13 @@
     <string name="student_answers">छात्रों के उत्तर</string>
     <string name="student_not_yet_submitted">छात्र ने अभी तक सबमिट नहीं किया है।</string>
     <string name="student_work">छात्र कार्य</string>
+    <string name="student">विद्यार्थी</string>
     <string name="students">छात्र</string>
     <string name="subject">विषय</string>
     <string name="submit">जमा करना</string>
     <string name="switch_to_text_input">टेक्स्ट इनपुट पर स्विच करें</string>
     <string name="switch_to_touch_input">टच इनपुट पर स्विच करें</string>
+    <string name="teacher">अध्यापक</string>
     <string name="teachers">शिक्षक</string>
     <string name="teaching">शिक्षण</string>
     <string name="the_student_hasnt_answered_the_question_yet">छात्र ने अभी तक प्रश्न का उत्तर नहीं दिया है।</string>

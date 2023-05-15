@@ -15,6 +15,7 @@
     <string name="answer">பதில்</string>
     <string name="app_language">பயன்பாட்டு மொழி</string>
     <string name="ask">கேள்</string>
+    <string name="ask_the_class_owner_for_the_class_code">வகுப்புக் குறியீட்டை வகுப்பு உரிமையாளரிடம் கேட்டு, அதை இங்கே உள்ளிடவும்.</string>
     <string name="ask_your_teacher_for_the_class_code">உங்கள் ஆசிரியரிடம் வகுப்புக் குறியீட்டைக் கேட்டு, அதை இங்கே உள்ளிடவும்.</string>
     <string name="assign">ஒதுக்கவும்</string>
     <string name="assigned">ஒதுக்கப்பட்டது</string>
@@ -80,6 +81,7 @@
     <string name="empty_screen_title">கட்டுமானத்தில் உள்ள திரை</string>
     <string name="enrolled">பதிவுசெய்யப்பட்டது</string>
     <string name="enter_a_class_name">வகுப்பின் பெயரை உள்ளிடவும்.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">வகுப்பு உரிமையாளரால் பகிரப்பட்ட குறியீட்டை உள்ளிடவும்.</string>
     <string name="enter_the_code_shared_by_your_teacher">உங்கள் ஆசிரியர் பகிர்ந்த குறியீட்டை உள்ளிடவும்.</string>
     <string name="enter_time">நேரத்தை உள்ளிடவும்</string>
     <string name="forgot_password">கடவுச்சொல்லை மறந்துவிட்டீர்களா?</string>
@@ -160,11 +162,13 @@
     <string name="student_answers">மாணவர் பதில்கள்</string>
     <string name="student_not_yet_submitted">மாணவர் இன்னும் சமர்ப்பிக்கப்படவில்லை.</string>
     <string name="student_work">மாணவர் பணி</string>
+    <string name="student">மாணவர்</string>
     <string name="students">மாணவர்கள்</string>
     <string name="subject">பொருள்</string>
     <string name="submit">சமர்ப்பி</string>
     <string name="switch_to_text_input">உரை உள்ளீட்டிற்கு மாறு</string>
     <string name="switch_to_touch_input">டச் உள்ளீட்டிற்கு மாறு</string>
+    <string name="teacher">ஆசிரியர்</string>
     <string name="teachers">ஆசிரியர்கள்</string>
     <string name="teaching">கற்பித்தல்</string>
     <string name="the_student_hasnt_answered_the_question_yet">மாணவர் கேள்விக்கு இன்னும் பதிலளிக்கவில்லை.</string>

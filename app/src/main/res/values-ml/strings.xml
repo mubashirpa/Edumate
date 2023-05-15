@@ -15,6 +15,7 @@
     <string name="answer">ഉത്തരം</string>
     <string name="app_language">അപ്ലിക്കേഷൻ ഭാഷ</string>
     <string name="ask">ചോദിക്കുക</string>
+    <string name="ask_the_class_owner_for_the_class_code">ക്ലാസ് കോഡിനായി ക്ലാസ് ഉടമയോട് ചോദിച്ച ശേഷം അത് ഇവിടെ നൽകുക.</string>
     <string name="ask_your_teacher_for_the_class_code">ക്ലാസ് കോഡ് നിങ്ങളുടെ ടീച്ചറോട് ചോദിച്ച് അത് ഇവിടെ നൽകുക.</string>
     <string name="assign">അസൈൻ ചെയ്യുക</string>
     <string name="assigned">അസൈൻ ചെയ്‌തു</string>
@@ -80,6 +81,7 @@
     <string name="empty_screen_title">സ്‌ക്രീൻ നിർമ്മാണത്തിലാണ്</string>
     <string name="enrolled">എൻറോൾ ചെയ്തു</string>
     <string name="enter_a_class_name">ഒരു ക്ലാസ്സിന്റെ പേര് നൽകുക.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">ക്ലാസ് ഉടമ പങ്കിട്ട കോഡ് നൽകുക.</string>
     <string name="enter_the_code_shared_by_your_teacher">നിങ്ങളുടെ അധ്യാപകൻ പങ്കിട്ട കോഡ് നൽകുക.</string>
     <string name="enter_time">സമയം നൽകുക</string>
     <string name="forgot_password">പാസ്‌വേഡ് മറന്നോ?</string>
@@ -160,11 +162,13 @@
     <string name="student_answers">വിദ്യാർത്ഥികളുടെ ഉത്തരങ്ങൾ</string>
     <string name="student_not_yet_submitted">വിദ്യാർത്ഥി ഇതുവരെ സമർപ്പിച്ചിട്ടില്ല.</string>
     <string name="student_work">വിദ്യാർത്ഥി ജോലി</string>
+    <string name="student">വിദ്യാർത്ഥി</string>
     <string name="students">വിദ്യാർത്ഥികൾ</string>
     <string name="subject">വിഷയം</string>
     <string name="submit">സമർപ്പിക്കുക</string>
     <string name="switch_to_text_input">ടെക്‌സ്റ്റ് ഇൻപുട്ടിലേക്ക് മാറുക</string>
     <string name="switch_to_touch_input">ടച്ച് ഇൻപുട്ടിലേക്ക് മാറുക</string>
+    <string name="teacher">ടീച്ചർ</string>
     <string name="teachers">അധ്യാപകർ</string>
     <string name="teaching">അധ്യാപനം</string>
     <string name="the_student_hasnt_answered_the_question_yet">വിദ്യാർത്ഥി ഇതുവരെ ചോദ്യത്തിന് ഉത്തരം നൽകിയിട്ടില്ല.</string>

@@ -15,6 +15,7 @@
     <string name="answer">సమాధానం</string>
     <string name="app_language">యాప్ భాష</string>
     <string name="ask">అడగండి</string>
+    <string name="ask_the_class_owner_for_the_class_code">క్లాస్ కోడ్ కోసం క్లాస్ యజమానిని అడగండి, ఆపై దాన్ని ఇక్కడ నమోదు చేయండి.</string>
     <string name="ask_your_teacher_for_the_class_code">తరగతి కోడ్ కోసం మీ టీచర్‌ని అడగండి, ఆపై దాన్ని ఇక్కడ నమోదు చేయండి.</string>
     <string name="assign">అసైన్ చేయండి</string>
     <string name="assigned">అసైన్ చేయబడింది</string>
@@ -80,6 +81,7 @@
     <string name="empty_screen_title">స్క్రీన్ నిర్మాణంలో ఉంది</string>
     <string name="enrolled">నమోదు చేయబడింది</string>
     <string name="enter_a_class_name">తరగతి పేరును నమోదు చేయండి.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">తరగతి యజమాని షేర్ చేసిన కోడ్‌ని నమోదు చేయండి.</string>
     <string name="enter_the_code_shared_by_your_teacher">మీ టీచర్ షేర్ చేసిన కోడ్‌ని నమోదు చేయండి.</string>
     <string name="enter_time">సమయాన్ని నమోదు చేయండి</string>
     <string name="forgot_password">పాస్‌వర్డ్ మర్చిపోయారా?</string>
@@ -160,11 +162,13 @@
     <string name="student_answers">విద్యార్థి సమాధానాలు</string>
     <string name="student_not_yet_submitted">విద్యార్థి ఇంకా సమర్పించబడలేదు.</string>
     <string name="student_work">విద్యార్థి పని</string>
+    <string name="student">విద్యార్థి</string>
     <string name="students">విద్యార్థులు</string>
     <string name="subject">విషయం</string>
     <string name="submit">సమర్పించు</string>
     <string name="switch_to_text_input">టెక్స్ట్ ఇన్‌పుట్‌కి మారండి</string>
     <string name="switch_to_touch_input">టచ్ ఇన్‌పుట్‌కి మారండి</string>
+    <string name="teacher">టీచర్</string>
     <string name="teachers">ఉపాధ్యాయులు</string>
     <string name="teaching">బోధన</string>
     <string name="the_student_hasnt_answered_the_question_yet">విద్యార్థి ఇంకా ప్రశ్నకు సమాధానం ఇవ్వలేదు.</string>

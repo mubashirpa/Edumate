@@ -16,6 +16,7 @@
     <string name="answer">Answer</string>
     <string name="app_language">App language</string>
     <string name="ask">Ask</string>
+    <string name="ask_the_class_owner_for_the_class_code">Ask class owner for the class code then enter it here.</string>
     <string name="ask_your_teacher_for_the_class_code">Ask your teacher for the class code then enter it here.</string>
     <string name="assign">Assign</string>
     <string name="assigned">Assigned</string>
@@ -81,6 +82,7 @@
     <string name="empty_screen_title">Screen under construction</string>
     <string name="enrolled">Enrolled</string>
     <string name="enter_a_class_name">Enter a class name.</string>
+    <string name="enter_the_code_shared_by_the_class_owner">Enter the code shared by the class owner.</string>
     <string name="enter_the_code_shared_by_your_teacher">Enter the code shared by your teacher.</string>
     <string name="enter_time">Enter Time</string>
     <string name="forgot_password">Forgot password?</string>
@@ -162,11 +164,13 @@
     <string name="student_answers">Student answers</string>
     <string name="student_not_yet_submitted">Student not yet submitted.</string>
     <string name="student_work">Student work</string>
+    <string name="student">Student</string>
     <string name="students">Students</string>
     <string name="subject">Subject</string>
     <string name="submit">Submit</string>
     <string name="switch_to_text_input">Switch to Text Input</string>
     <string name="switch_to_touch_input">Switch to Touch Input</string>
+    <string name="teacher">Teacher</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
     <string name="the_student_hasnt_answered_the_question_yet">The student hasn\'t answered the question yet.</string>
