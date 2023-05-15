@@ -17,6 +17,7 @@ import edumate.app.navigation.Routes
 import edumate.app.navigation.Screen
 import edumate.app.presentation.components.EdumateDrawerContent
 import edumate.app.presentation.components.EdumateSnackbarHost
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun EdumateApp(isLoggedIn: Boolean) {
     val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarScope = rememberCoroutineScope()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -36,13 +38,14 @@ fun EdumateApp(isLoggedIn: Boolean) {
         contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         MPSNavigationWrapper(
+            snackbarHostState = snackbarHostState,
+            snackbarScope = snackbarScope,
             modifier = Modifier
                 .padding(innerPadding)
                 .consumeWindowInsets(innerPadding)
                 .windowInsetsPadding(
                     WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
                 ),
-            snackbarHostState = snackbarHostState,
             isLoggedIn = isLoggedIn
         )
     }
@@ -50,8 +53,9 @@ fun EdumateApp(isLoggedIn: Boolean) {
 
 @Composable
 private fun MPSNavigationWrapper(
-    modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
+    snackbarScope: CoroutineScope,
+    modifier: Modifier = Modifier,
     isLoggedIn: Boolean
 ) {
     val coroutineScope = rememberCoroutineScope()
@@ -96,7 +100,8 @@ private fun MPSNavigationWrapper(
                 navController = rootNavController,
                 startDestination = startDestination,
                 drawerState = drawerState,
-                snackbarHostState = snackbarHostState
+                snackbarHostState = snackbarHostState,
+                snackbarScope = snackbarScope
             )
         }
     }
@@ -107,7 +112,8 @@ private fun EdumateAppContent(
     navController: NavHostController,
     startDestination: String = Routes.Graph.AUTHENTICATION,
     drawerState: DrawerState,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    snackbarScope: CoroutineScope
 ) {
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -118,7 +124,8 @@ private fun EdumateAppContent(
             modifier = Modifier.fillMaxSize(),
             startDestination = startDestination,
             drawerState = drawerState,
-            snackbarHostState = snackbarHostState
+            snackbarHostState = snackbarHostState,
+            snackbarScope = snackbarScope
         )
     }
 }
