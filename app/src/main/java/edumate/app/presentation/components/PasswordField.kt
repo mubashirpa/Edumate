@@ -11,15 +11,13 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.*
-import edumate.app.R.string as Strings
 import edumate.app.core.ext.autofill
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -35,7 +33,6 @@ fun PasswordField(
     imeAction: ImeAction = ImeAction.Done,
     autofillTypes: List<AutofillType> = listOf(AutofillType.Password)
 ) {
-    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordHidden by remember { mutableStateOf(true) }
@@ -49,7 +46,6 @@ fun PasswordField(
         value = value,
         onValueChange = { onValueChange(it) },
         modifier = modifier
-            .focusRequester(focusRequester)
             .autofill(
                 autofillTypes = autofillTypes,
                 onFill = { onValueChange(it) }

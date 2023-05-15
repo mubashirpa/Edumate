@@ -6,13 +6,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.focus.FocusDirection
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
@@ -36,7 +33,6 @@ fun EmailField(
     imeAction: ImeAction = ImeAction.Done,
     autofillTypes: List<AutofillType> = listOf(AutofillType.EmailAddress)
 ) {
-    val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val supportingText: @Composable (() -> Unit)? = if (!errorMessage.isNullOrEmpty()) {
@@ -49,7 +45,6 @@ fun EmailField(
         value = value,
         onValueChange = { onValueChange(it) },
         modifier = modifier
-            .focusRequester(focusRequester)
             .autofill(
                 autofillTypes = autofillTypes,
                 onFill = { onValueChange(it) }
