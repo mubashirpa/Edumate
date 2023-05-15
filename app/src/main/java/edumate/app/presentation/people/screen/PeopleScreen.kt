@@ -97,7 +97,7 @@ fun PeopleScreen(
     onBackPressed: () -> Unit
 ) {
     val topBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topBarState)
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val lifecycle = LocalLifecycleOwner.current.lifecycle
