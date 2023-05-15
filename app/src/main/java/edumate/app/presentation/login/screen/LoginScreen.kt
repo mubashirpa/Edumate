@@ -53,7 +53,7 @@ fun LoginScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnLoginSuccess by rememberUpdatedState(onLoginSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val snackbarScope = rememberCoroutineScope()
     val oneTapClient = remember {
         Identity.getSignInClient(context)
     }
@@ -76,7 +76,7 @@ fun LoginScreen(
                     if (idToken != null) {
                         viewModel.onEvent(LoginUiEvent.OnGoogleSignInClick(idToken))
                     } else {
-                        scope.launch {
+                        snackbarScope.launch {
                             snackbarHostState.showSnackbar(
                                 context.getString(Strings.error_auth_google_no_token)
                             )
@@ -85,14 +85,15 @@ fun LoginScreen(
                 } catch (e: ApiException) {
                     when (e.statusCode) {
                         CommonStatusCodes.NETWORK_ERROR -> {
-                            scope.launch {
+                            snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
                                     context.getString(Strings.error_auth_google_network_error)
                                 )
                             }
                         }
+
                         else -> {
-                            scope.launch {
+                            snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
                                     context.getString(Strings.error_auth_google_api_exception)
                                 )
@@ -121,7 +122,9 @@ fun LoginScreen(
     }
 
     Scaffold(
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            EdumateSnackbarHost(snackbarHostState)
+        },
         content = { innerPadding ->
             Box(
                 modifier = Modifier
@@ -210,7 +213,7 @@ fun LoginScreen(
                                     try {
                                         activityResultLauncher.launch(request)
                                     } catch (_: ActivityNotFoundException) {
-                                        scope.launch {
+                                        snackbarScope.launch {
                                             snackbarHostState.showSnackbar(
                                                 context.getString(
                                                     Strings.error_auth_google_activity_not_found
@@ -220,7 +223,7 @@ fun LoginScreen(
                                     }
                                 }
                                 .addOnFailureListener {
-                                    scope.launch {
+                                    snackbarScope.launch {
                                         snackbarHostState.showSnackbar(
                                             context.getString(Strings.error_auth_google_failed)
                                         )
