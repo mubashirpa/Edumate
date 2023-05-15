@@ -3,7 +3,7 @@ package edumate.app.domain.usecase
 import edumate.app.R.string as Strings
 import edumate.app.core.Resource
 import edumate.app.core.UiText
-import edumate.app.data.remote.mapper.toUser
+import edumate.app.data.remote.mapper.toUserProfile
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.domain.repository.StudentsRepository
 import edumate.app.domain.repository.TeachersRepository
@@ -18,8 +18,8 @@ class ListPeoples @Inject constructor(
     operator fun invoke(courseId: String): Flow<Resource<List<UserProfile>>> = flow {
         try {
             emit(Resource.Loading())
-            val teachers = teachersRepository.list(courseId).map { it.toUser() }
-            val students = studentsRepository.list(courseId).map { it.toUser() }
+            val teachers = teachersRepository.list(courseId).map { it.toUserProfile() }
+            val students = studentsRepository.list(courseId).map { it.toUserProfile() }
             val peoples: MutableList<UserProfile> = mutableListOf()
             peoples.addAll(teachers)
             peoples.addAll(students)

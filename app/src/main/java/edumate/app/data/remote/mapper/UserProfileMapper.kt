@@ -3,7 +3,7 @@ package edumate.app.data.remote.mapper
 import edumate.app.data.remote.dto.UserProfileDto
 import edumate.app.domain.model.user_profiles.UserProfile
 
-fun UserProfileDto.toUser(): UserProfile {
+fun UserProfileDto.toUserProfile(): UserProfile {
     return UserProfile(
         createdAt,
         displayName,
@@ -16,7 +16,7 @@ fun UserProfileDto.toUser(): UserProfile {
     )
 }
 
-fun UserProfile.toUsers(): UserProfileDto {
+fun UserProfile.toUserProfileDto(): UserProfileDto {
     return UserProfileDto(
         createdAt,
         displayName,
