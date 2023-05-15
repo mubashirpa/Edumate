@@ -20,7 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.user_profiles.UserProfile
-import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.UserAvatar
 
 @Composable
@@ -28,34 +27,33 @@ fun PeopleListItem(
     userProfile: UserProfile,
     modifier: Modifier = Modifier,
     currentUserId: String,
-    currentUserType: UserType,
+    isTeacher: Boolean,
     courseOwnerId: String,
     onLeaveClassClick: () -> Unit,
     onEmailClick: () -> Unit,
     onRemoveClick: () -> Unit
 ) {
     val userId = userProfile.id
-    val trailingContent: @Composable (() -> Unit)? =
-        if (currentUserType == UserType.TEACHER) {
-            // Current userProfile is a teacher
-            val isCurrentUser = userId == currentUserId
-            val isCourseOwner = userId == courseOwnerId
-            if (isCurrentUser && isCourseOwner) {
-                null
-            } else {
-                {
-                    MenuButton(
-                        isCurrentUser = isCurrentUser,
-                        isCourseOwner = isCourseOwner,
-                        onLeaveClassClick = onLeaveClassClick,
-                        onEmailClick = onEmailClick,
-                        onRemoveClick = onRemoveClick
-                    )
-                }
-            }
-        } else {
+    val trailingContent: @Composable (() -> Unit)? = if (isTeacher) {
+        // Current userProfile is a teacher
+        val isCurrentUser = userId == currentUserId
+        val isCourseOwner = userId == courseOwnerId
+        if (isCurrentUser && isCourseOwner) {
             null
+        } else {
+            {
+                MenuButton(
+                    isCurrentUser = isCurrentUser,
+                    isCourseOwner = isCourseOwner,
+                    onLeaveClassClick = onLeaveClassClick,
+                    onEmailClick = onEmailClick,
+                    onRemoveClick = onRemoveClick
+                )
+            }
         }
+    } else {
+        null
+    }
 
     ListItem(
         headlineContent = {

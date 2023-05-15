@@ -65,14 +65,6 @@ class PeopleViewModel @Inject constructor(
                         )
                     }
 
-                    PeopleFilterType.TEACHERS -> {
-                        uiState = uiState.copy(
-                            dataState = DataState.SUCCESS,
-                            filter = event.peopleFilterType,
-                            peoples = teachers()
-                        )
-                    }
-
                     PeopleFilterType.STUDENTS -> {
                         val students = students()
                         uiState = uiState.copy(
@@ -87,6 +79,14 @@ class PeopleViewModel @Inject constructor(
                             },
                             filter = event.peopleFilterType,
                             peoples = students
+                        )
+                    }
+
+                    PeopleFilterType.TEACHERS -> {
+                        uiState = uiState.copy(
+                            dataState = DataState.SUCCESS,
+                            filter = event.peopleFilterType,
+                            peoples = teachers()
                         )
                     }
                 }
@@ -165,14 +165,6 @@ class PeopleViewModel @Inject constructor(
                                 )
                             }
 
-                            PeopleFilterType.TEACHERS -> {
-                                uiState = uiState.copy(
-                                    dataState = DataState.SUCCESS,
-                                    peoples = teachers(),
-                                    refreshing = false
-                                )
-                            }
-
                             PeopleFilterType.STUDENTS -> {
                                 val students = students()
                                 uiState = uiState.copy(
@@ -186,6 +178,14 @@ class PeopleViewModel @Inject constructor(
                                         DataState.SUCCESS
                                     },
                                     peoples = students,
+                                    refreshing = false
+                                )
+                            }
+
+                            PeopleFilterType.TEACHERS -> {
+                                uiState = uiState.copy(
+                                    dataState = DataState.SUCCESS,
+                                    peoples = teachers(),
                                     refreshing = false
                                 )
                             }

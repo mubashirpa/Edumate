@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,13 +17,16 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -41,6 +45,7 @@ import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -109,12 +114,7 @@ fun PeopleScreen(
             viewModel.onEvent(PeopleUiEvent.OnRefresh)
         }
     )
-    val currentUserType =
-        if (course.teacherGroupId.contains(viewModel.uiState.currentUser?.uid)) {
-            UserType.TEACHER
-        } else {
-            UserType.STUDENT
-        }
+    val isTeacher = course.teacherGroupId.contains(viewModel.uiState.currentUser?.uid)
     val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
 
     LaunchedEffect(viewModel, lifecycle) {
@@ -182,6 +182,9 @@ fun PeopleScreen(
                     }
                 }
             },
+            colors = TopAppBarDefaults.topAppBarColors(
+                scrolledContainerColor = MaterialTheme.colorScheme.surface
+            ),
             scrollBehavior = scrollBehavior
         )
         Box(
@@ -211,12 +214,12 @@ fun PeopleScreen(
                     Column(modifier = Modifier.fillMaxSize()) {
                         Row(
                             modifier = Modifier
-                                .padding(
-                                    horizontal = 16.dp,
-                                    vertical = 10.dp
-                                ),
+                                .fillMaxWidth()
+                                .padding(vertical = 10.dp)
+                                .horizontalScroll(rememberScrollState()),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
+                            Spacer(modifier = Modifier.width(16.dp))
                             FilterChip(
                                 selected = viewModel.uiState.filter == PeopleFilterType.ALL,
                                 onClick = {
@@ -297,6 +300,7 @@ fun PeopleScreen(
                                     null
                                 }
                             )
+                            Spacer(modifier = Modifier.width(16.dp))
                         }
                         if (dataState is DataState.EMPTY) {
                             AnimatedErrorScreen(
@@ -307,8 +311,7 @@ fun PeopleScreen(
                                 errorMessage = dataState.message.asString()
                             )
                         } else {
-                            val bottomMargin =
-                                if (currentUserType == UserType.TEACHER) 88.dp else 0.dp
+                            val bottomMargin = if (isTeacher) 88.dp else 0.dp
                             LazyColumn(
                                 modifier = Modifier.fillMaxSize(),
                                 state = scrollState,
@@ -319,7 +322,7 @@ fun PeopleScreen(
                                             userProfile = user,
                                             modifier = Modifier.animateItemPlacement(),
                                             currentUserId = viewModel.uiState.currentUser?.uid.orEmpty(),
-                                            currentUserType = currentUserType,
+                                            isTeacher = isTeacher,
                                             courseOwnerId = course.ownerId,
                                             onLeaveClassClick = {
                                                 viewModel.onEvent(
@@ -350,7 +353,7 @@ fun PeopleScreen(
                 }
             }
 
-            if (currentUserType == UserType.TEACHER) {
+            if (isTeacher) {
                 ExtendedFloatingActionButton(
                     text = { Text(text = stringResource(id = Strings.invite)) },
                     icon = {
@@ -423,7 +426,7 @@ fun PeopleScreen(
             viewModel.onEvent(PeopleUiEvent.OnOpenRemoveUserDialogChange(null))
         },
         userProfile = viewModel.uiState.removeUserProfile,
-        userType = if (course.teacherGroupId.contains(viewModel.uiState.removeUserProfile?.id)) {
+        userType = if (isTeacher) {
             UserType.TEACHER
         } else {
             UserType.STUDENT
