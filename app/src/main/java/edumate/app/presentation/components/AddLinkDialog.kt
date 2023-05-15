@@ -41,6 +41,10 @@ fun AddLinkDialog(
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
 
+            LaunchedEffect(Unit) {
+                focusRequester.requestFocus()
+            }
+
             Surface(
                 modifier = Modifier
                     .wrapContentWidth()
