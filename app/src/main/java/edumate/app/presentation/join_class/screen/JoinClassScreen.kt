@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,17 +12,25 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material3.AssistChip
+import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
@@ -29,6 +38,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -42,10 +52,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
+import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.components.UserAvatar
@@ -73,8 +85,11 @@ fun JoinClassScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val isStudent = uiState.userType == UserType.STUDENT
 
     LaunchedEffect(context) {
+        focusRequester.requestFocus()
         joinClassResults.collect { courseId ->
             navigateToClassDetails(courseId)
         }
@@ -138,8 +153,32 @@ fun JoinClassScreen(
                     .imePadding()
                     .verticalScroll(rememberScrollState())
             ) {
+                AssistChip(
+                    onClick = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(true)) },
+                    label = {
+                        Text(
+                            text = if (isStudent) {
+                                stringResource(id = Strings.student)
+                            } else {
+                                stringResource(id = Strings.teacher)
+                            }
+                        )
+                    },
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.ArrowDropDown,
+                            contentDescription = null,
+                            Modifier.size(AssistChipDefaults.IconSize)
+                        )
+                    }
+                )
+                Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = stringResource(id = Strings.enter_the_code_shared_by_your_teacher),
+                    text = if (isStudent) {
+                        stringResource(id = Strings.enter_the_code_shared_by_your_teacher)
+                    } else {
+                        stringResource(id = Strings.enter_the_code_shared_by_the_class_owner)
+                    },
                     style = MaterialTheme.typography.bodyMedium
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -147,7 +186,7 @@ fun JoinClassScreen(
                 TextField(
                     value = uiState.classCode,
                     onValueChange = {
-                        onEvent(JoinClassUiEvent.ClassCodeChanged(it))
+                        onEvent(JoinClassUiEvent.OnClassCodeChange(it))
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -158,9 +197,13 @@ fun JoinClassScreen(
                     supportingText = if (uiState.classCodeError != null) {
                         {
                             Text(
-                                text = stringResource(
-                                    id = Strings.ask_your_teacher_for_the_class_code
-                                )
+                                text = if (isStudent) {
+                                    stringResource(id = Strings.ask_your_teacher_for_the_class_code)
+                                } else {
+                                    stringResource(
+                                        id = Strings.ask_the_class_owner_for_the_class_code
+                                    )
+                                }
                             )
                         }
                     } else {
@@ -179,13 +222,73 @@ fun JoinClassScreen(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        onEvent(JoinClassUiEvent.OnJoinClick)
+                        onEvent(JoinClassUiEvent.JoinClass)
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(text = stringResource(id = Strings.join))
                 }
                 Spacer(modifier = Modifier.height(10.dp))
+            }
+        }
+    }
+
+    if (uiState.openUserTypeBottomSheet) {
+        ModalBottomSheet(
+            onDismissRequest = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false)) },
+            sheetState = bottomSheetState
+        ) {
+            Column(modifier = Modifier.selectableGroup()) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .selectable(
+                            selected = isStudent,
+                            onClick = {
+                                onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.STUDENT))
+                                onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
+                            },
+                            role = Role.RadioButton
+                        )
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = isStudent,
+                        onClick = null // null recommended for accessibility with screen readers
+                    )
+                    Text(
+                        text = stringResource(id = Strings.student),
+                        modifier = Modifier.padding(start = 16.dp),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .selectable(
+                            selected = !isStudent,
+                            onClick = {
+                                onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.TEACHER))
+                                onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
+                            },
+                            role = Role.RadioButton
+                        )
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    RadioButton(
+                        selected = !isStudent,
+                        onClick = null // null recommended for accessibility with screen readers
+                    )
+                    Text(
+                        text = stringResource(id = Strings.teacher),
+                        modifier = Modifier.padding(start = 16.dp),
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
             }
         }
     }
