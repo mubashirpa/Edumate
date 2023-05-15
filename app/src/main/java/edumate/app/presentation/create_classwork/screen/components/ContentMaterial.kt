@@ -7,10 +7,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -34,6 +37,11 @@ fun ContentMaterial(
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(context) {
+        focusRequester.requestFocus()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -48,7 +56,9 @@ fun ContentMaterial(
                     OutlinedTextField(
                         value = uiState.title,
                         onValueChange = { onEvent(CreateClassworkUiEvent.OnTitleChange(it)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         label = {
                             Text(text = stringResource(id = Strings.material_title))
                         },

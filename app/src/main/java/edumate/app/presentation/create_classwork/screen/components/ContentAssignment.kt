@@ -10,6 +10,8 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -37,6 +39,11 @@ fun ContentAssignment(
     val dateFormatter = remember { SimpleDateFormat("dd MMM, yyyy", Locale.getDefault()) }
     val timeFormatter = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
     val fileUtils = remember { FileUtils(context) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(context) {
+        focusRequester.requestFocus()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -51,7 +58,9 @@ fun ContentAssignment(
                     OutlinedTextField(
                         value = uiState.title,
                         onValueChange = { onEvent(CreateClassworkUiEvent.OnTitleChange(it)) },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         label = {
                             Text(text = stringResource(id = Strings.assignment_title))
                         },

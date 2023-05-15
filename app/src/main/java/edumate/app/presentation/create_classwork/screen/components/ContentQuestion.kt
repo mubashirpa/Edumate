@@ -15,6 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -53,6 +55,11 @@ fun ContentQuestion(
     val options = stringArrayResource(id = Arrays.question_type)
     var expanded by remember { mutableStateOf(false) }
     var selectedOptionText by remember { mutableStateOf(options[0]) }
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(context) {
+        focusRequester.requestFocus()
+    }
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -69,7 +76,9 @@ fun ContentQuestion(
                         onValueChange = {
                             onEvent(CreateClassworkUiEvent.OnTitleChange(it))
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         label = {
                             Text(text = stringResource(id = Strings.question_title))
                         },
