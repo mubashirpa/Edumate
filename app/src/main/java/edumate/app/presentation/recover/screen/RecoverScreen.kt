@@ -1,14 +1,34 @@
 package edumate.app.presentation.recover.screen
 
-import android.widget.Toast
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
@@ -22,7 +42,9 @@ import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.recover.RecoverUiEvent
 import edumate.app.presentation.recover.RecoverViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 
 @OptIn(
     ExperimentalLayoutApi::class,
@@ -31,12 +53,19 @@ import kotlinx.coroutines.flow.filter
 @Composable
 fun RecoverScreen(
     viewModel: RecoverViewModel = hiltViewModel(),
+    rootSnackbarHostState: SnackbarHostState,
+    rootSnackbarScope: CoroutineScope,
     onPasswordResetEmailSent: () -> Unit
 ) {
     val context = LocalContext.current
     val currentOnPasswordResetEmailSent by rememberUpdatedState(onPasswordResetEmailSent)
     val snackbarHostState = remember { SnackbarHostState() }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the password reset email sent and
@@ -45,15 +74,15 @@ fun RecoverScreen(
             .filter { it.isPasswordResetEmailSend }
             .flowWithLifecycle(lifecycle)
             .collect {
-                Toast.makeText(
-                    context,
-                    context.getString(
-                        Strings.success_send_password_reset_email,
-                        viewModel.uiState.email
-                    ),
-                    Toast.LENGTH_LONG
-                ).show()
                 currentOnPasswordResetEmailSent()
+                rootSnackbarScope.launch {
+                    rootSnackbarHostState.showSnackbar(
+                        context.getString(
+                            Strings.success_send_password_reset_email,
+                            viewModel.uiState.email
+                        )
+                    )
+                }
             }
     }
 
@@ -66,7 +95,9 @@ fun RecoverScreen(
     }
 
     Scaffold(
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            EdumateSnackbarHost(snackbarHostState)
+        },
         content = { innerPadding ->
             Box(
                 modifier = Modifier
@@ -101,7 +132,9 @@ fun RecoverScreen(
                         onValueChange = {
                             viewModel.onEvent(RecoverUiEvent.EmailChanged(it.trim()))
                         },
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                         placeholder = {
                             Text(text = stringResource(id = Strings.email))
                         },
