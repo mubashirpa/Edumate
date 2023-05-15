@@ -22,6 +22,7 @@ import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
 import edumate.app.presentation.settings.SettingsViewModel
 import edumate.app.presentation.settings.screen.SettingsScreen
+import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun EdumateNavHost(
@@ -29,14 +30,15 @@ fun EdumateNavHost(
     modifier: Modifier = Modifier,
     startDestination: String = Routes.Graph.AUTHENTICATION,
     drawerState: DrawerState,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    snackbarScope: CoroutineScope
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
-        authentication(navController)
+        authentication(navController, snackbarHostState, snackbarScope)
         composable(route = Screen.HomeScreen.route) {
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
