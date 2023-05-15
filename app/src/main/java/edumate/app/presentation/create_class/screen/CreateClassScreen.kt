@@ -55,6 +55,7 @@ fun CreateClassScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
 
     LaunchedEffect(context) {
+        focusRequester.requestFocus()
         createClassResults.collect { courseId ->
             navigateToClassDetails(courseId)
         }
@@ -143,9 +144,7 @@ fun CreateClassScreen(
                         onValueChange = {
                             onEvent(CreateClassUiEvent.SectionChanged(it))
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                        modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.section))
                         },
@@ -164,9 +163,7 @@ fun CreateClassScreen(
                         onValueChange = {
                             onEvent(CreateClassUiEvent.RoomChanged(it))
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                        modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.room))
                         },
@@ -185,9 +182,7 @@ fun CreateClassScreen(
                         onValueChange = {
                             onEvent(CreateClassUiEvent.SubjectChanged(it))
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                        modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.subject))
                         },
