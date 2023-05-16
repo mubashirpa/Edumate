@@ -64,7 +64,10 @@ fun RecoverScreen(
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Exception) {
+        }
     }
 
     LaunchedEffect(viewModel, lifecycle) {

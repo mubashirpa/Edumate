@@ -57,8 +57,11 @@ fun ContentQuestion(
     var selectedOptionText by remember { mutableStateOf(options[0]) }
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(context) {
-        focusRequester.requestFocus()
+    LaunchedEffect(Unit) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Exception) {
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

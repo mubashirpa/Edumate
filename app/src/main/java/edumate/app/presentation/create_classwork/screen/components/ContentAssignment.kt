@@ -41,8 +41,11 @@ fun ContentAssignment(
     val fileUtils = remember { FileUtils(context) }
     val focusRequester = remember { FocusRequester() }
 
-    LaunchedEffect(context) {
-        focusRequester.requestFocus()
+    LaunchedEffect(Unit) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Exception) {
+        }
     }
 
     Column(modifier = Modifier.fillMaxSize()) {

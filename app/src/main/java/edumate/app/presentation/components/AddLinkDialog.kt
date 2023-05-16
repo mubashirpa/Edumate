@@ -42,7 +42,10 @@ fun AddLinkDialog(
             val keyboardController = LocalSoftwareKeyboardController.current
 
             LaunchedEffect(Unit) {
-                focusRequester.requestFocus()
+                try {
+                    focusRequester.requestFocus()
+                } catch (_: Exception) {
+                }
             }
 
             Surface(

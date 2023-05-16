@@ -54,8 +54,14 @@ fun CreateClassScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
 
+    LaunchedEffect(Unit) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: Exception) {
+        }
+    }
+
     LaunchedEffect(context) {
-        focusRequester.requestFocus()
         createClassResults.collect { courseId ->
             navigateToClassDetails(courseId)
         }
