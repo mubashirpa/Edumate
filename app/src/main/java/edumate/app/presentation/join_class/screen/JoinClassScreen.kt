@@ -289,6 +289,7 @@ fun JoinClassScreen(
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
+                Spacer(modifier = Modifier.height(10.dp))
             }
         }
     }
