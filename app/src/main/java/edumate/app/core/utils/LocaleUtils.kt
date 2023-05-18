@@ -1,16 +1,19 @@
 package edumate.app.core.utils
 
+import android.app.LocaleManager
 import android.content.Context
 import android.content.res.Configuration
+import android.os.Build
+import android.os.LocaleList
+import androidx.annotation.RequiresApi
 import java.util.Locale
 
 object LocaleUtils {
 
-    // [AppPrefs] is sharedPreferences or datastore
-    // fun setLocale(c: Context, pref: SharedPreferences) = updateResources(c, pref.language ?: "en")
+    // private val primaryLocale: Locale = context.resources.configuration.locales[0]
+    // val locale: String = primaryLocale.displayName
 
-    fun updateResources(context: Context, language: String) {
-        // TODO("Fix deprecations")
+    fun updateConfiguration(context: Context, language: String) {
         val locale = Locale(language)
         val configuration = Configuration().apply {
             setLocale(locale)
@@ -18,11 +21,29 @@ object LocaleUtils {
         context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
     }
 
-    fun updateResources2(context: Context, language: String) {
+    fun updateResources(context: Context, language: String): Context {
+        val resources = context.resources
         val locale = Locale(language)
-        val configuration = Configuration(context.resources.configuration).apply {
+        val configuration = Configuration(resources.configuration).apply {
             setLocale(locale)
         }
-        val contextWithLocale = context.createConfigurationContext(configuration)
+        return context.createConfigurationContext(configuration)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun setApplicationLocales(context: Context, language: String) {
+        context.getSystemService(LocaleManager::class.java).applicationLocales =
+            LocaleList(Locale.forLanguageTag(language))
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun currentAppLocales(context: Context): LocaleList {
+        return context.getSystemService(LocaleManager::class.java).applicationLocales
+    }
+
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
+    fun resetToSystemLocale(context: Context) {
+        context.getSystemService(LocaleManager::class.java).applicationLocales =
+            LocaleList.getEmptyLocaleList()
     }
 }
