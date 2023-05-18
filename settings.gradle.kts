@@ -14,5 +14,6 @@ dependencyResolutionManagement {
         maven(url = "https://github.com/jitsi/jitsi-maven-repository/raw/master/releases") // Jitsi Maven repository
     }
 }
+
 rootProject.name = "Edumate"
 include(":app")

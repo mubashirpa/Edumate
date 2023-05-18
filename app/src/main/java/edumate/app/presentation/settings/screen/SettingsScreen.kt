@@ -54,6 +54,7 @@ import androidx.compose.ui.unit.dp
 import edumate.app.R.array as Arrays
 import edumate.app.R.string as Strings
 import edumate.app.core.ext.dpToPx
+import edumate.app.core.utils.LocaleUtils
 import edumate.app.core.utils.enumValueOf
 import edumate.app.presentation.settings.AppTheme
 import edumate.app.presentation.settings.SettingsUiEvent
@@ -131,6 +132,9 @@ fun SettingsScreen(
                 summary = languages[languageValues.indexOf(uiState.selectedLanguage)],
                 icon = Icons.Default.Language,
                 onConfirmClick = { index, value ->
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        LocaleUtils.setApplicationLocales(context, value)
+                    }
                     onEvent(SettingsUiEvent.OnAppLanguageChange(index, value))
                 }
             )

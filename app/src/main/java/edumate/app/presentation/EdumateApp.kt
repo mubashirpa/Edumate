@@ -115,17 +115,12 @@ private fun EdumateAppContent(
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope
 ) {
-    Surface(
+    EdumateNavHost(
+        navController = navController,
         modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
-    ) {
-        EdumateNavHost(
-            navController = navController,
-            modifier = Modifier.fillMaxSize(),
-            startDestination = startDestination,
-            drawerState = drawerState,
-            snackbarHostState = snackbarHostState,
-            snackbarScope = snackbarScope
-        )
-    }
+        startDestination = startDestination,
+        drawerState = drawerState,
+        snackbarHostState = snackbarHostState,
+        snackbarScope = snackbarScope
+    )
 }
