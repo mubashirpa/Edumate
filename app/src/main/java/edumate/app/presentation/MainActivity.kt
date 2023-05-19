@@ -30,10 +30,11 @@ class MainActivity : ComponentActivity() {
         setContent {
             val viewModel: MainViewModel = hiltViewModel()
             val context = LocalContext.current
+            val appTheme = viewModel.uiState.appTheme
             val appLanguage = viewModel.uiState.appLanguage
 
-            LaunchedEffect(viewModel.uiState.appTheme) {
-                when (viewModel.uiState.appTheme) {
+            LaunchedEffect(appTheme) {
+                when (appTheme) {
                     AppTheme.SYSTEM_DEFAULT -> {
                         AppCompatDelegate.setDefaultNightMode(
                             AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
@@ -52,7 +53,10 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(appLanguage) {
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-                    LocaleUtils.updateConfiguration(context, appLanguage)
+                    if (appLanguage != LocaleUtils.getLocale(context)) {
+                        LocaleUtils.updateResources(context, appLanguage)
+                        recreate()
+                    }
                 }
             }
 

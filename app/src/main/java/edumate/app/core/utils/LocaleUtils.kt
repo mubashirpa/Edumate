@@ -10,24 +10,22 @@ import java.util.Locale
 
 object LocaleUtils {
 
-    // private val primaryLocale: Locale = context.resources.configuration.locales[0]
-    // val locale: String = primaryLocale.displayName
-
-    fun updateConfiguration(context: Context, language: String) {
-        val locale = Locale(language)
-        val configuration = Configuration().apply {
-            setLocale(locale)
-        }
-        context.resources.updateConfiguration(configuration, context.resources.displayMetrics)
+    fun getLocale(context: Context): String {
+        val primaryLocale: Locale = context.resources.configuration.locales[0]
+        return primaryLocale.language
     }
 
+    @Suppress("DEPRECATION")
     fun updateResources(context: Context, language: String): Context {
-        val resources = context.resources
         val locale = Locale(language)
+        val resources = context.resources
         val configuration = Configuration(resources.configuration).apply {
             setLocale(locale)
         }
-        return context.createConfigurationContext(configuration)
+        val configurationContext = context.createConfigurationContext(configuration)
+        // TODO("Remove deprecated method")
+        resources.updateConfiguration(configuration, context.resources.displayMetrics)
+        return configurationContext
     }
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)

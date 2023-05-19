@@ -132,10 +132,10 @@ fun SettingsScreen(
                 summary = languages[languageValues.indexOf(uiState.selectedLanguage)],
                 icon = Icons.Default.Language,
                 onConfirmClick = { index, value ->
+                    onEvent(SettingsUiEvent.OnAppLanguageChange(index, value))
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         LocaleUtils.setApplicationLocales(context, value)
                     }
-                    onEvent(SettingsUiEvent.OnAppLanguageChange(index, value))
                 }
             )
         }
