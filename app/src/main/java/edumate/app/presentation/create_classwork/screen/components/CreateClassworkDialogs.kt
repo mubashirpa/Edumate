@@ -3,6 +3,7 @@ package edumate.app.presentation.create_classwork.screen.components
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -123,88 +124,95 @@ fun PointsDialog(
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation
             ) {
-                Column(modifier = Modifier.padding(24.dp)) {
+                Column(modifier = Modifier.padding(vertical = 24.dp)) {
                     Text(
                         text = stringResource(id = Strings.change_point_value),
+                        modifier = Modifier.padding(horizontal = 24.dp),
                         color = MaterialTheme.colorScheme.onSurface,
                         style = MaterialTheme.typography.headlineSmall
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
+                    Column(modifier = Modifier.selectableGroup()) {
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .selectable(
+                                    selected = tempPoint.value != null,
+                                    onClick = { tempPoint.value = point.text },
+                                    role = Role.RadioButton
+                                )
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
                                 selected = tempPoint.value != null,
-                                onClick = { tempPoint.value = point.text },
-                                role = Role.RadioButton
+                                onClick = null
                             )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        RadioButton(
-                            selected = tempPoint.value != null,
-                            onClick = null
-                        )
-                        BasicTextField(
-                            value = point,
-                            onValueChange = {
-                                if (it.text.length <= 3) {
-                                    point = it
-                                    tempPoint.value = it.text
-                                }
-                            },
-                            modifier = Modifier
-                                .padding(start = 16.dp)
-                                .widthIn(max = 500.dp),
-                            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.onSurface
-                            ),
-                            keyboardOptions = KeyboardOptions(
-                                keyboardType = KeyboardType.Number,
-                                imeAction = ImeAction.Done
-                            ),
-                            keyboardActions = KeyboardActions(
-                                onDone = {
-                                    keyboardController?.hide()
-                                    focusManager.clearFocus()
-                                }
-                            ),
-                            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
-                        )
-                        Text(
-                            text = stringResource(id = Strings._points, ""),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
+                            BasicTextField(
+                                value = point,
+                                onValueChange = {
+                                    if (it.text.length <= 3) {
+                                        point = it
+                                        tempPoint.value = it.text
+                                    }
+                                },
+                                modifier = Modifier
+                                    .padding(start = 16.dp)
+                                    .widthIn(max = 500.dp),
+                                textStyle = MaterialTheme.typography.bodyLarge.copy(
+                                    color = MaterialTheme.colorScheme.onSurface
+                                ),
+                                keyboardOptions = KeyboardOptions(
+                                    keyboardType = KeyboardType.Number,
+                                    imeAction = ImeAction.Done
+                                ),
+                                keyboardActions = KeyboardActions(
+                                    onDone = {
+                                        keyboardController?.hide()
+                                        focusManager.clearFocus()
+                                    }
+                                ),
+                                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
+                            )
+                            Text(
+                                text = stringResource(id = Strings._points, ""),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                        Row(
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .selectable(
+                                    selected = tempPoint.value == null,
+                                    onClick = { tempPoint.value = null },
+                                    role = Role.RadioButton
+                                )
+                                .padding(horizontal = 16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(
+                                selected = tempPoint.value == null,
+                                onClick = null
+                            )
+                            Text(
+                                text = stringResource(id = Strings.unmarked),
+                                modifier = Modifier.padding(start = 16.dp),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                     Row(
-                        Modifier
-                            .fillMaxWidth()
-                            .height(56.dp)
-                            .selectable(
-                                selected = tempPoint.value == null,
-                                onClick = { tempPoint.value = null },
-                                role = Role.RadioButton
-                            )
-                            .padding(horizontal = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 16.dp)
+                            .align(Alignment.End)
                     ) {
-                        RadioButton(
-                            selected = tempPoint.value == null,
-                            onClick = null
-                        )
-                        Text(
-                            text = stringResource(id = Strings.unmarked),
-                            modifier = Modifier.padding(start = 16.dp),
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Row(modifier = Modifier.align(Alignment.End)) {
                         TextButton(onClick = onDismissRequest) {
                             Text(stringResource(id = Strings.cancel))
                         }
