@@ -20,15 +20,15 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# These are for Jitsi Meet SDK
+# For Jitsi Meet SDK
 
 # React Native
 
 # Keep our interfaces so they can be used by other ProGuard rules.
 # See http://sourceforge.net/p/proguard/bugs/466/
--keep,allowobfuscation @interface com.facebook.proguard.annotations.DoNotStrip
--keep,allowobfuscation @interface com.facebook.proguard.annotations.KeepGettersAndSetters
--keep,allowobfuscation @interface com.facebook.common.internal.DoNotStrip
+-keep,allowobfuscation interface com.facebook.proguard.annotations.DoNotStrip
+-keep,allowobfuscation interface com.facebook.proguard.annotations.KeepGettersAndSetters
+-keep,allowobfuscation interface com.facebook.common.internal.DoNotStrip
 
 # Do not strip any method/class that is annotated with @DoNotStrip
 -keep @com.facebook.proguard.annotations.DoNotStrip class *
@@ -104,3 +104,21 @@
 -keep public class com.facebook.imageutils.** {
    public *;
 }
+
+# ^^^ For Jitsi Meet SDK
+
+# Added the following due to error while release build, Missing classes detected while running R8.
+
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# For Firebase realtime database
+
+-keepattributes Signature
+
+# This rule will properly ProGuard all the model classes in
+# the package edumate.app.data.remote.dto.
+-keepclassmembers class edumate.app.data.remote.dto.** {
+  *;
+}
+
+# ^^^ For Firebase realtime database
