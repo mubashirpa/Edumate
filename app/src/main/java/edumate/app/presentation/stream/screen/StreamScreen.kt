@@ -107,11 +107,13 @@ fun StreamScreen(
                 }
             },
             actions = {
-                IconButton(onClick = { }) {
-                    Icon(
-                        Icons.Default.Settings,
-                        contentDescription = null
-                    )
+                if (currentUserType == UserType.TEACHER) {
+                    IconButton(onClick = { /*TODO*/ }) {
+                        Icon(
+                            Icons.Default.Settings,
+                            contentDescription = null
+                        )
+                    }
                 }
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                     IconButton(
