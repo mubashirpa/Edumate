@@ -20,7 +20,26 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
-# For Jitsi Meet SDK
+# Required for Firebase
+
+-keepattributes Signature
+-keepattributes *Annotation*
+-keepattributes EnclosingMethod
+-keepattributes InnerClasses
+
+# ^^^ Required for Firebase
+
+# Required Firebase realtime database
+
+# This rule will properly ProGuard all the model classes in
+# the package edumate.app.data.remote.dto.
+-keepclassmembers class edumate.app.data.remote.dto.** {
+  *;
+}
+
+# ^^^ Required Firebase realtime database
+
+# Required for Jitsi Meet SDK
 
 # React Native
 
@@ -105,20 +124,4 @@
    public *;
 }
 
-# ^^^ For Jitsi Meet SDK
-
-# Added the following due to error while release build, Missing classes detected while running R8.
-
--dontwarn org.slf4j.impl.StaticLoggerBinder
-
-# For Firebase realtime database
-
--keepattributes Signature
-
-# This rule will properly ProGuard all the model classes in
-# the package edumate.app.data.remote.dto.
--keepclassmembers class edumate.app.data.remote.dto.** {
-  *;
-}
-
-# ^^^ For Firebase realtime database
+# ^^^ Required for Jitsi Meet SDK
