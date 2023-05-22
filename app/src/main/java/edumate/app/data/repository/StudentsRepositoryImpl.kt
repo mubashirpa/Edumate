@@ -3,6 +3,7 @@ package edumate.app.data.repository
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.UserProfileDto
@@ -38,12 +39,17 @@ class StudentsRepositoryImpl @Inject constructor(
         TODO("Not yet implemented")
     }
 
-    override suspend fun list(courseId: String, pageSize: Int): List<UserProfileDto> {
-        // TODO("Use pageSize")
-        return users().whereArrayContains(FirebaseConstants.Firestore.ENROLLED, courseId)
-            .get().await().documents.mapNotNull { snapshot ->
-                snapshot.toObject<UserProfileDto>()
-            }
+    override suspend fun list(courseId: String, pageSize: Int?): List<UserProfileDto> {
+        var query: Query = users()
+        query = query.whereArrayContains(FirebaseConstants.Firestore.ENROLLED, courseId)
+        query = if (pageSize != null && pageSize > 0) {
+            query.limit(pageSize.toLong())
+        } else {
+            query.limit(30)
+        }
+        return query.get().await().documents.mapNotNull { snapshot ->
+            snapshot.toObject<UserProfileDto>()
+        }
     }
 
     private fun courses(): CollectionReference {
