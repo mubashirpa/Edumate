@@ -29,15 +29,23 @@
 
 # ^^^ Required for Firebase
 
-# Required Firebase realtime database
+# Required for Firebase database and firestore
 
-# This rule will properly ProGuard all the model classes in
-# the package edumate.app.data.remote.dto.
--keepclassmembers class edumate.app.data.remote.dto.** {
-  *;
-}
+-keepclassmembers class edumate.app.data.remote.dto.** { *; }
+-keepclassmembers class edumate.app.domain.model.** { *; }
 
-# ^^^ Required Firebase realtime database
+# ^^^ Required for Firebase database and firestore
+
+# Firestore test rules
+
+-keepattributes SourceFile,LineNumberTable
+-dontwarn org.xmlpull.v1.**
+-dontnote org.xmlpull.v1.**
+-keep class org.xmlpull.** { *; }
+-keepclassmembers class org.xmlpull.** { *; }
+-keep class com.google.firebase.auth.** {*;}
+
+# ^^^ Firestore test rules
 
 # Required for Jitsi Meet SDK
 
@@ -125,3 +133,9 @@
 }
 
 # ^^^ Required for Jitsi Meet SDK
+
+# Required for Missing classes detected while running R8
+
+-dontwarn org.slf4j.impl.StaticLoggerBinder
+
+# ^^^ Required for Missing classes detected while running R8
