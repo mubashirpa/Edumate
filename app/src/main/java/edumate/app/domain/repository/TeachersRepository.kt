@@ -32,5 +32,5 @@ interface TeachersRepository {
      * @param pageSize Maximum number of items to return. The default is 30 if unspecified or 0.
      * @return If successful, the response body contains a list of [UserProfileDto]
      */
-    suspend fun list(courseId: String, pageSize: Int = 30): List<UserProfileDto>
+    suspend fun list(courseId: String, pageSize: Int? = 30): List<UserProfileDto>
 }
