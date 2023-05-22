@@ -19,16 +19,16 @@ class CourseWorkRepositoryImpl @Inject constructor(
 
     override suspend fun create(courseId: String, courseWorkDto: CourseWorkDto): CourseWorkDto? {
         val id = courseWorkDto.id
-        coursesWork(courseId).document(id).set(courseWorkDto.toMap()).await()
+        courseWork(courseId).document(id).set(courseWorkDto.toMap()).await()
         return get(courseId, id)
     }
 
     override suspend fun delete(courseId: String, id: String) {
-        coursesWork(courseId).document(id).delete().await()
+        courseWork(courseId).document(id).delete().await()
     }
 
     override suspend fun get(courseId: String, id: String): CourseWorkDto? {
-        val documentSnapshot = coursesWork(courseId).document(id).get().await()
+        val documentSnapshot = courseWork(courseId).document(id).get().await()
         return documentSnapshot.toObject<CourseWorkDto>()
     }
 
@@ -38,14 +38,16 @@ class CourseWorkRepositoryImpl @Inject constructor(
         orderBy: String,
         pageSize: Int?
     ): List<CourseWorkDto> {
-        // TODO("Use courseWorkState, orderBy and pageSize")
-        return coursesWork(courseId).whereEqualTo(
-            FirebaseConstants.Firestore.STATE,
-            CourseWorkState.PUBLISHED
-        ).orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING).get()
-            .await().documents.mapNotNull { snapshot ->
-                snapshot.toObject<CourseWorkDto>()
-            }
+        var query: Query = courseWork(courseId)
+        query = query.whereEqualTo(FirebaseConstants.Firestore.STATE, courseWorkState)
+        // TODO("Use orderBy")
+        query = query.orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING)
+        if (pageSize != null && pageSize > 0) {
+            query = query.limit(pageSize.toLong())
+        }
+        return query.get().await().documents.mapNotNull { snapshot ->
+            snapshot.toObject<CourseWorkDto>()
+        }
     }
 
     override suspend fun modifyAssignees(
@@ -62,11 +64,11 @@ class CourseWorkRepositoryImpl @Inject constructor(
         id: String,
         courseWorkDto: CourseWorkDto
     ): CourseWorkDto? {
-        coursesWork(courseId).document(id).update(courseWorkDto.toMap()).await()
+        courseWork(courseId).document(id).update(courseWorkDto.toMap()).await()
         return get(courseId, id)
     }
 
-    private fun coursesWork(courseId: String): CollectionReference {
+    private fun courseWork(courseId: String): CollectionReference {
         return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
             .document(courseId).collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION)
     }

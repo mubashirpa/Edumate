@@ -3,6 +3,7 @@ package edumate.app.data.repository
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.CourseDto
@@ -17,7 +18,7 @@ class CoursesRepositoryImpl @Inject constructor(
 
     override suspend fun create(courseDto: CourseDto): CourseDto? {
         val id = courseDto.id
-        coursesCollection().document(id).set(courseDto.toMap()).await()
+        courses().document(id).set(courseDto.toMap()).await()
         // After a course created, add $courseId in users/$uid/teaching array
         firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION)
             .document(courseDto.ownerId)
@@ -26,11 +27,11 @@ class CoursesRepositoryImpl @Inject constructor(
     }
 
     override suspend fun delete(id: String) {
-        coursesCollection().document(id).delete().await()
+        courses().document(id).delete().await()
     }
 
     override suspend fun get(id: String): CourseDto? {
-        val documentSnapshot = coursesCollection().document(id).get().await()
+        val documentSnapshot = courses().document(id).get().await()
         return documentSnapshot.toObject<CourseDto>()
     }
 
@@ -40,37 +41,34 @@ class CoursesRepositoryImpl @Inject constructor(
         courseState: CourseState,
         pageSize: Int?
     ): List<CourseDto> {
-        // TODO("Use courseState and pageSize")
-        return when {
+        var query: Query = courses()
+        query = when {
             studentId != null -> {
-                coursesCollection().whereArrayContains(
-                    FirebaseConstants.Firestore.COURSE_GROUP_ID,
-                    studentId
-                ).get().await().documents.mapNotNull { snapshot ->
-                    snapshot.toObject<CourseDto>()
-                }
+                query.whereArrayContains(FirebaseConstants.Firestore.COURSE_GROUP_ID, studentId)
             }
 
             teacherId != null -> {
-                coursesCollection().whereArrayContains(
-                    FirebaseConstants.Firestore.TEACHER_GROUP_ID,
-                    teacherId
-                ).get().await().documents.mapNotNull { snapshot ->
-                    snapshot.toObject<CourseDto>()
-                }
+                query.whereArrayContains(FirebaseConstants.Firestore.TEACHER_GROUP_ID, teacherId)
             }
 
             else -> {
-                emptyList()
+                return emptyList()
             }
+        }
+        query = query.orderBy(FirebaseConstants.Firestore.NAME, Query.Direction.ASCENDING)
+        if (pageSize != null && pageSize > 0) {
+            query = query.limit(pageSize.toLong())
+        }
+        return query.get().await().documents.mapNotNull { snapshot ->
+            snapshot.toObject<CourseDto>()
         }
     }
 
     override suspend fun update(id: String, courseDto: CourseDto) {
-        coursesCollection().document(id).update(courseDto.toMap()).await()
+        courses().document(id).update(courseDto.toMap()).await()
     }
 
-    private fun coursesCollection(): CollectionReference {
+    private fun courses(): CollectionReference {
         return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
     }
 }
