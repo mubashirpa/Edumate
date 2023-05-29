@@ -16,9 +16,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -51,6 +54,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -116,6 +120,9 @@ fun PeopleScreen(
     )
     val isTeacher = course.teacherGroupId.contains(viewModel.uiState.currentUser?.uid)
     val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the user is leave class and
@@ -379,10 +386,15 @@ fun PeopleScreen(
     }
 
     if (viewModel.uiState.openFabMenu) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(
             onDismissRequest = {
                 viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
-            }
+            },
+            sheetState = bottomSheetState,
+            windowInsets = WindowInsets(0)
         ) {
             val courseLink = course.alternateLink
             ListItem(
@@ -405,7 +417,7 @@ fun PeopleScreen(
                     }
                 }
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 

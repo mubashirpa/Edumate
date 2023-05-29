@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -85,8 +88,10 @@ fun JoinClassScreen(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isStudent = uiState.userType == UserType.STUDENT
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     LaunchedEffect(context) {
         focusRequester.requestFocus()
@@ -234,9 +239,13 @@ fun JoinClassScreen(
     }
 
     if (uiState.openUserTypeBottomSheet) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(
             onDismissRequest = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false)) },
-            sheetState = bottomSheetState
+            sheetState = bottomSheetState,
+            windowInsets = WindowInsets(0)
         ) {
             Column(modifier = Modifier.selectableGroup()) {
                 Row(
@@ -289,7 +298,7 @@ fun JoinClassScreen(
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(bottomMargin))
             }
         }
     }

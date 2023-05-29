@@ -21,8 +21,19 @@ fun AttachmentMenuBottomSheet(
     onInsertLinkClick: () -> Unit,
     onUploadFileClick: () -> Unit
 ) {
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
     if (openBottomSheet) {
-        ModalBottomSheet(onDismissRequest = onDismissRequest) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
+        ModalBottomSheet(
+            onDismissRequest = onDismissRequest,
+            sheetState = bottomSheetState,
+            windowInsets = WindowInsets(0)
+        ) {
             ListItem(
                 headlineContent = {
                     Text(text = stringResource(id = Strings.insert_link))
@@ -47,7 +58,7 @@ fun AttachmentMenuBottomSheet(
                     Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
                 }
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 }

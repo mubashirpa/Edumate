@@ -6,8 +6,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
@@ -89,7 +92,6 @@ fun ClassworkScreen(
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
-    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val courseId = course.id
     val scrollState = rememberLazyListState()
     val refreshState = rememberPullRefreshState(
@@ -103,6 +105,9 @@ fun ClassworkScreen(
             UserType.STUDENT
         }
     val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -264,11 +269,15 @@ fun ClassworkScreen(
     }
 
     if (uiState.openFabMenu) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+
         ModalBottomSheet(
             onDismissRequest = {
                 onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
             },
-            sheetState = bottomSheetState
+            sheetState = bottomSheetState,
+            windowInsets = WindowInsets(0)
         ) {
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
@@ -309,7 +318,7 @@ fun ClassworkScreen(
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
                 }
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 

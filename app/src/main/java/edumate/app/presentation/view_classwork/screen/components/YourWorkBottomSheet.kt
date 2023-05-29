@@ -42,11 +42,18 @@ fun YourWorkBottomSheet(
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
 
     if (uiState.openYourWorkBottomSheet) {
+        val bottomMargin =
+            WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
-            sheetState = SheetState(skipPartiallyExpanded = true)
+            sheetState = bottomSheetState,
+            windowInsets = WindowInsets(0)
         ) {
             Column(
                 modifier = Modifier
@@ -192,6 +199,7 @@ fun YourWorkBottomSheet(
                     DataState.UNKNOWN -> {}
                 }
             }
+            Spacer(modifier = Modifier.height(bottomMargin))
         }
     }
 }
