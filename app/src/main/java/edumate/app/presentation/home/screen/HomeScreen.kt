@@ -36,10 +36,12 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScaffoldDefaults
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.minimumInteractiveComponentSize
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -54,6 +56,7 @@ import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
 import edumate.app.presentation.home.HomeUiEvent
 import edumate.app.presentation.home.HomeUiState
+import edumate.app.presentation.home.screen.components.HomeScreenAnimatedTabIndicator
 import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -80,6 +83,15 @@ fun HomeScreen(
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
+    val bottomSheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+    val indicator = @Composable { tabPositions: List<TabPosition> ->
+        HomeScreenAnimatedTabIndicator(
+            tabPositions = tabPositions,
+            selectedTabIndex = pagerState.currentPage
+        )
+    }
 
     BackHandler(uiState.openFabMenu) {
         onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
@@ -160,7 +172,10 @@ fun HomeScreen(
                 .padding(innerPadding)
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                TabRow(selectedTabIndex = pagerState.currentPage) {
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    indicator = indicator
+                ) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
                             selected = pagerState.currentPage == index,
@@ -175,7 +190,9 @@ fun HomeScreen(
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
-                            }
+                            },
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -222,7 +239,9 @@ fun HomeScreen(
                 ModalBottomSheet(
                     onDismissRequest = {
                         onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                    }
+                    },
+                    sheetState = bottomSheetState,
+                    windowInsets = WindowInsets(0)
                 ) {
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
