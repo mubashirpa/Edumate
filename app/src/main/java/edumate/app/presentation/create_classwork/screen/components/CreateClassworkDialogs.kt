@@ -267,7 +267,10 @@ fun ContentTimePickerDialog(
             toggle = {
                 if (configuration.screenHeightDp > 400) {
                     Box(
-                        Modifier.semantics { isContainer = true }
+                        Modifier.semantics {
+                            @Suppress("DEPRECATION")
+                            isContainer = true
+                        }
                     ) {
                         IconButton(
                             modifier = Modifier
