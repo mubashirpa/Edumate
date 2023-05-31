@@ -37,6 +37,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
+import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -59,6 +60,7 @@ import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.components.AnimatedTabIndicator
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.student_work.screen.StudentWorkScreen
@@ -119,6 +121,12 @@ fun ContentClasswork(
                 onEvent(ViewClassworkUiEvent.OnFilePicked(it, fileUtils))
             }
         }
+    val indicator = @Composable { tabPositions: List<TabPosition> ->
+        AnimatedTabIndicator(
+            tabPositions = tabPositions,
+            selectedTabIndex = pagerState.currentPage
+        )
+    }
 
     Column(
         modifier = modifier
@@ -131,7 +139,10 @@ fun ContentClasswork(
                 .weight(1f)
         ) {
             if (isTeacher) {
-                TabRow(selectedTabIndex = pagerState.currentPage) {
+                TabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    indicator = indicator
+                ) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
                             selected = pagerState.currentPage == index,
