@@ -1,4 +1,4 @@
-package edumate.app.presentation.home.screen.components
+package edumate.app.presentation.components
 
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animateDp
@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun HomeScreenAnimatedTabIndicator(
+fun AnimatedTabIndicator(
     tabPositions: List<TabPosition>,
     selectedTabIndex: Int
 ) {
