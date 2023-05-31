@@ -51,12 +51,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
+import edumate.app.presentation.components.AnimatedTabIndicator
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
 import edumate.app.presentation.home.HomeUiEvent
 import edumate.app.presentation.home.HomeUiState
-import edumate.app.presentation.home.screen.components.HomeScreenAnimatedTabIndicator
 import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -87,7 +87,7 @@ fun HomeScreen(
         skipPartiallyExpanded = true
     )
     val indicator = @Composable { tabPositions: List<TabPosition> ->
-        HomeScreenAnimatedTabIndicator(
+        AnimatedTabIndicator(
             tabPositions = tabPositions,
             selectedTabIndex = pagerState.currentPage
         )
