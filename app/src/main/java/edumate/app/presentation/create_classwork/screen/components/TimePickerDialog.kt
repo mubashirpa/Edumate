@@ -3,6 +3,7 @@ package edumate.app.presentation.create_classwork.screen.components
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -12,41 +13,39 @@ import edumate.app.R.string as Strings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerDialog(
-    title: String,
+    title: String = stringResource(id = Strings.select_time),
     onCancel: () -> Unit,
     onConfirm: () -> Unit,
-    toggle: @Composable () -> Unit,
-    content: @Composable (ColumnScope.() -> Unit)
+    toggle: @Composable () -> Unit = {},
+    content: @Composable () -> Unit
 ) {
     AlertDialog(
         onDismissRequest = onCancel,
-        modifier = Modifier.wrapContentHeight(),
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {
         Surface(
             modifier = Modifier
-                .wrapContentWidth()
-                .wrapContentHeight(),
+                .width(IntrinsicSize.Min)
+                .height(IntrinsicSize.Min),
             shape = AlertDialogDefaults.shape,
             color = AlertDialogDefaults.containerColor,
             tonalElevation = AlertDialogDefaults.TonalElevation
         ) {
+            toggle()
             Column(
-                modifier = Modifier
-                    .width(IntrinsicSize.Min)
-                    .padding(24.dp)
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
                     text = title,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.labelMedium
                 )
-                Spacer(modifier = Modifier.height(20.dp))
                 content()
-                Row(modifier = Modifier.fillMaxWidth()) {
-                    toggle()
-                    Spacer(modifier = Modifier.weight(1f))
-                    Spacer(modifier = Modifier.width(8.dp))
+                Row(modifier = Modifier.align(Alignment.End)) {
                     TextButton(onClick = onCancel) {
                         Text(stringResource(id = Strings.cancel))
                     }

@@ -266,14 +266,23 @@ fun ContentTimePickerDialog(
             },
             toggle = {
                 if (configuration.screenHeightDp > 400) {
+                    // Make this take the entire viewport. This will guarantee that Screen readers
+                    // focus the toggle first.
                     Box(
-                        Modifier.semantics {
-                            @Suppress("DEPRECATION")
-                            isContainer = true
-                        }
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .semantics {
+                                @Suppress("DEPRECATION")
+                                isContainer = true
+                            }
                     ) {
                         IconButton(
                             modifier = Modifier
+                                .padding(24.dp)
+                                // This is a workaround so that the Icon comes up first
+                                // in the talkback traversal order. So that users of a11y
+                                // services can use the text input. When talkback traversal
+                                // order is customizable we can remove this.
                                 .align(Alignment.BottomStart)
                                 .zIndex(5f),
                             onClick = { showingPicker.value = !showingPicker.value }
