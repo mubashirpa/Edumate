@@ -38,6 +38,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.minimumInteractiveComponentSize
@@ -51,7 +53,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import edumate.app.R.string as Strings
-import edumate.app.presentation.components.AnimatedTabIndicator
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
@@ -87,9 +88,9 @@ fun HomeScreen(
         skipPartiallyExpanded = true
     )
     val indicator = @Composable { tabPositions: List<TabPosition> ->
-        AnimatedTabIndicator(
-            tabPositions = tabPositions,
-            selectedTabIndex = pagerState.currentPage
+        TabRowDefaults.PrimaryIndicator(
+            modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+            width = tabPositions[pagerState.currentPage].contentWidth
         )
     }
 

@@ -39,6 +39,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -60,7 +62,6 @@ import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
-import edumate.app.presentation.components.AnimatedTabIndicator
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.student_work.screen.StudentWorkScreen
@@ -122,9 +123,9 @@ fun ContentClasswork(
             }
         }
     val indicator = @Composable { tabPositions: List<TabPosition> ->
-        AnimatedTabIndicator(
-            tabPositions = tabPositions,
-            selectedTabIndex = pagerState.currentPage
+        TabRowDefaults.PrimaryIndicator(
+            modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
+            width = tabPositions[pagerState.currentPage].contentWidth
         )
     }
 
@@ -157,7 +158,9 @@ fun ContentClasswork(
                                     maxLines = 2,
                                     overflow = TextOverflow.Ellipsis
                                 )
-                            }
+                            },
+                            selectedContentColor = MaterialTheme.colorScheme.primary,
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
