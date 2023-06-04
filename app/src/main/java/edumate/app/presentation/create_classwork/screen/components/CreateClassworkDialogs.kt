@@ -22,7 +22,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.isContainer
+import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -272,8 +272,7 @@ fun ContentTimePickerDialog(
                         modifier = Modifier
                             .fillMaxSize()
                             .semantics {
-                                @Suppress("DEPRECATION")
-                                isContainer = true
+                                isTraversalGroup = true
                             }
                     ) {
                         IconButton(
