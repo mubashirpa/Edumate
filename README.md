@@ -11,8 +11,6 @@ There are many benefits to using Edumate:
 ## Screenshots
 
 <img src="screenshots/screenshot1.jpg" alt="Screenshot">
-<br>
-<br>
 <img src="screenshots/screenshot2.jpg" alt="Screenshot">
 
 ## Architecture
