@@ -15,6 +15,23 @@ There are many benefits to using Edumate:
 <br>
 <img src="screenshots/screenshot2.jpg" alt="Screenshot">
 
+## Architecture
+The Google Classroom-like Android app is built with a robust architecture to ensure maintainability, scalability, and clean code. We've used the MVVM pattern with Clean Architecture:
+
+- **MVVM (Model-View-ViewModel)**: This architecture pattern separates the user interface from the business logic and data, making the app easy to test and maintain.
+
+- **Clean Architecture**: It ensures a clear separation of concerns, making it easier to make changes in the future without disrupting the entire app.
+
+## Getting Started
+To run the app locally, follow these steps:
+
+1. Clone the repository to your local machine.
+2. Open the project in Android Studio.
+3. Build and run the app on an Android emulator or a physical device.
+
+## Contributing
+Contributions are welcome! If you'd like to contribute to this project, please fork the repository, create a branch, make your changes, and submit a pull request.
+
 ## License
 
 ```
@@ -32,3 +49,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+Feel free to explore the code and use this project as a reference for your own Android development endeavors. If you have any questions or need assistance, please don't hesitate to reach out.
+
+Happy learning!
