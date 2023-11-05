@@ -12,13 +12,13 @@ There are many benefits to using Edumate:
 ## Screenshots
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot1.jpg">
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot1-dark.jpg">
   <source media="(prefers-color-scheme: light)" srcset="screenshots/screenshot1.jpg">
   <img alt="App Screenshot" src="screenshots/screenshot1.jpg">
 </picture>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot2.jpg">
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot2-dark.jpg">
   <source media="(prefers-color-scheme: light)" srcset="screenshots/screenshot2.jpg">
   <img alt="App Screenshot" src="screenshots/screenshot2.jpg">
 </picture>
