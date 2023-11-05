@@ -3,6 +3,7 @@
 Edumate makes it easy for learners and instructors to connect – inside and outside of schools. Edumate saves time and paper and makes it easy to create classes, distribute assignments, communicate and stay organised.
 
 There are many benefits to using Edumate:
+
 - Easy to set up – Teachers can add students directly or share a code with their class to join. It takes just minutes to set up.
 - Saves time – The simple, paperless assignment workflow allows teachers to create, review and mark assignments quickly, all in one place.
 - Improves organization – Students can see all of their assignments, and all class materials (e.g., documents, photos, and videos).
@@ -10,10 +11,20 @@ There are many benefits to using Edumate:
 
 ## Screenshots
 
-<img src="screenshots/screenshot1.jpg" alt="Screenshot">
-<img src="screenshots/screenshot2.jpg" alt="Screenshot">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot1.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/screenshot1.jpg">
+  <img alt="App Screenshot" src="screenshots/screenshot1.jpg">
+</picture>
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot2.jpg">
+  <source media="(prefers-color-scheme: light)" srcset="screenshots/screenshot2.jpg">
+  <img alt="App Screenshot" src="screenshots/screenshot2.jpg">
+</picture>
 
 ## Architecture
+
 The Google Classroom-like Android app is built with a robust architecture to ensure maintainability, scalability, and clean code. We've used the MVVM pattern with Clean Architecture:
 
 - **MVVM (Model-View-ViewModel)**: This architecture pattern separates the user interface from the business logic and data, making the app easy to test and maintain.
@@ -21,6 +32,7 @@ The Google Classroom-like Android app is built with a robust architecture to ens
 - **Clean Architecture**: It ensures a clear separation of concerns, making it easier to make changes in the future without disrupting the entire app.
 
 ## Getting Started
+
 To run the app locally, follow these steps:
 
 1. Clone the repository to your local machine.
@@ -28,6 +40,7 @@ To run the app locally, follow these steps:
 3. Build and run the app on an Android emulator or a physical device.
 
 ## Contributing
+
 Contributions are welcome! If you'd like to contribute to this project, please fork the repository, create a branch, make your changes, and submit a pull request.
 
 ## License
