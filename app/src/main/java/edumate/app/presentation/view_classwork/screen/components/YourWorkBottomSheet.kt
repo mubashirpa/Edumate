@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.*
@@ -159,7 +159,7 @@ fun YourWorkBottomSheet(
                                                         FileType.VIDEO -> Icons.Default.VideoFile
                                                         FileType.AUDIO -> Icons.Default.AudioFile
                                                         FileType.PDF -> Icons.Default.PictureAsPdf
-                                                        FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                        FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                                                     }
 
                                                 Icon(

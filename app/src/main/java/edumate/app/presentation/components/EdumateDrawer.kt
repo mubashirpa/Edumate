@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -65,7 +65,7 @@ private fun DrawerHeader() {
 
 @Composable
 private fun DividerItem(modifier: Modifier = Modifier) {
-    Divider(
+    HorizontalDivider(
         modifier = modifier,
         color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
     )
@@ -75,6 +75,6 @@ private sealed class DrawerItem(
     @StringRes var label: Int,
     var icon: ImageVector
 ) {
-    object Profile : DrawerItem(Strings.profile, Icons.Default.AccountCircle)
-    object Settings : DrawerItem(Strings.settings, Icons.Default.Settings)
+    data object Profile : DrawerItem(Strings.profile, Icons.Default.AccountCircle)
+    data object Settings : DrawerItem(Strings.settings, Icons.Default.Settings)
 }

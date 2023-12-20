@@ -18,12 +18,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.automirrored.outlined.LiveHelp
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.LiveHelp
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -53,7 +53,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.course_work.CourseWorkType
@@ -67,6 +66,7 @@ import edumate.app.presentation.components.AnimatedErrorScreen
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
+import edumate.app.R.string as Strings
 
 @OptIn(
     ExperimentalMaterial3Api::class,
@@ -129,7 +129,7 @@ fun ClassworkScreen(
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
@@ -289,7 +289,10 @@ fun ClassworkScreen(
                     )
                 },
                 leadingContent = {
-                    Icon(imageVector = Icons.Outlined.Assignment, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Outlined.Assignment,
+                        contentDescription = null
+                    )
                 }
             )
             ListItem(
@@ -302,7 +305,7 @@ fun ClassworkScreen(
                     )
                 },
                 leadingContent = {
-                    Icon(imageVector = Icons.Outlined.LiveHelp, contentDescription = null)
+                    Icon(imageVector = Icons.AutoMirrored.Outlined.LiveHelp, contentDescription = null)
                 }
             )
             ListItem(

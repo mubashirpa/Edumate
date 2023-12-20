@@ -4,6 +4,9 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
+import androidx.compose.material.icons.automirrored.filled.PlaylistAddCheck
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -79,7 +82,7 @@ fun ContentAssignment(
                         )
                     )
                 },
-                leadingIcon = Icons.Default.Assignment
+                leadingIcon = Icons.AutoMirrored.Filled.Assignment
             )
             FieldListItem(
                 headlineContent = {
@@ -163,7 +166,7 @@ fun ContentAssignment(
                                                 FileType.VIDEO -> Icons.Default.VideoFile
                                                 FileType.AUDIO -> Icons.Default.AudioFile
                                                 FileType.PDF -> Icons.Default.PictureAsPdf
-                                                FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                                             }
                                         } else if (material.link != null) {
                                             Icons.Default.Link
@@ -201,7 +204,7 @@ fun ContentAssignment(
                                     }
                                 }
                             )
-                            Divider()
+                            HorizontalDivider()
                         }
                         ListItem(
                             headlineContent = {
@@ -229,7 +232,7 @@ fun ContentAssignment(
                 } else {
                     stringResource(id = Strings.unmarked)
                 },
-                leadingIcon = Icons.Default.PlaylistAddCheck,
+                leadingIcon = Icons.AutoMirrored.Filled.PlaylistAddCheck,
                 trailingContent = if (uiState.points != null && uiState.points != "0") {
                     {
                         IconButton(

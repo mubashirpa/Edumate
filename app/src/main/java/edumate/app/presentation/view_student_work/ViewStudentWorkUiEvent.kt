@@ -7,8 +7,8 @@ sealed class ViewStudentWorkUiEvent {
     data class OnCreate(val courseWork: CourseWork) : ViewStudentWorkUiEvent()
     data class OnGradeChange(val grade: String) : ViewStudentWorkUiEvent()
     data class OnOpenReturnDialog(val open: Boolean) : ViewStudentWorkUiEvent()
-    object OnRefresh : ViewStudentWorkUiEvent()
-    object PatchStudentWork : ViewStudentWorkUiEvent()
-    object ReturnStudentWork : ViewStudentWorkUiEvent()
-    object UserMessageShown : ViewStudentWorkUiEvent()
+    data object OnRefresh : ViewStudentWorkUiEvent()
+    data object PatchStudentWork : ViewStudentWorkUiEvent()
+    data object ReturnStudentWork : ViewStudentWorkUiEvent()
+    data object UserMessageShown : ViewStudentWorkUiEvent()
 }

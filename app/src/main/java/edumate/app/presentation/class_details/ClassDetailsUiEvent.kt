@@ -10,5 +10,5 @@ sealed class ClassDetailsUiEvent {
     ) :
         ClassDetailsUiEvent()
 
-    object OnRetry : ClassDetailsUiEvent()
+    data object OnRetry : ClassDetailsUiEvent()
 }

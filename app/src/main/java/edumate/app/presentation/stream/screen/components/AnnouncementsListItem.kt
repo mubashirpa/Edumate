@@ -17,10 +17,10 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
@@ -28,7 +28,6 @@ import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -46,14 +45,13 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.announcements.Announcement
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.R.string as Strings
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AnnouncementsListItem(
     announcement: Announcement,
@@ -151,7 +149,7 @@ fun AnnouncementsListItem(
                                 FileType.VIDEO -> Icons.Default.VideoFile
                                 FileType.AUDIO -> Icons.Default.AudioFile
                                 FileType.PDF -> Icons.Default.PictureAsPdf
-                                FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                             }
                         } else if (material.link != null) {
                             Icons.Default.Link

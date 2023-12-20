@@ -15,7 +15,7 @@ fun ProgressDialog(
     onDismiss: () -> Unit = {}
 ) {
     if (openDialog) {
-        AlertDialog(onDismissRequest = onDismiss) {
+        BasicAlertDialog(onDismissRequest = onDismiss) {
             Surface(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -42,7 +42,7 @@ fun ProgressDialog(
     onDismiss: () -> Unit = {}
 ) {
     if (openDialog) {
-        AlertDialog(onDismissRequest = onDismiss) {
+        BasicAlertDialog(onDismissRequest = onDismiss) {
             Surface(
                 modifier = Modifier
                     .wrapContentWidth()

@@ -5,6 +5,6 @@ sealed class RegisterUiEvent {
     data class NameChanged(val name: String) : RegisterUiEvent()
     data class OnGoogleSignUpClick(val token: String) : RegisterUiEvent()
     data class PasswordChanged(val password: String) : RegisterUiEvent()
-    object OnSignUpClick : RegisterUiEvent()
-    object UserMessageShown : RegisterUiEvent()
+    data object OnSignUpClick : RegisterUiEvent()
+    data object UserMessageShown : RegisterUiEvent()
 }

@@ -22,21 +22,21 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.Button
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -64,7 +64,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.AddLinkDialog
@@ -75,6 +74,7 @@ import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.create_announcement.CreateAnnouncementUiEvent
 import edumate.app.presentation.create_announcement.CreateAnnouncementUiState
 import kotlinx.coroutines.flow.Flow
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,7 +132,7 @@ fun CreateAnnouncementScreen(
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
@@ -242,7 +242,7 @@ fun CreateAnnouncementScreen(
                                                     FileType.VIDEO -> Icons.Default.VideoFile
                                                     FileType.AUDIO -> Icons.Default.AudioFile
                                                     FileType.PDF -> Icons.Default.PictureAsPdf
-                                                    FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                    FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                                                 }
                                             } else if (material.link != null) {
                                                 Icons.Default.Link
@@ -282,7 +282,7 @@ fun CreateAnnouncementScreen(
                                         }
                                     }
                                 )
-                                Divider()
+                                HorizontalDivider()
                             }
                             ListItem(
                                 headlineContent = {

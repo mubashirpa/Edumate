@@ -7,7 +7,7 @@ sealed class ClassworkUiEvent {
     data class OnDeleteClasswork(val classworkId: String) : ClassworkUiEvent()
     data class OnOpenDeleteClassworkDialogChange(val classwork: CourseWork?) : ClassworkUiEvent()
     data class OnOpenFabMenuChange(val open: Boolean) : ClassworkUiEvent()
-    object OnRefresh : ClassworkUiEvent()
-    object OnRetry : ClassworkUiEvent()
-    object UserMessageShown : ClassworkUiEvent()
+    data object OnRefresh : ClassworkUiEvent()
+    data object OnRetry : ClassworkUiEvent()
+    data object UserMessageShown : ClassworkUiEvent()
 }

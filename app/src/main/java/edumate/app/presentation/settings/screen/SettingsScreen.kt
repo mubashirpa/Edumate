@@ -19,14 +19,14 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.BrightnessMedium
 import androidx.compose.material.icons.filled.Language
 import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.AlertDialogDefaults
-import androidx.compose.material3.Divider
+import androidx.compose.material3.BasicAlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
@@ -52,8 +52,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import edumate.app.R.array as Arrays
-import edumate.app.R.string as Strings
 import edumate.app.core.ext.dpToPx
 import edumate.app.core.utils.LocaleUtils
 import edumate.app.core.utils.enumValueOf
@@ -61,6 +59,8 @@ import edumate.app.presentation.settings.AppTheme
 import edumate.app.presentation.settings.SettingsUiEvent
 import edumate.app.presentation.settings.SettingsUiState
 import kotlinx.coroutines.launch
+import edumate.app.R.array as Arrays
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -83,7 +83,7 @@ fun SettingsScreen(
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
@@ -115,12 +115,7 @@ fun SettingsScreen(
                 onClick = {
                     val settingsIntent = Intent().apply {
                         action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
-                        } else {
-                            putExtra("app_package", context.packageName)
-                            putExtra("app_uid", context.applicationInfo.uid)
-                        }
+                        putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
                     }
                     context.startActivity(settingsIntent)
                 }
@@ -226,7 +221,7 @@ private fun ListPreference(
     )
 
     if (openDialog.value && entries.isNotEmpty()) {
-        AlertDialog(
+        BasicAlertDialog(
             onDismissRequest = {
                 openDialog.value = false
             },
@@ -253,7 +248,7 @@ private fun ListPreference(
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (scrollState.canScrollBackward) {
-                        Divider()
+                        HorizontalDivider()
                     }
                     Column(
                         modifier = Modifier
@@ -291,7 +286,7 @@ private fun ListPreference(
                         }
                     }
                     if (scrollState.canScrollForward) {
-                        Divider()
+                        HorizontalDivider()
                     }
                     Row(
                         modifier = Modifier

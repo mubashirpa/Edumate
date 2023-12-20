@@ -167,7 +167,7 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
                 intentFilter.addAction(BroadcastEvent.Type.CONFERENCE_TERMINATED.action);
                 ... other events
          */
-        for (type in BroadcastEvent.Type.values()) {
+        for (type in BroadcastEvent.Type.entries) {
             intentFilter.addAction(type.action)
         }
 

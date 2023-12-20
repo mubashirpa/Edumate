@@ -15,8 +15,8 @@ sealed class ViewClassworkUiEvent {
     data class OnOpenYourWorkBottomSheet(val open: Boolean) : ViewClassworkUiEvent()
     data class OnRemoveAttachment(val index: Int) : ViewClassworkUiEvent()
     data class OnShortAnswerChange(val answer: String) : ViewClassworkUiEvent()
-    object OnRefresh : ViewClassworkUiEvent()
-    object TurnIn : ViewClassworkUiEvent()
-    object UnSubmit : ViewClassworkUiEvent()
-    object UserMessageShown : ViewClassworkUiEvent()
+    data object OnRefresh : ViewClassworkUiEvent()
+    data object TurnIn : ViewClassworkUiEvent()
+    data object UnSubmit : ViewClassworkUiEvent()
+    data object UserMessageShown : ViewClassworkUiEvent()
 }

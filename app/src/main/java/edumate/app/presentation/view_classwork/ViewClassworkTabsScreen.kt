@@ -4,8 +4,8 @@ import androidx.annotation.StringRes
 import edumate.app.R.string as Strings
 
 sealed class ViewClassworkTabsScreen(@StringRes val title: Int) {
-    object Instructions : ViewClassworkTabsScreen(Strings.instructions)
-    object StudentAnswers : ViewClassworkTabsScreen(Strings.student_answers)
-    object StudentWork : ViewClassworkTabsScreen(Strings.student_work)
-    object Question : ViewClassworkTabsScreen(Strings.question)
+    data object Instructions : ViewClassworkTabsScreen(Strings.instructions)
+    data object StudentAnswers : ViewClassworkTabsScreen(Strings.student_answers)
+    data object StudentWork : ViewClassworkTabsScreen(Strings.student_work)
+    data object Question : ViewClassworkTabsScreen(Strings.question)
 }

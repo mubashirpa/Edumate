@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
@@ -47,7 +47,7 @@ fun ProfileScreen(
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = stringResource(id = Strings.navigate_up)
                     )
                 }
@@ -81,7 +81,7 @@ fun ProfileScreen(
                     Icon(imageVector = Icons.Default.Person, contentDescription = null)
                 }
             )
-            Divider(modifier = Modifier.padding(start = 56.dp))
+            HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
             ListItem(
                 headlineContent = {
                     Text(text = uiState.currentUser?.email.orEmpty())

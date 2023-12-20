@@ -18,7 +18,6 @@ import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.courses.Course
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EnrolledListItem(
     course: Course,

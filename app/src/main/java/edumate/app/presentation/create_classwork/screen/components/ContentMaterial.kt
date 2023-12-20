@@ -4,6 +4,7 @@ import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -164,7 +165,7 @@ fun ContentMaterial(
                                                 FileType.VIDEO -> Icons.Default.VideoFile
                                                 FileType.AUDIO -> Icons.Default.AudioFile
                                                 FileType.PDF -> Icons.Default.PictureAsPdf
-                                                FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+                                                FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                                             }
                                         } else if (material.link != null) {
                                             Icons.Default.Link
@@ -202,7 +203,7 @@ fun ContentMaterial(
                                     }
                                 }
                             )
-                            Divider()
+                            HorizontalDivider()
                         }
                         ListItem(
                             headlineContent = {

@@ -19,7 +19,7 @@ fun TimePickerDialog(
     toggle: @Composable () -> Unit = {},
     content: @Composable () -> Unit
 ) {
-    AlertDialog(
+    BasicAlertDialog(
         onDismissRequest = onCancel,
         properties = DialogProperties(usePlatformDefaultWidth = false)
     ) {

@@ -10,6 +10,6 @@ sealed class CreateAnnouncementUiEvent {
     data class OnOpenAttachmentMenuChange(val open: Boolean) : CreateAnnouncementUiEvent()
     data class OnRemoveAttachment(val position: Int) : CreateAnnouncementUiEvent()
     data class OnTextChange(val text: String) : CreateAnnouncementUiEvent()
-    object PostAnnouncement : CreateAnnouncementUiEvent()
-    object UserMessageShown : CreateAnnouncementUiEvent()
+    data object PostAnnouncement : CreateAnnouncementUiEvent()
+    data object UserMessageShown : CreateAnnouncementUiEvent()
 }

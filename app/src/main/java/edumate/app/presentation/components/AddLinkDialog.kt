@@ -9,7 +9,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -23,7 +22,7 @@ import androidx.compose.ui.unit.dp
 import edumate.app.R.string as Strings
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLinkDialog(
     onDismissRequest: () -> Unit,
@@ -36,7 +35,7 @@ fun AddLinkDialog(
         }
         val confirmEnabled = derivedStateOf { URLUtil.isValidUrl(link.text) }
 
-        AlertDialog(onDismissRequest = onDismissRequest) {
+        BasicAlertDialog(onDismissRequest = onDismissRequest) {
             val focusRequester = remember { FocusRequester() }
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current

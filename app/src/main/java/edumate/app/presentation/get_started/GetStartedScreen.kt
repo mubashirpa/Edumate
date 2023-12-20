@@ -19,7 +19,6 @@ import coil.request.ImageRequest
 import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun GetStartedScreen(
     navigateToLogin: () -> Unit

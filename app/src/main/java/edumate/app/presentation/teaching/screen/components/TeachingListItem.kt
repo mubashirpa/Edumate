@@ -20,7 +20,6 @@ import edumate.app.R.plurals as Plurals
 import edumate.app.R.string as Strings
 import edumate.app.domain.model.courses.Course
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeachingListItem(
     course: Course,

@@ -19,6 +19,6 @@ sealed class CreateClassworkUiEvent {
     data class OnTitleChange(val title: String) : CreateClassworkUiEvent()
     data class OnRemoveAttachment(val position: Int) : CreateClassworkUiEvent()
     data class OnWorkTypeChange(val workType: CourseWorkType) : CreateClassworkUiEvent()
-    object CreateClasswork : CreateClassworkUiEvent()
-    object UserMessageShown : CreateClassworkUiEvent()
+    data object CreateClasswork : CreateClassworkUiEvent()
+    data object UserMessageShown : CreateClassworkUiEvent()
 }

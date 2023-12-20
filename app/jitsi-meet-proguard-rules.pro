@@ -22,8 +22,7 @@
 -keep class * extends com.facebook.react.bridge.JavaScriptModule { *; }
 -keep class * extends com.facebook.react.bridge.NativeModule { *; }
 -keepclassmembers,includedescriptorclasses class * { native <methods>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.UIProp <fields>; }
--keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
+#-keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactProp <methods>; }
 -keepclassmembers class *  { @com.facebook.react.uimanager.annotations.ReactPropGroup <methods>; }
 
 -dontwarn com.facebook.react.**
@@ -39,16 +38,16 @@
 
 # okio
 
--keep class sun.misc.Unsafe { *; }
+#-keep class sun.misc.Unsafe { *; }
 -dontwarn java.nio.file.*
--dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
+#-dontwarn org.codehaus.mojo.animal_sniffer.IgnoreJRERequirement
 -keep class okio.** { *; }
 -dontwarn okio.**
 
 # WebRTC
 
 -keep class org.webrtc.** { *; }
--dontwarn org.chromium.build.BuildHooksAndroid
+#-dontwarn org.chromium.build.BuildHooksAndroid
 
 # Jisti Meet SDK
 
@@ -59,9 +58,9 @@
 # ran the app and hit problems...
 
 -keep class com.facebook.react.bridge.CatalystInstanceImpl { *; }
--keep class com.facebook.react.bridge.ExecutorToken { *; }
+#-keep class com.facebook.react.bridge.ExecutorToken { *; }
 -keep class com.facebook.react.bridge.JavaScriptExecutor { *; }
--keep class com.facebook.react.bridge.ModuleRegistryHolder { *; }
+#-keep class com.facebook.react.bridge.ModuleRegistryHolder { *; }
 -keep class com.facebook.react.bridge.ReadableType { *; }
 -keep class com.facebook.react.bridge.queue.NativeRunnable { *; }
 -keep class com.facebook.react.devsupport.** { *; }

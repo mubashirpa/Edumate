@@ -2,11 +2,11 @@ package edumate.app.presentation.class_details
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Assignment
+import androidx.compose.material.icons.automirrored.filled.Assignment
+import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.QuestionAnswer
 import androidx.compose.material.icons.filled.VideoCall
-import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.material.icons.outlined.VideoCall
@@ -20,14 +20,14 @@ sealed class ClassDetailsNavigationBarScreen(
     var selectedIcon: ImageVector,
     var unselectedIcon: ImageVector
 ) {
-    object Stream : ClassDetailsNavigationBarScreen(
+    data object Stream : ClassDetailsNavigationBarScreen(
         Screen.StreamScreen.route,
         Strings.label_stream_screen,
         Icons.Filled.QuestionAnswer,
         Icons.Outlined.QuestionAnswer
     )
 
-    object Meet :
+    data object Meet :
         ClassDetailsNavigationBarScreen(
             Screen.MeetScreen.route,
             Strings.label_meet_screen,
@@ -35,15 +35,15 @@ sealed class ClassDetailsNavigationBarScreen(
             Icons.Outlined.VideoCall
         )
 
-    object Classwork :
+    data object Classwork :
         ClassDetailsNavigationBarScreen(
             Screen.ClassworkScreen.route,
             Strings.label_classwork_screen,
-            Icons.Filled.Assignment,
-            Icons.Outlined.Assignment
+            Icons.AutoMirrored.Filled.Assignment,
+            Icons.AutoMirrored.Outlined.Assignment
         )
 
-    object People :
+    data object People :
         ClassDetailsNavigationBarScreen(
             Screen.PeopleScreen.route,
             Strings.label_people_screen,

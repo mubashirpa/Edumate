@@ -18,7 +18,6 @@ import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ClassDetailsScreen(
     // Here we are using another NavHost so we need a separate NavHostController

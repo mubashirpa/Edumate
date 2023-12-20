@@ -5,10 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.automirrored.outlined.LiveHelp
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Assignment
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material.icons.outlined.LiveHelp
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
@@ -111,9 +111,9 @@ fun ClassworkListItem(
         },
         leadingContent = {
             val icon = when (workType) {
-                CourseWorkType.ASSIGNMENT -> Icons.Outlined.Assignment
-                CourseWorkType.MULTIPLE_CHOICE_QUESTION -> Icons.Outlined.LiveHelp
-                CourseWorkType.SHORT_ANSWER_QUESTION -> Icons.Outlined.LiveHelp
+                CourseWorkType.ASSIGNMENT -> Icons.AutoMirrored.Outlined.Assignment
+                CourseWorkType.MULTIPLE_CHOICE_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
+                CourseWorkType.SHORT_ANSWER_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
                 else -> Icons.Outlined.Book
             }
             FilledTonalIcon(imageVector = icon)

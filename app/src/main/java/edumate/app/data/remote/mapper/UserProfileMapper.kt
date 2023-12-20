@@ -15,16 +15,3 @@ fun UserProfileDto.toUserProfile(): UserProfile {
         verified
     )
 }
-
-fun UserProfile.toUserProfileDto(): UserProfileDto {
-    return UserProfileDto(
-        createdAt,
-        displayName,
-        emailAddress,
-        id,
-        photoUrl,
-        enrolled,
-        teaching,
-        verified
-    )
-}

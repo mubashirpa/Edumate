@@ -15,7 +15,9 @@ fun LoadingIndicator(
         modifier = modifier,
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(progress)
+        CircularProgressIndicator(
+            progress = { progress },
+        )
     }
 }
 

@@ -14,7 +14,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalConfiguration
@@ -30,9 +29,9 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import edumate.app.R.string as Strings
 import java.util.Calendar
 import java.util.Date
+import edumate.app.R.string as Strings
 
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -93,7 +92,7 @@ fun ContentDatePickerDialog(
 }
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalComposeUiApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PointsDialog(
     onDismissRequest: () -> Unit,
@@ -112,7 +111,7 @@ fun PointsDialog(
 
         val confirmEnabled = derivedStateOf { point.text.isNotBlank() }
 
-        AlertDialog(onDismissRequest = onDismissRequest) {
+        BasicAlertDialog(onDismissRequest = onDismissRequest) {
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
 

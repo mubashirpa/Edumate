@@ -5,6 +5,6 @@ sealed class CreateClassUiEvent {
     data class RoomChanged(val room: String) : CreateClassUiEvent()
     data class SectionChanged(val section: String) : CreateClassUiEvent()
     data class SubjectChanged(val subject: String) : CreateClassUiEvent()
-    object OnCreateClick : CreateClassUiEvent()
-    object UserMessageShown : CreateClassUiEvent()
+    data object OnCreateClick : CreateClassUiEvent()
+    data object UserMessageShown : CreateClassUiEvent()
 }

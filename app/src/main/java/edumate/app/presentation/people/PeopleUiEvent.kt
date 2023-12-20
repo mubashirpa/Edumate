@@ -11,7 +11,7 @@ sealed class PeopleUiEvent {
     data class OnOpenLeaveClassDialogChange(val open: Boolean) : PeopleUiEvent()
     data class OnOpenRemoveUserDialogChange(val userProfile: UserProfile?) : PeopleUiEvent()
     data class OnRemoveUser(val userType: UserType, val uid: String) : PeopleUiEvent()
-    object OnRefresh : PeopleUiEvent()
-    object OnRetry : PeopleUiEvent()
-    object UserMessageShown : PeopleUiEvent()
+    data object OnRefresh : PeopleUiEvent()
+    data object OnRetry : PeopleUiEvent()
+    data object UserMessageShown : PeopleUiEvent()
 }

@@ -67,7 +67,6 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 
 @OptIn(
-    ExperimentalLayoutApi::class,
     ExperimentalComposeUiApi::class
 )
 @Composable

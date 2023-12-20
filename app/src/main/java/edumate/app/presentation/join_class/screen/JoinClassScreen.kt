@@ -3,7 +3,6 @@ package edumate.app.presentation.join_class.screen
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -23,7 +22,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
@@ -46,7 +45,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -59,7 +57,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edumate.app.R.string as Strings
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
@@ -67,12 +64,9 @@ import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.join_class.JoinClassUiEvent
 import edumate.app.presentation.join_class.JoinClassUiState
 import kotlinx.coroutines.flow.Flow
+import edumate.app.R.string as Strings
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalComposeUiApi::class,
-    ExperimentalLayoutApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinClassScreen(
     uiState: JoinClassUiState,
@@ -118,7 +112,7 @@ fun JoinClassScreen(
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
-                            imageVector = Icons.Default.ArrowBack,
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = stringResource(id = Strings.navigate_up)
                         )
                     }

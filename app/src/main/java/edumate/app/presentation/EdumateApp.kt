@@ -20,7 +20,6 @@ import edumate.app.presentation.components.EdumateSnackbarHost
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalLayoutApi::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun EdumateApp(isLoggedIn: Boolean) {

@@ -12,10 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
@@ -55,7 +55,7 @@ fun AttachmentsListItem(
             FileType.VIDEO -> Icons.Default.VideoFile
             FileType.AUDIO -> Icons.Default.AudioFile
             FileType.PDF -> Icons.Default.PictureAsPdf
-            FileType.UNKNOWN -> Icons.Default.InsertDriveFile
+            FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
         }
     } else if (attachment.link != null) {
         Icons.Default.Link
