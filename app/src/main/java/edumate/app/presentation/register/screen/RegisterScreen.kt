@@ -8,7 +8,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -54,8 +53,6 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
-import edumate.app.R.drawable as Drawables
-import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.NameField
@@ -65,6 +62,8 @@ import edumate.app.presentation.register.RegisterUiEvent
 import edumate.app.presentation.register.RegisterViewModel
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import edumate.app.R.drawable as Drawables
+import edumate.app.R.string as Strings
 
 @OptIn(
     ExperimentalComposeUiApi::class
