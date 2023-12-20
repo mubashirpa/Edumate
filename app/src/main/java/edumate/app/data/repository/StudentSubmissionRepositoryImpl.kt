@@ -3,7 +3,7 @@ package edumate.app.data.repository
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.toObject
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.StudentSubmissionDto
 import edumate.app.domain.model.student_submissions.AssignmentSubmission

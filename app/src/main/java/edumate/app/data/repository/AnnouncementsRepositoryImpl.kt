@@ -1,7 +1,7 @@
 package edumate.app.data.repository
 
 import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.ktx.getValue
+import com.google.firebase.database.getValue
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.AnnouncementDto
 import edumate.app.domain.model.AssigneeMode
