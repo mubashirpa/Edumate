@@ -1,16 +1,17 @@
+import com.android.build.api.variant.BuildConfigField
+import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.devtools.ksp)
-    alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.google.services)
-    alias(libs.plugins.gradle.ktlint)
-    alias(libs.plugins.hilt.android)
-    alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt) // TODO: Remove when hilt added support for ksp (https://github.com/google/dagger/issues/2349)
-    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.com.android.application)
+    alias(libs.plugins.com.google.dagger.hilt.android)
+    alias(libs.plugins.com.google.devtools.ksp)
+    alias(libs.plugins.com.google.firebase.crashlytics)
+    alias(libs.plugins.com.google.gms.google.services)
+    alias(libs.plugins.org.jetbrains.kotlin.android)
+    alias(libs.plugins.org.jetbrains.kotlin.serialization)
+    alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -19,12 +20,12 @@ keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 
 android {
     namespace = "edumate.app"
-    compileSdk = libs.versions.sdkVersion.get().toInt()
+    compileSdk = libs.versions.compileSdk.get().toInt()
 
     defaultConfig {
         applicationId = "edumate.app"
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.sdkVersion.get().toInt()
+        targetSdk = libs.versions.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
 
@@ -52,7 +53,9 @@ android {
             isShrinkResources = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
+                "firebase-proguard-rules.pro",
+                "jitsi-meet-proguard-rules.pro"
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -66,6 +69,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = libs.versions.kotlinCompilerExtensionVersion.get()
@@ -87,45 +91,68 @@ android {
 }
 
 dependencies {
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.navigation.compose)
-    implementation(libs.bundles.lifecycle)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.test.ext.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
 
-    val composeBom = platform(libs.androidx.compose.bom)
+    val composeBom = platform(libs.compose.bom)
+
+    implementation(libs.core.ktx)
+    implementation(libs.lifecycle.runtime.ktx)
+    implementation(libs.activity.compose)
     implementation(composeBom)
-    androidTestImplementation(composeBom)
     implementation(libs.bundles.compose)
-    debugImplementation(libs.bundles.compose.debug)
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
-
-    implementation(libs.bundles.hilt)
-    kapt(libs.hilt.android.compiler)
-
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.test.ext.junit)
+    androidTestImplementation(libs.test.espresso.core)
+    androidTestImplementation(composeBom)
+    androidTestImplementation(libs.compose.ui.test.junit4)
+    debugImplementation(libs.compose.ui.tooling)
+    debugImplementation(libs.compose.ui.test.manifest)
+    implementation(libs.bundles.coil)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
-
-    implementation(libs.bundles.accompanist)
-    implementation(libs.bundles.coil)
+    implementation(libs.bundles.hilt)
+    ksp(libs.hilt.android.compiler)
     implementation(libs.bundles.ktor)
-    implementation(libs.google.play.services.auth)
-    implementation(libs.androidx.core.splashscreen)
-    implementation(libs.jsoup)
-    implementation(libs.airbnb.lottie.compose)
+    implementation(libs.play.services.auth)
+    implementation(libs.core.splashscreen)
+    implementation(libs.lottie.compose)
     implementation(libs.onesignal)
-    implementation(libs.androidx.datastore)
+    implementation(libs.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jitsi.meet) { isTransitive = true }
-    implementation(libs.androidx.appcompat)
-    implementation(libs.google.android.material)
+    implementation(libs.jitsi.meet.sdk) { isTransitive = true }
+    implementation(libs.jsoup)
 }
 
-kapt {
-    correctErrorTypes = true
-    useBuildCache = true
+ktlint {
+    version.set("1.1.0")
+    debug.set(true)
+    verbose.set(true)
+    android.set(true)
+    outputToConsole.set(true)
+    outputColorName.set("RED")
+    ignoreFailures.set(false)
+    reporters {
+        reporter(ReporterType.PLAIN)
+        reporter(ReporterType.CHECKSTYLE)
+        reporter(ReporterType.SARIF)
+    }
+    filter {
+        exclude("**/generated/**")
+        include("**/kotlin/**")
+    }
 }
 
-apply("${project.rootDir}/buildscripts/ktlint-config.gradle")
+androidComponents {
+    onVariants { variant ->
+        val localPropertiesFile = rootProject.file("local.properties")
+        val localProperties = Properties()
+        localProperties.load(FileInputStream(localPropertiesFile))
+        variant.buildConfigFields.put(
+            "ONESIGNAL_APP_ID",
+            BuildConfigField(
+                "String",
+                "\"" + localProperties["ONESIGNAL_APP_ID"] + "\"",
+                "Onesignal Application ID",
+            ),
+        )
+    }
+}

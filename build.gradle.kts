@@ -1,16 +1,44 @@
+import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.android.application) apply false
-    alias(libs.plugins.devtools.ksp) apply false
-    alias(libs.plugins.firebase.crashlytics) apply false
-    alias(libs.plugins.google.services) apply false
-    alias(libs.plugins.gradle.ktlint) apply false
-    alias(libs.plugins.gradle.versions)
-    alias(libs.plugins.hilt.android) apply false
-    alias(libs.plugins.kotlin.android) apply false
-    alias(libs.plugins.kotlin.kapt) apply false // TODO: Remove when hilt added support for ksp (https://github.com/google/dagger/issues/2349)
-    alias(libs.plugins.kotlin.serialization) apply false
-    alias(libs.plugins.version.catalog.update)
+    alias(libs.plugins.com.android.application) apply false
+    alias(libs.plugins.com.github.ben.manes.versions)
+    alias(libs.plugins.com.google.dagger.hilt.android) apply false
+    alias(libs.plugins.com.google.devtools.ksp) apply false
+    alias(libs.plugins.com.google.firebase.crashlytics) apply false
+    alias(libs.plugins.com.google.gms.google.services) apply false
+    alias(libs.plugins.nl.littlerobots.version.catalog.update)
+    alias(libs.plugins.org.jetbrains.kotlin.android) apply false
+    alias(libs.plugins.org.jetbrains.kotlin.serialization) apply false
+    alias(libs.plugins.org.jlleitschuh.gradle.ktlint) apply false
 }
 
-apply("${project.rootDir}/buildscripts/toml-updater-config.gradle")
+versionCatalogUpdate {
+    sortByKey.set(true)
+
+    keep {
+        keepUnusedVersions.set(true)
+        keepUnusedLibraries.set(true)
+        keepUnusedPlugins.set(true)
+    }
+}
+
+fun isNonStable(version: String): Boolean {
+    val stableKeyword = listOf("RELEASE", "FINAL", "GA").any { version.uppercase().contains(it) }
+    val regex = "^[0-9,.v-]+(-r)?$".toRegex()
+    val isStable = stableKeyword || regex.matches(version)
+    return isStable.not()
+}
+
+tasks.withType<DependencyUpdatesTask> {
+    resolutionStrategy {
+        componentSelection {
+            all {
+                if (isNonStable(candidate.version) && !isNonStable(currentVersion)) {
+                    reject("Release candidate")
+                }
+            }
+        }
+    }
+}
