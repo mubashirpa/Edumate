@@ -24,9 +24,9 @@ class CreateUserUseCase @Inject constructor(
             emit(Resource.Loading())
             val user = repository.createUserWithEmailAndPassword(name, email, password)
             if (user != null) {
-                OneSignal.setExternalUserId(user.uid)
+                OneSignal.login(user.uid)
                 if (user.email != null) {
-                    OneSignal.setEmail(user.email!!)
+                    OneSignal.User.addEmail(user.email!!)
                 }
             }
             emit(Resource.Success(user))

@@ -9,6 +9,6 @@ class SignOutUseCase @Inject constructor(
 ) {
     operator fun invoke() {
         repository.signOut()
-        OneSignal.removeExternalUserId()
+        OneSignal.logout()
     }
 }
