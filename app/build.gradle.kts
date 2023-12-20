@@ -55,7 +55,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
                 "firebase-proguard-rules.pro",
-                "jitsi-meet-proguard-rules.pro"
+                "jitsi-meet-proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
         }

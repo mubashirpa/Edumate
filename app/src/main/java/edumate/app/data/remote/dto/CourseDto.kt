@@ -32,7 +32,7 @@ data class CourseDto(
     val guardiansEnabled: Boolean = false,
     val calendarId: String = "",
     val gradeBookSettings: GradeBookSettings? = null,
-    val creatorProfile: UserProfile? = null
+    val creatorProfile: UserProfile? = null,
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
@@ -47,7 +47,7 @@ data class CourseDto(
             FirebaseConstants.Firestore.CREATION_TIME to (
                 creationTime
                     ?: FieldValue.serverTimestamp()
-                ),
+            ),
             FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
             FirebaseConstants.Firestore.ENROLLMENT_CODE to enrollmentCode,
             FirebaseConstants.Firestore.COURSE_STATE to courseState,
@@ -57,7 +57,7 @@ data class CourseDto(
             FirebaseConstants.Firestore.GUARDIANS_ENABLED to guardiansEnabled,
             FirebaseConstants.Firestore.CALENDAR_ID to calendarId,
             FirebaseConstants.Firestore.GRADE_BOOK_SETTINGS to gradeBookSettings,
-            FirebaseConstants.Firestore.CREATOR_PROFILE to creatorProfile
+            FirebaseConstants.Firestore.CREATOR_PROFILE to creatorProfile,
         )
     }
 }

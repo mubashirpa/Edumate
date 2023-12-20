@@ -12,21 +12,22 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun ProgressDialog(
     openDialog: Boolean,
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
 ) {
     if (openDialog) {
         BasicAlertDialog(onDismissRequest = onDismiss) {
             Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+                tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                 }
             }
@@ -39,17 +40,18 @@ fun ProgressDialog(
 fun ProgressDialog(
     text: String,
     openDialog: Boolean,
-    onDismiss: () -> Unit = {}
+    onDismiss: () -> Unit = {},
 ) {
     if (openDialog) {
         BasicAlertDialog(onDismissRequest = onDismiss) {
             Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+                tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
@@ -57,11 +59,11 @@ fun ProgressDialog(
                         modifier = Modifier.align(Alignment.CenterHorizontally),
                         color = AlertDialogDefaults.textContentColor,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     CircularProgressIndicator(
-                        modifier = Modifier.align(Alignment.CenterHorizontally)
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
                     )
                 }
             }

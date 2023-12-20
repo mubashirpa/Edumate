@@ -7,37 +7,39 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import javax.inject.Inject
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(
-    getCurrentUserUseCase: GetCurrentUserUseCase
-) : ViewModel() {
+class HomeViewModel
+    @Inject
+    constructor(
+        getCurrentUserUseCase: GetCurrentUserUseCase,
+    ) : ViewModel() {
+        var uiState by mutableStateOf(HomeUiState())
+            private set
 
-    var uiState by mutableStateOf(HomeUiState())
-        private set
+        init {
+            getCurrentUserUseCase().map { user ->
+                uiState = uiState.copy(currentUser = user)
+            }.launchIn(viewModelScope)
+        }
 
-    init {
-        getCurrentUserUseCase().map { user ->
-            uiState = uiState.copy(currentUser = user)
-        }.launchIn(viewModelScope)
-    }
+        fun onEvent(event: HomeUiEvent) {
+            uiState =
+                when (event) {
+                    is HomeUiEvent.OnAppBarMenuExpandedChange -> {
+                        uiState.copy(appBarMenuExpanded = event.expanded)
+                    }
 
-    fun onEvent(event: HomeUiEvent) {
-        uiState = when (event) {
-            is HomeUiEvent.OnAppBarMenuExpandedChange -> {
-                uiState.copy(appBarMenuExpanded = event.expanded)
-            }
+                    is HomeUiEvent.OnOpenFabMenuChange -> {
+                        uiState.copy(openFabMenu = event.open)
+                    }
 
-            is HomeUiEvent.OnOpenFabMenuChange -> {
-                uiState.copy(openFabMenu = event.open)
-            }
-
-            is HomeUiEvent.OnRefreshChange -> {
-                uiState.copy(refreshing = event.refreshing)
-            }
+                    is HomeUiEvent.OnRefreshChange -> {
+                        uiState.copy(refreshing = event.refreshing)
+                    }
+                }
         }
     }
-}

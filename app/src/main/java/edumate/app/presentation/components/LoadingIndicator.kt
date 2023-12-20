@@ -9,11 +9,11 @@ import androidx.compose.ui.Modifier
 @Composable
 fun LoadingIndicator(
     progress: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator(
             progress = { progress },
@@ -25,7 +25,7 @@ fun LoadingIndicator(
 fun LoadingIndicator(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         CircularProgressIndicator()
     }

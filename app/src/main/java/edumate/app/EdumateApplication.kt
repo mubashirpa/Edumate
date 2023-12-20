@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 
 @HiltAndroidApp
 class EdumateApplication : Application() {
-
     override fun onCreate() {
         super.onCreate()
 

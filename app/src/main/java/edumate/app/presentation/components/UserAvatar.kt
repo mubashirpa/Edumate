@@ -38,7 +38,7 @@ fun UserAvatar(
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
     shape: Shape = CircleShape,
-    textStyle: TextStyle = MaterialTheme.typography.titleMedium
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
     if (photoUri != null) {
         UserAvatar(
@@ -48,7 +48,7 @@ fun UserAvatar(
             modifier = modifier,
             size = size,
             shape = shape,
-            textStyle = textStyle
+            textStyle = textStyle,
         )
     } else {
         UserAvatar(
@@ -58,7 +58,7 @@ fun UserAvatar(
             modifier = modifier,
             size = size,
             shape = shape,
-            textStyle = textStyle
+            textStyle = textStyle,
         )
     }
 }
@@ -71,7 +71,7 @@ fun UserAvatar(
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
     shape: Shape = CircleShape,
-    textStyle: TextStyle = MaterialTheme.typography.titleMedium
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
     val name = fullName.split(" ")
     val firstName = name[0]
@@ -84,22 +84,24 @@ fun UserAvatar(
             modifier = modifier,
             size = size,
             shape = shape,
-            textStyle = textStyle
+            textStyle = textStyle,
         )
     }
 
     if (photoUrl != null) {
         SubcomposeAsyncImage(
-            model = ImageRequest.Builder(LocalContext.current)
-                .data(photoUrl)
-                .crossfade(true)
-                .build(),
+            model =
+                ImageRequest.Builder(LocalContext.current)
+                    .data(photoUrl)
+                    .crossfade(true)
+                    .build(),
             contentDescription = null,
-            modifier = Modifier
-                .size(size)
-                .clip(shape)
-                .then(modifier),
-            contentScale = ContentScale.Crop
+            modifier =
+                Modifier
+                    .size(size)
+                    .clip(shape)
+                    .then(modifier),
+            contentScale = ContentScale.Crop,
         ) {
             when (painter.state) {
                 is AsyncImagePainter.State.Loading -> {
@@ -128,28 +130,31 @@ private fun TextAvatar(
     modifier: Modifier = Modifier,
     size: Dp = 40.dp,
     shape: Shape = CircleShape,
-    textStyle: TextStyle = MaterialTheme.typography.titleMedium
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
-    val color = remember(id, firstName, lastName) {
-        val name = listOf(firstName, lastName)
-            .joinToString(separator = "")
-            .uppercase()
-        Color("$id / $name".toHslColor())
-    }
+    val color =
+        remember(id, firstName, lastName) {
+            val name =
+                listOf(firstName, lastName)
+                    .joinToString(separator = "")
+                    .uppercase()
+            Color("$id / $name".toHslColor())
+        }
     val initials = (firstName.take(1) + lastName.take(1)).uppercase()
 
     Box(
-        modifier = Modifier
-            .size(size)
-            .clip(shape)
-            .background(color)
-            .then(modifier),
-        contentAlignment = Alignment.Center
+        modifier =
+            Modifier
+                .size(size)
+                .clip(shape)
+                .background(color)
+                .then(modifier),
+        contentAlignment = Alignment.Center,
     ) {
         AutoResizedText(
             text = initials,
             style = textStyle,
-            color = Color.White
+            color = Color.White,
         )
     }
 }
@@ -159,7 +164,7 @@ private fun AutoResizedText(
     text: String,
     modifier: Modifier = Modifier,
     style: TextStyle = MaterialTheme.typography.bodyMedium,
-    color: Color = style.color
+    color: Color = style.color,
 ) {
     var resizedTextStyle by remember { mutableStateOf(style) }
     var shouldDraw by remember { mutableStateOf(false) }
@@ -168,26 +173,29 @@ private fun AutoResizedText(
     Text(
         text = text,
         color = color,
-        modifier = modifier.drawWithContent {
-            if (shouldDraw) {
-                drawContent()
-            }
-        },
+        modifier =
+            modifier.drawWithContent {
+                if (shouldDraw) {
+                    drawContent()
+                }
+            },
         softWrap = false,
         style = resizedTextStyle,
         onTextLayout = { result ->
             if (result.didOverflowWidth) {
                 if (style.fontSize.isUnspecified) {
-                    resizedTextStyle = resizedTextStyle.copy(
-                        fontSize = defaultFontSize
-                    )
+                    resizedTextStyle =
+                        resizedTextStyle.copy(
+                            fontSize = defaultFontSize,
+                        )
                 }
-                resizedTextStyle = resizedTextStyle.copy(
-                    fontSize = resizedTextStyle.fontSize * 0.95
-                )
+                resizedTextStyle =
+                    resizedTextStyle.copy(
+                        fontSize = resizedTextStyle.fontSize * 0.95,
+                    )
             } else {
                 shouldDraw = true
             }
-        }
+        },
     )
 }

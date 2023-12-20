@@ -2,7 +2,6 @@ package edumate.app.presentation.recover.screen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -36,7 +35,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
-import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.ProgressDialog
@@ -45,16 +43,17 @@ import edumate.app.presentation.recover.RecoverViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import edumate.app.R.string as Strings
 
 @OptIn(
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class,
 )
 @Composable
 fun RecoverScreen(
     viewModel: RecoverViewModel = hiltViewModel(),
     rootSnackbarHostState: SnackbarHostState,
     rootSnackbarScope: CoroutineScope,
-    onPasswordResetEmailSent: () -> Unit
+    onPasswordResetEmailSent: () -> Unit,
 ) {
     val context = LocalContext.current
     val currentOnPasswordResetEmailSent by rememberUpdatedState(onPasswordResetEmailSent)
@@ -81,8 +80,8 @@ fun RecoverScreen(
                     rootSnackbarHostState.showSnackbar(
                         context.getString(
                             Strings.success_send_password_reset_email,
-                            viewModel.uiState.email
-                        )
+                            viewModel.uiState.email,
+                        ),
                     )
                 }
             }
@@ -102,31 +101,33 @@ fun RecoverScreen(
         },
         content = { innerPadding ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .consumeWindowInsets(innerPadding)
-                    .padding(innerPadding),
-                contentAlignment = Alignment.TopCenter
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .fillMaxHeight()
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .fillMaxHeight()
+                            .imePadding()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = stringResource(id = Strings.reset_password),
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = stringResource(id = Strings.password_reset_description),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     EmailField(
@@ -134,35 +135,37 @@ fun RecoverScreen(
                         onValueChange = {
                             viewModel.onEvent(RecoverUiEvent.EmailChanged(it.trim()))
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                         placeholder = {
                             Text(text = stringResource(id = Strings.email))
                         },
                         isError = viewModel.uiState.emailError != null,
-                        errorMessage = viewModel.uiState.emailError?.asString()
+                        errorMessage = viewModel.uiState.emailError?.asString(),
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
                             viewModel.onEvent(RecoverUiEvent.OnRecoverClick)
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.large
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
                         Text(text = stringResource(id = Strings.recover))
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                 }
             }
-        }
+        },
     )
 
     ProgressDialog(
         text = stringResource(id = Strings.sending_recovery_email),
-        openDialog = viewModel.uiState.openProgressDialog
+        openDialog = viewModel.uiState.openProgressDialog,
     )
 }

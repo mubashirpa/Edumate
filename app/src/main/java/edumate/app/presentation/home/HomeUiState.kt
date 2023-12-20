@@ -6,5 +6,5 @@ data class HomeUiState(
     val appBarMenuExpanded: Boolean = false,
     val currentUser: FirebaseUser? = null,
     val openFabMenu: Boolean = false,
-    val refreshing: Boolean = false
+    val refreshing: Boolean = false,
 )

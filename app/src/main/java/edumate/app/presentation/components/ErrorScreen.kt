@@ -24,15 +24,15 @@ import edumate.app.R.string as Strings
 @Composable
 fun ErrorScreen(
     modifier: Modifier = Modifier,
-    errorMessage: String = stringResource(id = Strings.error_unexpected)
+    errorMessage: String = stringResource(id = Strings.error_unexpected),
 ) {
     Box(
         modifier = modifier,
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(
             text = errorMessage,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }
@@ -42,16 +42,16 @@ fun ErrorScreen(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
     errorMessage: String = stringResource(id = Strings.error_unknown),
-    buttonTitle: String = stringResource(id = Strings.retry)
+    buttonTitle: String = stringResource(id = Strings.retry),
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text(
             text = errorMessage,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onRetryClick) {
@@ -64,24 +64,24 @@ fun ErrorScreen(
 fun AnimatedErrorScreen(
     url: String,
     modifier: Modifier = Modifier,
-    errorMessage: String = stringResource(id = Strings.error_unexpected)
+    errorMessage: String = stringResource(id = Strings.error_unexpected),
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.Url(url))
 
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         LottieAnimation(
             composition,
             modifier = Modifier.size(200.dp),
-            iterations = LottieConstants.IterateForever
+            iterations = LottieConstants.IterateForever,
         )
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = errorMessage,
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
         )
     }
 }

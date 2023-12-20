@@ -10,5 +10,5 @@ data class CreateClassUiState(
     val room: String = "",
     val section: String = "",
     val subject: String = "",
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

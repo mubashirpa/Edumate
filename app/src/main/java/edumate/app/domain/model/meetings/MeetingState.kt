@@ -4,5 +4,5 @@ enum class MeetingState {
     MEETING_STATE_UNSPECIFIED,
     CREATED,
     LIVE,
-    ENDED
+    ENDED,
 }

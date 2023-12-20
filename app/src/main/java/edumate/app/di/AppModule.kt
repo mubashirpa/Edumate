@@ -23,31 +23,26 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     // Repository
 
     @Singleton
     @Provides
-    fun provideAnnouncementsRepository(database: DatabaseReference): AnnouncementsRepository =
-        AnnouncementsRepositoryImpl(database)
+    fun provideAnnouncementsRepository(database: DatabaseReference): AnnouncementsRepository = AnnouncementsRepositoryImpl(database)
 
     @Singleton
     @Provides
-    fun provideCoursesRepository(firestore: FirebaseFirestore): CoursesRepository =
-        CoursesRepositoryImpl(firestore)
+    fun provideCoursesRepository(firestore: FirebaseFirestore): CoursesRepository = CoursesRepositoryImpl(firestore)
 
     @Singleton
     @Provides
-    fun provideCourseWorkRepository(firestore: FirebaseFirestore): CourseWorkRepository =
-        CourseWorkRepositoryImpl(firestore)
+    fun provideCourseWorkRepository(firestore: FirebaseFirestore): CourseWorkRepository = CourseWorkRepositoryImpl(firestore)
 
     @Singleton
     @Provides
     fun provideFirebaseAuthRepository(
         firebaseAuth: FirebaseAuth,
-        firestore: FirebaseFirestore
-    ): FirebaseAuthRepository =
-        FirebaseAuthRepositoryImpl(firebaseAuth, firestore)
+        firestore: FirebaseFirestore,
+    ): FirebaseAuthRepository = FirebaseAuthRepositoryImpl(firebaseAuth, firestore)
 
     @Singleton
     @Provides
@@ -60,18 +55,15 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideMeetingsRepository(database: DatabaseReference): MeetingsRepository =
-        MeetingsRepositoryImpl(database)
+    fun provideMeetingsRepository(database: DatabaseReference): MeetingsRepository = MeetingsRepositoryImpl(database)
 
     @Singleton
     @Provides
-    fun provideNotificationApiService(client: HttpClient): NotificationApiService =
-        NotificationApiServiceImpl(client)
+    fun provideNotificationApiService(client: HttpClient): NotificationApiService = NotificationApiServiceImpl(client)
 
     @Singleton
     @Provides
-    fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository =
-        StudentsRepositoryImpl(firestore)
+    fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository = StudentsRepositoryImpl(firestore)
 
     @Singleton
     @Provides
@@ -80,8 +72,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideTeachersRepository(firestore: FirebaseFirestore): TeachersRepository =
-        TeachersRepositoryImpl(firestore)
+    fun provideTeachersRepository(firestore: FirebaseFirestore): TeachersRepository = TeachersRepositoryImpl(firestore)
 
     @Singleton
     @Provides
@@ -119,11 +110,12 @@ object AppModule {
     @Singleton
     @Provides
     fun provideHttpClient(): HttpClient {
-        val client = HttpClient(CIO) {
-            install(ContentNegotiation) {
-                json()
+        val client =
+            HttpClient(CIO) {
+                install(ContentNegotiation) {
+                    json()
+                }
             }
-        }
         return client
     }
 }

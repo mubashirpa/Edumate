@@ -15,7 +15,7 @@ fun MeetingDto.toMeeting(): Meeting {
         meetingId,
         state,
         title,
-        updateTime
+        updateTime,
     )
 }
 
@@ -31,6 +31,6 @@ fun Meeting.toMeetingDto(): MeetingDto {
         meetingId,
         state,
         title,
-        updateTime
+        updateTime,
     )
 }

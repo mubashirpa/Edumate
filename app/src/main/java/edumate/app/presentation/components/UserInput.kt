@@ -35,7 +35,7 @@ fun UserInputPreview() {
 fun UserInput(
     onMessageSent: (String) -> Unit,
     modifier: Modifier = Modifier,
-    resetScroll: () -> Unit = {}
+    resetScroll: () -> Unit = {},
 ) {
     var textState by rememberSaveable(stateSaver = TextFieldValue.Saver) {
         mutableStateOf(TextFieldValue())
@@ -47,7 +47,7 @@ fun UserInput(
     Surface(tonalElevation = 2.dp) {
         Row(
             modifier = modifier,
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             UserInputText(
                 value = textState,
@@ -66,13 +66,13 @@ fun UserInput(
                 focusState = textFieldFocusState,
                 onSend = {
                     onMessageSent(textState.text)
-                }
+                },
             )
             SendButton(
                 sendMessageEnabled = textState.text.isNotBlank(),
                 onMessageSent = {
                     // TODO()
-                }
+                },
             )
             Spacer(modifier = Modifier.width(16.dp))
         }
@@ -91,60 +91,66 @@ private fun UserInputText(
     keyboardShown: Boolean,
     onTextFieldFocused: (Boolean) -> Unit,
     focusState: Boolean,
-    onSend: () -> Unit
+    onSend: () -> Unit,
 ) {
     var lastFocusState by remember { mutableStateOf(false) }
 
     Row(
-        modifier = modifier
-            .defaultMinSize(
-                minWidth = 280.dp,
-                minHeight = 56.dp
-            )
-            .semantics {
-                contentDescription = "Text input"
-                keyboardShownProperty = keyboardShown
-            },
-        verticalAlignment = Alignment.CenterVertically
+        modifier =
+            modifier
+                .defaultMinSize(
+                    minWidth = 280.dp,
+                    minHeight = 56.dp,
+                )
+                .semantics {
+                    contentDescription = "Text input"
+                    keyboardShownProperty = keyboardShown
+                },
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         BasicTextField(
             value = value,
             onValueChange = { onValueChange(it) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .onFocusChanged { state ->
-                    if (lastFocusState != state.isFocused) {
-                        onTextFieldFocused(state.isFocused)
-                    }
-                    lastFocusState = state.isFocused
-                },
-            textStyle = MaterialTheme.typography.bodyLarge.copy(
-                color = MaterialTheme.colorScheme.onSurface
-            ),
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Send
-            ),
-            keyboardActions = KeyboardActions(
-                onSend = {
-                    onSend()
-                }
-            ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .onFocusChanged { state ->
+                        if (lastFocusState != state.isFocused) {
+                            onTextFieldFocused(state.isFocused)
+                        }
+                        lastFocusState = state.isFocused
+                    },
+            textStyle =
+                MaterialTheme.typography.bodyLarge.copy(
+                    color = MaterialTheme.colorScheme.onSurface,
+                ),
+            keyboardOptions =
+                KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Send,
+                ),
+            keyboardActions =
+                KeyboardActions(
+                    onSend = {
+                        onSend()
+                    },
+                ),
             maxLines = 1,
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             decorationBox = { innerTextField ->
                 if (value.text.isEmpty() && !focusState) {
                     Text(
                         text = "Hint",
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
+                        style =
+                            MaterialTheme.typography.bodyLarge.copy(
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            ),
                     )
                 } else {
                     innerTextField()
                 }
-            }
+            },
         )
     }
 }
@@ -152,23 +158,25 @@ private fun UserInputText(
 @Composable
 private fun SendButton(
     sendMessageEnabled: Boolean,
-    onMessageSent: () -> Unit
+    onMessageSent: () -> Unit,
 ) {
-    val border = if (!sendMessageEnabled) {
-        BorderStroke(
-            width = 1.dp,
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
-        )
-    } else {
-        null
-    }
+    val border =
+        if (!sendMessageEnabled) {
+            BorderStroke(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f),
+            )
+        } else {
+            null
+        }
 
     val disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.3f)
 
-    val buttonColors = ButtonDefaults.buttonColors(
-        disabledContainerColor = Color.Transparent,
-        disabledContentColor = disabledContentColor
-    )
+    val buttonColors =
+        ButtonDefaults.buttonColors(
+            disabledContainerColor = Color.Transparent,
+            disabledContentColor = disabledContentColor,
+        )
 
     Button(
         modifier = Modifier.height(36.dp),
@@ -176,11 +184,11 @@ private fun SendButton(
         onClick = onMessageSent,
         colors = buttonColors,
         border = border,
-        contentPadding = PaddingValues(0.dp)
+        contentPadding = PaddingValues(0.dp),
     ) {
         Text(
             text = "Send",
-            modifier = Modifier.padding(horizontal = 16.dp)
+            modifier = Modifier.padding(horizontal = 16.dp),
         )
     }
 }

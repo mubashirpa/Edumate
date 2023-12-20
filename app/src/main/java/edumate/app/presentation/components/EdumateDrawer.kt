@@ -42,7 +42,7 @@ fun EdumateDrawerContent(onItemClick: (Int) -> Unit) {
                 label = { Text(text = stringResource(id = drawerItem.label)) },
                 selected = false,
                 onClick = { onItemClick(index) },
-                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding),
             )
         }
     }
@@ -53,12 +53,12 @@ private fun DrawerHeader() {
     Column(
         modifier = Modifier.padding(horizontal = 28.dp, vertical = 24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        verticalArrangement = Arrangement.spacedBy(4.dp),
     ) {
         Text(
             text = stringResource(id = Strings.app_name).uppercase(),
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.primary
+            color = MaterialTheme.colorScheme.primary,
         )
     }
 }
@@ -67,14 +67,15 @@ private fun DrawerHeader() {
 private fun DividerItem(modifier: Modifier = Modifier) {
     HorizontalDivider(
         modifier = modifier,
-        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f)
+        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.12f),
     )
 }
 
 private sealed class DrawerItem(
     @StringRes var label: Int,
-    var icon: ImageVector
+    var icon: ImageVector,
 ) {
     data object Profile : DrawerItem(Strings.profile, Icons.Default.AccountCircle)
+
     data object Settings : DrawerItem(Strings.settings, Icons.Default.Settings)
 }

@@ -18,5 +18,5 @@ data class Announcement(
     val assigneeMode: AssigneeMode = AssigneeMode.ASSIGNEE_MODE_UNSPECIFIED,
     val individualStudentsOptions: IndividualStudentsOptions? = null,
     val creatorUserId: String = "",
-    val creatorProfile: UserProfile? = null
+    val creatorProfile: UserProfile? = null,
 )

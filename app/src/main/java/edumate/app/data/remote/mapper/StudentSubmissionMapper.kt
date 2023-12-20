@@ -18,7 +18,7 @@ fun StudentSubmissionDto.toStudentSubmission(): StudentSubmission {
         courseWorkType,
         assignmentSubmission,
         shortAnswerSubmission,
-        multipleChoiceSubmission
+        multipleChoiceSubmission,
     )
 }
 
@@ -37,6 +37,6 @@ fun StudentSubmission.toStudentSubmissionDto(): StudentSubmissionDto {
         courseWorkType,
         assignmentSubmission,
         shortAnswerSubmission,
-        multipleChoiceSubmission
+        multipleChoiceSubmission,
     )
 }

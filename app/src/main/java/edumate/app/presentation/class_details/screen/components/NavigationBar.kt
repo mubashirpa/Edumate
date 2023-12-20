@@ -14,12 +14,13 @@ import edumate.app.presentation.class_details.ClassDetailsNavigationBarScreen
 
 @Composable
 fun BottomNavigationBar(navController: NavController) {
-    val screens = listOf(
-        ClassDetailsNavigationBarScreen.Stream,
-        ClassDetailsNavigationBarScreen.Meet,
-        ClassDetailsNavigationBarScreen.Classwork,
-        ClassDetailsNavigationBarScreen.People
-    )
+    val screens =
+        listOf(
+            ClassDetailsNavigationBarScreen.Stream,
+            ClassDetailsNavigationBarScreen.Meet,
+            ClassDetailsNavigationBarScreen.Classwork,
+            ClassDetailsNavigationBarScreen.People,
+        )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val bottomBarDestination = screens.any { it.route == currentDestination?.route }
@@ -43,18 +44,19 @@ fun BottomNavigationBar(navController: NavController) {
                         }
                     },
                     icon = {
-                        val icon = if (selected) {
-                            screen.selectedIcon
-                        } else {
-                            screen.unselectedIcon
-                        }
+                        val icon =
+                            if (selected) {
+                                screen.selectedIcon
+                            } else {
+                                screen.unselectedIcon
+                            }
                         Icon(
                             imageVector = icon,
-                            contentDescription = stringResource(id = screen.title)
+                            contentDescription = stringResource(id = screen.title),
                         )
                     },
                     label = { Text(stringResource(id = screen.title)) },
-                    alwaysShowLabel = false
+                    alwaysShowLabel = false,
                 )
             }
         }

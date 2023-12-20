@@ -31,24 +31,26 @@ fun EmailField(
     isError: Boolean = false,
     errorMessage: String? = null,
     imeAction: ImeAction = ImeAction.Done,
-    autofillTypes: List<AutofillType> = listOf(AutofillType.EmailAddress)
+    autofillTypes: List<AutofillType> = listOf(AutofillType.EmailAddress),
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
-    val supportingText: @Composable (() -> Unit)? = if (!errorMessage.isNullOrEmpty()) {
-        { Text(text = errorMessage) }
-    } else {
-        null
-    }
+    val supportingText: @Composable (() -> Unit)? =
+        if (!errorMessage.isNullOrEmpty()) {
+            { Text(text = errorMessage) }
+        } else {
+            null
+        }
 
     OutlinedTextField(
         value = value,
         onValueChange = { onValueChange(it) },
-        modifier = modifier
-            .autofill(
-                autofillTypes = autofillTypes,
-                onFill = { onValueChange(it) }
-            ),
+        modifier =
+            modifier
+                .autofill(
+                    autofillTypes = autofillTypes,
+                    onFill = { onValueChange(it) },
+                ),
         readOnly = readOnly,
         label = label,
         placeholder = placeholder,
@@ -56,21 +58,23 @@ fun EmailField(
         trailingIcon = trailingIcon,
         supportingText = supportingText,
         isError = isError,
-        keyboardOptions = KeyboardOptions(
-            capitalization = KeyboardCapitalization.None,
-            keyboardType = KeyboardType.Email,
-            imeAction = imeAction
-        ),
-        keyboardActions = KeyboardActions(
-            onDone = {
-                focusManager.clearFocus()
-                keyboardController?.hide()
-            },
-            onNext = {
-                focusManager.moveFocus(FocusDirection.Down)
-            }
-        ),
+        keyboardOptions =
+            KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Email,
+                imeAction = imeAction,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
         singleLine = true,
-        shape = MaterialTheme.shapes.large
+        shape = MaterialTheme.shapes.large,
     )
 }

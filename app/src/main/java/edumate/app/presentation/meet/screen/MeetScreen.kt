@@ -36,7 +36,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
@@ -48,6 +47,7 @@ import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.meet.MeetUiEvent
 import edumate.app.presentation.meet.MeetUiState
 import edumate.app.presentation.meet.screen.components.MeetListItem
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
@@ -56,15 +56,16 @@ fun MeetScreen(
     onEvent: (MeetUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
-    val refreshState = rememberPullRefreshState(
-        refreshing = uiState.refreshing,
-        onRefresh = { onEvent(MeetUiEvent.OnRefresh) }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = uiState.refreshing,
+            onRefresh = { onEvent(MeetUiEvent.OnRefresh) },
+        )
 
     LaunchedEffect(Unit) {
         onEvent(MeetUiEvent.OnCreate(course))
@@ -97,52 +98,54 @@ fun MeetScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
             actions = {
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                     IconButton(
-                        onClick = { onEvent(MeetUiEvent.OnAppBarMenuExpandedChange(true)) }
+                        onClick = { onEvent(MeetUiEvent.OnAppBarMenuExpandedChange(true)) },
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     DropdownMenu(
                         expanded = uiState.appBarMenuExpanded,
                         onDismissRequest = {
                             onEvent(MeetUiEvent.OnAppBarMenuExpandedChange(false))
-                        }
+                        },
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = Strings.refresh)) },
                             onClick = {
                                 onEvent(MeetUiEvent.OnAppBarMenuExpandedChange(false))
                                 onEvent(MeetUiEvent.OnRefresh)
-                            }
+                            },
                         )
                     }
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pullRefresh(refreshState)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             when (val dataState = uiState.dataState) {
                 is DataState.ERROR -> {
                     ErrorScreen(
                         onRetryClick = { onEvent(MeetUiEvent.OnRetry) },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = dataState.message.asString()
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString(),
                     )
                 }
 
@@ -159,29 +162,32 @@ fun MeetScreen(
                             item {
                                 Text(
                                     text = stringResource(id = Strings.meetings),
-                                    modifier = Modifier.padding(
-                                        horizontal = 16.dp,
-                                        vertical = 10.dp
-                                    ),
-                                    style = MaterialTheme.typography.titleSmall
+                                    modifier =
+                                        Modifier.padding(
+                                            horizontal = 16.dp,
+                                            vertical = 10.dp,
+                                        ),
+                                    style = MaterialTheme.typography.titleSmall,
                                 )
                             }
                             if (dataState is DataState.EMPTY) {
                                 item {
                                     AnimatedErrorScreen(
                                         url = Constants.MEET_SCREEN_EMPTY_ANIM_URL,
-                                        modifier = Modifier
-                                            .fillMaxSize()
-                                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                                        errorMessage = if (uiState.isCurrentUserTeacher) {
-                                            stringResource(
-                                                id = Strings.go_live_for_your_students_and_teach_them_anytime_anywhere
-                                            )
-                                        } else {
-                                            stringResource(
-                                                id = Strings.no_ongoing_live_classes_right_now
-                                            )
-                                        }
+                                        modifier =
+                                            Modifier
+                                                .fillMaxSize()
+                                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                                        errorMessage =
+                                            if (uiState.isCurrentUserTeacher) {
+                                                stringResource(
+                                                    id = Strings.go_live_for_your_students_and_teach_them_anytime_anywhere,
+                                                )
+                                            } else {
+                                                stringResource(
+                                                    id = Strings.no_ongoing_live_classes_right_now,
+                                                )
+                                            },
                                     )
                                 }
                             } else if (dataState == DataState.SUCCESS) {
@@ -191,11 +197,11 @@ fun MeetScreen(
                                         uiState = uiState,
                                         onEndClick = { onEvent(MeetUiEvent.EndMeeting(it)) },
                                         onDeleteClick = { onEvent(MeetUiEvent.DeleteMeeting(it)) },
-                                        onClick = { onEvent(MeetUiEvent.StartMeeting(meeting)) }
+                                        onClick = { onEvent(MeetUiEvent.StartMeeting(meeting)) },
                                     )
                                 }
                             }
-                        }
+                        },
                     )
                 }
             }
@@ -206,21 +212,22 @@ fun MeetScreen(
                     icon = {
                         Icon(
                             imageVector = Icons.Outlined.VideoCall,
-                            contentDescription = "New meeting"
+                            contentDescription = "New meeting",
                         )
                     },
                     onClick = { onEvent(MeetUiEvent.CreateMeeting) },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomEnd),
-                    expanded = true
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomEnd),
+                    expanded = true,
                 )
             }
 
             PullRefreshIndicator(
                 uiState.refreshing,
                 refreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
             )
         }
     }

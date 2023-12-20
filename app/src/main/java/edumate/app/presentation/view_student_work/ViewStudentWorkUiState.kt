@@ -16,5 +16,5 @@ data class ViewStudentWorkUiState(
     val openReturnDialog: Boolean = false,
     val refreshing: Boolean = false,
     val studentWork: StudentSubmission? = null,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

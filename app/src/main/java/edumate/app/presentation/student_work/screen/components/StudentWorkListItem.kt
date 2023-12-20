@@ -11,20 +11,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.student_submissions.StudentSubmission
 import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.components.UserAvatar
 import java.util.Date
+import edumate.app.R.string as Strings
 
 @Composable
 fun StudentWorkListItem(
     courseWork: CourseWork,
     assignedStudent: UserProfile,
     studentSubmission: StudentSubmission?,
-    onClick: (id: String?) -> Unit
+    onClick: (id: String?) -> Unit,
 ) {
     ListItem(
         headlineContent = {
@@ -35,7 +35,7 @@ fun StudentWorkListItem(
             UserAvatar(
                 id = assignedStudent.id,
                 fullName = assignedStudent.displayName ?: assignedStudent.emailAddress.orEmpty(),
-                photoUrl = assignedStudent.photoUrl
+                photoUrl = assignedStudent.photoUrl,
             )
         },
         trailingContent = {
@@ -45,17 +45,17 @@ fun StudentWorkListItem(
                         courseWork.maxPoints != null && courseWork.maxPoints > 0 && studentSubmission.assignedGrade != null -> {
                             Text(
                                 text = "${studentSubmission.assignedGrade}/${courseWork.maxPoints}",
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                             if (studentSubmission.state == SubmissionState.CREATED || studentSubmission.state == SubmissionState.NEW) {
                                 Text(
                                     text = stringResource(id = Strings.not_handed_in),
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
                             } else if (studentSubmission.late) {
                                 Text(
                                     text = stringResource(id = Strings.done_late),
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
                             }
                         }
@@ -64,12 +64,12 @@ fun StudentWorkListItem(
                             Text(
                                 text = stringResource(id = Strings.handed_in),
                                 color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.bodyMedium
+                                style = MaterialTheme.typography.bodyMedium,
                             )
                             if (studentSubmission.late) {
                                 Text(
                                     text = stringResource(id = Strings.done_late),
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
                             }
                         }
@@ -77,12 +77,12 @@ fun StudentWorkListItem(
                         studentSubmission.state == SubmissionState.RETURNED -> {
                             Icon(
                                 imageVector = Icons.Default.Done,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                             if (studentSubmission.late) {
                                 Text(
                                     text = stringResource(id = Strings.done_late),
-                                    style = MaterialTheme.typography.labelSmall
+                                    style = MaterialTheme.typography.labelSmall,
                                 )
                             }
                         }
@@ -93,12 +93,12 @@ fun StudentWorkListItem(
                                 Text(
                                     text = stringResource(id = Strings.missing),
                                     color = MaterialTheme.colorScheme.error,
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
                             } else {
                                 Text(
                                     text = stringResource(id = Strings.assigned),
-                                    style = MaterialTheme.typography.bodyMedium
+                                    style = MaterialTheme.typography.bodyMedium,
                                 )
                             }
                         }
@@ -110,15 +110,15 @@ fun StudentWorkListItem(
                     Text(
                         text = stringResource(id = Strings.missing),
                         color = MaterialTheme.colorScheme.error,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 } else {
                     Text(
                         text = stringResource(id = Strings.assigned),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
-        }
+        },
     )
 }

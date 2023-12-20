@@ -11,7 +11,7 @@ import edumate.app.R.string as Strings
 fun DeleteCourseDialog(
     onDismissRequest: () -> Unit,
     courseId: String?,
-    onConfirmClick: (courseId: String) -> Unit
+    onConfirmClick: (courseId: String) -> Unit,
 ) {
     if (courseId != null) {
         AlertDialog(
@@ -31,7 +31,7 @@ fun DeleteCourseDialog(
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }

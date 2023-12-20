@@ -54,7 +54,6 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.ext.header
 import edumate.app.core.utils.FileUtils
@@ -69,6 +68,7 @@ import edumate.app.presentation.view_classwork.ViewClassworkTabsScreen
 import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
 import kotlinx.coroutines.launch
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalFoundationApi::class, ExperimentalMaterialApi::class)
 @Composable
@@ -82,39 +82,40 @@ fun ContentClasswork(
     navigateToViewStudentWork: (
         classwork: CourseWork,
         studentWorkId: String?,
-        assignedStudent: UserProfile
-    ) -> Unit
+        assignedStudent: UserProfile,
+    ) -> Unit,
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val fileUtils = remember { FileUtils(context) }
     val isTeacher = currentUserType == UserType.TEACHER
-    val tabs = when (classworkType) {
-        CourseWorkType.ASSIGNMENT -> {
-            listOf(
-                ViewClassworkTabsScreen.Instructions,
-                ViewClassworkTabsScreen.StudentWork
-            )
-        }
+    val tabs =
+        when (classworkType) {
+            CourseWorkType.ASSIGNMENT -> {
+                listOf(
+                    ViewClassworkTabsScreen.Instructions,
+                    ViewClassworkTabsScreen.StudentWork,
+                )
+            }
 
-        CourseWorkType.SHORT_ANSWER_QUESTION -> {
-            listOf(
-                ViewClassworkTabsScreen.Question,
-                ViewClassworkTabsScreen.StudentAnswers
-            )
-        }
+            CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                listOf(
+                    ViewClassworkTabsScreen.Question,
+                    ViewClassworkTabsScreen.StudentAnswers,
+                )
+            }
 
-        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-            listOf(
-                ViewClassworkTabsScreen.Question,
-                ViewClassworkTabsScreen.StudentAnswers
-            )
-        }
+            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                listOf(
+                    ViewClassworkTabsScreen.Question,
+                    ViewClassworkTabsScreen.StudentAnswers,
+                )
+            }
 
-        else -> {
-            emptyList()
+            else -> {
+                emptyList()
+            }
         }
-    }
     val pagerState = rememberPagerState { if (isTeacher) tabs.size else 1 }
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
@@ -125,24 +126,26 @@ fun ContentClasswork(
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         TabRowDefaults.PrimaryIndicator(
             modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-            width = tabPositions[pagerState.currentPage].contentWidth
+            width = tabPositions[pagerState.currentPage].contentWidth,
         )
     }
 
     Column(
-        modifier = modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+        modifier =
+            modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
         ) {
             if (isTeacher) {
                 TabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    indicator = indicator
+                    indicator = indicator,
                 ) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
@@ -156,11 +159,11 @@ fun ContentClasswork(
                                 Text(
                                     text = stringResource(id = screen.title),
                                     maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                             },
                             selectedContentColor = MaterialTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -168,26 +171,29 @@ fun ContentClasswork(
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxSize(),
-                userScrollEnabled = isTeacher
+                userScrollEnabled = isTeacher,
             ) { page ->
                 when (page) {
                     0 -> {
                         val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp)
-                        val refreshState = rememberPullRefreshState(
-                            refreshing = uiState.refreshing,
-                            onRefresh = { onEvent(ViewClassworkUiEvent.OnRefresh) }
-                        )
+                        val refreshState =
+                            rememberPullRefreshState(
+                                refreshing = uiState.refreshing,
+                                onRefresh = { onEvent(ViewClassworkUiEvent.OnRefresh) },
+                            )
 
                         Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .pullRefresh(refreshState)
+                            modifier =
+                                Modifier
+                                    .fillMaxSize()
+                                    .pullRefresh(refreshState),
                         ) {
                             LazyVerticalGrid(
                                 columns = GridCells.Adaptive(minSize = 128.dp),
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .imePadding(),
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .imePadding(),
                                 contentPadding = contentPadding,
                                 verticalArrangement = Arrangement.spacedBy(10.dp),
                                 horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -199,33 +205,35 @@ fun ContentClasswork(
                                             if (dueDate != null) {
                                                 val date =
                                                     DateUtils.getRelativeTimeSpanString(
-                                                        dueDate.time
+                                                        dueDate.time,
                                                     )
                                                 Text(
-                                                    text = stringResource(
-                                                        id = Strings.due_,
-                                                        date.toString()
-                                                    ),
+                                                    text =
+                                                        stringResource(
+                                                            id = Strings.due_,
+                                                            date.toString(),
+                                                        ),
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
+                                                    style = MaterialTheme.typography.bodyMedium,
                                                 )
                                                 Spacer(modifier = Modifier.height(4.dp))
                                             }
                                             Text(
                                                 text = uiState.classwork.title,
                                                 color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.headlineSmall
+                                                style = MaterialTheme.typography.headlineSmall,
                                             )
                                             val points = uiState.classwork.maxPoints
                                             if (points != null && points > 0) {
                                                 Spacer(modifier = Modifier.height(4.dp))
                                                 Text(
-                                                    text = stringResource(
-                                                        id = Strings._points,
-                                                        points
-                                                    ),
+                                                    text =
+                                                        stringResource(
+                                                            id = Strings._points,
+                                                            points,
+                                                        ),
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                    style = MaterialTheme.typography.bodyMedium
+                                                    style = MaterialTheme.typography.bodyMedium,
                                                 )
                                             }
                                         }
@@ -237,7 +245,7 @@ fun ContentClasswork(
                                                 text = description,
                                                 modifier = Modifier.padding(top = 6.dp),
                                                 color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.bodyLarge
+                                                style = MaterialTheme.typography.bodyLarge,
                                             )
                                         }
                                     }
@@ -246,11 +254,12 @@ fun ContentClasswork(
                                         header {
                                             Text(
                                                 text = stringResource(id = Strings.attachments),
-                                                modifier = Modifier.padding(
-                                                    top = 14.dp,
-                                                    bottom = 6.dp
-                                                ),
-                                                style = MaterialTheme.typography.titleMedium
+                                                modifier =
+                                                    Modifier.padding(
+                                                        top = 14.dp,
+                                                        bottom = 6.dp,
+                                                    ),
+                                                style = MaterialTheme.typography.titleMedium,
                                             )
                                         }
                                         items(attachments) {
@@ -261,11 +270,11 @@ fun ContentClasswork(
                                                         val browserIntent =
                                                             Intent(
                                                                 Intent.ACTION_VIEW,
-                                                                Uri.parse(url)
+                                                                Uri.parse(url),
                                                             )
                                                         context.startActivity(browserIntent)
                                                     }
-                                                }
+                                                },
                                             )
                                         }
                                     }
@@ -273,21 +282,21 @@ fun ContentClasswork(
                                         uiState = uiState,
                                         onEvent = onEvent,
                                         classworkType = classworkType,
-                                        isTeacher = isTeacher
+                                        isTeacher = isTeacher,
                                     )
                                     multipleChoiceContent(
                                         uiState = uiState,
                                         onEvent = onEvent,
                                         classworkType = classworkType,
-                                        isTeacher = isTeacher
+                                        isTeacher = isTeacher,
                                     )
-                                }
+                                },
                             )
 
                             PullRefreshIndicator(
                                 uiState.refreshing,
                                 refreshState,
-                                Modifier.align(Alignment.TopCenter)
+                                Modifier.align(Alignment.TopCenter),
                             )
                         }
                     }
@@ -301,9 +310,9 @@ fun ContentClasswork(
                                 navigateToViewStudentWork(
                                     uiState.classwork,
                                     studentWorkId,
-                                    assignedStudent
+                                    assignedStudent,
                                 )
-                            }
+                            },
                         )
                     }
                 }
@@ -312,15 +321,16 @@ fun ContentClasswork(
 
         if (!isTeacher && classworkType == CourseWorkType.ASSIGNMENT) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp),
             ) {
                 Button(
                     onClick = {
                         onEvent(ViewClassworkUiEvent.OnOpenYourWorkBottomSheet(true))
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(id = Strings.your_work))
                 }
@@ -334,31 +344,31 @@ fun ContentClasswork(
         onAddAttachmentClick = { filePicker.launch("*/*") },
         onRemoveAttachmentClick = { onEvent(ViewClassworkUiEvent.OnOpenRemoveAttachmentDialog(it)) },
         onSubmitClick = { onEvent(ViewClassworkUiEvent.OnOpenTurnInDialog(true)) },
-        onUnSubmitClick = { onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(true)) }
+        onUnSubmitClick = { onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(true)) },
     )
 
     TurnInDialog(
         onDismissRequest = { onEvent(ViewClassworkUiEvent.OnOpenTurnInDialog(false)) },
         uiState = uiState,
-        onConfirmClick = { onEvent(ViewClassworkUiEvent.TurnIn) }
+        onConfirmClick = { onEvent(ViewClassworkUiEvent.TurnIn) },
     )
 
     HandInDialog(
         onDismissRequest = { onEvent(ViewClassworkUiEvent.OnOpenHandInDialog(false)) },
         uiState = uiState,
-        onConfirmClick = { onEvent(ViewClassworkUiEvent.TurnIn) }
+        onConfirmClick = { onEvent(ViewClassworkUiEvent.TurnIn) },
     )
 
     UnSubmitDialog(
         onDismissRequest = { onEvent(ViewClassworkUiEvent.OnOpenUnSubmitDialog(false)) },
         uiState = uiState,
-        onConfirmClick = { onEvent(ViewClassworkUiEvent.UnSubmit) }
+        onConfirmClick = { onEvent(ViewClassworkUiEvent.UnSubmit) },
     )
 
     RemoveAttachmentDialog(
         onDismissRequest = { onEvent(ViewClassworkUiEvent.OnOpenRemoveAttachmentDialog(null)) },
         uiState = uiState,
-        onConfirmClick = { onEvent(ViewClassworkUiEvent.OnRemoveAttachment(it)) }
+        onConfirmClick = { onEvent(ViewClassworkUiEvent.OnRemoveAttachment(it)) },
     )
 }
 
@@ -366,54 +376,60 @@ private fun LazyGridScope.shortAnswerContent(
     uiState: ViewClassworkUiState,
     onEvent: (ViewClassworkUiEvent) -> Unit,
     classworkType: CourseWorkType,
-    isTeacher: Boolean
+    isTeacher: Boolean,
 ) {
     if (!isTeacher && classworkType == CourseWorkType.SHORT_ANSWER_QUESTION) {
         header {
             Column {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            top = 14.dp,
-                            bottom = 16.dp
-                        )
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                top = 14.dp,
+                                bottom = 16.dp,
+                            ),
                 ) {
                     Text(
-                        text = stringResource(
-                            id = Strings.your_answer
-                        ),
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .weight(1f),
-                        style = MaterialTheme.typography.titleMedium
+                        text =
+                            stringResource(
+                                id = Strings.your_answer,
+                            ),
+                        modifier =
+                            Modifier
+                                .padding(end = 16.dp)
+                                .weight(1f),
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     DueText(uiState = uiState)
                 }
                 when (uiState.yourWorkDataState) {
                     is DataState.EMPTY -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     is DataState.ERROR -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     DataState.LOADING -> {
                         LoadingIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
                         )
                     }
 
@@ -424,22 +440,24 @@ private fun LazyGridScope.shortAnswerContent(
                                 onValueChange = {
                                     onEvent(
                                         ViewClassworkUiEvent.OnShortAnswerChange(
-                                            it
-                                        )
+                                            it,
+                                        ),
                                     )
                                 },
                                 modifier = Modifier.fillMaxWidth(),
                                 label = {
                                     Text(
-                                        text = stringResource(
-                                            id = Strings.type_your_answer
-                                        )
+                                        text =
+                                            stringResource(
+                                                id = Strings.type_your_answer,
+                                            ),
                                     )
                                 },
-                                keyboardOptions = KeyboardOptions(
-                                    capitalization = KeyboardCapitalization.Sentences,
-                                    autoCorrect = true
-                                )
+                                keyboardOptions =
+                                    KeyboardOptions(
+                                        capitalization = KeyboardCapitalization.Sentences,
+                                        autoCorrect = true,
+                                    ),
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Button(
@@ -447,34 +465,36 @@ private fun LazyGridScope.shortAnswerContent(
                                     onEvent(ViewClassworkUiEvent.TurnIn)
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = uiState.shortAnswer.isNotEmpty()
+                                enabled = uiState.shortAnswer.isNotEmpty(),
                             ) {
                                 Text(
-                                    text = stringResource(
-                                        id = Strings.hand_in
-                                    )
+                                    text =
+                                        stringResource(
+                                            id = Strings.hand_in,
+                                        ),
                                 )
                             }
                         } else {
                             Text(
-                                text = uiState.studentSubmission.shortAnswerSubmission.answer
+                                text = uiState.studentSubmission.shortAnswerSubmission.answer,
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             OutlinedButton(
                                 onClick = {
                                     onEvent(
                                         ViewClassworkUiEvent.OnEditShortAnswerChange(
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = uiState.shortAnswer.isNotEmpty()
+                                enabled = uiState.shortAnswer.isNotEmpty(),
                             ) {
                                 Text(
-                                    text = stringResource(
-                                        id = Strings.edit
-                                    )
+                                    text =
+                                        stringResource(
+                                            id = Strings.edit,
+                                        ),
                                 )
                             }
                         }
@@ -491,52 +511,58 @@ private fun LazyGridScope.multipleChoiceContent(
     uiState: ViewClassworkUiState,
     onEvent: (ViewClassworkUiEvent) -> Unit,
     classworkType: CourseWorkType,
-    isTeacher: Boolean
+    isTeacher: Boolean,
 ) {
     if (!isTeacher && classworkType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
         header {
             Column {
                 Row(
-                    modifier = Modifier.padding(
-                        top = 14.dp,
-                        bottom = 16.dp
-                    )
+                    modifier =
+                        Modifier.padding(
+                            top = 14.dp,
+                            bottom = 16.dp,
+                        ),
                 ) {
                     Text(
-                        text = stringResource(
-                            id = Strings.your_answer
-                        ),
-                        modifier = Modifier
-                            .padding(end = 16.dp)
-                            .weight(1f),
-                        style = MaterialTheme.typography.titleMedium
+                        text =
+                            stringResource(
+                                id = Strings.your_answer,
+                            ),
+                        modifier =
+                            Modifier
+                                .padding(end = 16.dp)
+                                .weight(1f),
+                        style = MaterialTheme.typography.titleMedium,
                     )
                     DueText(uiState = uiState)
                 }
                 when (uiState.yourWorkDataState) {
                     is DataState.EMPTY -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     is DataState.ERROR -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     DataState.LOADING -> {
                         LoadingIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
                         )
                     }
 
@@ -558,23 +584,24 @@ private fun LazyGridScope.multipleChoiceContent(
                                             onClick = {
                                                 onEvent(
                                                     ViewClassworkUiEvent.OnMultipleChoiceAnswerChange(
-                                                        text
-                                                    )
+                                                        text,
+                                                    ),
                                                 )
-                                            }
+                                            },
                                         ),
-                                    verticalAlignment = Alignment.CenterVertically
+                                    verticalAlignment = Alignment.CenterVertically,
                                 ) {
                                     RadioButton(
                                         selected = (text == uiState.multipleChoiceAnswer),
-                                        onClick = null // null recommended for accessibility with screen readers
+                                        onClick = null, // null recommended for accessibility with screen readers
                                     )
                                     Text(
                                         text = text,
                                         style = MaterialTheme.typography.bodyLarge,
-                                        modifier = Modifier.padding(
-                                            start = 16.dp
-                                        )
+                                        modifier =
+                                            Modifier.padding(
+                                                start = 16.dp,
+                                            ),
                                     )
                                 }
                             }
@@ -585,17 +612,18 @@ private fun LazyGridScope.multipleChoiceContent(
                                 onClick = {
                                     onEvent(
                                         ViewClassworkUiEvent.OnOpenHandInDialog(
-                                            true
-                                        )
+                                            true,
+                                        ),
                                     )
                                 },
                                 modifier = Modifier.fillMaxWidth(),
-                                enabled = uiState.multipleChoiceAnswer.isNotEmpty()
+                                enabled = uiState.multipleChoiceAnswer.isNotEmpty(),
                             ) {
                                 Text(
-                                    text = stringResource(
-                                        id = Strings.hand_in
-                                    )
+                                    text =
+                                        stringResource(
+                                            id = Strings.hand_in,
+                                        ),
                                 )
                             }
                         }

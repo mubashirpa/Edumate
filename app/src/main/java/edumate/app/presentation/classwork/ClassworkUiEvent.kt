@@ -4,10 +4,16 @@ import edumate.app.domain.model.course_work.CourseWork
 
 sealed class ClassworkUiEvent {
     data class OnAppBarMenuExpandedChange(val expanded: Boolean) : ClassworkUiEvent()
+
     data class OnDeleteClasswork(val classworkId: String) : ClassworkUiEvent()
+
     data class OnOpenDeleteClassworkDialogChange(val classwork: CourseWork?) : ClassworkUiEvent()
+
     data class OnOpenFabMenuChange(val open: Boolean) : ClassworkUiEvent()
+
     data object OnRefresh : ClassworkUiEvent()
+
     data object OnRetry : ClassworkUiEvent()
+
     data object UserMessageShown : ClassworkUiEvent()
 }

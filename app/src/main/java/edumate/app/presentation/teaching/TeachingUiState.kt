@@ -10,5 +10,5 @@ data class TeachingUiState(
     val deleteCourseId: String? = null,
     val openProgressDialog: Boolean = false,
     val refreshing: Boolean = false,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

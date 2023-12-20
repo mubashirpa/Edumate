@@ -6,7 +6,7 @@ import edumate.app.domain.model.user_profiles.UserProfile
 sealed class ClassDetailsUiEvent {
     data class OnNavigateToViewStudentWork(
         val courseWork: CourseWork,
-        val assignedStudent: UserProfile
+        val assignedStudent: UserProfile,
     ) :
         ClassDetailsUiEvent()
 

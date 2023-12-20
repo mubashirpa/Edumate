@@ -17,7 +17,7 @@ fun AnnouncementDto.toAnnouncement(): Announcement {
         assigneeMode,
         individualStudentsOptions,
         creatorUserId,
-        creatorProfile
+        creatorProfile,
     )
 }
 
@@ -35,6 +35,6 @@ fun Announcement.toAnnouncementDto(): AnnouncementDto {
         assigneeMode,
         individualStudentsOptions,
         creatorUserId,
-        creatorProfile
+        creatorProfile,
     )
 }

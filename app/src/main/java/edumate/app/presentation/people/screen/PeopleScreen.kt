@@ -74,7 +74,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
-import edumate.app.R.string as Strings
 import edumate.app.core.Constants
 import edumate.app.core.DataState
 import edumate.app.domain.model.courses.Course
@@ -91,11 +90,12 @@ import edumate.app.presentation.people.screen.components.PeopleListItem
 import edumate.app.presentation.people.screen.components.RemoveUserDialog
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import edumate.app.R.string as Strings
 
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalFoundationApi::class,
-    ExperimentalMaterialApi::class
+    ExperimentalMaterialApi::class,
 )
 @Composable
 fun PeopleScreen(
@@ -103,7 +103,7 @@ fun PeopleScreen(
     snackbarHostState: SnackbarHostState,
     course: Course,
     onLeaveClass: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topBarState)
@@ -112,17 +112,19 @@ fun PeopleScreen(
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnLeaveClass by rememberUpdatedState(onLeaveClass)
     val scrollState = rememberLazyListState()
-    val refreshState = rememberPullRefreshState(
-        refreshing = viewModel.uiState.refreshing,
-        onRefresh = {
-            viewModel.onEvent(PeopleUiEvent.OnRefresh)
-        }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = viewModel.uiState.refreshing,
+            onRefresh = {
+                viewModel.onEvent(PeopleUiEvent.OnRefresh)
+            },
+        )
     val isTeacher = course.teacherGroupId.contains(viewModel.uiState.currentUser?.uid)
     val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the user is leave class and
@@ -148,14 +150,14 @@ fun PeopleScreen(
                 Text(
                     text = course.name,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
@@ -164,50 +166,53 @@ fun PeopleScreen(
                     IconButton(
                         onClick = {
                             viewModel.onEvent(
-                                PeopleUiEvent.OnAppBarMenuExpandedChange(true)
+                                PeopleUiEvent.OnAppBarMenuExpandedChange(true),
                             )
-                        }
+                        },
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     DropdownMenu(
                         expanded = viewModel.uiState.appBarMenuExpanded,
                         onDismissRequest = {
                             viewModel.onEvent(PeopleUiEvent.OnAppBarMenuExpandedChange(false))
-                        }
+                        },
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = Strings.refresh)) },
                             onClick = {
                                 viewModel.onEvent(PeopleUiEvent.OnAppBarMenuExpandedChange(false))
                                 viewModel.onEvent(PeopleUiEvent.OnRefresh)
-                            }
+                            },
                         )
                     }
                 }
             },
-            colors = TopAppBarDefaults.topAppBarColors(
-                scrolledContainerColor = MaterialTheme.colorScheme.surface
-            ),
-            scrollBehavior = scrollBehavior
+            colors =
+                TopAppBarDefaults.topAppBarColors(
+                    scrolledContainerColor = MaterialTheme.colorScheme.surface,
+                ),
+            scrollBehavior = scrollBehavior,
         )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pullRefresh(refreshState)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             when (val dataState = viewModel.uiState.dataState) {
                 is DataState.ERROR -> {
                     ErrorScreen(
                         onRetryClick = { viewModel.onEvent(PeopleUiEvent.OnRetry) },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = dataState.message.asString()
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString(),
                     )
                 }
 
@@ -220,11 +225,12 @@ fun PeopleScreen(
                 else -> {
                     Column(modifier = Modifier.fillMaxSize()) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 10.dp)
-                                .horizontalScroll(rememberScrollState()),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp)
+                                    .horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
                             Spacer(modifier = Modifier.width(16.dp))
                             FilterChip(
@@ -232,90 +238,97 @@ fun PeopleScreen(
                                 onClick = {
                                     viewModel.onEvent(
                                         PeopleUiEvent.OnFilterChange(
-                                            PeopleFilterType.ALL
-                                        )
+                                            PeopleFilterType.ALL,
+                                        ),
                                     )
                                 },
                                 label = { Text(stringResource(id = Strings.all)) },
-                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.ALL) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Filled.Done,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(
-                                                FilterChipDefaults.IconSize
+                                leadingIcon =
+                                    if (viewModel.uiState.filter == PeopleFilterType.ALL) {
+                                        {
+                                            Icon(
+                                                imageVector = Icons.Filled.Done,
+                                                contentDescription = null,
+                                                modifier =
+                                                    Modifier.size(
+                                                        FilterChipDefaults.IconSize,
+                                                    ),
                                             )
-                                        )
-                                    }
-                                } else {
-                                    null
-                                }
+                                        }
+                                    } else {
+                                        null
+                                    },
                             )
                             FilterChip(
                                 selected = viewModel.uiState.filter == PeopleFilterType.TEACHERS,
                                 onClick = {
                                     viewModel.onEvent(
                                         PeopleUiEvent.OnFilterChange(
-                                            PeopleFilterType.TEACHERS
-                                        )
+                                            PeopleFilterType.TEACHERS,
+                                        ),
                                     )
                                 },
                                 label = {
                                     Text(
-                                        stringResource(id = Strings.teachers)
+                                        stringResource(id = Strings.teachers),
                                     )
                                 },
-                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.TEACHERS) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Filled.Done,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(
-                                                FilterChipDefaults.IconSize
+                                leadingIcon =
+                                    if (viewModel.uiState.filter == PeopleFilterType.TEACHERS) {
+                                        {
+                                            Icon(
+                                                imageVector = Icons.Filled.Done,
+                                                contentDescription = null,
+                                                modifier =
+                                                    Modifier.size(
+                                                        FilterChipDefaults.IconSize,
+                                                    ),
                                             )
-                                        )
-                                    }
-                                } else {
-                                    null
-                                }
+                                        }
+                                    } else {
+                                        null
+                                    },
                             )
                             FilterChip(
                                 selected = viewModel.uiState.filter == PeopleFilterType.STUDENTS,
                                 onClick = {
                                     viewModel.onEvent(
                                         PeopleUiEvent.OnFilterChange(
-                                            PeopleFilterType.STUDENTS
-                                        )
+                                            PeopleFilterType.STUDENTS,
+                                        ),
                                     )
                                 },
                                 label = {
                                     Text(
-                                        stringResource(id = Strings.students)
+                                        stringResource(id = Strings.students),
                                     )
                                 },
-                                leadingIcon = if (viewModel.uiState.filter == PeopleFilterType.STUDENTS) {
-                                    {
-                                        Icon(
-                                            imageVector = Icons.Filled.Done,
-                                            contentDescription = null,
-                                            modifier = Modifier.size(
-                                                FilterChipDefaults.IconSize
+                                leadingIcon =
+                                    if (viewModel.uiState.filter == PeopleFilterType.STUDENTS) {
+                                        {
+                                            Icon(
+                                                imageVector = Icons.Filled.Done,
+                                                contentDescription = null,
+                                                modifier =
+                                                    Modifier.size(
+                                                        FilterChipDefaults.IconSize,
+                                                    ),
                                             )
-                                        )
-                                    }
-                                } else {
-                                    null
-                                }
+                                        }
+                                    } else {
+                                        null
+                                    },
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                         }
                         if (dataState is DataState.EMPTY) {
                             AnimatedErrorScreen(
                                 url = Constants.PEOPLE_SCREEN_EMPTY_ANIM_URL,
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                                errorMessage = dataState.message.asString()
+                                modifier =
+                                    Modifier
+                                        .fillMaxSize()
+                                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                                errorMessage = dataState.message.asString(),
                             )
                         } else {
                             val bottomMargin = if (isTeacher) 88.dp else 0.dp
@@ -334,26 +347,26 @@ fun PeopleScreen(
                                             onLeaveClassClick = {
                                                 viewModel.onEvent(
                                                     PeopleUiEvent.OnOpenLeaveClassDialogChange(
-                                                        true
-                                                    )
+                                                        true,
+                                                    ),
                                                 )
                                             },
                                             onEmailClick = {
                                                 composeEmail(
                                                     context,
-                                                    arrayOf(user.emailAddress.orEmpty())
+                                                    arrayOf(user.emailAddress.orEmpty()),
                                                 )
                                             },
                                             onRemoveClick = {
                                                 viewModel.onEvent(
                                                     PeopleUiEvent.OnOpenRemoveUserDialogChange(
-                                                        user
-                                                    )
+                                                        user,
+                                                    ),
                                                 )
-                                            }
+                                            },
                                         )
                                     }
-                                }
+                                },
                             )
                         }
                     }
@@ -366,21 +379,22 @@ fun PeopleScreen(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.PersonAddAlt,
-                            contentDescription = "Invite"
+                            contentDescription = "Invite",
                         )
                     },
                     onClick = { viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(true)) },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomEnd),
-                    expanded = expandedFab
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomEnd),
+                    expanded = expandedFab,
                 )
             }
 
             PullRefreshIndicator(
                 viewModel.uiState.refreshing,
                 refreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
             )
         }
     }
@@ -394,28 +408,30 @@ fun PeopleScreen(
                 viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
             },
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets(0)
+            windowInsets = WindowInsets(0),
         ) {
             val courseLink = course.alternateLink
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.share)) },
-                modifier = Modifier.clickable {
-                    viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
-                    share(context, courseLink)
-                }
+                modifier =
+                    Modifier.clickable {
+                        viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
+                        share(context, courseLink)
+                    },
             )
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.copy_link)) },
-                modifier = Modifier.clickable {
-                    viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
-                    copy(context, courseLink) {
-                        coroutineScope.launch {
-                            snackbarHostState.showSnackbar(
-                                context.getString(Strings.copied_invitation_link)
-                            )
+                modifier =
+                    Modifier.clickable {
+                        viewModel.onEvent(PeopleUiEvent.OnOpenFabMenuChange(false))
+                        copy(context, courseLink) {
+                            coroutineScope.launch {
+                                snackbarHostState.showSnackbar(
+                                    context.getString(Strings.copied_invitation_link),
+                                )
+                            }
                         }
-                    }
-                }
+                    },
             )
             Spacer(modifier = Modifier.height(bottomMargin))
         }
@@ -430,7 +446,7 @@ fun PeopleScreen(
             viewModel.uiState.currentUser?.uid?.let {
                 viewModel.onEvent(PeopleUiEvent.OnLeaveClass(it))
             }
-        }
+        },
     )
 
     RemoveUserDialog(
@@ -438,35 +454,44 @@ fun PeopleScreen(
             viewModel.onEvent(PeopleUiEvent.OnOpenRemoveUserDialogChange(null))
         },
         userProfile = viewModel.uiState.removeUserProfile,
-        userType = if (isTeacher) {
-            UserType.TEACHER
-        } else {
-            UserType.STUDENT
-        },
+        userType =
+            if (isTeacher) {
+                UserType.TEACHER
+            } else {
+                UserType.STUDENT
+            },
         onConfirmClick = { userType, uid ->
             viewModel.onEvent(
                 PeopleUiEvent.OnRemoveUser(
                     userType,
-                    uid
-                )
+                    uid,
+                ),
             )
-        }
+        },
     )
 
     ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
 }
 
-private fun share(context: Context, text: String) {
-    val sendIntent: Intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, text)
-        type = "text/plain"
-    }
+private fun share(
+    context: Context,
+    text: String,
+) {
+    val sendIntent: Intent =
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
     val shareIntent = Intent.createChooser(sendIntent, null)
     context.startActivity(shareIntent)
 }
 
-private fun copy(context: Context, textCopied: String, onSuccess: () -> Unit) {
+private fun copy(
+    context: Context,
+    textCopied: String,
+    onSuccess: () -> Unit,
+) {
     val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
     clipboardManager.setPrimaryClip(ClipData.newPlainText(textCopied, textCopied))
     if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
@@ -474,11 +499,15 @@ private fun copy(context: Context, textCopied: String, onSuccess: () -> Unit) {
     }
 }
 
-private fun composeEmail(context: Context, addresses: Array<String>) {
-    val intent = Intent(Intent.ACTION_SENDTO).apply {
-        data = Uri.parse("mailto:") // only email apps should handle this
-        putExtra(Intent.EXTRA_EMAIL, addresses)
-    }
+private fun composeEmail(
+    context: Context,
+    addresses: Array<String>,
+) {
+    val intent =
+        Intent(Intent.ACTION_SENDTO).apply {
+            data = Uri.parse("mailto:") // only email apps should handle this
+            putExtra(Intent.EXTRA_EMAIL, addresses)
+        }
     if (intent.resolveActivity(context.packageManager) != null) {
         context.startActivity(intent)
     }

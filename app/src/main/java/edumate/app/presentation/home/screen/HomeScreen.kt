@@ -52,7 +52,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edumate.app.R.string as Strings
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.home.HomeTabsScreen
@@ -61,10 +60,11 @@ import edumate.app.presentation.home.HomeUiState
 import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import edumate.app.R.string as Strings
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
 )
 @Composable
 fun HomeScreen(
@@ -75,22 +75,24 @@ fun HomeScreen(
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToCreateClass: (courseId: String?) -> Unit,
     navigateToJoinClass: () -> Unit,
-    navigateToProfile: () -> Unit
+    navigateToProfile: () -> Unit,
 ) {
-    val tabs = listOf(
-        HomeTabsScreen.Enrolled,
-        HomeTabsScreen.Teaching
-    )
+    val tabs =
+        listOf(
+            HomeTabsScreen.Enrolled,
+            HomeTabsScreen.Teaching,
+        )
     val pagerState = rememberPagerState { tabs.size }
     val coroutineScope = rememberCoroutineScope()
     val refreshScope = rememberCoroutineScope()
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
     val indicator = @Composable { tabPositions: List<TabPosition> ->
         TabRowDefaults.PrimaryIndicator(
             modifier = Modifier.tabIndicatorOffset(tabPositions[pagerState.currentPage]),
-            width = tabPositions[pagerState.currentPage].contentWidth
+            width = tabPositions[pagerState.currentPage].contentWidth,
         )
     }
 
@@ -112,34 +114,35 @@ fun HomeScreen(
                 actions = {
                     Box(
                         modifier = Modifier.minimumInteractiveComponentSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         UserAvatar(
                             id = uiState.currentUser?.uid.orEmpty(),
-                            fullName = uiState.currentUser?.displayName
-                                ?: uiState.currentUser?.email.orEmpty(),
+                            fullName =
+                                uiState.currentUser?.displayName
+                                    ?: uiState.currentUser?.email.orEmpty(),
                             photoUri = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = navigateToProfile),
                             size = 30.dp,
-                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp)
+                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),
                         )
                     }
                     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                         IconButton(
                             onClick = {
                                 onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(true))
-                            }
+                            },
                         ) {
                             Icon(
                                 Icons.Default.MoreVert,
-                                contentDescription = null
+                                contentDescription = null,
                             )
                         }
                         DropdownMenu(
                             expanded = uiState.appBarMenuExpanded,
                             onDismissRequest = {
                                 onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(false))
-                            }
+                            },
                         ) {
                             DropdownMenuItem(
                                 text = { Text(stringResource(id = Strings.refresh)) },
@@ -150,32 +153,34 @@ fun HomeScreen(
                                         delay(500)
                                         onEvent(HomeUiEvent.OnRefreshChange(false))
                                     }
-                                }
+                                },
                             )
                         }
                     }
-                }
+                },
             )
         },
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { onEvent(HomeUiEvent.OnOpenFabMenuChange(true)) },
-                modifier = Modifier.navigationBarsPadding()
+                modifier = Modifier.navigationBarsPadding(),
             ) { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
         },
-        contentWindowInsets = ScaffoldDefaults
-            .contentWindowInsets
-            .exclude(WindowInsets.navigationBars)
+        contentWindowInsets =
+            ScaffoldDefaults
+                .contentWindowInsets
+                .exclude(WindowInsets.navigationBars),
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding),
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
                 TabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    indicator = indicator
+                    indicator = indicator,
                 ) {
                     tabs.forEachIndexed { index, screen ->
                         Tab(
@@ -189,26 +194,28 @@ fun HomeScreen(
                                 Text(
                                     text = stringResource(id = screen.title),
                                     maxLines = 2,
-                                    overflow = TextOverflow.Ellipsis
+                                    overflow = TextOverflow.Ellipsis,
                                 )
                             },
                             selectedContentColor = MaterialTheme.colorScheme.primary,
-                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                            unselectedContentColor = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
                 HorizontalPager(
                     state = pagerState,
-                    modifier = Modifier.fillMaxSize()
+                    modifier = Modifier.fillMaxSize(),
                 ) { page ->
-                    val bottomMargin = WindowInsets.navigationBars.asPaddingValues()
-                        .calculateBottomPadding() + 88.dp
-                    val contentPadding = PaddingValues(
-                        start = 10.dp,
-                        top = 10.dp,
-                        end = 10.dp,
-                        bottom = bottomMargin
-                    )
+                    val bottomMargin =
+                        WindowInsets.navigationBars.asPaddingValues()
+                            .calculateBottomPadding() + 88.dp
+                    val contentPadding =
+                        PaddingValues(
+                            start = 10.dp,
+                            top = 10.dp,
+                            end = 10.dp,
+                            bottom = bottomMargin,
+                        )
 
                     when (page) {
                         0 -> {
@@ -216,7 +223,7 @@ fun HomeScreen(
                                 snackbarHostState = snackbarHostState,
                                 contentPadding = contentPadding,
                                 refreshUsingActionButton = uiState.refreshing,
-                                navigateToClassDetails = navigateToClassDetails
+                                navigateToClassDetails = navigateToClassDetails,
                             )
                         }
 
@@ -226,7 +233,7 @@ fun HomeScreen(
                                 contentPadding = contentPadding,
                                 refreshUsingActionButton = uiState.refreshing,
                                 navigateToCreateClass = navigateToCreateClass,
-                                navigateToClassDetails = navigateToClassDetails
+                                navigateToClassDetails = navigateToClassDetails,
                             )
                         }
                     }
@@ -242,21 +249,23 @@ fun HomeScreen(
                         onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
                     },
                     sheetState = bottomSheetState,
-                    windowInsets = WindowInsets(0)
+                    windowInsets = WindowInsets(0),
                 ) {
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
-                        modifier = Modifier.clickable {
-                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                            navigateToCreateClass(null)
-                        }
+                        modifier =
+                            Modifier.clickable {
+                                onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                                navigateToCreateClass(null)
+                            },
                     )
                     ListItem(
                         headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
-                        modifier = Modifier.clickable {
-                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
-                            navigateToJoinClass()
-                        }
+                        modifier =
+                            Modifier.clickable {
+                                onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                                navigateToJoinClass()
+                            },
                     )
                     Spacer(modifier = Modifier.height(bottomMargin))
                 }

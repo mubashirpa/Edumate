@@ -19,33 +19,34 @@ fun FieldListItem(
     title: String,
     leadingIcon: ImageVector? = null,
     trailingContent: @Composable (() -> Unit)? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     FieldListItem(
         headlineContent = {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(56.dp)
-                    .border(
-                        width = 1.dp,
-                        color = MaterialTheme.colorScheme.outline,
-                        shape = MaterialTheme.shapes.extraSmall
-                    )
-                    .clip(MaterialTheme.shapes.extraSmall)
-                    .clickable(onClick = onClick),
-                contentAlignment = Alignment.CenterStart
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .border(
+                            width = 1.dp,
+                            color = MaterialTheme.colorScheme.outline,
+                            shape = MaterialTheme.shapes.extraSmall,
+                        )
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .clickable(onClick = onClick),
+                contentAlignment = Alignment.CenterStart,
             ) {
                 Text(
                     text = title,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
             }
         },
         leadingIcon = leadingIcon,
-        trailingContent = trailingContent
+        trailingContent = trailingContent,
     )
 }
 
@@ -53,7 +54,7 @@ fun FieldListItem(
 fun FieldListItem(
     headlineContent: @Composable (() -> Unit),
     leadingIcon: ImageVector? = null,
-    trailingContent: @Composable (() -> Unit)? = null
+    trailingContent: @Composable (() -> Unit)? = null,
 ) {
     ListItem(
         headlineContent = headlineContent,
@@ -64,6 +65,6 @@ fun FieldListItem(
                 Spacer(modifier = Modifier.size(24.dp))
             }
         },
-        trailingContent = trailingContent ?: { Spacer(modifier = Modifier.size(48.dp)) }
+        trailingContent = trailingContent ?: { Spacer(modifier = Modifier.size(48.dp)) },
     )
 }

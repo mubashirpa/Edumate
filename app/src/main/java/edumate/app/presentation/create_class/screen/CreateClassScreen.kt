@@ -57,7 +57,7 @@ fun CreateClassScreen(
     createClassResults: Flow<String>,
     courseId: String? = null,
     navigateToClassDetails: (courseId: String) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -92,42 +92,45 @@ fun CreateClassScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    val titleId = if (courseId == null) {
-                        Strings.title_create_class_screen
-                    } else {
-                        Strings.title_edit_class_screen
-                    }
+                    val titleId =
+                        if (courseId == null) {
+                            Strings.title_create_class_screen
+                        } else {
+                            Strings.title_edit_class_screen
+                        }
                     Text(text = stringResource(id = titleId))
                 },
                 navigationIcon = {
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = Strings.navigate_up)
+                            contentDescription = stringResource(id = Strings.navigate_up),
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) }
+        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .consumeWindowInsets(innerPadding)
-                .padding(innerPadding),
-            contentAlignment = Alignment.TopCenter
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .consumeWindowInsets(innerPadding)
+                    .padding(innerPadding),
+            contentAlignment = Alignment.TopCenter,
         ) {
             if (uiState.loading) {
                 LoadingIndicator(modifier = Modifier.fillMaxSize())
             } else {
                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .imePadding()
-                        .verticalScroll(rememberScrollState())
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .imePadding()
+                            .verticalScroll(rememberScrollState()),
                 ) {
                     @Suppress("SENSELESS_COMPARISON")
                     TextField(
@@ -135,26 +138,30 @@ fun CreateClassScreen(
                         onValueChange = {
                             onEvent(CreateClassUiEvent.NameChanged(it))
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .focusRequester(focusRequester),
                         label = {
                             Text(text = stringResource(id = Strings.class_name))
                         },
-                        supportingText = if (uiState.nameError != null) {
-                            { Text(text = uiState.nameError.asString()) }
-                        } else {
-                            null
-                        },
+                        supportingText =
+                            if (uiState.nameError != null) {
+                                { Text(text = uiState.nameError.asString()) }
+                            } else {
+                                null
+                            },
                         isError = uiState.nameError != null,
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
-                        singleLine = true
+                        keyboardOptions =
+                            KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                        singleLine = true,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     TextField(
@@ -166,14 +173,16 @@ fun CreateClassScreen(
                         label = {
                             Text(text = stringResource(id = Strings.section))
                         },
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
-                        singleLine = true
+                        keyboardOptions =
+                            KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                        singleLine = true,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     TextField(
@@ -185,14 +194,16 @@ fun CreateClassScreen(
                         label = {
                             Text(text = stringResource(id = Strings.room))
                         },
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Next
-                        ),
-                        keyboardActions = KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
-                        singleLine = true
+                        keyboardOptions =
+                            KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Next,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }),
+                        singleLine = true,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     TextField(
@@ -204,27 +215,30 @@ fun CreateClassScreen(
                         label = {
                             Text(text = stringResource(id = Strings.subject))
                         },
-                        keyboardOptions = KeyboardOptions(
-                            capitalization = KeyboardCapitalization.Words,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(onDone = {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
-                        }),
-                        singleLine = true
+                        keyboardOptions =
+                            KeyboardOptions(
+                                capitalization = KeyboardCapitalization.Words,
+                                imeAction = ImeAction.Done,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(onDone = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            }),
+                        singleLine = true,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
-                    val buttonText = if (courseId == null) {
-                        Strings.create
-                    } else {
-                        Strings.save
-                    }
+                    val buttonText =
+                        if (courseId == null) {
+                            Strings.create
+                        } else {
+                            Strings.save
+                        }
                     Button(
                         onClick = {
                             onEvent(CreateClassUiEvent.OnCreateClick)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth(),
                     ) {
                         Text(text = stringResource(id = buttonText))
                     }

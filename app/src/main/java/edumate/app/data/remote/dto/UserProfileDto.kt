@@ -17,7 +17,7 @@ data class UserProfileDto(
     val photoUrl: String? = null,
     val enrolled: ArrayList<String> = arrayListOf(),
     val teaching: ArrayList<String> = arrayListOf(),
-    val verified: Boolean = false
+    val verified: Boolean = false,
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
@@ -29,7 +29,7 @@ data class UserProfileDto(
             FirebaseConstants.Firestore.PHOTO_URL to photoUrl,
             FirebaseConstants.Firestore.ENROLLED to enrolled,
             FirebaseConstants.Firestore.TEACHING to teaching,
-            FirebaseConstants.Firestore.VERIFIED to verified
+            FirebaseConstants.Firestore.VERIFIED to verified,
         )
     }
 }

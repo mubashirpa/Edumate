@@ -7,21 +7,26 @@ import edumate.app.domain.model.IndividualStudentsOptions
 import edumate.app.domain.model.announcements.AnnouncementState
 
 interface AnnouncementsRepository {
-
     /**
      * Creates an announcement.
      * @param courseId Identifier of the course.
      * @param announcementDto Instance of [AnnouncementDto].
      * @return If successful, the response body contains a newly created instance of [AnnouncementDto].
      */
-    suspend fun create(courseId: String, announcementDto: AnnouncementDto): AnnouncementDto?
+    suspend fun create(
+        courseId: String,
+        announcementDto: AnnouncementDto,
+    ): AnnouncementDto?
 
     /**
      * Deletes  an announcement.
      * @param courseId Identifier of the course.
      * @param id Identifier of the announcement to delete.
      */
-    suspend fun delete(courseId: String, id: String)
+    suspend fun delete(
+        courseId: String,
+        id: String,
+    )
 
     /**
      * Returns an announcement.
@@ -29,7 +34,10 @@ interface AnnouncementsRepository {
      * @param id Identifier of the announcement.
      * @return If successful, the response body contains an instance of [AnnouncementDto].
      */
-    suspend fun get(courseId: String, id: String): AnnouncementDto?
+    suspend fun get(
+        courseId: String,
+        id: String,
+    ): AnnouncementDto?
 
     /**
      * Returns an announcement.
@@ -43,7 +51,7 @@ interface AnnouncementsRepository {
         courseId: String,
         announcementState: AnnouncementState = AnnouncementState.PUBLISHED,
         orderBy: String = "updateTime desc",
-        pageSize: Int? = null
+        pageSize: Int? = null,
     ): List<AnnouncementDto>
 
     /**
@@ -58,7 +66,7 @@ interface AnnouncementsRepository {
         courseId: String,
         id: String,
         assigneeMode: AssigneeMode,
-        modifyIndividualStudentsOptions: IndividualStudentsOptions?
+        modifyIndividualStudentsOptions: IndividualStudentsOptions?,
     ): AnnouncementDto?
 
     /**
@@ -71,6 +79,6 @@ interface AnnouncementsRepository {
     suspend fun patch(
         courseId: String,
         id: String,
-        announcementDto: AnnouncementDto
+        announcementDto: AnnouncementDto,
     ): AnnouncementDto?
 }

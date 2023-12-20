@@ -19,10 +19,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edumate.app.R.string as Strings
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.profile.ProfileUiEvent
 import edumate.app.presentation.profile.ProfileUiState
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -30,15 +30,16 @@ fun ProfileScreen(
     uiState: ProfileUiState,
     onEvent: (ProfileUiEvent) -> Unit,
     onSignOut: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
     ) {
         TopAppBar(
             title = {
@@ -48,17 +49,18 @@ fun ProfileScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             UserAvatar(
@@ -67,7 +69,7 @@ fun ProfileScreen(
                 photoUri = uiState.currentUser?.photoUrl,
                 size = 96.dp,
                 shape = MaterialTheme.shapes.extraLarge,
-                textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp)
+                textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),
             )
             Spacer(modifier = Modifier.height(16.dp))
             ListItem(
@@ -79,7 +81,7 @@ fun ProfileScreen(
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Default.Person, contentDescription = null)
-                }
+                },
             )
             HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
             ListItem(
@@ -91,14 +93,14 @@ fun ProfileScreen(
                 },
                 leadingContent = {
                     Icon(imageVector = Icons.Default.Email, contentDescription = null)
-                }
+                },
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
                     onEvent(ProfileUiEvent.SignOut)
                     onSignOut()
-                }
+                },
             ) {
                 Text(text = stringResource(id = Strings.logout))
             }

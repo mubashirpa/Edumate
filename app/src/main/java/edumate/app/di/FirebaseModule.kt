@@ -17,7 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseModule {
-
     // Firebase authentication
 
     @Singleton
@@ -44,6 +43,5 @@ object FirebaseModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseStorageReference(storage: FirebaseStorage): StorageReference =
-        storage.reference
+    fun provideFirebaseStorageReference(storage: FirebaseStorage): StorageReference = storage.reference
 }

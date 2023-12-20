@@ -21,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
@@ -29,6 +28,7 @@ import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,13 +38,14 @@ fun YourWorkBottomSheet(
     onAddAttachmentClick: () -> Unit,
     onRemoveAttachmentClick: (Int) -> Unit,
     onSubmitClick: () -> Unit,
-    onUnSubmitClick: () -> Unit
+    onUnSubmitClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     if (uiState.openYourWorkBottomSheet) {
         val bottomMargin =
@@ -53,28 +54,31 @@ fun YourWorkBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets(0)
+            windowInsets = WindowInsets(0),
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .verticalScroll(rememberScrollState())
-                    .animateContentSize()
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .animateContentSize(),
             ) {
                 Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(64.dp)
+                            .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = stringResource(id = Strings.your_work),
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(end = 16.dp),
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .padding(end = 16.dp),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.titleLarge
+                        style = MaterialTheme.typography.titleLarge,
                     )
                     DueText(uiState = uiState)
                 }
@@ -82,58 +86,64 @@ fun YourWorkBottomSheet(
                 when (uiState.yourWorkDataState) {
                     is DataState.EMPTY -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
-                                .padding(horizontal = 16.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp)
+                                    .padding(horizontal = 16.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     is DataState.ERROR -> {
                         ErrorScreen(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
-                                .padding(horizontal = 16.dp),
-                            errorMessage = uiState.yourWorkDataState.message.asString()
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp)
+                                    .padding(horizontal = 16.dp),
+                            errorMessage = uiState.yourWorkDataState.message.asString(),
                         )
                     }
 
                     DataState.LOADING -> {
                         LoadingIndicator(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(128.dp)
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(128.dp),
                         )
                     }
 
                     DataState.SUCCESS -> {
                         Column(
-                            modifier = Modifier.padding(
-                                horizontal = 16.dp,
-                                vertical = 10.dp
-                            )
+                            modifier =
+                                Modifier.padding(
+                                    horizontal = 16.dp,
+                                    vertical = 10.dp,
+                                ),
                         ) {
                             val attachments =
                                 uiState.studentSubmissionAttachments
 
                             Text(
                                 text = stringResource(id = Strings.attachments),
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
                             )
                             Spacer(modifier = Modifier.height(10.dp))
                             if (attachments.isEmpty()) {
                                 Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(128.dp),
-                                    contentAlignment = Alignment.Center
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .height(128.dp),
+                                    contentAlignment = Alignment.Center,
                                 ) {
                                     Text(
-                                        text = stringResource(
-                                            id = Strings.you_have_no_attachments_uploaded
-                                        )
+                                        text =
+                                            stringResource(
+                                                id = Strings.you_have_no_attachments_uploaded,
+                                            ),
                                     )
                                 }
                             } else {
@@ -142,17 +152,18 @@ fun YourWorkBottomSheet(
                                         ListItem(
                                             headlineContent = {
                                                 Text(
-                                                    text = attachment.driveFile?.title
-                                                        ?: attachment.driveFile?.url.orEmpty(),
+                                                    text =
+                                                        attachment.driveFile?.title
+                                                            ?: attachment.driveFile?.url.orEmpty(),
                                                     overflow = TextOverflow.Ellipsis,
-                                                    maxLines = 1
+                                                    maxLines = 1,
                                                 )
                                             },
                                             leadingContent = {
                                                 val icon =
                                                     when (
                                                         fileUtils.getFileType(
-                                                            attachment.driveFile?.type
+                                                            attachment.driveFile?.type,
                                                         )
                                                     ) {
                                                         FileType.IMAGE -> Icons.Default.Image
@@ -164,21 +175,21 @@ fun YourWorkBottomSheet(
 
                                                 Icon(
                                                     imageVector = icon,
-                                                    contentDescription = null
+                                                    contentDescription = null,
                                                 )
                                             },
                                             trailingContent = {
                                                 if (uiState.studentSubmission?.state != SubmissionState.TURNED_IN) {
                                                     IconButton(
-                                                        onClick = { onRemoveAttachmentClick(index) }
+                                                        onClick = { onRemoveAttachmentClick(index) },
                                                     ) {
                                                         Icon(
                                                             imageVector = Icons.Default.Clear,
-                                                            contentDescription = null
+                                                            contentDescription = null,
                                                         )
                                                     }
                                                 }
-                                            }
+                                            },
                                         )
                                     }
                                     if (index < attachments.lastIndex) {
@@ -191,7 +202,7 @@ fun YourWorkBottomSheet(
                                 uiState = uiState,
                                 onAddWorkClick = onAddAttachmentClick,
                                 onSubmitClick = onSubmitClick,
-                                onUnSubmitClick = onUnSubmitClick
+                                onUnSubmitClick = onUnSubmitClick,
                             )
                         }
                     }
@@ -209,13 +220,13 @@ private fun YourWorkActionButtons(
     uiState: ViewClassworkUiState,
     onAddWorkClick: () -> Unit,
     onSubmitClick: () -> Unit,
-    onUnSubmitClick: () -> Unit
+    onUnSubmitClick: () -> Unit,
 ) {
     when (uiState.studentSubmission?.state) {
         SubmissionState.TURNED_IN -> {
             Button(
                 onClick = onUnSubmitClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = stringResource(id = Strings.unsubmit))
             }
@@ -225,12 +236,12 @@ private fun YourWorkActionButtons(
             OutlinedButton(
                 onClick = onAddWorkClick,
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
             ) {
                 Icon(
                     Icons.Filled.Add,
                     contentDescription = null,
-                    modifier = Modifier.size(ButtonDefaults.IconSize)
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
                 )
                 Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                 Text(text = stringResource(id = Strings.add_work))
@@ -238,7 +249,7 @@ private fun YourWorkActionButtons(
             Spacer(modifier = Modifier.height(10.dp))
             Button(
                 onClick = onSubmitClick,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
             ) {
                 Text(text = stringResource(id = Strings.resubmit))
             }
@@ -251,12 +262,12 @@ private fun YourWorkActionButtons(
                 Button(
                     onClick = onAddWorkClick,
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 ) {
                     Icon(
                         Icons.Filled.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = stringResource(id = Strings.add_work))
@@ -264,25 +275,26 @@ private fun YourWorkActionButtons(
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedButton(
                     onClick = onSubmitClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    val text = if (assignedGrade != null) {
-                        Strings.resubmit
-                    } else {
-                        Strings.mark_as_done
-                    }
+                    val text =
+                        if (assignedGrade != null) {
+                            Strings.resubmit
+                        } else {
+                            Strings.mark_as_done
+                        }
                     Text(text = stringResource(id = text))
                 }
             } else {
                 OutlinedButton(
                     onClick = onAddWorkClick,
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 ) {
                     Icon(
                         Icons.Filled.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = stringResource(id = Strings.add_work))
@@ -290,13 +302,14 @@ private fun YourWorkActionButtons(
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = onSubmitClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
-                    val text = if (assignedGrade != null) {
-                        Strings.resubmit
-                    } else {
-                        Strings.turn_in
-                    }
+                    val text =
+                        if (assignedGrade != null) {
+                            Strings.resubmit
+                        } else {
+                            Strings.turn_in
+                        }
                     Text(text = stringResource(id = text))
                 }
             }
@@ -307,12 +320,12 @@ private fun YourWorkActionButtons(
                 Button(
                     onClick = onAddWorkClick,
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 ) {
                     Icon(
                         Icons.Filled.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = stringResource(id = Strings.add_work))
@@ -320,7 +333,7 @@ private fun YourWorkActionButtons(
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedButton(
                     onClick = onSubmitClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(id = Strings.mark_as_done))
                 }
@@ -328,12 +341,12 @@ private fun YourWorkActionButtons(
                 OutlinedButton(
                     onClick = onAddWorkClick,
                     modifier = Modifier.fillMaxWidth(),
-                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                    contentPadding = ButtonDefaults.ButtonWithIconContentPadding,
                 ) {
                     Icon(
                         Icons.Filled.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(ButtonDefaults.IconSize)
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
                     )
                     Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                     Text(text = stringResource(id = Strings.add_work))
@@ -341,7 +354,7 @@ private fun YourWorkActionButtons(
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = onSubmitClick,
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(id = Strings.turn_in))
                 }

@@ -1,7 +1,6 @@
 package edumate.app.core
 
 object FirebaseConstants {
-
     object Database {
         const val ANNOUNCEMENTS_PATH = "announcements"
         const val MEETINGS_PATH = "meetings"

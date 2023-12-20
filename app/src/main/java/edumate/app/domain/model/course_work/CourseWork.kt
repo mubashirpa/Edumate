@@ -24,5 +24,5 @@ data class CourseWork(
     val submissionModificationMode: SubmissionModificationMode = SubmissionModificationMode.SUBMISSION_MODIFICATION_MODE_UNSPECIFIED,
     val creatorUserId: String = "",
     val assignment: Assignment? = null,
-    val multipleChoiceQuestion: MultipleChoiceQuestion? = null
+    val multipleChoiceQuestion: MultipleChoiceQuestion? = null,
 )

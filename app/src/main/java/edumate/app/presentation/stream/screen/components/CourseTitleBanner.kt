@@ -24,34 +24,36 @@ import edumate.app.domain.model.courses.Course
 @Composable
 fun CourseTitleBanner(course: Course) {
     val index = remember { (0..6).random() }
-    val images = remember {
-        listOf(
-            "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Math_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
-            "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
-            "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg"
-        )
-    }
+    val images =
+        remember {
+            listOf(
+                "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Math_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
+                "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
+                "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg",
+            )
+        }
     val backgroundImage = images[index % images.size]
 
     Card(modifier = Modifier.aspectRatio(3f / 1f)) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(backgroundImage)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(backgroundImage)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
             )
             Column(
                 modifier = Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.Bottom
+                verticalArrangement = Arrangement.Bottom,
             ) {
                 ListItem(
                     headlineContent = {
@@ -60,7 +62,7 @@ fun CourseTitleBanner(course: Course) {
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            style = MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.headlineSmall,
                         )
                     },
                     supportingContent = {
@@ -70,11 +72,11 @@ fun CourseTitleBanner(course: Course) {
                                 color = Color.White,
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     },
-                    colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                    colors = ListItemDefaults.colors(containerColor = Color.Transparent),
                 )
             }
         }

@@ -9,5 +9,5 @@ data class ClassDetailsUiState(
     val course: Course? = null,
     val dataState: DataState = DataState.UNKNOWN,
     val courseWork: CourseWork? = null,
-    val courseWorkAssignedStudent: UserProfile? = null
+    val courseWorkAssignedStudent: UserProfile? = null,
 )

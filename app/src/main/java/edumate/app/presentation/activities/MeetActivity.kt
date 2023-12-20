@@ -11,8 +11,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.facebook.react.modules.core.PermissionListener
 import com.google.android.material.snackbar.Snackbar
-import java.net.MalformedURLException
-import java.net.URL
 import org.jitsi.meet.sdk.BroadcastEvent
 import org.jitsi.meet.sdk.BroadcastIntentHelper
 import org.jitsi.meet.sdk.JitsiMeetActivityDelegate
@@ -20,18 +18,23 @@ import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
 import org.jitsi.meet.sdk.JitsiMeetView
 import timber.log.Timber
+import java.net.MalformedURLException
+import java.net.URL
 
 private const val CAMERA = "android.permission.CAMERA"
 private const val RECORD_AUDIO = "android.permission.RECORD_AUDIO"
 
 class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
-
     private var view: JitsiMeetView? = null
-    private val broadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context?, intent: Intent?) {
-            onBroadcastReceived(intent)
+    private val broadcastReceiver =
+        object : BroadcastReceiver() {
+            override fun onReceive(
+                context: Context?,
+                intent: Intent?,
+            ) {
+                onBroadcastReceived(intent)
+            }
         }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,28 +46,30 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
         }
 
         view = JitsiMeetView(this)
-        val serverURL: URL = try {
-            URL("https://meet.jit.si")
-        } catch (e: MalformedURLException) {
-            e.printStackTrace()
-            throw RuntimeException("Invalid server URL!")
-        }
-        val options: JitsiMeetConferenceOptions = JitsiMeetConferenceOptions.Builder()
-            .setServerURL(serverURL)
-            .setRoom(meetId)
-            .setSubject(subject ?: meetId)
-            .setAudioMuted(false)
-            .setVideoMuted(false)
-            .setAudioOnly(false)
-            .setFeatureFlag("car-mode.enabled", false)
-            .setFeatureFlag("invite.enabled", false)
-            // .setFeatureFlag("pip.enabled", false)
-            .setFeatureFlag("security-options.enabled", false)
-            .setFeatureFlag("settings.enabled", false)
-            .setFeatureFlag("video-share.enabled", false)
-            .setFeatureFlag("welcomepage.enabled", false)
-            .setConfigOverride("requireDisplayName", true)
-            .build()
+        val serverURL: URL =
+            try {
+                URL("https://meet.jit.si")
+            } catch (e: MalformedURLException) {
+                e.printStackTrace()
+                throw RuntimeException("Invalid server URL!")
+            }
+        val options: JitsiMeetConferenceOptions =
+            JitsiMeetConferenceOptions.Builder()
+                .setServerURL(serverURL)
+                .setRoom(meetId)
+                .setSubject(subject ?: meetId)
+                .setAudioMuted(false)
+                .setVideoMuted(false)
+                .setAudioOnly(false)
+                .setFeatureFlag("car-mode.enabled", false)
+                .setFeatureFlag("invite.enabled", false)
+                // .setFeatureFlag("pip.enabled", false)
+                .setFeatureFlag("security-options.enabled", false)
+                .setFeatureFlag("settings.enabled", false)
+                .setFeatureFlag("video-share.enabled", false)
+                .setFeatureFlag("welcomepage.enabled", false)
+                .setConfigOverride("requireDisplayName", true)
+                .build()
         view?.join(options)
 
         setContentView(view)
@@ -74,7 +79,11 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
         onBackPressedDispatcher.addCallback(onBackPressedCallback)
     }
 
-    override fun requestPermissions(p0: Array<out String>?, p1: Int, p2: PermissionListener?) {
+    override fun requestPermissions(
+        p0: Array<out String>?,
+        p1: Int,
+        p2: PermissionListener?,
+    ) {
         val permissions: Array<String>? = p0?.map { it }?.toTypedArray()
         if (!permissions.isNullOrEmpty()) {
             requestPermissionLauncher.launch(permissions)
@@ -100,14 +109,14 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         JitsiMeetActivityDelegate.onRequestPermissionsResult(
             requestCode,
             permissions,
-            grantResults
+            grantResults,
         )
     }
 
@@ -123,11 +132,12 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
         JitsiMeetActivityDelegate.onHostPause(this)
     }
 
-    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
-        override fun handleOnBackPressed() {
-            JitsiMeetActivityDelegate.onBackPressed()
+    private val onBackPressedCallback =
+        object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                JitsiMeetActivityDelegate.onBackPressed()
+            }
         }
-    }
 
     private val requestPermissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -139,7 +149,7 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
                             Snackbar.make(
                                 contextView,
                                 "Permission for camera was denied",
-                                Snackbar.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT,
                             ).show()
                         }
                     }
@@ -149,7 +159,7 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
                             Snackbar.make(
                                 contextView,
                                 "Permission for microphone was denied",
-                                Snackbar.LENGTH_SHORT
+                                Snackbar.LENGTH_SHORT,
                             ).show()
                         }
                     }

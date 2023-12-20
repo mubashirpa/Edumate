@@ -44,55 +44,59 @@ import edumate.app.domain.model.Material
 @Composable
 fun AttachmentsListItem(
     attachment: Material,
-    onClick: (url: String?) -> Unit
+    onClick: (url: String?) -> Unit,
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
     val fileType = fileUtils.getFileType(attachment.driveFile?.type)
-    val icon = if (attachment.driveFile != null) {
-        when (fileType) {
-            FileType.IMAGE -> Icons.Default.Image
-            FileType.VIDEO -> Icons.Default.VideoFile
-            FileType.AUDIO -> Icons.Default.AudioFile
-            FileType.PDF -> Icons.Default.PictureAsPdf
-            FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+    val icon =
+        if (attachment.driveFile != null) {
+            when (fileType) {
+                FileType.IMAGE -> Icons.Default.Image
+                FileType.VIDEO -> Icons.Default.VideoFile
+                FileType.AUDIO -> Icons.Default.AudioFile
+                FileType.PDF -> Icons.Default.PictureAsPdf
+                FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+            }
+        } else if (attachment.link != null) {
+            Icons.Default.Link
+        } else {
+            Icons.Default.Attachment
         }
-    } else if (attachment.link != null) {
-        Icons.Default.Link
-    } else {
-        Icons.Default.Attachment
-    }
-    val title: String = when {
-        attachment.driveFile != null -> {
-            attachment.driveFile.title ?: attachment.driveFile.url
-        }
+    val title: String =
+        when {
+            attachment.driveFile != null -> {
+                attachment.driveFile.title ?: attachment.driveFile.url
+            }
 
-        attachment.link != null -> {
-            attachment.link.title ?: attachment.link.url
-        }
+            attachment.link != null -> {
+                attachment.link.title ?: attachment.link.url
+            }
 
-        else -> {
-            ""
+            else -> {
+                ""
+            }
         }
-    }
-    val url = when {
-        attachment.driveFile != null -> {
-            attachment.driveFile.url
-        }
+    val url =
+        when {
+            attachment.driveFile != null -> {
+                attachment.driveFile.url
+            }
 
-        attachment.link != null -> {
-            attachment.link.url
-        }
+            attachment.link != null -> {
+                attachment.link.url
+            }
 
-        else -> {
-            null
+            else -> {
+                null
+            }
         }
-    }
 
     Column(
-        modifier = Modifier
-            .clip(MaterialTheme.shapes.medium)
-            .clickable(enabled = url != null, onClick = { onClick(url) })
+        modifier =
+            Modifier
+                .clip(MaterialTheme.shapes.medium)
+                .clickable(enabled = url != null, onClick = { onClick(url) }),
     ) {
         OutlinedCard(modifier = Modifier.aspectRatio(16f / 9f)) {
             when {
@@ -101,21 +105,21 @@ fun AttachmentsListItem(
                         FileType.IMAGE -> {
                             ImageThumbnail(
                                 url = attachment.driveFile.url,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
 
                         FileType.VIDEO -> {
                             VideoThumbnail(
                                 url = attachment.driveFile.url,
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
 
                         else -> {
                             Box(
                                 modifier = Modifier.fillMaxSize(),
-                                contentAlignment = Alignment.Center
+                                contentAlignment = Alignment.Center,
                             ) {
                                 Icon(imageVector = icon, contentDescription = null)
                             }
@@ -128,14 +132,14 @@ fun AttachmentsListItem(
                     if (thumbnail.isNullOrEmpty()) {
                         Box(
                             modifier = Modifier.fillMaxSize(),
-                            contentAlignment = Alignment.Center
+                            contentAlignment = Alignment.Center,
                         ) {
                             Icon(imageVector = Icons.Default.Link, contentDescription = null)
                         }
                     } else {
                         ImageThumbnail(
                             url = thumbnail,
-                            modifier = Modifier.fillMaxSize()
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
@@ -150,7 +154,7 @@ fun AttachmentsListItem(
                 modifier = Modifier.align(Alignment.CenterVertically),
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2,
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.bodySmall,
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -160,36 +164,39 @@ fun AttachmentsListItem(
 @Composable
 private fun VideoThumbnail(
     url: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    val imageLoader = ImageLoader.Builder(LocalContext.current)
-        .components {
-            add(VideoFrameDecoder.Factory())
-        }.crossfade(true).build()
-    val painter = rememberAsyncImagePainter(
-        model = url,
-        imageLoader = imageLoader
-    )
+    val imageLoader =
+        ImageLoader.Builder(LocalContext.current)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }.crossfade(true).build()
+    val painter =
+        rememberAsyncImagePainter(
+            model = url,
+            imageLoader = imageLoader,
+        )
     Image(
         painter = painter,
         contentDescription = null,
         modifier = modifier,
-        contentScale = ContentScale.Crop
+        contentScale = ContentScale.Crop,
     )
 }
 
 @Composable
 private fun ImageThumbnail(
     url: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     AsyncImage(
-        model = ImageRequest.Builder(LocalContext.current)
-            .data(url)
-            .crossfade(true)
-            .build(),
+        model =
+            ImageRequest.Builder(LocalContext.current)
+                .data(url)
+                .crossfade(true)
+                .build(),
         contentDescription = null,
         contentScale = ContentScale.Crop,
-        modifier = modifier
+        modifier = modifier,
     )
 }

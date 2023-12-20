@@ -5,7 +5,6 @@ import edumate.app.presentation.settings.AppTheme
 import kotlinx.coroutines.flow.Flow
 
 interface UserPreferencesRepository {
-
     val userPreferencesFlow: Flow<UserPreferences>
 
     suspend fun changeAppTheme(appTheme: AppTheme)

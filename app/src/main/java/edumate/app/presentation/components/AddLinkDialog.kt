@@ -27,7 +27,7 @@ import edumate.app.R.string as Strings
 fun AddLinkDialog(
     onDismissRequest: () -> Unit,
     openDialog: Boolean,
-    onConfirmClick: (link: String) -> Unit
+    onConfirmClick: (link: String) -> Unit,
 ) {
     if (openDialog) {
         var link by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -48,18 +48,19 @@ fun AddLinkDialog(
             }
 
             Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+                tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
                 Column(modifier = Modifier.padding(24.dp)) {
                     Text(
                         text = stringResource(id = Strings.add_link),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
@@ -71,17 +72,19 @@ fun AddLinkDialog(
                         label = {
                             Text(text = stringResource(id = Strings.url))
                         },
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Uri,
-                            imeAction = ImeAction.Done
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                keyboardController?.hide()
-                                focusManager.clearFocus()
-                            }
-                        ),
-                        singleLine = true
+                        keyboardOptions =
+                            KeyboardOptions(
+                                keyboardType = KeyboardType.Uri,
+                                imeAction = ImeAction.Done,
+                            ),
+                        keyboardActions =
+                            KeyboardActions(
+                                onDone = {
+                                    keyboardController?.hide()
+                                    focusManager.clearFocus()
+                                },
+                            ),
+                        singleLine = true,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Row(modifier = Modifier.align(Alignment.End)) {
@@ -94,7 +97,7 @@ fun AddLinkDialog(
                                 onDismissRequest()
                                 onConfirmClick(link.text.trim())
                             },
-                            enabled = confirmEnabled.value
+                            enabled = confirmEnabled.value,
                         ) {
                             Text(stringResource(id = Strings.add))
                         }

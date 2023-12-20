@@ -23,7 +23,6 @@ import edumate.app.presentation.ui.theme.EdumateTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
         enableEdgeToEdge()
@@ -39,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 when (appTheme) {
                     AppTheme.SYSTEM_DEFAULT -> {
                         AppCompatDelegate.setDefaultNightMode(
-                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM,
                         )
                     }
 
@@ -66,7 +65,7 @@ class MainActivity : ComponentActivity() {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background,
                 ) {
                     EdumateApp(viewModel.uiState.isLoggedIn)
                 }
@@ -75,9 +74,10 @@ class MainActivity : ComponentActivity() {
     }
 
     @Composable
-    private fun isAppInDarkTheme(appTheme: AppTheme) = when (appTheme) {
-        AppTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
-        AppTheme.LIGHT -> false
-        AppTheme.DARK -> true
-    }
+    private fun isAppInDarkTheme(appTheme: AppTheme) =
+        when (appTheme) {
+            AppTheme.SYSTEM_DEFAULT -> isSystemInDarkTheme()
+            AppTheme.LIGHT -> false
+            AppTheme.DARK -> true
+        }
 }

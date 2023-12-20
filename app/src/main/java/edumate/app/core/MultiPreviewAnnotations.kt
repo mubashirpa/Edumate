@@ -14,12 +14,12 @@ import androidx.compose.ui.tooling.preview.Wallpapers
 @Preview(
     name = "small font",
     group = "font scales",
-    fontScale = 0.5f
+    fontScale = 0.5f,
 )
 @Preview(
     name = "large font",
     group = "font scales",
-    fontScale = 1.5f
+    fontScale = 1.5f,
 )
 annotation class FontScalePreviews
 
@@ -36,7 +36,7 @@ annotation class FontScalePreviews
     showSystemUi = true,
     showBackground = true,
     uiMode = UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE
+    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
 )
 @Preview(
     name = "foldable",
@@ -45,7 +45,7 @@ annotation class FontScalePreviews
     showSystemUi = true,
     showBackground = true,
     uiMode = UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE
+    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
 )
 @Preview(
     name = "tablet",
@@ -54,7 +54,7 @@ annotation class FontScalePreviews
     showSystemUi = true,
     showBackground = true,
     uiMode = UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL,
-    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE
+    wallpaper = Wallpapers.RED_DOMINATED_EXAMPLE,
 )
 annotation class DevicePreviews
 
@@ -73,7 +73,7 @@ annotation class DevicePreviews
 @Preview(
     name = "dark theme",
     group = "themes",
-    uiMode = UI_MODE_NIGHT_YES
+    uiMode = UI_MODE_NIGHT_YES,
 )
 @FontScalePreviews
 @DevicePreviews

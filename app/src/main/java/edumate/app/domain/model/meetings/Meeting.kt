@@ -14,5 +14,5 @@ data class Meeting(
     val meetingId: String = "",
     val state: MeetingState = MeetingState.MEETING_STATE_UNSPECIFIED,
     val title: String? = null,
-    val updateTime: Long? = null
+    val updateTime: Long? = null,
 )

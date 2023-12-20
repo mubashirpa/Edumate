@@ -80,15 +80,16 @@ fun ViewStudentWorkScreen(
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
     assignedStudent: UserProfile,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
-    val refreshState = rememberPullRefreshState(
-        refreshing = uiState.refreshing,
-        onRefresh = { onEvent(ViewStudentWorkUiEvent.OnRefresh) }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = uiState.refreshing,
+            onRefresh = { onEvent(ViewStudentWorkUiEvent.OnRefresh) },
+        )
     val isCourseWorkMarked = courseWork.maxPoints != null && courseWork.maxPoints > 0
 
     LaunchedEffect(Unit) {
@@ -104,77 +105,81 @@ fun ViewStudentWorkScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .navigationBarsPadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .navigationBarsPadding(),
     ) {
         TopAppBar(
             title = {
                 Text(
                     text = courseWork.title,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
             actions = {
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                     IconButton(
-                        onClick = { onEvent(ViewStudentWorkUiEvent.OnAppBarMenuExpandedChange(true)) }
+                        onClick = { onEvent(ViewStudentWorkUiEvent.OnAppBarMenuExpandedChange(true)) },
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     DropdownMenu(
                         expanded = uiState.appBarMenuExpanded,
                         onDismissRequest = {
                             onEvent(ViewStudentWorkUiEvent.OnAppBarMenuExpandedChange(false))
-                        }
+                        },
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = Strings.refresh)) },
                             onClick = {
                                 onEvent(ViewStudentWorkUiEvent.OnAppBarMenuExpandedChange(false))
                                 onEvent(ViewStudentWorkUiEvent.OnRefresh)
-                            }
+                            },
                         )
                     }
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
-            contentAlignment = Alignment.TopCenter
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pullRefresh(refreshState)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
+            contentAlignment = Alignment.TopCenter,
         ) {
             when (val dataState = uiState.dataState) {
                 is DataState.EMPTY -> {
                     ErrorScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = dataState.message.asString()
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString(),
                     )
                 }
 
                 is DataState.ERROR -> {
                     ErrorScreen(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = dataState.message.asString()
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString(),
                     )
                 }
 
@@ -197,9 +202,10 @@ fun ViewStudentWorkScreen(
                     Column(modifier = Modifier.fillMaxSize()) {
                         LazyVerticalGrid(
                             columns = GridCells.Adaptive(minSize = 128.dp),
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .weight(1f),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .weight(1f),
                             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
                             verticalArrangement = Arrangement.spacedBy(10.dp),
                             horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -208,17 +214,19 @@ fun ViewStudentWorkScreen(
                                     Row(modifier = Modifier.padding(vertical = 2.dp)) {
                                         UserAvatar(
                                             id = assignedStudent.id,
-                                            fullName = assignedStudent.displayName
-                                                ?: assignedStudent.emailAddress.orEmpty(),
-                                            photoUrl = assignedStudent.photoUrl
+                                            fullName =
+                                                assignedStudent.displayName
+                                                    ?: assignedStudent.emailAddress.orEmpty(),
+                                            photoUrl = assignedStudent.photoUrl,
                                         )
                                         Spacer(modifier = Modifier.width(16.dp))
                                         Column {
                                             Text(
-                                                text = assignedStudent.displayName
-                                                    ?: assignedStudent.emailAddress.orEmpty(),
+                                                text =
+                                                    assignedStudent.displayName
+                                                        ?: assignedStudent.emailAddress.orEmpty(),
                                                 color = MaterialTheme.colorScheme.onSurface,
-                                                style = MaterialTheme.typography.bodyLarge
+                                                style = MaterialTheme.typography.bodyLarge,
                                             )
 
                                             when {
@@ -226,17 +234,18 @@ fun ViewStudentWorkScreen(
                                                     Text(
                                                         text = stringResource(id = Strings.marked),
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        style = MaterialTheme.typography.bodyMedium
+                                                        style = MaterialTheme.typography.bodyMedium,
                                                     )
                                                 }
 
                                                 uiState.studentWork?.state == SubmissionState.TURNED_IN -> {
                                                     Text(
-                                                        text = stringResource(
-                                                            id = Strings.handed_in
-                                                        ),
+                                                        text =
+                                                            stringResource(
+                                                                id = Strings.handed_in,
+                                                            ),
                                                         color = MaterialTheme.colorScheme.primary,
-                                                        style = MaterialTheme.typography.bodyMedium
+                                                        style = MaterialTheme.typography.bodyMedium,
                                                     )
                                                 }
 
@@ -244,7 +253,7 @@ fun ViewStudentWorkScreen(
                                                     Text(
                                                         text = stringResource(id = Strings.returned),
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        style = MaterialTheme.typography.bodyMedium
+                                                        style = MaterialTheme.typography.bodyMedium,
                                                     )
                                                 }
 
@@ -252,7 +261,7 @@ fun ViewStudentWorkScreen(
                                                     Text(
                                                         text = stringResource(id = Strings.missing),
                                                         color = MaterialTheme.colorScheme.error,
-                                                        style = MaterialTheme.typography.bodyMedium
+                                                        style = MaterialTheme.typography.bodyMedium,
                                                     )
                                                 }
 
@@ -260,7 +269,7 @@ fun ViewStudentWorkScreen(
                                                     Text(
                                                         text = stringResource(id = Strings.assigned),
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        style = MaterialTheme.typography.bodyMedium
+                                                        style = MaterialTheme.typography.bodyMedium,
                                                     )
                                                 }
                                             }
@@ -272,23 +281,26 @@ fun ViewStudentWorkScreen(
                                         if (attachments.isNullOrEmpty()) {
                                             header {
                                                 ErrorScreen(
-                                                    modifier = Modifier
-                                                        .fillMaxWidth()
-                                                        .height(128.dp),
-                                                    errorMessage = stringResource(
-                                                        id = Strings.no_files_attached
-                                                    )
+                                                    modifier =
+                                                        Modifier
+                                                            .fillMaxWidth()
+                                                            .height(128.dp),
+                                                    errorMessage =
+                                                        stringResource(
+                                                            id = Strings.no_files_attached,
+                                                        ),
                                                 )
                                             }
                                         } else {
                                             header {
                                                 Text(
                                                     text = stringResource(id = Strings.attachments),
-                                                    modifier = Modifier.padding(
-                                                        top = 14.dp,
-                                                        bottom = 6.dp
-                                                    ),
-                                                    style = MaterialTheme.typography.titleMedium
+                                                    modifier =
+                                                        Modifier.padding(
+                                                            top = 14.dp,
+                                                            bottom = 6.dp,
+                                                        ),
+                                                    style = MaterialTheme.typography.titleMedium,
                                                 )
                                             }
                                             items(attachments) {
@@ -296,13 +308,14 @@ fun ViewStudentWorkScreen(
                                                     attachment = it,
                                                     onClick = { url ->
                                                         if (url != null) {
-                                                            val browserIntent = Intent(
-                                                                Intent.ACTION_VIEW,
-                                                                Uri.parse(url)
-                                                            )
+                                                            val browserIntent =
+                                                                Intent(
+                                                                    Intent.ACTION_VIEW,
+                                                                    Uri.parse(url),
+                                                                )
                                                             context.startActivity(browserIntent)
                                                         }
-                                                    }
+                                                    },
                                                 )
                                             }
                                         }
@@ -314,22 +327,25 @@ fun ViewStudentWorkScreen(
                                             Column {
                                                 Text(
                                                     text = stringResource(id = Strings.answer),
-                                                    modifier = Modifier.padding(
-                                                        top = 14.dp,
-                                                        bottom = 16.dp
-                                                    ),
-                                                    style = MaterialTheme.typography.titleMedium
+                                                    modifier =
+                                                        Modifier.padding(
+                                                            top = 14.dp,
+                                                            bottom = 16.dp,
+                                                        ),
+                                                    style = MaterialTheme.typography.titleMedium,
                                                 )
                                                 if (submission != null) {
                                                     Text(text = submission.answer)
                                                 } else {
                                                     ErrorScreen(
-                                                        modifier = Modifier
-                                                            .fillMaxWidth()
-                                                            .height(128.dp),
-                                                        errorMessage = stringResource(
-                                                            id = Strings.the_student_hasnt_answered_the_question_yet
-                                                        )
+                                                        modifier =
+                                                            Modifier
+                                                                .fillMaxWidth()
+                                                                .height(128.dp),
+                                                        errorMessage =
+                                                            stringResource(
+                                                                id = Strings.the_student_hasnt_answered_the_question_yet,
+                                                            ),
                                                     )
                                                 }
                                             }
@@ -343,11 +359,12 @@ fun ViewStudentWorkScreen(
                                             Column {
                                                 Text(
                                                     text = stringResource(id = Strings.answer),
-                                                    modifier = Modifier.padding(
-                                                        top = 14.dp,
-                                                        bottom = 16.dp
-                                                    ),
-                                                    style = MaterialTheme.typography.titleMedium
+                                                    modifier =
+                                                        Modifier.padding(
+                                                            top = 14.dp,
+                                                            bottom = 16.dp,
+                                                        ),
+                                                    style = MaterialTheme.typography.titleMedium,
                                                 )
                                                 if (courseWork.multipleChoiceQuestion != null) {
                                                     courseWork.multipleChoiceQuestion.choices.forEach { text ->
@@ -355,18 +372,19 @@ fun ViewStudentWorkScreen(
                                                             Modifier
                                                                 .fillMaxWidth()
                                                                 .height(56.dp),
-                                                            verticalAlignment = Alignment.CenterVertically
+                                                            verticalAlignment = Alignment.CenterVertically,
                                                         ) {
                                                             RadioButton(
                                                                 selected = submission != null && text == submission.answer,
-                                                                onClick = null // null recommended for accessibility with screen readers
+                                                                onClick = null, // null recommended for accessibility with screen readers
                                                             )
                                                             Text(
                                                                 text = text,
                                                                 style = MaterialTheme.typography.bodyLarge,
-                                                                modifier = Modifier.padding(
-                                                                    start = 16.dp
-                                                                )
+                                                                modifier =
+                                                                    Modifier.padding(
+                                                                        start = 16.dp,
+                                                                    ),
                                                             )
                                                         }
                                                     }
@@ -377,15 +395,16 @@ fun ViewStudentWorkScreen(
 
                                     else -> {}
                                 }
-                            }
+                            },
                         )
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 10.dp)
-                                .imePadding(),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 10.dp)
+                                    .imePadding(),
                             horizontalArrangement = Arrangement.End,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             if (isCourseWorkMarked) {
                                 OutlinedTextField(
@@ -396,23 +415,25 @@ fun ViewStudentWorkScreen(
                                     modifier = Modifier.weight(1f),
                                     label = { Text(text = stringResource(id = Strings.mark)) },
                                     suffix = { Text(text = "/${courseWork.maxPoints}") },
-                                    keyboardOptions = KeyboardOptions(
-                                        keyboardType = KeyboardType.Number,
-                                        imeAction = ImeAction.Done
-                                    ),
-                                    keyboardActions = KeyboardActions(
-                                        onDone = {
-                                            keyboardController?.hide()
-                                            focusManager.clearFocus()
-                                        }
-                                    )
+                                    keyboardOptions =
+                                        KeyboardOptions(
+                                            keyboardType = KeyboardType.Number,
+                                            imeAction = ImeAction.Done,
+                                        ),
+                                    keyboardActions =
+                                        KeyboardActions(
+                                            onDone = {
+                                                keyboardController?.hide()
+                                                focusManager.clearFocus()
+                                            },
+                                        ),
                                 )
                                 Spacer(modifier = Modifier.width(8.dp))
                             }
                             Button(
                                 onClick = { onEvent(ViewStudentWorkUiEvent.OnOpenReturnDialog(true)) },
                                 modifier = Modifier.padding(top = 8.dp),
-                                enabled = isReturnEnabled
+                                enabled = isReturnEnabled,
                             ) { Text(text = stringResource(id = Strings._return)) }
                         }
                     }
@@ -424,7 +445,7 @@ fun ViewStudentWorkScreen(
             PullRefreshIndicator(
                 uiState.refreshing,
                 refreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
             )
         }
     }
@@ -440,7 +461,7 @@ fun ViewStudentWorkScreen(
             } else {
                 onEvent(ViewStudentWorkUiEvent.ReturnStudentWork)
             }
-        }
+        },
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)

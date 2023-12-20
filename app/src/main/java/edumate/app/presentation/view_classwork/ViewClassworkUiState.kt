@@ -25,5 +25,5 @@ data class ViewClassworkUiState(
     val studentSubmission: StudentSubmission? = null,
     val studentSubmissionAttachments: SnapshotStateList<Attachment> = mutableStateListOf(),
     val userMessage: UiText? = null,
-    val yourWorkDataState: DataState = DataState.UNKNOWN
+    val yourWorkDataState: DataState = DataState.UNKNOWN,
 )

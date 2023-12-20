@@ -85,7 +85,7 @@ fun CreateAnnouncementScreen(
     createAnnouncementResults: Flow<String>,
     className: String,
     onCreateAnnouncementSuccess: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
@@ -121,11 +121,12 @@ fun CreateAnnouncementScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .navigationBarsPadding()
-            .imePadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .navigationBarsPadding()
+                .imePadding(),
     ) {
         TopAppBar(
             title = {},
@@ -133,50 +134,52 @@ fun CreateAnnouncementScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         if (uiState.loading) {
             LoadingIndicator(modifier = Modifier.fillMaxSize())
         } else {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState()),
             ) {
                 FieldListItem(
                     headlineContent = {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = MaterialTheme.shapes.extraSmall
-                                )
-                                .horizontalScroll(rememberScrollState()),
-                            verticalAlignment = Alignment.CenterVertically
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    )
+                                    .horizontalScroll(rememberScrollState()),
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Spacer(modifier = Modifier.width(16.dp))
                             ElevatedSuggestionChip(
                                 onClick = {},
-                                label = { Text(text = className) }
+                                label = { Text(text = className) },
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             ElevatedSuggestionChip(
                                 onClick = {},
-                                label = { Text(text = stringResource(id = Strings.all_students)) }
+                                label = { Text(text = stringResource(id = Strings.all_students)) },
                             )
                             Spacer(modifier = Modifier.width(16.dp))
                         }
                     },
                     leadingIcon = Icons.Default.People,
-                    trailingContent = {}
+                    trailingContent = {},
                 )
                 FieldListItem(
                     headlineContent = {
@@ -185,83 +188,90 @@ fun CreateAnnouncementScreen(
                         OutlinedTextField(
                             value = uiState.text,
                             onValueChange = { onEvent(CreateAnnouncementUiEvent.OnTextChange(it)) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .focusRequester(focusRequester),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .focusRequester(focusRequester),
                             label = {
                                 Text(text = stringResource(id = Strings.share_with_your_class))
                             },
-                            supportingText = if (textError != null) {
-                                { Text(text = textError.asString()) }
-                            } else {
-                                null
-                            },
+                            supportingText =
+                                if (textError != null) {
+                                    { Text(text = textError.asString()) }
+                                } else {
+                                    null
+                                },
                             isError = textError != null,
-                            keyboardOptions = KeyboardOptions(
-                                capitalization = KeyboardCapitalization.Sentences,
-                                autoCorrect = true
-                            )
+                            keyboardOptions =
+                                KeyboardOptions(
+                                    capitalization = KeyboardCapitalization.Sentences,
+                                    autoCorrect = true,
+                                ),
                         )
                     },
                     leadingIcon = Icons.Default.Description,
-                    trailingContent = {}
+                    trailingContent = {},
                 )
                 FieldListItem(
                     headlineContent = {
                         Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 56.dp)
-                                .clip(MaterialTheme.shapes.extraSmall)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = MaterialTheme.shapes.extraSmall
-                                ),
-                            verticalArrangement = Arrangement.Center
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(min = 56.dp)
+                                    .clip(MaterialTheme.shapes.extraSmall)
+                                    .border(
+                                        width = 1.dp,
+                                        color = MaterialTheme.colorScheme.outline,
+                                        shape = MaterialTheme.shapes.extraSmall,
+                                    ),
+                            verticalArrangement = Arrangement.Center,
                         ) {
                             uiState.attachments.onEachIndexed { index, material ->
                                 ListItem(
                                     headlineContent = {
-                                        val title: String = if (material.driveFile != null) {
-                                            material.driveFile.title ?: material.driveFile.url
-                                        } else {
-                                            material.link?.title ?: material.link?.url.orEmpty()
-                                        }
+                                        val title: String =
+                                            if (material.driveFile != null) {
+                                                material.driveFile.title ?: material.driveFile.url
+                                            } else {
+                                                material.link?.title ?: material.link?.url.orEmpty()
+                                            }
                                         Text(
                                             text = title,
                                             overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1
+                                            maxLines = 1,
                                         )
                                     },
                                     leadingContent = {
                                         if (material.link?.thumbnailUrl.isNullOrEmpty()) {
-                                            val icon = if (material.driveFile != null) {
-                                                when (fileUtils.getFileType(material.driveFile.type)) {
-                                                    FileType.IMAGE -> Icons.Default.Image
-                                                    FileType.VIDEO -> Icons.Default.VideoFile
-                                                    FileType.AUDIO -> Icons.Default.AudioFile
-                                                    FileType.PDF -> Icons.Default.PictureAsPdf
-                                                    FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+                                            val icon =
+                                                if (material.driveFile != null) {
+                                                    when (fileUtils.getFileType(material.driveFile.type)) {
+                                                        FileType.IMAGE -> Icons.Default.Image
+                                                        FileType.VIDEO -> Icons.Default.VideoFile
+                                                        FileType.AUDIO -> Icons.Default.AudioFile
+                                                        FileType.PDF -> Icons.Default.PictureAsPdf
+                                                        FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+                                                    }
+                                                } else if (material.link != null) {
+                                                    Icons.Default.Link
+                                                } else {
+                                                    Icons.Default.Attachment
                                                 }
-                                            } else if (material.link != null) {
-                                                Icons.Default.Link
-                                            } else {
-                                                Icons.Default.Attachment
-                                            }
                                             Icon(
                                                 imageVector = icon,
-                                                contentDescription = null
+                                                contentDescription = null,
                                             )
                                         } else {
                                             AsyncImage(
-                                                model = ImageRequest.Builder(LocalContext.current)
-                                                    .data(material.link?.thumbnailUrl)
-                                                    .crossfade(true)
-                                                    .build(),
+                                                model =
+                                                    ImageRequest.Builder(LocalContext.current)
+                                                        .data(material.link?.thumbnailUrl)
+                                                        .crossfade(true)
+                                                        .build(),
                                                 contentDescription = null,
                                                 contentScale = ContentScale.Inside,
-                                                modifier = Modifier.size(24.dp)
+                                                modifier = Modifier.size(24.dp),
                                             )
                                         }
                                     },
@@ -270,17 +280,17 @@ fun CreateAnnouncementScreen(
                                             onClick = {
                                                 onEvent(
                                                     CreateAnnouncementUiEvent.OnRemoveAttachment(
-                                                        index
-                                                    )
+                                                        index,
+                                                    ),
                                                 )
-                                            }
+                                            },
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Clear,
-                                                contentDescription = null
+                                                contentDescription = null,
                                             )
                                         }
-                                    }
+                                    },
                                 )
                                 HorizontalDivider()
                             }
@@ -289,29 +299,31 @@ fun CreateAnnouncementScreen(
                                     Text(
                                         text = stringResource(id = Strings.add_attachment),
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        style = MaterialTheme.typography.bodyLarge
+                                        style = MaterialTheme.typography.bodyLarge,
                                     )
                                 },
-                                modifier = Modifier.clickable {
-                                    onEvent(
-                                        CreateAnnouncementUiEvent.OnOpenAttachmentMenuChange(
-                                            true
+                                modifier =
+                                    Modifier.clickable {
+                                        onEvent(
+                                            CreateAnnouncementUiEvent.OnOpenAttachmentMenuChange(
+                                                true,
+                                            ),
                                         )
-                                    )
-                                }
+                                    },
                             )
                         }
                     },
                     leadingIcon = Icons.Default.Attachment,
-                    trailingContent = {}
+                    trailingContent = {},
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
             Button(
                 onClick = { onEvent(CreateAnnouncementUiEvent.PostAnnouncement) },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
             ) { Text(text = stringResource(id = Strings.post)) }
             Spacer(modifier = Modifier.height(20.dp))
         }
@@ -321,13 +333,13 @@ fun CreateAnnouncementScreen(
         onDismissRequest = { onEvent(CreateAnnouncementUiEvent.OnOpenAttachmentMenuChange(false)) },
         openBottomSheet = uiState.openAttachmentMenu,
         onInsertLinkClick = { onEvent(CreateAnnouncementUiEvent.OnOpenAddLinkDialogChange(true)) },
-        onUploadFileClick = { filePicker.launch("*/*") }
+        onUploadFileClick = { filePicker.launch("*/*") },
     )
 
     AddLinkDialog(
         onDismissRequest = { onEvent(CreateAnnouncementUiEvent.OnOpenAddLinkDialogChange(false)) },
         openDialog = uiState.openAddLinkDialog,
-        onConfirmClick = { onEvent(CreateAnnouncementUiEvent.OnAddLinkAttachment(it)) }
+        onConfirmClick = { onEvent(CreateAnnouncementUiEvent.OnAddLinkAttachment(it)) },
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)

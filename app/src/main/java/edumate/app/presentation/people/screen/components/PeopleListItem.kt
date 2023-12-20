@@ -18,9 +18,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.R.string as Strings
 
 @Composable
 fun PeopleListItem(
@@ -31,29 +31,30 @@ fun PeopleListItem(
     courseOwnerId: String,
     onLeaveClassClick: () -> Unit,
     onEmailClick: () -> Unit,
-    onRemoveClick: () -> Unit
+    onRemoveClick: () -> Unit,
 ) {
     val userId = userProfile.id
-    val trailingContent: @Composable (() -> Unit)? = if (isTeacher) {
-        // Current userProfile is a teacher
-        val isCurrentUser = userId == currentUserId
-        val isCourseOwner = userId == courseOwnerId
-        if (isCurrentUser && isCourseOwner) {
-            null
-        } else {
-            {
-                MenuButton(
-                    isCurrentUser = isCurrentUser,
-                    isCourseOwner = isCourseOwner,
-                    onLeaveClassClick = onLeaveClassClick,
-                    onEmailClick = onEmailClick,
-                    onRemoveClick = onRemoveClick
-                )
+    val trailingContent: @Composable (() -> Unit)? =
+        if (isTeacher) {
+            // Current userProfile is a teacher
+            val isCurrentUser = userId == currentUserId
+            val isCourseOwner = userId == courseOwnerId
+            if (isCurrentUser && isCourseOwner) {
+                null
+            } else {
+                {
+                    MenuButton(
+                        isCurrentUser = isCurrentUser,
+                        isCourseOwner = isCourseOwner,
+                        onLeaveClassClick = onLeaveClassClick,
+                        onEmailClick = onEmailClick,
+                        onRemoveClick = onRemoveClick,
+                    )
+                }
             }
+        } else {
+            null
         }
-    } else {
-        null
-    }
 
     ListItem(
         headlineContent = {
@@ -64,10 +65,10 @@ fun PeopleListItem(
             UserAvatar(
                 id = userId,
                 fullName = userProfile.displayName ?: userProfile.emailAddress.orEmpty(),
-                photoUrl = userProfile.photoUrl
+                photoUrl = userProfile.photoUrl,
             )
         },
-        trailingContent = trailingContent
+        trailingContent = trailingContent,
     )
 }
 
@@ -77,7 +78,7 @@ private fun MenuButton(
     isCourseOwner: Boolean,
     onLeaveClassClick: () -> Unit,
     onEmailClick: () -> Unit,
-    onRemoveClick: () -> Unit
+    onRemoveClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -85,12 +86,12 @@ private fun MenuButton(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             if (isCurrentUser) {
                 DropdownMenuItem(
@@ -98,7 +99,7 @@ private fun MenuButton(
                     onClick = {
                         expanded = false
                         onLeaveClassClick()
-                    }
+                    },
                 )
             } else if (isCourseOwner) {
                 DropdownMenuItem(
@@ -106,7 +107,7 @@ private fun MenuButton(
                     onClick = {
                         expanded = false
                         onEmailClick()
-                    }
+                    },
                 )
             } else {
                 DropdownMenuItem(
@@ -114,14 +115,14 @@ private fun MenuButton(
                     onClick = {
                         expanded = false
                         onEmailClick()
-                    }
+                    },
                 )
                 DropdownMenuItem(
                     text = { Text(text = stringResource(id = Strings.remove)) },
                     onClick = {
                         expanded = false
                         onRemoveClick()
-                    }
+                    },
                 )
             }
         }

@@ -7,21 +7,26 @@ import edumate.app.domain.model.IndividualStudentsOptions
 import edumate.app.domain.model.course_work.CourseWorkState
 
 interface CourseWorkRepository {
-
     /**
      * Creates course work.
      * @param courseId Identifier of the course.
      * @param courseWorkDto Instance of [CourseWorkDto].
      * @return If successful, the response body contains a newly created instance of [CourseWorkDto].
      */
-    suspend fun create(courseId: String, courseWorkDto: CourseWorkDto): CourseWorkDto?
+    suspend fun create(
+        courseId: String,
+        courseWorkDto: CourseWorkDto,
+    ): CourseWorkDto?
 
     /**
      * Deletes a course work.
      * @param courseId Identifier of the course.
      * @param id Identifier of the course work to delete.
      */
-    suspend fun delete(courseId: String, id: String)
+    suspend fun delete(
+        courseId: String,
+        id: String,
+    )
 
     /**
      * Returns course work.
@@ -29,7 +34,10 @@ interface CourseWorkRepository {
      * @param id Identifier of the course work.
      * @return If successful, the response body contains an instance of [CourseWorkDto].
      */
-    suspend fun get(courseId: String, id: String): CourseWorkDto?
+    suspend fun get(
+        courseId: String,
+        id: String,
+    ): CourseWorkDto?
 
     /**
      * Returns a list of course work that the requester is permitted to view.
@@ -43,7 +51,7 @@ interface CourseWorkRepository {
         courseId: String,
         courseWorkState: CourseWorkState = CourseWorkState.PUBLISHED,
         orderBy: String = "updateTime desc",
-        pageSize: Int? = null
+        pageSize: Int? = null,
     ): List<CourseWorkDto>
 
     /**
@@ -58,7 +66,7 @@ interface CourseWorkRepository {
         courseId: String,
         id: String,
         assigneeMode: AssigneeMode,
-        modifyIndividualStudentsOptions: IndividualStudentsOptions?
+        modifyIndividualStudentsOptions: IndividualStudentsOptions?,
     ): CourseWorkDto?
 
     /**
@@ -68,5 +76,9 @@ interface CourseWorkRepository {
      * @param courseWorkDto Instance of [CourseWorkDto].
      * @return If successful, the response body contains an instance of [CourseWorkDto].
      */
-    suspend fun patch(courseId: String, id: String, courseWorkDto: CourseWorkDto): CourseWorkDto?
+    suspend fun patch(
+        courseId: String,
+        id: String,
+        courseWorkDto: CourseWorkDto,
+    ): CourseWorkDto?
 }

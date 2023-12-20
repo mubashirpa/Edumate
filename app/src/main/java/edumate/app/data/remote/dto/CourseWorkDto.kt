@@ -37,34 +37,35 @@ data class CourseWorkDto(
     val submissionModificationMode: SubmissionModificationMode = SubmissionModificationMode.SUBMISSION_MODIFICATION_MODE_UNSPECIFIED,
     val creatorUserId: String = "",
     val assignment: Assignment? = null,
-    val multipleChoiceQuestion: MultipleChoiceQuestion? = null
+    val multipleChoiceQuestion: MultipleChoiceQuestion? = null,
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
-        val hashMap: HashMap<String, Any?> = hashMapOf(
-            FirebaseConstants.Firestore.COURSE_ID to courseId,
-            FirebaseConstants.Firestore.ID to id,
-            FirebaseConstants.Firestore.TITLE to title,
-            FirebaseConstants.Firestore.DESCRIPTION to description,
-            FirebaseConstants.Firestore.MATERIALS to materials,
-            FirebaseConstants.Firestore.STATE to state,
-            FirebaseConstants.Firestore.ALTERNATE_LINK to alternateLink,
-            FirebaseConstants.Firestore.CREATION_TIME to (
-                creationTime
-                    ?: FieldValue.serverTimestamp()
+        val hashMap: HashMap<String, Any?> =
+            hashMapOf(
+                FirebaseConstants.Firestore.COURSE_ID to courseId,
+                FirebaseConstants.Firestore.ID to id,
+                FirebaseConstants.Firestore.TITLE to title,
+                FirebaseConstants.Firestore.DESCRIPTION to description,
+                FirebaseConstants.Firestore.MATERIALS to materials,
+                FirebaseConstants.Firestore.STATE to state,
+                FirebaseConstants.Firestore.ALTERNATE_LINK to alternateLink,
+                FirebaseConstants.Firestore.CREATION_TIME to (
+                    creationTime
+                        ?: FieldValue.serverTimestamp()
                 ),
-            FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
-            FirebaseConstants.Firestore.DUE_TIME to dueTime,
-            FirebaseConstants.Firestore.SCHEDULED_TIME to (
-                scheduledTime
-                    ?: FieldValue.serverTimestamp()
+                FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
+                FirebaseConstants.Firestore.DUE_TIME to dueTime,
+                FirebaseConstants.Firestore.SCHEDULED_TIME to (
+                    scheduledTime
+                        ?: FieldValue.serverTimestamp()
                 ),
-            FirebaseConstants.Firestore.MAX_POINTS to maxPoints,
-            FirebaseConstants.Firestore.WORK_TYPE to workType,
-            FirebaseConstants.Firestore.ASSIGNEE_MODE to assigneeMode,
-            FirebaseConstants.Firestore.SUBMISSION_MODIFICATION_MODE to submissionModificationMode,
-            FirebaseConstants.Firestore.CREATOR_USER_ID to creatorUserId
-        )
+                FirebaseConstants.Firestore.MAX_POINTS to maxPoints,
+                FirebaseConstants.Firestore.WORK_TYPE to workType,
+                FirebaseConstants.Firestore.ASSIGNEE_MODE to assigneeMode,
+                FirebaseConstants.Firestore.SUBMISSION_MODIFICATION_MODE to submissionModificationMode,
+                FirebaseConstants.Firestore.CREATOR_USER_ID to creatorUserId,
+            )
         if (assigneeMode == AssigneeMode.INDIVIDUAL_STUDENTS) {
             hashMap[FirebaseConstants.Firestore.INDIVIDUAL_STUDENTS_OPTIONS] =
                 individualStudentsOptions

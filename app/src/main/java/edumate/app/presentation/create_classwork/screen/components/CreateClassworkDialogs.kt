@@ -40,7 +40,7 @@ fun ContentDatePickerDialog(
     onDismissRequest: () -> Unit,
     date: Date?,
     openDialog: Boolean,
-    onConfirmClick: (date: Date) -> Unit
+    onConfirmClick: (date: Date) -> Unit,
 ) {
     // TODO("Block previous days from being selected")
     if (openDialog) {
@@ -76,16 +76,16 @@ fun ContentDatePickerDialog(
                             onConfirmClick(cal.time)
                         }
                     },
-                    enabled = confirmEnabled.value
+                    enabled = confirmEnabled.value,
                 ) { Text(stringResource(id = Strings.ok)) }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) { Text(stringResource(id = Strings.cancel)) }
-            }
+            },
         ) {
             DatePicker(
                 state = datePickerState,
-                showModeToggle = configuration.screenHeightDp > 400
+                showModeToggle = configuration.screenHeightDp > 400,
             )
         }
     }
@@ -98,7 +98,7 @@ fun PointsDialog(
     onDismissRequest: () -> Unit,
     openDialog: Boolean,
     currentPoint: String?,
-    onConfirmClick: (points: String?) -> Unit
+    onConfirmClick: (points: String?) -> Unit,
 ) {
     if (openDialog) {
         var point by rememberSaveable(stateSaver = TextFieldValue.Saver) {
@@ -116,19 +116,20 @@ fun PointsDialog(
             val keyboardController = LocalSoftwareKeyboardController.current
 
             Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+                tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
                 Column(modifier = Modifier.padding(vertical = 24.dp)) {
                     Text(
                         text = stringResource(id = Strings.change_point_value),
                         modifier = Modifier.padding(horizontal = 24.dp),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Column(modifier = Modifier.selectableGroup()) {
@@ -139,14 +140,14 @@ fun PointsDialog(
                                 .selectable(
                                     selected = tempPoint.value != null,
                                     onClick = { tempPoint.value = point.text },
-                                    role = Role.RadioButton
+                                    role = Role.RadioButton,
                                 )
                                 .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(
                                 selected = tempPoint.value != null,
-                                onClick = null
+                                onClick = null,
                             )
                             BasicTextField(
                                 value = point,
@@ -156,29 +157,33 @@ fun PointsDialog(
                                         tempPoint.value = it.text
                                     }
                                 },
-                                modifier = Modifier
-                                    .padding(start = 16.dp)
-                                    .widthIn(max = 500.dp),
-                                textStyle = MaterialTheme.typography.bodyLarge.copy(
-                                    color = MaterialTheme.colorScheme.onSurface
-                                ),
-                                keyboardOptions = KeyboardOptions(
-                                    keyboardType = KeyboardType.Number,
-                                    imeAction = ImeAction.Done
-                                ),
-                                keyboardActions = KeyboardActions(
-                                    onDone = {
-                                        keyboardController?.hide()
-                                        focusManager.clearFocus()
-                                    }
-                                ),
-                                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary)
+                                modifier =
+                                    Modifier
+                                        .padding(start = 16.dp)
+                                        .widthIn(max = 500.dp),
+                                textStyle =
+                                    MaterialTheme.typography.bodyLarge.copy(
+                                        color = MaterialTheme.colorScheme.onSurface,
+                                    ),
+                                keyboardOptions =
+                                    KeyboardOptions(
+                                        keyboardType = KeyboardType.Number,
+                                        imeAction = ImeAction.Done,
+                                    ),
+                                keyboardActions =
+                                    KeyboardActions(
+                                        onDone = {
+                                            keyboardController?.hide()
+                                            focusManager.clearFocus()
+                                        },
+                                    ),
+                                cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                             )
                             Text(
                                 text = stringResource(id = Strings._points, ""),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                         Row(
@@ -188,29 +193,30 @@ fun PointsDialog(
                                 .selectable(
                                     selected = tempPoint.value == null,
                                     onClick = { tempPoint.value = null },
-                                    role = Role.RadioButton
+                                    role = Role.RadioButton,
                                 )
                                 .padding(horizontal = 16.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             RadioButton(
                                 selected = tempPoint.value == null,
-                                onClick = null
+                                onClick = null,
                             )
                             Text(
                                 text = stringResource(id = Strings.unmarked),
                                 modifier = Modifier.padding(start = 16.dp),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
-                                style = MaterialTheme.typography.bodyLarge
+                                style = MaterialTheme.typography.bodyLarge,
                             )
                         }
                     }
                     Row(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 16.dp)
-                            .align(Alignment.End)
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(top = 16.dp)
+                                .align(Alignment.End),
                     ) {
                         TextButton(onClick = onDismissRequest) {
                             Text(stringResource(id = Strings.cancel))
@@ -221,7 +227,7 @@ fun PointsDialog(
                                 onDismissRequest()
                                 onConfirmClick(tempPoint.value?.trim())
                             },
-                            enabled = if (tempPoint.value != null) confirmEnabled.value else true
+                            enabled = if (tempPoint.value != null) confirmEnabled.value else true,
                         ) {
                             Text(stringResource(id = Strings.save))
                         }
@@ -238,7 +244,7 @@ fun ContentTimePickerDialog(
     onDismissRequest: () -> Unit,
     date: Date?,
     openDialog: Boolean,
-    onConfirmClick: (date: Date) -> Unit
+    onConfirmClick: (date: Date) -> Unit,
 ) {
     val state = rememberTimePickerState(initialHour = 0, initialMinute = 0)
     val showingPicker = remember { mutableStateOf(true) }
@@ -246,11 +252,12 @@ fun ContentTimePickerDialog(
 
     if (openDialog) {
         TimePickerDialog(
-            title = if (showingPicker.value) {
-                stringResource(id = Strings.select_time)
-            } else {
-                stringResource(id = Strings.enter_time)
-            },
+            title =
+                if (showingPicker.value) {
+                    stringResource(id = Strings.select_time)
+                } else {
+                    stringResource(id = Strings.enter_time)
+                },
             onCancel = { onDismissRequest() },
             onConfirm = {
                 onDismissRequest()
@@ -268,40 +275,44 @@ fun ContentTimePickerDialog(
                     // Make this take the entire viewport. This will guarantee that Screen readers
                     // focus the toggle first.
                     Box(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .semantics {
-                                isTraversalGroup = true
-                            }
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .semantics {
+                                    isTraversalGroup = true
+                                },
                     ) {
                         IconButton(
-                            modifier = Modifier
-                                .padding(24.dp)
-                                // This is a workaround so that the Icon comes up first
-                                // in the talkback traversal order. So that users of a11y
-                                // services can use the text input. When talkback traversal
-                                // order is customizable we can remove this.
-                                .align(Alignment.BottomStart)
-                                .zIndex(5f),
-                            onClick = { showingPicker.value = !showingPicker.value }
+                            modifier =
+                                Modifier
+                                    .padding(24.dp)
+                                    // This is a workaround so that the Icon comes up first
+                                    // in the talkback traversal order. So that users of a11y
+                                    // services can use the text input. When talkback traversal
+                                    // order is customizable we can remove this.
+                                    .align(Alignment.BottomStart)
+                                    .zIndex(5f),
+                            onClick = { showingPicker.value = !showingPicker.value },
                         ) {
-                            val icon = if (showingPicker.value) {
-                                Icons.Outlined.Keyboard
-                            } else {
-                                Icons.Outlined.Schedule
-                            }
+                            val icon =
+                                if (showingPicker.value) {
+                                    Icons.Outlined.Keyboard
+                                } else {
+                                    Icons.Outlined.Schedule
+                                }
                             Icon(
                                 icon,
-                                contentDescription = if (showingPicker.value) {
-                                    stringResource(id = Strings.switch_to_text_input)
-                                } else {
-                                    stringResource(id = Strings.switch_to_touch_input)
-                                }
+                                contentDescription =
+                                    if (showingPicker.value) {
+                                        stringResource(id = Strings.switch_to_text_input)
+                                    } else {
+                                        stringResource(id = Strings.switch_to_touch_input)
+                                    },
                             )
                         }
                     }
                 }
-            }
+            },
         ) {
             if (showingPicker.value && configuration.screenHeightDp > 400) {
                 TimePicker(state = state)

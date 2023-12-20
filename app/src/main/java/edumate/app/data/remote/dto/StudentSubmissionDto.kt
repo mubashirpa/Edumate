@@ -30,26 +30,27 @@ data class StudentSubmissionDto(
     val courseWorkType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
     val assignmentSubmission: AssignmentSubmission? = null,
     val shortAnswerSubmission: ShortAnswerSubmission? = null,
-    val multipleChoiceSubmission: MultipleChoiceSubmission? = null
+    val multipleChoiceSubmission: MultipleChoiceSubmission? = null,
 ) {
     @Exclude
     fun toMap(): HashMap<String, Any?> {
-        val hashMap: HashMap<String, Any?> = hashMapOf(
-            FirebaseConstants.Firestore.COURSE_ID to courseId,
-            FirebaseConstants.Firestore.COURSE_WORK_ID to courseWorkId,
-            FirebaseConstants.Firestore.ID to id,
-            FirebaseConstants.Firestore.USER_ID to userId,
-            FirebaseConstants.Firestore.CREATION_TIME to (
-                creationTime
-                    ?: FieldValue.serverTimestamp()
+        val hashMap: HashMap<String, Any?> =
+            hashMapOf(
+                FirebaseConstants.Firestore.COURSE_ID to courseId,
+                FirebaseConstants.Firestore.COURSE_WORK_ID to courseWorkId,
+                FirebaseConstants.Firestore.ID to id,
+                FirebaseConstants.Firestore.USER_ID to userId,
+                FirebaseConstants.Firestore.CREATION_TIME to (
+                    creationTime
+                        ?: FieldValue.serverTimestamp()
                 ),
-            FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
-            FirebaseConstants.Firestore.STATE to state,
-            FirebaseConstants.Firestore.LATE to late,
-            FirebaseConstants.Firestore.ASSIGNED_GRADE to assignedGrade,
-            FirebaseConstants.Firestore.ALTERNATE_LINK to alternateLink,
-            FirebaseConstants.Firestore.COURSE_WORK_TYPE to courseWorkType
-        )
+                FirebaseConstants.Firestore.UPDATE_TIME to FieldValue.serverTimestamp(),
+                FirebaseConstants.Firestore.STATE to state,
+                FirebaseConstants.Firestore.LATE to late,
+                FirebaseConstants.Firestore.ASSIGNED_GRADE to assignedGrade,
+                FirebaseConstants.Firestore.ALTERNATE_LINK to alternateLink,
+                FirebaseConstants.Firestore.COURSE_WORK_TYPE to courseWorkType,
+            )
         if (assignmentSubmission != null) {
             hashMap[FirebaseConstants.Firestore.ASSIGNMENT_SUBMISSION] = assignmentSubmission
         }

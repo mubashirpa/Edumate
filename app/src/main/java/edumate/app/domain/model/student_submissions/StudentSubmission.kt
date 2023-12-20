@@ -17,5 +17,5 @@ data class StudentSubmission(
     val courseWorkType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
     val assignmentSubmission: AssignmentSubmission? = null,
     val shortAnswerSubmission: ShortAnswerSubmission? = null,
-    val multipleChoiceSubmission: MultipleChoiceSubmission? = null
+    val multipleChoiceSubmission: MultipleChoiceSubmission? = null,
 )

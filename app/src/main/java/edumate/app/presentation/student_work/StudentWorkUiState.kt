@@ -10,5 +10,5 @@ data class StudentWorkUiState(
     val dataState: DataState = DataState.UNKNOWN,
     val refreshing: Boolean = false,
     val studentSubmissions: List<StudentSubmission> = emptyList(),
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

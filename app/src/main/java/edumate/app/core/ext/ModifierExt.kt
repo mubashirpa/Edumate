@@ -22,13 +22,14 @@ private const val TAG = "ModifierExt"
 @OptIn(ExperimentalComposeUiApi::class)
 fun Modifier.autofill(
     autofillTypes: List<AutofillType>,
-    onFill: (String) -> Unit
+    onFill: (String) -> Unit,
 ) = composed {
     val autofill = LocalAutofill.current
-    val autofillNode = AutofillNode(
-        autofillTypes = autofillTypes,
-        onFill = onFill
-    )
+    val autofillNode =
+        AutofillNode(
+            autofillTypes = autofillTypes,
+            onFill = onFill,
+        )
     val autofillTree = LocalAutofillTree.current
     autofillTree += autofillNode
 
@@ -54,7 +55,8 @@ fun Modifier.autofill(
 /**
  * Support wide screen by making the content width max 840dp, centered horizontally.
  */
-fun Modifier.supportWideScreen() = this
-    .fillMaxWidth()
-    .wrapContentWidth(align = Alignment.CenterHorizontally)
-    .widthIn(max = 840.dp)
+fun Modifier.supportWideScreen() =
+    this
+        .fillMaxWidth()
+        .wrapContentWidth(align = Alignment.CenterHorizontally)
+        .widthIn(max = 840.dp)

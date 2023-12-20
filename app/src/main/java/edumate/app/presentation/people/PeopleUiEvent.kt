@@ -5,13 +5,22 @@ import edumate.app.presentation.class_details.UserType
 
 sealed class PeopleUiEvent {
     data class OnAppBarMenuExpandedChange(val expanded: Boolean) : PeopleUiEvent()
+
     data class OnFilterChange(val peopleFilterType: PeopleFilterType) : PeopleUiEvent()
+
     data class OnLeaveClass(val uid: String) : PeopleUiEvent()
+
     data class OnOpenFabMenuChange(val open: Boolean) : PeopleUiEvent()
+
     data class OnOpenLeaveClassDialogChange(val open: Boolean) : PeopleUiEvent()
+
     data class OnOpenRemoveUserDialogChange(val userProfile: UserProfile?) : PeopleUiEvent()
+
     data class OnRemoveUser(val userType: UserType, val uid: String) : PeopleUiEvent()
+
     data object OnRefresh : PeopleUiEvent()
+
     data object OnRetry : PeopleUiEvent()
+
     data object UserMessageShown : PeopleUiEvent()
 }

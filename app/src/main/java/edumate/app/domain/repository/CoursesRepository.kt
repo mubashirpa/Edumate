@@ -4,7 +4,6 @@ import edumate.app.data.remote.dto.CourseDto
 import edumate.app.domain.model.courses.CourseState
 
 interface CoursesRepository {
-
     /**
      * Creates a course.
      * @param courseDto Instance of [CourseDto].
@@ -37,7 +36,7 @@ interface CoursesRepository {
         studentId: String? = null,
         teacherId: String? = null,
         courseState: CourseState = CourseState.ACTIVE,
-        pageSize: Int? = null
+        pageSize: Int? = null,
     ): List<CourseDto>
 
     /**
@@ -45,5 +44,8 @@ interface CoursesRepository {
      * @param id Identifier of the course to update.
      * @param courseDto Instance of [CourseDto].
      */
-    suspend fun update(id: String, courseDto: CourseDto)
+    suspend fun update(
+        id: String,
+        courseDto: CourseDto,
+    )
 }

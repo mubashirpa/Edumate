@@ -7,7 +7,6 @@ import com.google.firebase.auth.FirebaseUser
 import kotlinx.coroutines.flow.Flow
 
 interface FirebaseAuthRepository {
-
     val currentUserId: String
 
     val hasUser: Boolean
@@ -23,13 +22,16 @@ interface FirebaseAuthRepository {
     suspend fun createUserWithEmailAndPassword(
         name: String,
         email: String,
-        password: String
+        password: String,
     ): FirebaseUser?
 
     /**
      * Tries to sign in a userProfile with the given email address and password.
      */
-    suspend fun signInWithEmailAndPassword(email: String, password: String): FirebaseUser?
+    suspend fun signInWithEmailAndPassword(
+        email: String,
+        password: String,
+    ): FirebaseUser?
 
     /**
      * Tries to sign in a userProfile with the given AuthCredential.

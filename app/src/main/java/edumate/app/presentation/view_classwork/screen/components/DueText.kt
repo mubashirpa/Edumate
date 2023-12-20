@@ -9,19 +9,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
 import java.util.Date
+import edumate.app.R.string as Strings
 
 @Composable
 fun DueText(uiState: ViewClassworkUiState) {
     val dueDate = uiState.classwork.dueTime
-    val date = if (dueDate != null) {
-        DateUtils.getRelativeTimeSpanString(dueDate.time)
-    } else {
-        null
-    }
+    val date =
+        if (dueDate != null) {
+            DateUtils.getRelativeTimeSpanString(dueDate.time)
+        } else {
+            null
+        }
 
     Column {
         when (uiState.studentSubmission?.state) {
@@ -32,18 +33,18 @@ fun DueText(uiState: ViewClassworkUiState) {
                 if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
                     Text(
                         text = "$assignedGrade/$maxPoints",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 } else {
                     Text(
                         text = stringResource(id = Strings.turned_in),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
                 if (uiState.studentSubmission.late) {
                     Text(
                         text = stringResource(id = Strings.done_late),
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
             }
@@ -56,24 +57,24 @@ fun DueText(uiState: ViewClassworkUiState) {
                     if (assignedGrade != null) {
                         Text(
                             text = "$assignedGrade/$maxPoints",
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     } else {
                         Text(
                             text = stringResource(id = Strings.unmarked),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 } else {
                     Icon(
                         imageVector = Icons.Default.Done,
-                        contentDescription = null
+                        contentDescription = null,
                     )
                 }
                 if (uiState.studentSubmission.late) {
                     Text(
                         text = stringResource(id = Strings.done_late),
-                        style = MaterialTheme.typography.labelSmall
+                        style = MaterialTheme.typography.labelSmall,
                     )
                 }
             }
@@ -85,12 +86,12 @@ fun DueText(uiState: ViewClassworkUiState) {
                 if (maxPoints != null && maxPoints > 0 && assignedGrade != null) {
                     Text(
                         text = "$assignedGrade/$maxPoints",
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                     if (uiState.studentSubmission.late) {
                         Text(
                             text = stringResource(id = Strings.done_late),
-                            style = MaterialTheme.typography.labelSmall
+                            style = MaterialTheme.typography.labelSmall,
                         )
                     }
                 } else if (dueDate != null) {
@@ -98,18 +99,18 @@ fun DueText(uiState: ViewClassworkUiState) {
                         Text(
                             text = stringResource(id = Strings.missing),
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     } else if (date != null) {
                         Text(
                             text = stringResource(id = Strings.due_, date),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 } else {
                     Text(
                         text = stringResource(id = Strings.no_due_date),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
@@ -120,18 +121,18 @@ fun DueText(uiState: ViewClassworkUiState) {
                         Text(
                             text = stringResource(id = Strings.missing),
                             color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     } else if (date != null) {
                         Text(
                             text = stringResource(id = Strings.due_, date),
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
                         )
                     }
                 } else {
                     Text(
                         text = stringResource(id = Strings.no_due_date),
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }

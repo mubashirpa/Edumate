@@ -1,14 +1,14 @@
 package edumate.app.domain.usecase.validation
 
-import edumate.app.R.string as Strings
 import edumate.app.core.UiText
+import edumate.app.R.string as Strings
 
 class ValidatePassword {
     fun execute(password: String): ValidationResult {
         if (password.length < 6) {
             return ValidationResult(
                 successful = false,
-                error = UiText.StringResource(Strings.error_blank_password)
+                error = UiText.StringResource(Strings.error_blank_password),
             )
         }
         val containsLettersAndDigits =
@@ -16,11 +16,11 @@ class ValidatePassword {
         if (!containsLettersAndDigits) {
             return ValidationResult(
                 successful = false,
-                error = UiText.StringResource(Strings.error_invalid_password)
+                error = UiText.StringResource(Strings.error_invalid_password),
             )
         }
         return ValidationResult(
-            successful = true
+            successful = true,
         )
     }
 }

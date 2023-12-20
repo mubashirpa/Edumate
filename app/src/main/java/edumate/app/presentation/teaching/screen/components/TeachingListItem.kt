@@ -16,9 +16,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import edumate.app.domain.model.courses.Course
 import edumate.app.R.plurals as Plurals
 import edumate.app.R.string as Strings
-import edumate.app.domain.model.courses.Course
 
 @Composable
 fun TeachingListItem(
@@ -28,41 +28,44 @@ fun TeachingListItem(
     onShareClick: (link: String) -> Unit,
     onEditClick: (courseId: String) -> Unit,
     onDeleteClick: (courseId: String) -> Unit,
-    onClick: (courseId: String) -> Unit
+    onClick: (courseId: String) -> Unit,
 ) {
-    val images = remember {
-        listOf(
-            "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Math_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
-            "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
-            "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
-            "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg"
-        )
-    }
+    val images =
+        remember {
+            listOf(
+                "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Math_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
+                "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
+                "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
+                "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg",
+            )
+        }
     val backgroundImage = images[index % images.size]
 
     Card(
         onClick = { onClick(course.id) },
-        modifier = modifier.aspectRatio(8f / 3f)
+        modifier = modifier.aspectRatio(8f / 3f),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(backgroundImage)
-                    .crossfade(true)
-                    .build(),
+                model =
+                    ImageRequest.Builder(LocalContext.current)
+                        .data(backgroundImage)
+                        .crossfade(true)
+                        .build(),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds
+                contentScale = ContentScale.FillBounds,
             )
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(start = 16.dp, end = 8.dp)
-                    .padding(vertical = 12.dp)
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(start = 16.dp, end = 8.dp)
+                        .padding(vertical = 12.dp),
             ) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
@@ -72,7 +75,7 @@ fun TeachingListItem(
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            style = MaterialTheme.typography.headlineSmall
+                            style = MaterialTheme.typography.headlineSmall,
                         )
                         // supportingContent
                         Text(
@@ -80,7 +83,7 @@ fun TeachingListItem(
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
@@ -88,18 +91,19 @@ fun TeachingListItem(
                     TeachingMenuButton(
                         onShareClick = { onShareClick(course.alternateLink) },
                         onEditClick = { onEditClick(course.id) },
-                        onDeleteClick = { onDeleteClick(course.id) }
+                        onDeleteClick = { onDeleteClick(course.id) },
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = pluralStringResource(
-                        id = Plurals.number_of_students,
-                        count = course.courseGroupId.size,
-                        course.courseGroupId.size
-                    ),
+                    text =
+                        pluralStringResource(
+                            id = Plurals.number_of_students,
+                            count = course.courseGroupId.size,
+                            course.courseGroupId.size,
+                        ),
                     color = Color.White,
-                    style = MaterialTheme.typography.labelMedium
+                    style = MaterialTheme.typography.labelMedium,
                 )
             }
         }
@@ -110,7 +114,7 @@ fun TeachingListItem(
 private fun TeachingMenuButton(
     onShareClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -119,33 +123,33 @@ private fun TeachingMenuButton(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = null,
-                tint = Color.White
+                tint = Color.White,
             )
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(id = Strings.share_invitation_link)) },
                 onClick = {
                     expanded = false
                     onShareClick()
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text(stringResource(id = Strings.edit)) },
                 onClick = {
                     expanded = false
                     onEditClick()
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text(stringResource(id = Strings.delete)) },
                 onClick = {
                     expanded = false
                     onDeleteClick()
-                }
+                },
             )
         }
     }

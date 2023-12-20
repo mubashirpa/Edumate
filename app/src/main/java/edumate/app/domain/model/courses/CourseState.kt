@@ -6,5 +6,5 @@ enum class CourseState {
     ARCHIVED,
     PROVISIONED,
     DECLINED,
-    SUSPENDED
+    SUSPENDED,
 }

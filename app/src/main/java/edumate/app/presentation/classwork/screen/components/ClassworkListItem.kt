@@ -24,13 +24,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.FilledTonalIcon
 import java.text.SimpleDateFormat
 import java.util.Locale
+import edumate.app.R.string as Strings
 
 @Composable
 fun ClassworkListItem(
@@ -40,28 +40,29 @@ fun ClassworkListItem(
     workType: CourseWorkType,
     onClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     val dateFormat = remember { SimpleDateFormat("dd MMM yyyy", Locale.getDefault()) }
     val timeFormat = remember { SimpleDateFormat("hh:mm a", Locale.getDefault()) }
     val dateTimeFormat = remember { SimpleDateFormat("dd MMM yyyy, hh:mm a", Locale.getDefault()) }
-    val trailingContent: @Composable (() -> Unit)? = if (currentUserType == UserType.TEACHER) {
-        {
-            MenuButton(
-                onEditClick = onEditClick,
-                onDeleteClick = onDeleteClick
-            )
+    val trailingContent: @Composable (() -> Unit)? =
+        if (currentUserType == UserType.TEACHER) {
+            {
+                MenuButton(
+                    onEditClick = onEditClick,
+                    onDeleteClick = onDeleteClick,
+                )
+            }
+        } else {
+            null
         }
-    } else {
-        null
-    }
 
     ListItem(
         headlineContent = {
             Text(
                 text = work.title,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 1
+                maxLines = 1,
             )
         },
         modifier = modifier.clickable(onClick = onClick),
@@ -72,22 +73,24 @@ fun ClassworkListItem(
                         val creationTime = work.creationTime
                         if (creationTime != null) {
                             val isToday = DateUtils.isToday(creationTime.time)
-                            val posted = if (isToday) {
-                                timeFormat.format(creationTime)
-                            } else {
-                                dateTimeFormat.format(creationTime)
-                            }
+                            val posted =
+                                if (isToday) {
+                                    timeFormat.format(creationTime)
+                                } else {
+                                    dateTimeFormat.format(creationTime)
+                                }
                             Text(text = stringResource(id = Strings.posted_, posted))
                         }
                     } else {
                         val dueTime = work.dueTime
                         if (dueTime != null) {
                             val isToday = DateUtils.isToday(dueTime.time)
-                            val due = if (isToday) {
-                                stringResource(id = Strings.due_today_, timeFormat.format(dueTime))
-                            } else {
-                                stringResource(id = Strings.due_, dateTimeFormat.format(dueTime))
-                            }
+                            val due =
+                                if (isToday) {
+                                    stringResource(id = Strings.due_today_, timeFormat.format(dueTime))
+                                } else {
+                                    stringResource(id = Strings.due_, dateTimeFormat.format(dueTime))
+                                }
                             Text(text = due)
                         } else {
                             Text(text = stringResource(id = Strings.no_due_date))
@@ -99,33 +102,35 @@ fun ClassworkListItem(
                     val creationTime = work.creationTime
                     if (creationTime != null) {
                         val isToday = DateUtils.isToday(creationTime.time)
-                        val posted = if (isToday) {
-                            timeFormat.format(creationTime)
-                        } else {
-                            dateFormat.format(creationTime)
-                        }
+                        val posted =
+                            if (isToday) {
+                                timeFormat.format(creationTime)
+                            } else {
+                                dateFormat.format(creationTime)
+                            }
                         Text(text = stringResource(id = Strings.posted_, posted))
                     }
                 }
             }
         },
         leadingContent = {
-            val icon = when (workType) {
-                CourseWorkType.ASSIGNMENT -> Icons.AutoMirrored.Outlined.Assignment
-                CourseWorkType.MULTIPLE_CHOICE_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
-                CourseWorkType.SHORT_ANSWER_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
-                else -> Icons.Outlined.Book
-            }
+            val icon =
+                when (workType) {
+                    CourseWorkType.ASSIGNMENT -> Icons.AutoMirrored.Outlined.Assignment
+                    CourseWorkType.MULTIPLE_CHOICE_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
+                    CourseWorkType.SHORT_ANSWER_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
+                    else -> Icons.Outlined.Book
+                }
             FilledTonalIcon(imageVector = icon)
         },
-        trailingContent = trailingContent
+        trailingContent = trailingContent,
     )
 }
 
 @Composable
 private fun MenuButton(
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -133,26 +138,26 @@ private fun MenuButton(
         IconButton(onClick = { expanded = true }) {
             Icon(
                 imageVector = Icons.Default.MoreVert,
-                contentDescription = null
+                contentDescription = null,
             )
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = Strings.edit)) },
                 onClick = {
                     expanded = false
                     onEditClick()
-                }
+                },
             )
             DropdownMenuItem(
                 text = { Text(text = stringResource(id = Strings.delete)) },
                 onClick = {
                     expanded = false
                     onDeleteClick()
-                }
+                },
             )
         }
     }

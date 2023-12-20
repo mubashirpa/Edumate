@@ -12,6 +12,6 @@ fun UserProfileDto.toUserProfile(): UserProfile {
         photoUrl,
         enrolled,
         teaching,
-        verified
+        verified,
     )
 }

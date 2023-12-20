@@ -6,28 +6,29 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
-import edumate.app.R.plurals as Plurals
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.student_submissions.SubmissionState
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
+import edumate.app.R.plurals as Plurals
+import edumate.app.R.string as Strings
 
 @Composable
 fun TurnInDialog(
     onDismissRequest: () -> Unit,
     uiState: ViewClassworkUiState,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
 ) {
     if (uiState.openTurnInDialog) {
-        val text = if (uiState.studentSubmissionAttachments.isEmpty()) {
-            stringResource(id = Strings.dialog_turn_in_assignment_text, uiState.classwork.title)
-        } else {
-            pluralStringResource(
-                id = Plurals.dialog_turn_in_assignment_text,
-                count = uiState.studentSubmissionAttachments.size,
-                uiState.studentSubmissionAttachments.size,
-                uiState.classwork.title
-            )
-        }
+        val text =
+            if (uiState.studentSubmissionAttachments.isEmpty()) {
+                stringResource(id = Strings.dialog_turn_in_assignment_text, uiState.classwork.title)
+            } else {
+                pluralStringResource(
+                    id = Plurals.dialog_turn_in_assignment_text,
+                    count = uiState.studentSubmissionAttachments.size,
+                    uiState.studentSubmissionAttachments.size,
+                    uiState.classwork.title,
+                )
+            }
         val confirmButtonText =
             if (uiState.studentSubmission?.state == SubmissionState.RECLAIMED_BY_STUDENT || uiState.studentSubmission?.state == SubmissionState.RETURNED) {
                 stringResource(id = Strings.resubmit)
@@ -52,14 +53,14 @@ fun TurnInDialog(
                     onClick = {
                         onDismissRequest()
                         onConfirmClick()
-                    }
+                    },
                 ) { Text(confirmButtonText) }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -68,7 +69,7 @@ fun TurnInDialog(
 fun HandInDialog(
     onDismissRequest: () -> Unit,
     uiState: ViewClassworkUiState,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
 ) {
     if (uiState.openHandInDialog) {
         AlertDialog(
@@ -84,14 +85,14 @@ fun HandInDialog(
                     onClick = {
                         onDismissRequest()
                         onConfirmClick()
-                    }
+                    },
                 ) { Text(stringResource(id = Strings.submit)) }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -100,7 +101,7 @@ fun HandInDialog(
 fun UnSubmitDialog(
     onDismissRequest: () -> Unit,
     uiState: ViewClassworkUiState,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
 ) {
     if (uiState.openUnSubmitDialog) {
         AlertDialog(
@@ -116,14 +117,14 @@ fun UnSubmitDialog(
                     onClick = {
                         onDismissRequest()
                         onConfirmClick()
-                    }
+                    },
                 ) { Text(stringResource(id = Strings.unsubmit)) }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -132,7 +133,7 @@ fun UnSubmitDialog(
 fun RemoveAttachmentDialog(
     onDismissRequest: () -> Unit,
     uiState: ViewClassworkUiState,
-    onConfirmClick: (attachmentIndex: Int) -> Unit
+    onConfirmClick: (attachmentIndex: Int) -> Unit,
 ) {
     if (uiState.openRemoveAttachmentDialog != null) {
         AlertDialog(
@@ -145,14 +146,14 @@ fun RemoveAttachmentDialog(
                     onClick = {
                         onDismissRequest()
                         onConfirmClick(uiState.openRemoveAttachmentDialog)
-                    }
+                    },
                 ) { Text(stringResource(id = Strings.remove)) }
             },
             dismissButton = {
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }

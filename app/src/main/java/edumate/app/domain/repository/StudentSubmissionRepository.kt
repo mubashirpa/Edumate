@@ -4,7 +4,6 @@ import edumate.app.data.remote.dto.StudentSubmissionDto
 import edumate.app.domain.model.student_submissions.Attachment
 
 interface StudentSubmissionRepository {
-
     /**
      * Returns a student submission.
      * @param courseId Identifier of the course.
@@ -12,7 +11,11 @@ interface StudentSubmissionRepository {
      * @param id Identifier of the student submission.
      * @return If successful, the response body contains an instance of [StudentSubmissionDto].
      */
-    suspend fun get(courseId: String, courseWorkId: String, id: String): StudentSubmissionDto?
+    suspend fun get(
+        courseId: String,
+        courseWorkId: String,
+        id: String,
+    ): StudentSubmissionDto?
 
     /**
      * Returns a list of student submissions that the requester is permitted to view.
@@ -20,7 +23,10 @@ interface StudentSubmissionRepository {
      * @param courseWorkId Identifier of the student work to request.
      * @return If successful, the response body contains a list of [StudentSubmissionDto].
      */
-    suspend fun list(courseId: String, courseWorkId: String): List<StudentSubmissionDto>
+    suspend fun list(
+        courseId: String,
+        courseWorkId: String,
+    ): List<StudentSubmissionDto>
 
     /**
      * Modifies attachments of student submission.
@@ -34,7 +40,7 @@ interface StudentSubmissionRepository {
         courseId: String,
         courseWorkId: String,
         id: String,
-        addAttachments: List<Attachment>
+        addAttachments: List<Attachment>,
     ): StudentSubmissionDto?
 
     /**
@@ -49,7 +55,7 @@ interface StudentSubmissionRepository {
         courseId: String,
         courseWorkId: String,
         id: String,
-        studentSubmission: StudentSubmissionDto
+        studentSubmission: StudentSubmissionDto,
     ): StudentSubmissionDto?
 
     /**
@@ -58,7 +64,11 @@ interface StudentSubmissionRepository {
      * @param courseWorkId Identifier of the course work.
      * @param id Identifier of the student submission.
      */
-    suspend fun reclaim(courseId: String, courseWorkId: String, id: String)
+    suspend fun reclaim(
+        courseId: String,
+        courseWorkId: String,
+        id: String,
+    )
 
     /**
      * Returns a student submission.
@@ -66,7 +76,11 @@ interface StudentSubmissionRepository {
      * @param courseWorkId Identifier of the course work.
      * @param id Identifier of the student submission.
      */
-    suspend fun `return`(courseId: String, courseWorkId: String, id: String)
+    suspend fun `return`(
+        courseId: String,
+        courseWorkId: String,
+        id: String,
+    )
 
     /**
      * Turns in a student submission.
@@ -74,5 +88,9 @@ interface StudentSubmissionRepository {
      * @param courseWorkId Identifier of the course work.
      * @param id Identifier of the student submission.
      */
-    suspend fun turnIn(courseId: String, courseWorkId: String, id: String)
+    suspend fun turnIn(
+        courseId: String,
+        courseWorkId: String,
+        id: String,
+    )
 }

@@ -10,5 +10,5 @@ data class UserProfile(
     val photoUrl: String? = null,
     val enrolled: ArrayList<String> = arrayListOf(),
     val teaching: ArrayList<String> = arrayListOf(),
-    val verified: Boolean = false
+    val verified: Boolean = false,
 )

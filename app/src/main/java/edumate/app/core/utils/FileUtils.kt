@@ -9,21 +9,22 @@ import kotlin.math.log10
 import kotlin.math.pow
 
 class FileUtils(val context: Context) {
-
     fun getFileExtension(uri: Uri?): String? {
         val contentResolver = context.contentResolver
         val mimeTypeMap = MimeTypeMap.getSingleton()
-        val extension: String? = uri?.let { returnUri ->
-            mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(returnUri))
-        }
+        val extension: String? =
+            uri?.let { returnUri ->
+                mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(returnUri))
+            }
         return extension
     }
 
     fun getMimeType(uri: Uri?): String? {
         val contentResolver = context.contentResolver
-        val mimeType: String? = uri?.let { returnUri ->
-            contentResolver.getType(returnUri)
-        }
+        val mimeType: String? =
+            uri?.let { returnUri ->
+                contentResolver.getType(returnUri)
+            }
         return mimeType
     }
 
@@ -88,7 +89,7 @@ class FileUtils(val context: Context) {
             val units = arrayOf("B", "KB", "MB", "GB", "TB")
             val digitGroups = (log10(it.toDouble()) / log10(1024.0)).toInt()
             return DecimalFormat("#,##0.#").format(
-                it / 1024.0.pow(digitGroups.toDouble())
+                it / 1024.0.pow(digitGroups.toDouble()),
             ) + " " + units[digitGroups]
         }
         return "0"
@@ -100,5 +101,5 @@ enum class FileType {
     VIDEO,
     AUDIO,
     PDF,
-    UNKNOWN
+    UNKNOWN,
 }

@@ -17,5 +17,5 @@ data class PeopleUiState(
     val peoples: List<UserProfile> = emptyList(),
     val refreshing: Boolean = false,
     val removeUserProfile: UserProfile? = null,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

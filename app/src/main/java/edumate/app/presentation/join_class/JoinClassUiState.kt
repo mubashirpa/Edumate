@@ -11,5 +11,5 @@ data class JoinClassUiState(
     val openProgressDialog: Boolean = false,
     val openUserTypeBottomSheet: Boolean = false,
     val userMessage: UiText? = null,
-    val userType: UserType = UserType.STUDENT
+    val userType: UserType = UserType.STUDENT,
 )

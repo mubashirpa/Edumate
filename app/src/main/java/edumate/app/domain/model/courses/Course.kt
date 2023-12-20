@@ -21,5 +21,5 @@ data class Course(
     val guardiansEnabled: Boolean = false,
     val calendarId: String = "",
     val gradeBookSettings: GradeBookSettings? = null,
-    val creatorProfile: UserProfile? = null
+    val creatorProfile: UserProfile? = null,
 )

@@ -24,25 +24,26 @@ data class AnnouncementDto(
     val assigneeMode: AssigneeMode = AssigneeMode.ASSIGNEE_MODE_UNSPECIFIED,
     val individualStudentsOptions: IndividualStudentsOptions? = null,
     val creatorUserId: String = "",
-    val creatorProfile: UserProfile? = null
+    val creatorProfile: UserProfile? = null,
 ) {
     @Exclude
     fun toMap(): Map<String, Any?> {
         val clientTime = Date().time
-        val map: MutableMap<String, Any?> = mutableMapOf(
-            FirebaseConstants.Database.COURSE_ID to courseId,
-            FirebaseConstants.Database.ID to id,
-            FirebaseConstants.Database.TEXT to text,
-            FirebaseConstants.Database.MATERIALS to materials,
-            FirebaseConstants.Database.STATE to state,
-            FirebaseConstants.Database.ALTERNATE_LINK to alternateLink,
-            FirebaseConstants.Database.CREATION_TIME to (creationTime ?: clientTime),
-            FirebaseConstants.Database.UPDATE_TIME to clientTime,
-            FirebaseConstants.Database.SCHEDULED_TIME to scheduledTime,
-            FirebaseConstants.Database.ASSIGNEE_MODE to assigneeMode,
-            FirebaseConstants.Database.CREATOR_USER_ID to creatorUserId,
-            FirebaseConstants.Database.CREATOR_PROFILE to creatorProfile
-        )
+        val map: MutableMap<String, Any?> =
+            mutableMapOf(
+                FirebaseConstants.Database.COURSE_ID to courseId,
+                FirebaseConstants.Database.ID to id,
+                FirebaseConstants.Database.TEXT to text,
+                FirebaseConstants.Database.MATERIALS to materials,
+                FirebaseConstants.Database.STATE to state,
+                FirebaseConstants.Database.ALTERNATE_LINK to alternateLink,
+                FirebaseConstants.Database.CREATION_TIME to (creationTime ?: clientTime),
+                FirebaseConstants.Database.UPDATE_TIME to clientTime,
+                FirebaseConstants.Database.SCHEDULED_TIME to scheduledTime,
+                FirebaseConstants.Database.ASSIGNEE_MODE to assigneeMode,
+                FirebaseConstants.Database.CREATOR_USER_ID to creatorUserId,
+                FirebaseConstants.Database.CREATOR_PROFILE to creatorProfile,
+            )
         if (assigneeMode == AssigneeMode.INDIVIDUAL_STUDENTS) {
             map[FirebaseConstants.Database.INDIVIDUAL_STUDENTS_OPTIONS] = individualStudentsOptions
         }

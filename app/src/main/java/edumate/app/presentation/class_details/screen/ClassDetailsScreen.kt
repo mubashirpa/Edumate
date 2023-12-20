@@ -25,27 +25,29 @@ fun ClassDetailsScreen(
     uiState: ClassDetailsUiState,
     onEvent: (ClassDetailsUiEvent) -> Unit,
     onLeaveClass: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
 
     when (val dataState = uiState.dataState) {
         is DataState.EMPTY -> {
             ErrorScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                errorMessage = dataState.message.asString()
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                errorMessage = dataState.message.asString(),
             )
         }
 
         is DataState.ERROR -> {
             ErrorScreen(
                 onRetryClick = { onEvent(ClassDetailsUiEvent.OnRetry) },
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 10.dp),
-                errorMessage = dataState.message.asString()
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 10.dp),
+                errorMessage = dataState.message.asString(),
             )
         }
 
@@ -61,15 +63,16 @@ fun ClassDetailsScreen(
                 snackbarHost = {
                     EdumateSnackbarHost(snackbarHostState)
                 },
-                contentWindowInsets = WindowInsets(0, 0, 0, 0)
+                contentWindowInsets = WindowInsets(0, 0, 0, 0),
             ) { innerPadding ->
                 Box(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .consumeWindowInsets(innerPadding)
-                        .windowInsetsPadding(
-                            WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
-                        )
+                    modifier =
+                        Modifier
+                            .padding(innerPadding)
+                            .consumeWindowInsets(innerPadding)
+                            .windowInsetsPadding(
+                                WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
+                            ),
                 ) {
                     ClassDetailsNavHost(
                         navController = classDetailsNavController,
@@ -78,7 +81,7 @@ fun ClassDetailsScreen(
                         uiState = uiState,
                         onEvent = onEvent,
                         onLeaveClass = onLeaveClass,
-                        onBackPressed = onBackPressed
+                        onBackPressed = onBackPressed,
                     )
                 }
             }

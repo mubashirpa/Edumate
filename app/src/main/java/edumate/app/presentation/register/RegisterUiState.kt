@@ -11,5 +11,5 @@ data class RegisterUiState(
     val openProgressDialog: Boolean = false,
     val password: String = "",
     val passwordError: UiText? = null,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

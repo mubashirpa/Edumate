@@ -31,12 +31,12 @@ fun EdumateNavHost(
     startDestination: String = Routes.Graph.AUTHENTICATION,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    snackbarScope: CoroutineScope
+    snackbarScope: CoroutineScope,
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         authentication(navController, snackbarHostState, snackbarScope)
         composable(route = Screen.HomeScreen.route) {
@@ -50,11 +50,12 @@ fun EdumateNavHost(
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId))
                 },
                 navigateToCreateClass = { courseId ->
-                    val createClassRoute = if (courseId != null) {
-                        "${Screen.CreateClassScreen.route}?${Routes.Args.CREATE_CLASS_COURSE_ID}=$courseId"
-                    } else {
-                        Screen.CreateClassScreen.route
-                    }
+                    val createClassRoute =
+                        if (courseId != null) {
+                            "${Screen.CreateClassScreen.route}?${Routes.Args.CREATE_CLASS_COURSE_ID}=$courseId"
+                        } else {
+                            Screen.CreateClassScreen.route
+                        }
                     navController.navigate(createClassRoute)
                 },
                 navigateToJoinClass = {
@@ -62,18 +63,19 @@ fun EdumateNavHost(
                 },
                 navigateToProfile = {
                     navController.navigate(Screen.ProfileScreen.route)
-                }
+                },
             )
         }
         composable(
             route = "${Screen.CreateClassScreen.route}${Routes.Args.CREATE_CLASS_SCREEN}",
-            arguments = listOf(
-                navArgument(Routes.Args.CREATE_CLASS_COURSE_ID) {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument(Routes.Args.CREATE_CLASS_COURSE_ID) {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
         ) { backStackEntry ->
             val viewModel: CreateClassViewModel = hiltViewModel()
             val courseId = backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASS_COURSE_ID)
@@ -91,7 +93,7 @@ fun EdumateNavHost(
                 },
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
             )
         }
         composable(route = Screen.JoinClassScreen.route) {
@@ -111,17 +113,18 @@ fun EdumateNavHost(
                 },
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
             )
         }
         composable(
             route = "${Screen.ClassDetailsScreen.route}${Routes.Args.CLASS_DETAILS_SCREEN}",
-            arguments = listOf(
-                navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
-                    type = NavType.StringType
-                    defaultValue = Routes.Args.CLASS_DETAILS_DEFAULT_COURSE_ID
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
+                        type = NavType.StringType
+                        defaultValue = Routes.Args.CLASS_DETAILS_DEFAULT_COURSE_ID
+                    },
+                ),
         ) {
             val viewModel: ClassDetailsViewModel = hiltViewModel()
             ClassDetailsScreen(
@@ -132,7 +135,7 @@ fun EdumateNavHost(
                 },
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
             )
         }
         composable(route = Screen.ProfileScreen.route) {
@@ -148,7 +151,7 @@ fun EdumateNavHost(
                 },
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
             )
         }
         composable(route = Screen.SettingsScreen.route) {
@@ -158,7 +161,7 @@ fun EdumateNavHost(
                 onEvent = viewModel::onEvent,
                 onBackPressed = {
                     navController.navigateUp()
-                }
+                },
             )
         }
     }

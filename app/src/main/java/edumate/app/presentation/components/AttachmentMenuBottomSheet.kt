@@ -27,11 +27,12 @@ fun AttachmentMenuBottomSheet(
     onDismissRequest: () -> Unit,
     openBottomSheet: Boolean,
     onInsertLinkClick: () -> Unit,
-    onUploadFileClick: () -> Unit
+    onUploadFileClick: () -> Unit,
 ) {
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     if (openBottomSheet) {
         val bottomMargin =
@@ -40,31 +41,33 @@ fun AttachmentMenuBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets(0)
+            windowInsets = WindowInsets(0),
         ) {
             ListItem(
                 headlineContent = {
                     Text(text = stringResource(id = Strings.insert_link))
                 },
-                modifier = Modifier.clickable {
-                    onDismissRequest()
-                    onInsertLinkClick()
-                },
+                modifier =
+                    Modifier.clickable {
+                        onDismissRequest()
+                        onInsertLinkClick()
+                    },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.InsertLink, contentDescription = null)
-                }
+                },
             )
             ListItem(
                 headlineContent = {
                     Text(text = stringResource(id = Strings.upload_file))
                 },
-                modifier = Modifier.clickable {
-                    onDismissRequest()
-                    onUploadFileClick()
-                },
+                modifier =
+                    Modifier.clickable {
+                        onDismissRequest()
+                        onUploadFileClick()
+                    },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
-                }
+                },
             )
             Spacer(modifier = Modifier.height(bottomMargin))
         }

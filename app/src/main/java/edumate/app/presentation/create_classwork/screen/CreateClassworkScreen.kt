@@ -19,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import edumate.app.R.string as Strings
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.course_work.CourseWorkType
 import edumate.app.presentation.components.AddLinkDialog
@@ -30,6 +29,7 @@ import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
 import edumate.app.presentation.create_classwork.CreateClassworkUiState
 import edumate.app.presentation.create_classwork.screen.components.*
 import kotlinx.coroutines.flow.Flow
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,7 +40,7 @@ fun CreateClassworkScreen(
     createClassworkResults: Flow<String>,
     className: String,
     onCreateClassworkSuccess: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(topBarState)
@@ -68,11 +68,12 @@ fun CreateClassworkScreen(
     }
 
     Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .navigationBarsPadding()
-            .imePadding()
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .navigationBarsPadding()
+                .imePadding(),
     ) {
         TopAppBar(
             title = {},
@@ -80,11 +81,11 @@ fun CreateClassworkScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         if (uiState.loading) {
             LoadingIndicator(modifier = Modifier.fillMaxSize())
@@ -94,7 +95,7 @@ fun CreateClassworkScreen(
                     ContentMaterial(
                         courseTitle = className,
                         uiState = uiState,
-                        onEvent = onEvent
+                        onEvent = onEvent,
                     )
                 }
 
@@ -102,7 +103,7 @@ fun CreateClassworkScreen(
                     ContentAssignment(
                         courseTitle = className,
                         uiState = uiState,
-                        onEvent = onEvent
+                        onEvent = onEvent,
                     )
                 }
 
@@ -110,7 +111,7 @@ fun CreateClassworkScreen(
                     ContentQuestion(
                         courseTitle = className,
                         uiState = uiState,
-                        onEvent = onEvent
+                        onEvent = onEvent,
                     )
                 }
             }
@@ -121,13 +122,13 @@ fun CreateClassworkScreen(
         onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(false)) },
         openBottomSheet = uiState.openAttachmentMenu,
         onInsertLinkClick = { onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(true)) },
-        onUploadFileClick = { filePicker.launch("*/*") }
+        onUploadFileClick = { filePicker.launch("*/*") },
     )
 
     AddLinkDialog(
         onDismissRequest = { onEvent(CreateClassworkUiEvent.OnOpenAddLinkDialogChange(false)) },
         openDialog = uiState.openAddLinkDialog,
-        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnAddLinkAttachment(it)) }
+        onConfirmClick = { onEvent(CreateClassworkUiEvent.OnAddLinkAttachment(it)) },
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)

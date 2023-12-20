@@ -71,7 +71,7 @@ import edumate.app.R.string as Strings
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalMaterialApi::class,
-    ExperimentalFoundationApi::class
+    ExperimentalFoundationApi::class,
 )
 @Composable
 fun ClassworkScreen(
@@ -85,19 +85,20 @@ fun ClassworkScreen(
         courseId: String,
         id: String,
         workType: CourseWorkType,
-        currentUserType: UserType
+        currentUserType: UserType,
     ) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
     val context = LocalContext.current
     val courseId = course.id
     val scrollState = rememberLazyListState()
-    val refreshState = rememberPullRefreshState(
-        refreshing = uiState.refreshing,
-        onRefresh = { onEvent(ClassworkUiEvent.OnRefresh) }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = uiState.refreshing,
+            onRefresh = { onEvent(ClassworkUiEvent.OnRefresh) },
+        )
     val currentUserType =
         if (course.teacherGroupId.contains(uiState.currentUser?.uid)) {
             UserType.TEACHER
@@ -105,9 +106,10 @@ fun ClassworkScreen(
             UserType.STUDENT
         }
     val expandedFab by remember { derivedStateOf { scrollState.firstVisibleItemIndex == 0 } }
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -123,77 +125,81 @@ fun ClassworkScreen(
                 Text(
                     text = course.name,
                     overflow = TextOverflow.Ellipsis,
-                    maxLines = 1
+                    maxLines = 1,
                 )
             },
             navigationIcon = {
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
             actions = {
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                     IconButton(
-                        onClick = { onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(true)) }
+                        onClick = { onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(true)) },
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     DropdownMenu(
                         expanded = uiState.appBarMenuExpanded,
                         onDismissRequest = {
                             onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(false))
-                        }
+                        },
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = Strings.refresh)) },
                             onClick = {
                                 onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(false))
                                 onEvent(ClassworkUiEvent.OnRefresh)
-                            }
+                            },
                         )
                     }
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .pullRefresh(refreshState)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .pullRefresh(refreshState)
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             when (val dataState = uiState.dataState) {
                 is DataState.EMPTY -> {
                     AnimatedErrorScreen(
                         url = Constants.CLASSWORK_SCREEN_EMPTY_ANIM_URL,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = if (currentUserType == UserType.TEACHER) {
-                            stringResource(
-                                id = Strings.add_assignments_and_other_works_for_class
-                            )
-                        } else {
-                            stringResource(
-                                id = Strings.your_teacher_hasnt_assigned_any_classwork_yet
-                            )
-                        }
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage =
+                            if (currentUserType == UserType.TEACHER) {
+                                stringResource(
+                                    id = Strings.add_assignments_and_other_works_for_class,
+                                )
+                            } else {
+                                stringResource(
+                                    id = Strings.your_teacher_hasnt_assigned_any_classwork_yet,
+                                )
+                            },
                     )
                 }
 
                 is DataState.ERROR -> {
                     ErrorScreen(
                         onRetryClick = { onEvent(ClassworkUiEvent.OnRetry) },
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp),
-                        errorMessage = dataState.message.asString()
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(horizontal = 16.dp, vertical = 10.dp),
+                        errorMessage = dataState.message.asString(),
                     )
                 }
 
@@ -221,7 +227,7 @@ fun ClassworkScreen(
                                             courseId,
                                             id,
                                             type,
-                                            currentUserType
+                                            currentUserType,
                                         )
                                     },
                                     onEditClick = {
@@ -230,13 +236,13 @@ fun ClassworkScreen(
                                     onDeleteClick = {
                                         onEvent(
                                             ClassworkUiEvent.OnOpenDeleteClassworkDialogChange(
-                                                classwork
-                                            )
+                                                classwork,
+                                            ),
                                         )
-                                    }
+                                    },
                                 )
                             }
-                        }
+                        },
                     )
                 }
 
@@ -249,21 +255,22 @@ fun ClassworkScreen(
                     icon = {
                         Icon(
                             imageVector = Icons.Default.Add,
-                            contentDescription = "Create classwork"
+                            contentDescription = "Create classwork",
                         )
                     },
                     onClick = { onEvent(ClassworkUiEvent.OnOpenFabMenuChange(true)) },
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .align(Alignment.BottomEnd),
-                    expanded = expandedFab
+                    modifier =
+                        Modifier
+                            .padding(16.dp)
+                            .align(Alignment.BottomEnd),
+                    expanded = expandedFab,
                 )
             }
 
             PullRefreshIndicator(
                 uiState.refreshing,
                 refreshState,
-                Modifier.align(Alignment.TopCenter)
+                Modifier.align(Alignment.TopCenter),
             )
         }
     }
@@ -277,49 +284,52 @@ fun ClassworkScreen(
                 onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
             },
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets(0)
+            windowInsets = WindowInsets(0),
         ) {
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.assignment)) },
-                modifier = Modifier.clickable {
-                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(
-                        courseId,
-                        CourseWorkType.ASSIGNMENT
-                    )
-                },
+                modifier =
+                    Modifier.clickable {
+                        onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                        navigateToCreateClasswork(
+                            courseId,
+                            CourseWorkType.ASSIGNMENT,
+                        )
+                    },
                 leadingContent = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Outlined.Assignment,
-                        contentDescription = null
+                        contentDescription = null,
                     )
-                }
+                },
             )
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.question)) },
-                modifier = Modifier.clickable {
-                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(
-                        courseId,
-                        CourseWorkType.SHORT_ANSWER_QUESTION
-                    )
-                },
+                modifier =
+                    Modifier.clickable {
+                        onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                        navigateToCreateClasswork(
+                            courseId,
+                            CourseWorkType.SHORT_ANSWER_QUESTION,
+                        )
+                    },
                 leadingContent = {
                     Icon(imageVector = Icons.AutoMirrored.Outlined.LiveHelp, contentDescription = null)
-                }
+                },
             )
             ListItem(
                 headlineContent = { Text(text = stringResource(id = Strings.material)) },
-                modifier = Modifier.clickable {
-                    onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
-                    navigateToCreateClasswork(
-                        courseId,
-                        CourseWorkType.MATERIAL
-                    )
-                },
+                modifier =
+                    Modifier.clickable {
+                        onEvent(ClassworkUiEvent.OnOpenFabMenuChange(false))
+                        navigateToCreateClasswork(
+                            courseId,
+                            CourseWorkType.MATERIAL,
+                        )
+                    },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
-                }
+                },
             )
             Spacer(modifier = Modifier.height(bottomMargin))
         }
@@ -332,7 +342,7 @@ fun ClassworkScreen(
         classwork = uiState.deleteClasswork,
         onConfirmClick = {
             onEvent(ClassworkUiEvent.OnDeleteClasswork(it))
-        }
+        },
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)

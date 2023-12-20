@@ -67,7 +67,7 @@ import edumate.app.R.string as Strings
 fun SettingsScreen(
     uiState: SettingsUiState,
     onEvent: (SettingsUiEvent) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
@@ -84,17 +84,18 @@ fun SettingsScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .nestedScroll(scrollBehavior.nestedScrollConnection),
         ) {
             ListPreference(
                 title = stringResource(id = Strings.theme),
@@ -106,19 +107,20 @@ fun SettingsScreen(
                 onConfirmClick = { index, value ->
                     val appTheme = value.enumValueOf(AppTheme.SYSTEM_DEFAULT)!!
                     onEvent(SettingsUiEvent.OnAppThemeChange(index, appTheme))
-                }
+                },
             )
             Preference(
                 title = stringResource(id = Strings.notifications),
                 summary = stringResource(id = Strings.manage_notification_settings),
                 icon = Icons.Default.Notifications,
                 onClick = {
-                    val settingsIntent = Intent().apply {
-                        action = "android.settings.APP_NOTIFICATION_SETTINGS"
-                        putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
-                    }
+                    val settingsIntent =
+                        Intent().apply {
+                            action = "android.settings.APP_NOTIFICATION_SETTINGS"
+                            putExtra("android.provider.extra.APP_PACKAGE", context.packageName)
+                        }
                     context.startActivity(settingsIntent)
-                }
+                },
             )
             ListPreference(
                 title = stringResource(id = Strings.app_language),
@@ -132,7 +134,7 @@ fun SettingsScreen(
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
                         LocaleUtils.setApplicationLocales(context, value)
                     }
-                }
+                },
             )
         }
     }
@@ -143,27 +145,29 @@ private fun Preference(
     title: String,
     summary: String? = null,
     icon: ImageVector? = null,
-    onClick: () -> Unit
+    onClick: () -> Unit,
 ) {
     ListItem(
         headlineContent = {
             Text(text = title)
         },
         modifier = Modifier.clickable(onClick = onClick),
-        supportingContent = if (summary != null) {
-            {
-                Text(text = summary)
-            }
-        } else {
-            null
-        },
-        leadingContent = if (icon != null) {
-            {
-                Icon(imageVector = icon, contentDescription = null)
-            }
-        } else {
-            null
-        }
+        supportingContent =
+            if (summary != null) {
+                {
+                    Text(text = summary)
+                }
+            } else {
+                null
+            },
+        leadingContent =
+            if (icon != null) {
+                {
+                    Icon(imageVector = icon, contentDescription = null)
+                }
+            } else {
+                null
+            },
     )
 }
 
@@ -176,16 +180,17 @@ private fun ListPreference(
     defaultValue: String? = null,
     summary: String? = null,
     icon: ImageVector? = null,
-    onConfirmClick: (Int, String) -> Unit
+    onConfirmClick: (Int, String) -> Unit,
 ) {
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
     val openDialog = remember { mutableStateOf(false) }
-    val defaultSelectedOption = if (entryValues.isNotEmpty()) {
-        entryValues.indexOf(defaultValue)
-    } else {
-        entries.indexOf(defaultValue)
-    }
+    val defaultSelectedOption =
+        if (entryValues.isNotEmpty()) {
+            entryValues.indexOf(defaultValue)
+        } else {
+            entries.indexOf(defaultValue)
+        }
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(0) }
     val itemHeightPx = remember { 56.dpToPx }
 
@@ -193,31 +198,34 @@ private fun ListPreference(
         headlineContent = {
             Text(text = title)
         },
-        modifier = Modifier.clickable {
-            if (defaultSelectedOption >= 0) {
-                onOptionSelected(defaultSelectedOption)
-                if (scrollState.maxValue > 0) {
-                    coroutineScope.launch {
-                        scrollState.scrollTo((itemHeightPx * defaultSelectedOption))
+        modifier =
+            Modifier.clickable {
+                if (defaultSelectedOption >= 0) {
+                    onOptionSelected(defaultSelectedOption)
+                    if (scrollState.maxValue > 0) {
+                        coroutineScope.launch {
+                            scrollState.scrollTo((itemHeightPx * defaultSelectedOption))
+                        }
                     }
                 }
-            }
-            openDialog.value = true
-        },
-        supportingContent = if (summary != null) {
-            {
-                Text(text = summary)
-            }
-        } else {
-            null
-        },
-        leadingContent = if (icon != null) {
-            {
-                Icon(imageVector = icon, contentDescription = null)
-            }
-        } else {
-            null
-        }
+                openDialog.value = true
+            },
+        supportingContent =
+            if (summary != null) {
+                {
+                    Text(text = summary)
+                }
+            } else {
+                null
+            },
+        leadingContent =
+            if (icon != null) {
+                {
+                    Icon(imageVector = icon, contentDescription = null)
+                }
+            } else {
+                null
+            },
     )
 
     if (openDialog.value && entries.isNotEmpty()) {
@@ -225,36 +233,39 @@ private fun ListPreference(
             onDismissRequest = {
                 openDialog.value = false
             },
-            modifier = Modifier.padding(vertical = 16.dp)
+            modifier = Modifier.padding(vertical = 16.dp),
         ) {
             Surface(
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
-                tonalElevation = AlertDialogDefaults.TonalElevation
+                tonalElevation = AlertDialogDefaults.TonalElevation,
             ) {
                 Column(
-                    modifier = Modifier
-                        .height(IntrinsicSize.Min)
-                        .padding(vertical = 24.dp)
+                    modifier =
+                        Modifier
+                            .height(IntrinsicSize.Min)
+                            .padding(vertical = 24.dp),
                 ) {
                     Text(
                         text = title,
                         modifier = Modifier.padding(horizontal = 24.dp),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     if (scrollState.canScrollBackward) {
                         HorizontalDivider()
                     }
                     Column(
-                        modifier = Modifier
-                            .weight(1f)
-                            .selectableGroup()
-                            .verticalScroll(scrollState)
+                        modifier =
+                            Modifier
+                                .weight(1f)
+                                .selectableGroup()
+                                .verticalScroll(scrollState),
                     ) {
                         entries.forEachIndexed { index, text ->
                             Row(
@@ -266,21 +277,21 @@ private fun ListPreference(
                                         onClick = {
                                             onOptionSelected(index)
                                         },
-                                        role = Role.RadioButton
+                                        role = Role.RadioButton,
                                     )
                                     .padding(horizontal = 24.dp),
-                                verticalAlignment = Alignment.CenterVertically
+                                verticalAlignment = Alignment.CenterVertically,
                             ) {
                                 RadioButton(
                                     selected = (index == selectedOption),
-                                    onClick = null // null recommended for accessibility with screen readers
+                                    onClick = null, // null recommended for accessibility with screen readers
                                 )
                                 Text(
                                     text = text,
                                     modifier = Modifier.padding(start = 16.dp),
                                     overflow = TextOverflow.Ellipsis,
                                     maxLines = 1,
-                                    style = MaterialTheme.typography.bodyLarge
+                                    style = MaterialTheme.typography.bodyLarge,
                                 )
                             }
                         }
@@ -289,10 +300,11 @@ private fun ListPreference(
                         HorizontalDivider()
                     }
                     Row(
-                        modifier = Modifier
-                            .padding(horizontal = 24.dp)
-                            .padding(top = 16.dp)
-                            .align(Alignment.End)
+                        modifier =
+                            Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(top = 16.dp)
+                                .align(Alignment.End),
                     ) {
                         TextButton(onClick = { openDialog.value = false }) {
                             Text(stringResource(id = Strings.cancel))
@@ -304,15 +316,15 @@ private fun ListPreference(
                                 if (entryValues.isNotEmpty()) {
                                     onConfirmClick(
                                         selectedOption,
-                                        entryValues[selectedOption]
+                                        entryValues[selectedOption],
                                     )
                                 } else {
                                     onConfirmClick(
                                         selectedOption,
-                                        entries[selectedOption]
+                                        entries[selectedOption],
                                     )
                                 }
-                            }
+                            },
                         ) {
                             Text(stringResource(id = Strings.ok))
                         }

@@ -35,27 +35,30 @@ import edumate.app.R.string as Strings
 fun ContentMaterial(
     uiState: ViewClassworkUiState,
     onEvent: (ViewClassworkUiEvent) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val navigationBarHeight =
         WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val bottomMargin = navigationBarHeight + 10.dp
-    val contentPadding = PaddingValues(
-        start = 16.dp,
-        top = 10.dp,
-        end = 16.dp,
-        bottom = bottomMargin
-    )
-    val refreshState = rememberPullRefreshState(
-        refreshing = uiState.refreshing,
-        onRefresh = { onEvent(ViewClassworkUiEvent.OnRefresh) }
-    )
+    val contentPadding =
+        PaddingValues(
+            start = 16.dp,
+            top = 10.dp,
+            end = 16.dp,
+            bottom = bottomMargin,
+        )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = uiState.refreshing,
+            onRefresh = { onEvent(ViewClassworkUiEvent.OnRefresh) },
+        )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .pullRefresh(refreshState)
+        modifier =
+            modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState),
     ) {
         LazyVerticalGrid(
             columns = GridCells.Adaptive(minSize = 128.dp),
@@ -69,7 +72,7 @@ fun ContentMaterial(
                         text = uiState.classwork.title,
                         modifier = Modifier.padding(top = 6.dp),
                         color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                 }
                 val description = uiState.classwork.description
@@ -79,7 +82,7 @@ fun ContentMaterial(
                             text = description,
                             modifier = Modifier.padding(top = 6.dp),
                             color = MaterialTheme.colorScheme.onSurface,
-                            style = MaterialTheme.typography.bodyLarge
+                            style = MaterialTheme.typography.bodyLarge,
                         )
                     }
                 }
@@ -88,11 +91,12 @@ fun ContentMaterial(
                     header {
                         Text(
                             text = stringResource(id = Strings.attachments),
-                            modifier = Modifier.padding(
-                                top = 14.dp,
-                                bottom = 6.dp
-                            ),
-                            style = MaterialTheme.typography.titleMedium
+                            modifier =
+                                Modifier.padding(
+                                    top = 14.dp,
+                                    bottom = 6.dp,
+                                ),
+                            style = MaterialTheme.typography.titleMedium,
                         )
                     }
                     items(attachments) {
@@ -103,17 +107,17 @@ fun ContentMaterial(
                                     val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                     context.startActivity(browserIntent)
                                 }
-                            }
+                            },
                         )
                     }
                 }
-            }
+            },
         )
 
         PullRefreshIndicator(
             uiState.refreshing,
             refreshState,
-            Modifier.align(Alignment.TopCenter)
+            Modifier.align(Alignment.TopCenter),
         )
     }
 }

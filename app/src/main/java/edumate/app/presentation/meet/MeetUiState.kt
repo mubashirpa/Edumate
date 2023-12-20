@@ -15,5 +15,5 @@ data class MeetUiState(
     val onCreate: Boolean = false,
     val openProgressDialog: Boolean = false,
     val refreshing: Boolean = false,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

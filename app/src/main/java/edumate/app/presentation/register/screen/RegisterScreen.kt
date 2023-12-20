@@ -66,32 +66,34 @@ import edumate.app.R.drawable as Drawables
 import edumate.app.R.string as Strings
 
 @OptIn(
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class,
 )
 @Composable
 fun RegisterScreen(
     viewModel: RegisterViewModel = hiltViewModel(),
     navigateToLogin: () -> Unit,
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnRegisterSuccess by rememberUpdatedState(onRegisterSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarScope = rememberCoroutineScope()
-    val oneTapClient = remember {
-        Identity.getSignInClient(context)
-    }
-    val signInRequest = remember {
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(context.getString(Strings.default_web_client_id))
-                    .setFilterByAuthorizedAccounts(false)
-                    .build()
-            ).build()
-    }
+    val oneTapClient =
+        remember {
+            Identity.getSignInClient(context)
+        }
+    val signInRequest =
+        remember {
+            BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(
+                    BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        .setServerClientId(context.getString(Strings.default_web_client_id))
+                        .setFilterByAuthorizedAccounts(false)
+                        .build(),
+                ).build()
+        }
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == Activity.RESULT_OK) {
@@ -103,7 +105,7 @@ fun RegisterScreen(
                     } else {
                         snackbarScope.launch {
                             snackbarHostState.showSnackbar(
-                                context.getString(Strings.error_auth_google_no_token)
+                                context.getString(Strings.error_auth_google_no_token),
                             )
                         }
                     }
@@ -112,7 +114,7 @@ fun RegisterScreen(
                         CommonStatusCodes.NETWORK_ERROR -> {
                             snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
-                                    context.getString(Strings.error_auth_google_network_error)
+                                    context.getString(Strings.error_auth_google_network_error),
                                 )
                             }
                         }
@@ -120,7 +122,7 @@ fun RegisterScreen(
                         else -> {
                             snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
-                                    context.getString(Strings.error_auth_google_api_exception)
+                                    context.getString(Strings.error_auth_google_api_exception),
                                 )
                             }
                         }
@@ -152,30 +154,32 @@ fun RegisterScreen(
         },
         content = { innerPadding ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .consumeWindowInsets(innerPadding)
-                    .padding(innerPadding),
-                contentAlignment = Alignment.TopCenter
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .fillMaxHeight()
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .fillMaxHeight()
+                            .imePadding()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = stringResource(id = Strings.create_new_account),
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = stringResource(id = Strings.please_fill_in_the_form_to_continue),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     NameField(
@@ -189,7 +193,7 @@ fun RegisterScreen(
                         },
                         isError = viewModel.uiState.nameError != null,
                         errorMessage = viewModel.uiState.nameError?.asString(),
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     EmailField(
@@ -203,7 +207,7 @@ fun RegisterScreen(
                         },
                         isError = viewModel.uiState.emailError != null,
                         errorMessage = viewModel.uiState.emailError?.asString(),
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     PasswordField(
@@ -217,17 +221,18 @@ fun RegisterScreen(
                         },
                         isError = viewModel.uiState.passwordError != null,
                         errorMessage = viewModel.uiState.passwordError?.asString(),
-                        autofillTypes = listOf(AutofillType.NewPassword)
+                        autofillTypes = listOf(AutofillType.NewPassword),
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
                             viewModel.onEvent(RegisterUiEvent.OnSignUpClick)
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.large
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
                         Text(text = stringResource(id = Strings.sign_up))
                     }
@@ -238,7 +243,7 @@ fun RegisterScreen(
                                 .addOnSuccessListener { result ->
                                     val request =
                                         IntentSenderRequest.Builder(
-                                            result.pendingIntent.intentSender
+                                            result.pendingIntent.intentSender,
                                         )
                                             .build()
                                     try {
@@ -247,8 +252,8 @@ fun RegisterScreen(
                                         snackbarScope.launch {
                                             snackbarHostState.showSnackbar(
                                                 context.getString(
-                                                    Strings.error_auth_google_activity_not_found
-                                                )
+                                                    Strings.error_auth_google_activity_not_found,
+                                                ),
                                             )
                                         }
                                     }
@@ -256,21 +261,22 @@ fun RegisterScreen(
                                 .addOnFailureListener {
                                     snackbarScope.launch {
                                         snackbarHostState.showSnackbar(
-                                            context.getString(Strings.error_auth_google_failed)
+                                            context.getString(Strings.error_auth_google_failed),
                                         )
                                     }
                                 }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.large
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
                         Icon(
                             painter = painterResource(id = Drawables.ic_google),
                             contentDescription = stringResource(id = Strings.google),
                             modifier = Modifier.size(ButtonDefaults.IconSize),
-                            tint = Color.Unspecified
+                            tint = Color.Unspecified,
                         )
                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                         Text(text = stringResource(id = Strings.sign_up_with_google))
@@ -282,17 +288,17 @@ fun RegisterScreen(
                         Text(
                             text = stringResource(id = Strings.sign_in),
                             modifier = Modifier.clickable(onClick = navigateToLogin),
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                 }
             }
-        }
+        },
     )
 
     ProgressDialog(
         text = stringResource(id = Strings.creating_account),
-        openDialog = viewModel.uiState.openProgressDialog
+        openDialog = viewModel.uiState.openProgressDialog,
     )
 }

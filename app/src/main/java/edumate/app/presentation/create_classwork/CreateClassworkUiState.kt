@@ -23,5 +23,5 @@ data class CreateClassworkUiState(
     val title: String = "",
     val titleError: UiText? = null,
     val userMessage: UiText? = null,
-    val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
+    val workType: CourseWorkType = CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
 )

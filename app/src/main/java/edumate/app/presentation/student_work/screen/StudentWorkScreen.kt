@@ -34,13 +34,14 @@ fun StudentWorkScreen(
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
     refreshUsingActionButton: Boolean,
-    navigateToViewStudentWork: (studentWorkId: String?, assignedStudent: UserProfile) -> Unit
+    navigateToViewStudentWork: (studentWorkId: String?, assignedStudent: UserProfile) -> Unit,
 ) {
     val context = LocalContext.current
-    val refreshState = rememberPullRefreshState(
-        refreshing = viewModel.uiState.refreshing,
-        onRefresh = { viewModel.onEvent(StudentWorkUiEvent.OnRefresh) }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = viewModel.uiState.refreshing,
+            onRefresh = { viewModel.onEvent(StudentWorkUiEvent.OnRefresh) },
+        )
 
     LaunchedEffect(courseWork.id) {
         viewModel.onEvent(StudentWorkUiEvent.OnInit(courseWork.courseId, courseWork.id))
@@ -61,26 +62,29 @@ fun StudentWorkScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(refreshState)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState),
     ) {
         when (val dataState = viewModel.uiState.dataState) {
             is DataState.EMPTY -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
             is DataState.ERROR -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
@@ -103,10 +107,10 @@ fun StudentWorkScreen(
                                 studentSubmission = studentSubmission,
                                 onClick = { studentWorkId ->
                                     navigateToViewStudentWork(studentWorkId, assignedStudent)
-                                }
+                                },
                             )
                         }
-                    }
+                    },
                 )
             }
 
@@ -116,7 +120,7 @@ fun StudentWorkScreen(
         PullRefreshIndicator(
             viewModel.uiState.refreshing,
             refreshState,
-            Modifier.align(Alignment.TopCenter)
+            Modifier.align(Alignment.TopCenter),
         )
     }
 }

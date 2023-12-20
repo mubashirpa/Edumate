@@ -11,7 +11,7 @@ import edumate.app.R.string as Strings
 fun UnEnrolDialog(
     onDismissRequest: () -> Unit,
     courseId: String?,
-    onConfirmClick: (courseId: String) -> Unit
+    onConfirmClick: (courseId: String) -> Unit,
 ) {
     if (courseId != null) {
         AlertDialog(
@@ -31,7 +31,7 @@ fun UnEnrolDialog(
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }

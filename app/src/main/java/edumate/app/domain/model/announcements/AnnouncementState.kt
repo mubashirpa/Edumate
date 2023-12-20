@@ -4,5 +4,5 @@ enum class AnnouncementState {
     ANNOUNCEMENT_STATE_UNSPECIFIED,
     PUBLISHED,
     DRAFT,
-    DELETED
+    DELETED,
 }

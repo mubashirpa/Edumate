@@ -16,17 +16,17 @@ import kotlinx.coroutines.CoroutineScope
 fun NavGraphBuilder.authentication(
     navController: NavController,
     rootSnackbarHostState: SnackbarHostState,
-    rootSnackbarScope: CoroutineScope
+    rootSnackbarScope: CoroutineScope,
 ) {
     navigation(
         startDestination = Screen.GetStartedScreen.route,
-        route = Routes.Graph.AUTHENTICATION
+        route = Routes.Graph.AUTHENTICATION,
     ) {
         composable(route = Screen.GetStartedScreen.route) {
             GetStartedScreen(
                 navigateToLogin = {
                     navController.navigate(Screen.LoginScreen.route)
-                }
+                },
             )
         }
         composable(route = Screen.LoginScreen.route) {
@@ -39,13 +39,13 @@ fun NavGraphBuilder.authentication(
                 },
                 navigateToRecover = { email ->
                     navController.navigate(
-                        "${Screen.RecoverScreen.route}?${Routes.Args.RECOVER_EMAIL}=$email"
+                        "${Screen.RecoverScreen.route}?${Routes.Args.RECOVER_EMAIL}=$email",
                     )
                 },
                 onLoginSuccess = {
                     navController.popBackStack(Routes.Graph.AUTHENTICATION, true)
                     navController.navigate(Screen.HomeScreen.route)
-                }
+                },
             )
         }
         composable(route = Screen.RegisterScreen.route) {
@@ -59,25 +59,26 @@ fun NavGraphBuilder.authentication(
                 onRegisterSuccess = {
                     navController.popBackStack(Routes.Graph.AUTHENTICATION, true)
                     navController.navigate(Screen.HomeScreen.route)
-                }
+                },
             )
         }
         composable(
             route = "${Screen.RecoverScreen.route}${Routes.Args.RECOVER_SCREEN}",
-            arguments = listOf(
-                navArgument(Routes.Args.RECOVER_EMAIL) {
-                    type = NavType.StringType
-                    nullable = true
-                    defaultValue = null
-                }
-            )
+            arguments =
+                listOf(
+                    navArgument(Routes.Args.RECOVER_EMAIL) {
+                        type = NavType.StringType
+                        nullable = true
+                        defaultValue = null
+                    },
+                ),
         ) {
             RecoverScreen(
                 rootSnackbarHostState = rootSnackbarHostState,
                 rootSnackbarScope = rootSnackbarScope,
                 onPasswordResetEmailSent = {
                     navController.navigateUp()
-                }
+                },
             )
         }
     }

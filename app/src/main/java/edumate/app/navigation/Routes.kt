@@ -1,7 +1,6 @@
 package edumate.app.navigation
 
 object Routes {
-
     object Screen {
         const val CLASS_DETAILS_SCREEN = "class_details_screen"
         const val CLASSWORK_SCREEN = "classwork_screen"

@@ -7,5 +7,5 @@ data class RecoverUiState(
     val emailError: UiText? = null,
     val isPasswordResetEmailSend: Boolean = false,
     val openProgressDialog: Boolean = false,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

@@ -17,21 +17,22 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun FilledIcon(
     imageVector: ImageVector,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .minimumInteractiveComponentSize()
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(color = MaterialTheme.colorScheme.primaryContainer),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .minimumInteractiveComponentSize()
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(color = MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = null,
             modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
         )
     }
 }
@@ -39,21 +40,22 @@ fun FilledIcon(
 @Composable
 fun FilledTonalIcon(
     imageVector: ImageVector,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .minimumInteractiveComponentSize()
-            .size(40.dp)
-            .clip(CircleShape)
-            .background(color = MaterialTheme.colorScheme.secondaryContainer),
-        contentAlignment = Alignment.Center
+        modifier =
+            modifier
+                .minimumInteractiveComponentSize()
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(color = MaterialTheme.colorScheme.secondaryContainer),
+        contentAlignment = Alignment.Center,
     ) {
         Icon(
             imageVector = imageVector,
             contentDescription = null,
             modifier = Modifier.size(24.dp),
-            tint = MaterialTheme.colorScheme.onSecondaryContainer
+            tint = MaterialTheme.colorScheme.onSecondaryContainer,
         )
     }
 }

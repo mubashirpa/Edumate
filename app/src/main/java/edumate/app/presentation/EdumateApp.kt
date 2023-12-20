@@ -31,21 +31,22 @@ fun EdumateApp(isLoggedIn: Boolean) {
         snackbarHost = {
             EdumateSnackbarHost(
                 hostState = snackbarHostState,
-                modifier = Modifier.navigationBarsPadding()
+                modifier = Modifier.navigationBarsPadding(),
             )
         },
-        contentWindowInsets = WindowInsets(0, 0, 0, 0)
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
     ) { innerPadding ->
         MPSNavigationWrapper(
             snackbarHostState = snackbarHostState,
             snackbarScope = snackbarScope,
-            modifier = Modifier
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-                .windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)
-                ),
-            isLoggedIn = isLoggedIn
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding)
+                    .windowInsetsPadding(
+                        WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal),
+                    ),
+            isLoggedIn = isLoggedIn,
         )
     }
 }
@@ -55,7 +56,7 @@ private fun MPSNavigationWrapper(
     snackbarHostState: SnackbarHostState,
     snackbarScope: CoroutineScope,
     modifier: Modifier = Modifier,
-    isLoggedIn: Boolean
+    isLoggedIn: Boolean,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -88,11 +89,11 @@ private fun MPSNavigationWrapper(
                             rootNavController.navigate(Screen.SettingsScreen.route)
                         }
                     }
-                }
+                },
             )
         },
         drawerState = drawerState,
-        gesturesEnabled = gesturesEnabled
+        gesturesEnabled = gesturesEnabled,
     ) {
         Box(modifier = modifier) {
             EdumateAppContent(
@@ -100,7 +101,7 @@ private fun MPSNavigationWrapper(
                 startDestination = startDestination,
                 drawerState = drawerState,
                 snackbarHostState = snackbarHostState,
-                snackbarScope = snackbarScope
+                snackbarScope = snackbarScope,
             )
         }
     }
@@ -112,7 +113,7 @@ private fun EdumateAppContent(
     startDestination: String = Routes.Graph.AUTHENTICATION,
     drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    snackbarScope: CoroutineScope
+    snackbarScope: CoroutineScope,
 ) {
     EdumateNavHost(
         navController = navController,
@@ -120,6 +121,6 @@ private fun EdumateAppContent(
         startDestination = startDestination,
         drawerState = drawerState,
         snackbarHostState = snackbarHostState,
-        snackbarScope = snackbarScope
+        snackbarScope = snackbarScope,
     )
 }

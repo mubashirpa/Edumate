@@ -13,5 +13,5 @@ data class CreateAnnouncementUiState(
     val openProgressDialog: Boolean = false,
     val text: String = "",
     val textError: UiText? = null,
-    val userMessage: UiText? = null
+    val userMessage: UiText? = null,
 )

@@ -74,7 +74,7 @@ fun JoinClassScreen(
     joinClassResults: Flow<String>,
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToProfile: () -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -83,9 +83,10 @@ fun JoinClassScreen(
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val isStudent = uiState.userType == UserType.STUDENT
-    val bottomSheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val bottomSheetState =
+        rememberModalBottomSheetState(
+            skipPartiallyExpanded = true,
+        )
 
     LaunchedEffect(context) {
         focusRequester.requestFocus()
@@ -113,72 +114,77 @@ fun JoinClassScreen(
                     IconButton(onClick = onBackPressed) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(id = Strings.navigate_up)
+                            contentDescription = stringResource(id = Strings.navigate_up),
                         )
                     }
                 },
                 actions = {
                     Box(
                         modifier = Modifier.minimumInteractiveComponentSize(),
-                        contentAlignment = Alignment.Center
+                        contentAlignment = Alignment.Center,
                     ) {
                         UserAvatar(
                             id = uiState.currentUser?.uid.orEmpty(),
-                            fullName = uiState.currentUser?.displayName
-                                ?: uiState.currentUser?.email.orEmpty(),
+                            fullName =
+                                uiState.currentUser?.displayName
+                                    ?: uiState.currentUser?.email.orEmpty(),
                             photoUri = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = navigateToProfile),
                             size = 30.dp,
-                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp)
+                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),
                         )
                     }
                 },
-                scrollBehavior = scrollBehavior
+                scrollBehavior = scrollBehavior,
             )
         },
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) }
+        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .consumeWindowInsets(innerPadding)
-                .padding(innerPadding),
-            contentAlignment = Alignment.TopCenter
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .consumeWindowInsets(innerPadding)
+                    .padding(innerPadding),
+            contentAlignment = Alignment.TopCenter,
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp, vertical = 10.dp)
-                    .imePadding()
-                    .verticalScroll(rememberScrollState())
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp, vertical = 10.dp)
+                        .imePadding()
+                        .verticalScroll(rememberScrollState()),
             ) {
                 AssistChip(
                     onClick = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(true)) },
                     label = {
                         Text(
-                            text = if (isStudent) {
-                                stringResource(id = Strings.student)
-                            } else {
-                                stringResource(id = Strings.teacher)
-                            }
+                            text =
+                                if (isStudent) {
+                                    stringResource(id = Strings.student)
+                                } else {
+                                    stringResource(id = Strings.teacher)
+                                },
                         )
                     },
                     trailingIcon = {
                         Icon(
                             Icons.Filled.ArrowDropDown,
                             contentDescription = null,
-                            Modifier.size(AssistChipDefaults.IconSize)
+                            Modifier.size(AssistChipDefaults.IconSize),
                         )
-                    }
+                    },
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Text(
-                    text = if (isStudent) {
-                        stringResource(id = Strings.enter_the_code_shared_by_your_teacher)
-                    } else {
-                        stringResource(id = Strings.enter_the_code_shared_by_the_class_owner)
-                    },
-                    style = MaterialTheme.typography.bodyMedium
+                    text =
+                        if (isStudent) {
+                            stringResource(id = Strings.enter_the_code_shared_by_your_teacher)
+                        } else {
+                            stringResource(id = Strings.enter_the_code_shared_by_the_class_owner)
+                        },
+                    style = MaterialTheme.typography.bodyMedium,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
                 @Suppress("SENSELESS_COMPARISON")
@@ -187,43 +193,48 @@ fun JoinClassScreen(
                     onValueChange = {
                         onEvent(JoinClassUiEvent.OnClassCodeChange(it))
                     },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .focusRequester(focusRequester),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
                     label = {
                         Text(text = stringResource(id = Strings.class_code))
                     },
-                    supportingText = if (uiState.classCodeError != null) {
-                        {
-                            Text(
-                                text = if (isStudent) {
-                                    stringResource(id = Strings.ask_your_teacher_for_the_class_code)
-                                } else {
-                                    stringResource(
-                                        id = Strings.ask_the_class_owner_for_the_class_code
-                                    )
-                                }
-                            )
-                        }
-                    } else {
-                        null
-                    },
+                    supportingText =
+                        if (uiState.classCodeError != null) {
+                            {
+                                Text(
+                                    text =
+                                        if (isStudent) {
+                                            stringResource(id = Strings.ask_your_teacher_for_the_class_code)
+                                        } else {
+                                            stringResource(
+                                                id = Strings.ask_the_class_owner_for_the_class_code,
+                                            )
+                                        },
+                                )
+                            }
+                        } else {
+                            null
+                        },
                     isError = uiState.classCodeError != null,
-                    keyboardOptions = KeyboardOptions(
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(onDone = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
-                    }),
-                    singleLine = true
+                    keyboardOptions =
+                        KeyboardOptions(
+                            imeAction = ImeAction.Done,
+                        ),
+                    keyboardActions =
+                        KeyboardActions(onDone = {
+                            focusManager.clearFocus()
+                            keyboardController?.hide()
+                        }),
+                    singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
                         onEvent(JoinClassUiEvent.JoinClass)
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(id = Strings.join))
                 }
@@ -239,7 +250,7 @@ fun JoinClassScreen(
         ModalBottomSheet(
             onDismissRequest = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false)) },
             sheetState = bottomSheetState,
-            windowInsets = WindowInsets(0)
+            windowInsets = WindowInsets(0),
         ) {
             Column(modifier = Modifier.selectableGroup()) {
                 Row(
@@ -252,19 +263,19 @@ fun JoinClassScreen(
                                 onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.STUDENT))
                                 onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
                             },
-                            role = Role.RadioButton
+                            role = Role.RadioButton,
                         )
                         .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     RadioButton(
                         selected = isStudent,
-                        onClick = null // null recommended for accessibility with screen readers
+                        onClick = null, // null recommended for accessibility with screen readers
                     )
                     Text(
                         text = stringResource(id = Strings.student),
                         modifier = Modifier.padding(start = 16.dp),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
                 Row(
@@ -277,19 +288,19 @@ fun JoinClassScreen(
                                 onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.TEACHER))
                                 onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
                             },
-                            role = Role.RadioButton
+                            role = Role.RadioButton,
                         )
                         .padding(horizontal = 16.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     RadioButton(
                         selected = !isStudent,
-                        onClick = null // null recommended for accessibility with screen readers
+                        onClick = null, // null recommended for accessibility with screen readers
                     )
                     Text(
                         text = stringResource(id = Strings.teacher),
                         modifier = Modifier.padding(start = 16.dp),
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
                     )
                 }
                 Spacer(modifier = Modifier.height(bottomMargin))

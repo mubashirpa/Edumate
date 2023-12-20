@@ -11,47 +11,50 @@ import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.UserPreferences
 import edumate.app.domain.repository.UserPreferencesRepository
 import edumate.app.presentation.settings.AppTheme
-import java.io.IOException
-import javax.inject.Inject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
+import java.io.IOException
+import javax.inject.Inject
 
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
-    name = PreferencesKeys.USER_PREFERENCES_NAME
+    name = PreferencesKeys.USER_PREFERENCES_NAME,
 )
 
-class UserPreferencesRepositoryImpl @Inject constructor(
-    private val context: Context
-) : UserPreferencesRepository {
+class UserPreferencesRepositoryImpl
+    @Inject
+    constructor(
+        private val context: Context,
+    ) : UserPreferencesRepository {
+        override val userPreferencesFlow: Flow<UserPreferences>
+            get() =
+                context.dataStore.data.catch { exception ->
+                    if (exception is IOException) {
+                        emit(emptyPreferences())
+                    } else {
+                        throw exception
+                    }
+                }.map { preferences ->
+                    val appTheme: AppTheme =
+                        enumValueOf(
+                            preferences[PreferencesKeys.APP_THEME] ?: AppTheme.SYSTEM_DEFAULT.name,
+                        )!!
+                    val appLanguage: String = preferences[PreferencesKeys.APP_LANGUAGE] ?: "en"
+                    UserPreferences(
+                        appTheme = appTheme,
+                        appLanguage = appLanguage,
+                    )
+                }
 
-    override val userPreferencesFlow: Flow<UserPreferences>
-        get() = context.dataStore.data.catch { exception ->
-            if (exception is IOException) {
-                emit(emptyPreferences())
-            } else {
-                throw exception
+        override suspend fun changeAppTheme(appTheme: AppTheme) {
+            context.dataStore.edit { settings ->
+                settings[PreferencesKeys.APP_THEME] = appTheme.name
             }
-        }.map { preferences ->
-            val appTheme: AppTheme = enumValueOf(
-                preferences[PreferencesKeys.APP_THEME] ?: AppTheme.SYSTEM_DEFAULT.name
-            )!!
-            val appLanguage: String = preferences[PreferencesKeys.APP_LANGUAGE] ?: "en"
-            UserPreferences(
-                appTheme = appTheme,
-                appLanguage = appLanguage
-            )
         }
 
-    override suspend fun changeAppTheme(appTheme: AppTheme) {
-        context.dataStore.edit { settings ->
-            settings[PreferencesKeys.APP_THEME] = appTheme.name
+        override suspend fun changeAppLanguage(language: String) {
+            context.dataStore.edit { settings ->
+                settings[PreferencesKeys.APP_LANGUAGE] = language
+            }
         }
     }
-
-    override suspend fun changeAppLanguage(language: String) {
-        context.dataStore.edit { settings ->
-            settings[PreferencesKeys.APP_LANGUAGE] = language
-        }
-    }
-}

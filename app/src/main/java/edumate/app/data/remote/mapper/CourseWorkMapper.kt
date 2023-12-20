@@ -23,7 +23,7 @@ fun CourseWorkDto.toCourseWork(): CourseWork {
         submissionModificationMode,
         creatorUserId,
         assignment,
-        multipleChoiceQuestion
+        multipleChoiceQuestion,
     )
 }
 
@@ -47,6 +47,6 @@ fun CourseWork.toCourseWorkDto(): CourseWorkDto {
         submissionModificationMode,
         creatorUserId,
         assignment,
-        multipleChoiceQuestion
+        multipleChoiceQuestion,
     )
 }

@@ -8,7 +8,6 @@ import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 
 class JsoupRepositoryImpl : JsoupRepository {
-
     override suspend fun connect(url: String): Link {
         return withContext(Dispatchers.IO) {
             val document: Document = Jsoup.connect(url).get()

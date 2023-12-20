@@ -6,5 +6,5 @@ enum class SubmissionState {
     CREATED,
     TURNED_IN,
     RETURNED,
-    RECLAIMED_BY_STUDENT
+    RECLAIMED_BY_STUDENT,
 }

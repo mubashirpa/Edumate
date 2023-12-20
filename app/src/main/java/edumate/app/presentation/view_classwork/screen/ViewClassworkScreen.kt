@@ -15,7 +15,6 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.core.DataState
 import edumate.app.domain.model.course_work.CourseWork
 import edumate.app.domain.model.course_work.CourseWorkType
@@ -28,6 +27,7 @@ import edumate.app.presentation.view_classwork.ViewClassworkUiEvent
 import edumate.app.presentation.view_classwork.ViewClassworkUiState
 import edumate.app.presentation.view_classwork.screen.components.ContentClasswork
 import edumate.app.presentation.view_classwork.screen.components.ContentMaterial
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,9 +40,9 @@ fun ViewClassworkScreen(
     navigateToViewStudentWork: (
         classwork: CourseWork,
         studentWorkId: String?,
-        assignedStudent: UserProfile
+        assignedStudent: UserProfile,
     ) -> Unit,
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
 ) {
     val topBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
@@ -63,18 +63,18 @@ fun ViewClassworkScreen(
                 IconButton(onClick = onBackPressed) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = stringResource(id = Strings.navigate_up)
+                        contentDescription = stringResource(id = Strings.navigate_up),
                     )
                 }
             },
             actions = {
                 if (currentUserType == UserType.TEACHER) {
                     IconButton(
-                        onClick = { share(context, uiState.classwork.alternateLink) }
+                        onClick = { share(context, uiState.classwork.alternateLink) },
                     ) {
                         Icon(
                             Icons.Default.Share,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                 }
@@ -83,61 +83,64 @@ fun ViewClassworkScreen(
                         onClick = {
                             onEvent(
                                 ViewClassworkUiEvent.OnAppBarMenuExpandedChange(
-                                    true
-                                )
+                                    true,
+                                ),
                             )
-                        }
+                        },
                     ) {
                         Icon(
                             Icons.Default.MoreVert,
-                            contentDescription = null
+                            contentDescription = null,
                         )
                     }
                     DropdownMenu(
                         expanded = uiState.appBarMenuExpanded,
                         onDismissRequest = {
                             onEvent(ViewClassworkUiEvent.OnAppBarMenuExpandedChange(false))
-                        }
+                        },
                     ) {
                         DropdownMenuItem(
                             text = { Text(stringResource(id = Strings.refresh)) },
                             onClick = {
                                 onEvent(ViewClassworkUiEvent.OnAppBarMenuExpandedChange(false))
                                 onEvent(ViewClassworkUiEvent.OnRefresh)
-                            }
+                            },
                         )
                         // TODO("Add edit and delete for teachers")
                     }
                 }
             },
-            scrollBehavior = scrollBehavior
+            scrollBehavior = scrollBehavior,
         )
         when (val dataState = uiState.dataState) {
             is DataState.EMPTY -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
             is DataState.ERROR -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
             DataState.LOADING -> {
                 LoadingIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .navigationBarsPadding(),
                 )
             }
 
@@ -147,7 +150,7 @@ fun ViewClassworkScreen(
                         ContentMaterial(
                             uiState = uiState,
                             onEvent = onEvent,
-                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                            modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
                         )
                     }
 
@@ -158,16 +161,17 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
-                            modifier = Modifier.then(
-                                if (currentUserType == UserType.STUDENT) {
-                                    Modifier.nestedScroll(
-                                        scrollBehavior.nestedScrollConnection
-                                    )
-                                } else {
-                                    Modifier
-                                }
-                            ),
-                            navigateToViewStudentWork = navigateToViewStudentWork
+                            modifier =
+                                Modifier.then(
+                                    if (currentUserType == UserType.STUDENT) {
+                                        Modifier.nestedScroll(
+                                            scrollBehavior.nestedScrollConnection,
+                                        )
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
+                            navigateToViewStudentWork = navigateToViewStudentWork,
                         )
                     }
 
@@ -178,16 +182,17 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
-                            modifier = Modifier.then(
-                                if (currentUserType == UserType.STUDENT) {
-                                    Modifier.nestedScroll(
-                                        scrollBehavior.nestedScrollConnection
-                                    )
-                                } else {
-                                    Modifier
-                                }
-                            ),
-                            navigateToViewStudentWork = navigateToViewStudentWork
+                            modifier =
+                                Modifier.then(
+                                    if (currentUserType == UserType.STUDENT) {
+                                        Modifier.nestedScroll(
+                                            scrollBehavior.nestedScrollConnection,
+                                        )
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
+                            navigateToViewStudentWork = navigateToViewStudentWork,
                         )
                     }
 
@@ -198,16 +203,17 @@ fun ViewClassworkScreen(
                             snackbarHostState = snackbarHostState,
                             classworkType = classworkType,
                             currentUserType = currentUserType,
-                            modifier = Modifier.then(
-                                if (currentUserType == UserType.STUDENT) {
-                                    Modifier.nestedScroll(
-                                        scrollBehavior.nestedScrollConnection
-                                    )
-                                } else {
-                                    Modifier
-                                }
-                            ),
-                            navigateToViewStudentWork = navigateToViewStudentWork
+                            modifier =
+                                Modifier.then(
+                                    if (currentUserType == UserType.STUDENT) {
+                                        Modifier.nestedScroll(
+                                            scrollBehavior.nestedScrollConnection,
+                                        )
+                                    } else {
+                                        Modifier
+                                    },
+                                ),
+                            navigateToViewStudentWork = navigateToViewStudentWork,
                         )
                     }
 
@@ -222,12 +228,16 @@ fun ViewClassworkScreen(
     ProgressDialog(openDialog = uiState.openProgressDialog)
 }
 
-private fun share(context: Context, text: String) {
-    val sendIntent: Intent = Intent().apply {
-        action = Intent.ACTION_SEND
-        putExtra(Intent.EXTRA_TEXT, text)
-        type = "text/plain"
-    }
+private fun share(
+    context: Context,
+    text: String,
+) {
+    val sendIntent: Intent =
+        Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, text)
+            type = "text/plain"
+        }
     val shareIntent = Intent.createChooser(sendIntent, null)
     context.startActivity(shareIntent)
 }

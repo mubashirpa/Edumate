@@ -60,7 +60,7 @@ fun AnnouncementsListItem(
     currentUserType: UserType,
     onClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
@@ -69,22 +69,24 @@ fun AnnouncementsListItem(
     OutlinedCard(
         onClick = onClick,
         modifier = modifier,
-        border = BorderStroke(width = Dp.Hairline, color = MaterialTheme.colorScheme.outline)
+        border = BorderStroke(width = Dp.Hairline, color = MaterialTheme.colorScheme.outline),
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .heightIn(min = 72.dp)
-                .padding(start = 16.dp, end = 8.dp)
-                .padding(vertical = 8.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(min = 72.dp)
+                    .padding(start = 16.dp, end = 8.dp)
+                    .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             // leadingContent
             UserAvatar(
                 id = announcement.creatorUserId,
-                fullName = announcement.creatorProfile?.displayName
-                    ?: announcement.creatorProfile?.emailAddress.orEmpty(),
-                photoUrl = announcement.creatorProfile?.photoUrl
+                fullName =
+                    announcement.creatorProfile?.displayName
+                        ?: announcement.creatorProfile?.emailAddress.orEmpty(),
+                photoUrl = announcement.creatorProfile?.photoUrl,
             )
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -94,25 +96,26 @@ fun AnnouncementsListItem(
                     color = MaterialTheme.colorScheme.onSurface,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
-                    style = MaterialTheme.typography.bodyLarge
+                    style = MaterialTheme.typography.bodyLarge,
                 )
                 // supportingContent
                 val creationTime = announcement.creationTime
                 val updateTime = announcement.updateTime
                 if (creationTime != null) {
                     val date = DateUtils.getRelativeTimeSpanString(creationTime)
-                    val text = if (updateTime != null && updateTime != creationTime) {
-                        val edited = DateUtils.getRelativeTimeSpanString(creationTime)
-                        stringResource(id = Strings._edited_, date, edited)
-                    } else {
-                        "$date"
-                    }
+                    val text =
+                        if (updateTime != null && updateTime != creationTime) {
+                            val edited = DateUtils.getRelativeTimeSpanString(creationTime)
+                            stringResource(id = Strings._edited_, date, edited)
+                        } else {
+                            "$date"
+                        }
                     Text(
                         text = text,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
-                        style = MaterialTheme.typography.bodyMedium
+                        style = MaterialTheme.typography.bodyMedium,
                     )
                 }
             }
@@ -122,66 +125,71 @@ fun AnnouncementsListItem(
                 MenuButton(
                     isCreator = isCreator,
                     onEditClick = onEditClick,
-                    onDeleteClick = onDeleteClick
+                    onDeleteClick = onDeleteClick,
                 )
             }
         }
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp, bottom = 16.dp)
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp, bottom = 16.dp),
         ) {
             Text(
                 text = announcement.text,
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
             )
             if (announcement.materials.isNotEmpty()) {
                 Row(
-                    modifier = Modifier
-                        .padding(top = 16.dp)
-                        .horizontalScroll(rememberScrollState())
+                    modifier =
+                        Modifier
+                            .padding(top = 16.dp)
+                            .horizontalScroll(rememberScrollState()),
                 ) {
                     Spacer(modifier = Modifier.width(16.dp))
                     announcement.materials.forEachIndexed { index, material ->
-                        val icon = if (material.driveFile != null) {
-                            when (fileUtils.getFileType(material.driveFile.type)) {
-                                FileType.IMAGE -> Icons.Default.Image
-                                FileType.VIDEO -> Icons.Default.VideoFile
-                                FileType.AUDIO -> Icons.Default.AudioFile
-                                FileType.PDF -> Icons.Default.PictureAsPdf
-                                FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+                        val icon =
+                            if (material.driveFile != null) {
+                                when (fileUtils.getFileType(material.driveFile.type)) {
+                                    FileType.IMAGE -> Icons.Default.Image
+                                    FileType.VIDEO -> Icons.Default.VideoFile
+                                    FileType.AUDIO -> Icons.Default.AudioFile
+                                    FileType.PDF -> Icons.Default.PictureAsPdf
+                                    FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
+                                }
+                            } else if (material.link != null) {
+                                Icons.Default.Link
+                            } else {
+                                Icons.Default.Attachment
                             }
-                        } else if (material.link != null) {
-                            Icons.Default.Link
-                        } else {
-                            Icons.Default.Attachment
-                        }
 
                         when {
                             material.driveFile != null -> {
                                 AssistChip(
                                     onClick = {
-                                        val browserIntent = Intent(
-                                            Intent.ACTION_VIEW,
-                                            Uri.parse(material.driveFile.url)
-                                        )
+                                        val browserIntent =
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(material.driveFile.url),
+                                            )
                                         context.startActivity(browserIntent)
                                     },
                                     label = {
                                         Text(
-                                            text = material.driveFile.title
-                                                ?: material.driveFile.url,
+                                            text =
+                                                material.driveFile.title
+                                                    ?: material.driveFile.url,
                                             overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1
+                                            maxLines = 1,
                                         )
                                     },
                                     modifier = Modifier.widthIn(max = 180.dp),
                                     leadingIcon = {
                                         Icon(
                                             imageVector = icon,
-                                            contentDescription = null
+                                            contentDescription = null,
                                         )
-                                    }
+                                    },
                                 )
                             }
 
@@ -196,16 +204,16 @@ fun AnnouncementsListItem(
                                         Text(
                                             text = material.link.title ?: material.link.url,
                                             overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1
+                                            maxLines = 1,
                                         )
                                     },
                                     modifier = Modifier.widthIn(max = 180.dp),
                                     leadingIcon = {
                                         Icon(
                                             imageVector = icon,
-                                            contentDescription = null
+                                            contentDescription = null,
                                         )
-                                    }
+                                    },
                                 )
                             }
                         }
@@ -224,7 +232,7 @@ fun AnnouncementsListItem(
 private fun MenuButton(
     isCreator: Boolean,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -233,12 +241,12 @@ private fun MenuButton(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                tint = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded = false },
         ) {
             if (isCreator) {
                 DropdownMenuItem(
@@ -246,7 +254,7 @@ private fun MenuButton(
                     onClick = {
                         expanded = false
                         onEditClick()
-                    }
+                    },
                 )
             }
             DropdownMenuItem(
@@ -254,7 +262,7 @@ private fun MenuButton(
                 onClick = {
                     expanded = false
                     onDeleteClick()
-                }
+                },
             )
         }
     }

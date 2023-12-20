@@ -27,8 +27,6 @@ import com.google.android.gms.auth.api.identity.BeginSignInRequest
 import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
-import edumate.app.R.drawable as Drawables
-import edumate.app.R.string as Strings
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.PasswordField
@@ -37,35 +35,39 @@ import edumate.app.presentation.login.LoginUiEvent
 import edumate.app.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
+import edumate.app.R.drawable as Drawables
+import edumate.app.R.string as Strings
 
 @OptIn(
-    ExperimentalComposeUiApi::class
+    ExperimentalComposeUiApi::class,
 )
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navigateToRegister: () -> Unit,
     navigateToRecover: (email: String) -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
 ) {
     val context = LocalContext.current
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnLoginSuccess by rememberUpdatedState(onLoginSuccess)
     val snackbarHostState = remember { SnackbarHostState() }
     val snackbarScope = rememberCoroutineScope()
-    val oneTapClient = remember {
-        Identity.getSignInClient(context)
-    }
-    val signInRequest = remember {
-        BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setServerClientId(context.getString(Strings.default_web_client_id))
-                    .setFilterByAuthorizedAccounts(true)
-                    .build()
-            ).build()
-    }
+    val oneTapClient =
+        remember {
+            Identity.getSignInClient(context)
+        }
+    val signInRequest =
+        remember {
+            BeginSignInRequest.builder()
+                .setGoogleIdTokenRequestOptions(
+                    BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
+                        .setSupported(true)
+                        .setServerClientId(context.getString(Strings.default_web_client_id))
+                        .setFilterByAuthorizedAccounts(true)
+                        .build(),
+                ).build()
+        }
     val activityResultLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
             if (result.resultCode == RESULT_OK) {
@@ -77,7 +79,7 @@ fun LoginScreen(
                     } else {
                         snackbarScope.launch {
                             snackbarHostState.showSnackbar(
-                                context.getString(Strings.error_auth_google_no_token)
+                                context.getString(Strings.error_auth_google_no_token),
                             )
                         }
                     }
@@ -86,7 +88,7 @@ fun LoginScreen(
                         CommonStatusCodes.NETWORK_ERROR -> {
                             snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
-                                    context.getString(Strings.error_auth_google_network_error)
+                                    context.getString(Strings.error_auth_google_network_error),
                                 )
                             }
                         }
@@ -94,7 +96,7 @@ fun LoginScreen(
                         else -> {
                             snackbarScope.launch {
                                 snackbarHostState.showSnackbar(
-                                    context.getString(Strings.error_auth_google_api_exception)
+                                    context.getString(Strings.error_auth_google_api_exception),
                                 )
                             }
                         }
@@ -126,30 +128,32 @@ fun LoginScreen(
         },
         content = { innerPadding ->
             Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .consumeWindowInsets(innerPadding)
-                    .padding(innerPadding),
-                contentAlignment = Alignment.TopCenter
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .consumeWindowInsets(innerPadding)
+                        .padding(innerPadding),
+                contentAlignment = Alignment.TopCenter,
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth(0.9f)
-                        .fillMaxHeight()
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier =
+                        Modifier
+                            .fillMaxWidth(0.9f)
+                            .fillMaxHeight()
+                            .imePadding()
+                            .verticalScroll(rememberScrollState()),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
                         text = stringResource(id = Strings.welcome_back),
-                        style = MaterialTheme.typography.headlineSmall
+                        style = MaterialTheme.typography.headlineSmall,
                     )
                     Spacer(modifier = Modifier.height(12.dp))
                     Text(
                         text = stringResource(id = Strings.please_sign_in_to_your_account),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     EmailField(
@@ -163,7 +167,7 @@ fun LoginScreen(
                         },
                         isError = viewModel.uiState.emailError != null,
                         errorMessage = viewModel.uiState.emailError?.asString(),
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
                     PasswordField(
@@ -176,26 +180,28 @@ fun LoginScreen(
                             Text(text = stringResource(id = Strings.password))
                         },
                         isError = viewModel.uiState.passwordError != null,
-                        errorMessage = viewModel.uiState.passwordError?.asString()
+                        errorMessage = viewModel.uiState.passwordError?.asString(),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = stringResource(id = Strings.forgot_password),
-                        modifier = Modifier
-                            .align(Alignment.End)
-                            .clickable(onClick = { navigateToRecover(viewModel.uiState.email) }),
+                        modifier =
+                            Modifier
+                                .align(Alignment.End)
+                                .clickable(onClick = { navigateToRecover(viewModel.uiState.email) }),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall
+                        style = MaterialTheme.typography.bodySmall,
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
                         onClick = {
                             viewModel.onEvent(LoginUiEvent.OnSignInClick)
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.large
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
                         Text(text = stringResource(id = Strings.sign_in))
                     }
@@ -206,7 +212,7 @@ fun LoginScreen(
                                 .addOnSuccessListener { result ->
                                     val request =
                                         IntentSenderRequest.Builder(
-                                            result.pendingIntent.intentSender
+                                            result.pendingIntent.intentSender,
                                         )
                                             .build()
                                     try {
@@ -215,8 +221,8 @@ fun LoginScreen(
                                         snackbarScope.launch {
                                             snackbarHostState.showSnackbar(
                                                 context.getString(
-                                                    Strings.error_auth_google_activity_not_found
-                                                )
+                                                    Strings.error_auth_google_activity_not_found,
+                                                ),
                                             )
                                         }
                                     }
@@ -224,21 +230,22 @@ fun LoginScreen(
                                 .addOnFailureListener {
                                     snackbarScope.launch {
                                         snackbarHostState.showSnackbar(
-                                            context.getString(Strings.error_auth_google_failed)
+                                            context.getString(Strings.error_auth_google_failed),
                                         )
                                     }
                                 }
                         },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = MaterialTheme.shapes.large
+                        modifier =
+                            Modifier
+                                .fillMaxWidth()
+                                .height(56.dp),
+                        shape = MaterialTheme.shapes.large,
                     ) {
                         Icon(
                             painter = painterResource(id = Drawables.ic_google),
                             contentDescription = stringResource(id = Strings.google),
                             modifier = Modifier.size(ButtonDefaults.IconSize),
-                            tint = Color.Unspecified
+                            tint = Color.Unspecified,
                         )
                         Spacer(Modifier.size(ButtonDefaults.IconSpacing))
                         Text(text = stringResource(id = Strings.sign_in_with_google))
@@ -250,17 +257,17 @@ fun LoginScreen(
                         Text(
                             text = stringResource(id = Strings.sign_up),
                             modifier = Modifier.clickable(onClick = navigateToRegister),
-                            color = MaterialTheme.colorScheme.primary
+                            color = MaterialTheme.colorScheme.primary,
                         )
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                 }
             }
-        }
+        },
     )
 
     ProgressDialog(
         text = stringResource(id = Strings.signing_in),
-        openDialog = viewModel.uiState.openProgressDialog
+        openDialog = viewModel.uiState.openProgressDialog,
     )
 }

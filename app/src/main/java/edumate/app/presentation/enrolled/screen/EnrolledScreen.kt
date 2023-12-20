@@ -38,15 +38,16 @@ fun EnrolledScreen(
     snackbarHostState: SnackbarHostState,
     contentPadding: PaddingValues,
     refreshUsingActionButton: Boolean,
-    navigateToClassDetails: (courseId: String) -> Unit
+    navigateToClassDetails: (courseId: String) -> Unit,
 ) {
     val context = LocalContext.current
-    val refreshState = rememberPullRefreshState(
-        refreshing = viewModel.uiState.refreshing,
-        onRefresh = {
-            viewModel.onEvent(EnrolledUiEvent.OnRefresh)
-        }
-    )
+    val refreshState =
+        rememberPullRefreshState(
+            refreshing = viewModel.uiState.refreshing,
+            onRefresh = {
+                viewModel.onEvent(EnrolledUiEvent.OnRefresh)
+            },
+        )
 
     LaunchedEffect(refreshUsingActionButton) {
         if (refreshUsingActionButton) {
@@ -63,50 +64,55 @@ fun EnrolledScreen(
     }
 
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .pullRefresh(refreshState)
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .pullRefresh(refreshState),
     ) {
         when (val dataState = viewModel.uiState.dataState) {
             is DataState.EMPTY -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
             is DataState.ERROR -> {
                 ErrorScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp, vertical = 10.dp)
+                            .navigationBarsPadding(),
+                    errorMessage = dataState.message.asString(),
                 )
             }
 
             DataState.LOADING -> {
                 LoadingIndicator(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .navigationBarsPadding()
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .navigationBarsPadding(),
                 )
             }
 
             DataState.SUCCESS -> {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .supportWideScreen(),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .supportWideScreen(),
                     contentPadding = contentPadding,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
                         itemsIndexed(
                             viewModel.uiState.courses,
-                            key = { _, item -> item.id }
+                            key = { _, item -> item.id },
                         ) { index, course ->
                             EnrolledListItem(
                                 course = course,
@@ -115,10 +121,10 @@ fun EnrolledScreen(
                                 onUnEnrollClick = {
                                     viewModel.onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(it))
                                 },
-                                onClick = navigateToClassDetails
+                                onClick = navigateToClassDetails,
                             )
                         }
-                    }
+                    },
                 )
             }
 
@@ -128,7 +134,7 @@ fun EnrolledScreen(
         PullRefreshIndicator(
             viewModel.uiState.refreshing,
             refreshState,
-            Modifier.align(Alignment.TopCenter)
+            Modifier.align(Alignment.TopCenter),
         )
     }
 
@@ -139,7 +145,7 @@ fun EnrolledScreen(
         courseId = viewModel.uiState.unEnrolCourseId,
         onConfirmClick = {
             viewModel.onEvent(EnrolledUiEvent.OnUnenroll(it))
-        }
+        },
     )
 
     ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)

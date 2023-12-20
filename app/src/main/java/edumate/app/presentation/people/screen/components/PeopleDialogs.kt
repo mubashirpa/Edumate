@@ -12,16 +12,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import edumate.app.R.string as Strings
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.R.string as Strings
 
 @Composable
 fun LeaveClassDialog(
     onDismissRequest: () -> Unit,
     openDialog: Boolean,
-    onConfirmClick: () -> Unit
+    onConfirmClick: () -> Unit,
 ) {
     if (openDialog) {
         AlertDialog(
@@ -41,7 +41,7 @@ fun LeaveClassDialog(
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }
@@ -51,15 +51,16 @@ fun RemoveUserDialog(
     onDismissRequest: () -> Unit,
     userProfile: UserProfile?,
     userType: UserType,
-    onConfirmClick: (userType: UserType, uid: String) -> Unit
+    onConfirmClick: (userType: UserType, uid: String) -> Unit,
 ) {
     if (userProfile != null) {
         val userId = userProfile.id
-        val title = if (userType == UserType.TEACHER) {
-            stringResource(id = Strings.remove_teacher)
-        } else {
-            stringResource(id = Strings.remove_student)
-        }
+        val title =
+            if (userType == UserType.TEACHER) {
+                stringResource(id = Strings.remove_teacher)
+            } else {
+                stringResource(id = Strings.remove_student)
+            }
 
         AlertDialog(
             onDismissRequest = onDismissRequest,
@@ -67,12 +68,12 @@ fun RemoveUserDialog(
             text = {
                 Row(
                     modifier = Modifier.padding(vertical = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
                 ) {
                     UserAvatar(
                         id = userId,
                         fullName = userProfile.displayName ?: userProfile.emailAddress.orEmpty(),
-                        photoUrl = userProfile.photoUrl
+                        photoUrl = userProfile.photoUrl,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(text = userProfile.displayName.orEmpty())
@@ -87,7 +88,7 @@ fun RemoveUserDialog(
                 TextButton(onClick = onDismissRequest) {
                     Text(stringResource(id = Strings.cancel))
                 }
-            }
+            },
         )
     }
 }
