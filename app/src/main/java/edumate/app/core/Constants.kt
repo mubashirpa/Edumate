@@ -9,7 +9,6 @@ object Constants {
     const val MEET_SCREEN_EMPTY_ANIM_URL =
         "https://assets1.lottiefiles.com/private_files/lf30_jrhj68re.json"
     const val NOTIFICATION_SERVER_URL = "http://192.168.2.141:8080/notification"
-    const val ONESIGNAL_APP_ID = "e3e1c903-e850-4f1a-b750-e9daaa2c2a55"
     const val PEOPLE_SCREEN_EMPTY_ANIM_URL =
         "https://assets5.lottiefiles.com/private_files/lf30_TBKozE.json"
     const val STREAM_SCREEN_EMPTY_ANIM_URL =
