@@ -1,8 +1,8 @@
 package edumate.app.navigation
 
-import androidx.compose.material3.DrawerState
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -22,29 +22,28 @@ import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
 import edumate.app.presentation.settings.SettingsViewModel
 import edumate.app.presentation.settings.screen.SettingsScreen
-import kotlinx.coroutines.CoroutineScope
 
 @Composable
 fun EdumateNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     startDestination: String = Routes.Graph.AUTHENTICATION,
-    drawerState: DrawerState,
     snackbarHostState: SnackbarHostState,
-    snackbarScope: CoroutineScope,
 ) {
+    val scope = rememberCoroutineScope()
+
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier,
     ) {
-        authentication(navController, snackbarHostState, snackbarScope)
+        authentication(navController, snackbarHostState, scope)
         composable(route = Screen.HomeScreen.route) {
             val viewModel: HomeViewModel = hiltViewModel()
             HomeScreen(
+                navController = navController,
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
-                drawerState = drawerState,
                 snackbarHostState = snackbarHostState,
                 navigateToClassDetails = { courseId ->
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId))
