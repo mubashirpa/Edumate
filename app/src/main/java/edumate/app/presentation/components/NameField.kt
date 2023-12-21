@@ -12,6 +12,8 @@ import androidx.compose.ui.autofill.AutofillType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -29,14 +31,14 @@ fun NameField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    errorMessage: String? = null,
+    errorMessage: String = "",
     imeAction: ImeAction = ImeAction.Done,
     autofillTypes: List<AutofillType> = listOf(AutofillType.PersonFullName),
 ) {
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val supportingText: @Composable (() -> Unit)? =
-        if (!errorMessage.isNullOrEmpty()) {
+        if (errorMessage.isNotEmpty()) {
             { Text(text = errorMessage) }
         } else {
             null
@@ -50,7 +52,10 @@ fun NameField(
                 .autofill(
                     autofillTypes = autofillTypes,
                     onFill = { onValueChange(it) },
-                ),
+                )
+                .semantics {
+                    if (isError) error(errorMessage)
+                },
         readOnly = readOnly,
         label = label,
         placeholder = placeholder,

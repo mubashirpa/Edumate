@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.*
 import edumate.app.core.ext.autofill
 import edumate.app.R.string as Strings
@@ -29,7 +31,7 @@ fun PasswordField(
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
     isError: Boolean = false,
-    errorMessage: String? = null,
+    errorMessage: String = "",
     imeAction: ImeAction = ImeAction.Done,
     autofillTypes: List<AutofillType> = listOf(AutofillType.Password),
 ) {
@@ -37,7 +39,7 @@ fun PasswordField(
     val keyboardController = LocalSoftwareKeyboardController.current
     var passwordHidden by remember { mutableStateOf(true) }
     val supportingText: @Composable (() -> Unit)? =
-        if (!errorMessage.isNullOrEmpty()) {
+        if (errorMessage.isNotEmpty()) {
             { Text(text = errorMessage) }
         } else {
             null
@@ -51,7 +53,10 @@ fun PasswordField(
                 .autofill(
                     autofillTypes = autofillTypes,
                     onFill = { onValueChange(it) },
-                ),
+                )
+                .semantics {
+                    if (isError) error(errorMessage)
+                },
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
