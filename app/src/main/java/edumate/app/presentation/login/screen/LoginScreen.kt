@@ -38,9 +38,7 @@ import kotlinx.coroutines.launch
 import edumate.app.R.drawable as Drawables
 import edumate.app.R.string as Strings
 
-@OptIn(
-    ExperimentalComposeUiApi::class,
-)
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
@@ -166,7 +164,7 @@ fun LoginScreen(
                             Text(text = stringResource(id = Strings.email))
                         },
                         isError = viewModel.uiState.emailError != null,
-                        errorMessage = viewModel.uiState.emailError?.asString(),
+                        errorMessage = viewModel.uiState.emailError?.asString().orEmpty(),
                         imeAction = ImeAction.Next,
                     )
                     Spacer(modifier = Modifier.height(10.dp))
@@ -180,7 +178,7 @@ fun LoginScreen(
                             Text(text = stringResource(id = Strings.password))
                         },
                         isError = viewModel.uiState.passwordError != null,
-                        errorMessage = viewModel.uiState.passwordError?.asString(),
+                        errorMessage = viewModel.uiState.passwordError?.asString().orEmpty(),
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Text(

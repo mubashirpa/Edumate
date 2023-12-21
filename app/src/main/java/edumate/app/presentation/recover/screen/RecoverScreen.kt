@@ -143,7 +143,7 @@ fun RecoverScreen(
                             Text(text = stringResource(id = Strings.email))
                         },
                         isError = viewModel.uiState.emailError != null,
-                        errorMessage = viewModel.uiState.emailError?.asString(),
+                        errorMessage = viewModel.uiState.emailError?.asString().orEmpty(),
                     )
                     Spacer(modifier = Modifier.height(30.dp))
                     Button(
