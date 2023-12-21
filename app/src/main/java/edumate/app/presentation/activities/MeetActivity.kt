@@ -12,7 +12,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.facebook.react.modules.core.PermissionListener
 import com.google.android.material.snackbar.Snackbar
 import org.jitsi.meet.sdk.BroadcastEvent
-import org.jitsi.meet.sdk.BroadcastIntentHelper
 import org.jitsi.meet.sdk.JitsiMeetActivityDelegate
 import org.jitsi.meet.sdk.JitsiMeetActivityInterface
 import org.jitsi.meet.sdk.JitsiMeetConferenceOptions
@@ -61,9 +60,11 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
                 .setAudioMuted(false)
                 .setVideoMuted(false)
                 .setAudioOnly(false)
+                .setFeatureFlag("toolbox.enabled", false)
+                .setFeatureFlag("filmstrip.enabled", false)
                 .setFeatureFlag("car-mode.enabled", false)
                 .setFeatureFlag("invite.enabled", false)
-                // .setFeatureFlag("pip.enabled", false)
+                .setFeatureFlag("pip.enabled", false)
                 .setFeatureFlag("security-options.enabled", false)
                 .setFeatureFlag("settings.enabled", false)
                 .setFeatureFlag("video-share.enabled", false)
@@ -93,16 +94,13 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
     override fun onDestroy() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
         super.onDestroy()
-
         view?.dispose()
         view = null
-
         JitsiMeetActivityDelegate.onHostDestroy(this)
     }
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
-
         JitsiMeetActivityDelegate.onNewIntent(intent)
     }
 
@@ -112,7 +110,6 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
         grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
         JitsiMeetActivityDelegate.onRequestPermissionsResult(
             requestCode,
             permissions,
@@ -122,13 +119,11 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
 
     override fun onResume() {
         super.onResume()
-
         JitsiMeetActivityDelegate.onHostResume(this)
     }
 
     override fun onStop() {
         super.onStop()
-
         JitsiMeetActivityDelegate.onHostPause(this)
     }
 
@@ -198,11 +193,5 @@ class MeetActivity : FragmentActivity(), JitsiMeetActivityInterface {
                 }
             }
         }
-    }
-
-    private fun hangUp() {
-        val hangupBroadcastIntent: Intent = BroadcastIntentHelper.buildHangUpIntent()
-        LocalBroadcastManager.getInstance(this.applicationContext)
-            .sendBroadcast(hangupBroadcastIntent)
     }
 }
