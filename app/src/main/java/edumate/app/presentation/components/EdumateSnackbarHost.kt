@@ -9,6 +9,7 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 
 /**
@@ -20,13 +21,16 @@ fun EdumateSnackbarHost(
     modifier: Modifier = Modifier,
     snackbar: @Composable (SnackbarData) -> Unit = { Snackbar(it) },
 ) {
+    val configuration = LocalConfiguration.current
+    val smallestScreenWidth = configuration.smallestScreenWidthDp.dp
+
     SnackbarHost(
         hostState = hostState,
         modifier =
             modifier
                 // Limit the Snackbar width for large screens
                 .wrapContentWidth(align = Alignment.Start)
-                .widthIn(max = 550.dp),
+                .widthIn(max = smallestScreenWidth),
         snackbar = snackbar,
     )
 }
