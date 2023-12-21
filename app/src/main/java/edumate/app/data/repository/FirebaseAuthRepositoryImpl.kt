@@ -1,9 +1,11 @@
 package edumate.app.data.repository
 
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import edumate.app.core.FirebaseConstants
 import edumate.app.data.remote.dto.UserProfileDto
@@ -43,9 +45,7 @@ class FirebaseAuthRepositoryImpl
             password: String,
         ): FirebaseUser? {
             val user = firebaseAuth.createUserWithEmailAndPassword(email, password).await().user
-            user?.updateProfile(
-                UserProfileChangeRequest.Builder().setDisplayName(name).build(),
-            )?.await()
+            user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())?.await()
             createUserInFireStore()
             return user
         }
@@ -71,7 +71,7 @@ class FirebaseAuthRepositoryImpl
         }
 
         override fun signOut() {
-            firebaseAuth.signOut()
+            Firebase.auth.signOut()
         }
 
         private suspend fun createUserInFireStore() {
@@ -85,9 +85,7 @@ class FirebaseAuthRepositoryImpl
                         verified = isEmailVerified,
                     ).toMap()
 
-                firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION).document(uid)
-                    .set(user)
-                    .await()
+                firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION).document(uid).set(user).await()
             }
         }
     }

@@ -39,14 +39,7 @@ class SignInUseCase
                         }
 
                         "ERROR_USER_NOT_FOUND" -> {
-                            emit(
-                                Resource.Error(
-                                    UiText.StringResource(
-                                        Strings.auth_error_user_not_found,
-                                        email,
-                                    ),
-                                ),
-                            )
+                            emit(Resource.Error(UiText.StringResource(Strings.auth_error_user_not_found, email)))
                         }
 
                         "ERROR_USER_DISABLED" -> {
@@ -54,9 +47,7 @@ class SignInUseCase
                         }
 
                         "ERROR_TOO_MANY_REQUESTS" -> {
-                            emit(
-                                Resource.Error(UiText.StringResource(Strings.auth_error_too_many_requests)),
-                            )
+                            emit(Resource.Error(UiText.StringResource(Strings.auth_error_too_many_requests)))
                         }
 
                         else -> {

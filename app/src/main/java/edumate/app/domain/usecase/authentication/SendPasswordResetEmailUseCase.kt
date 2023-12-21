@@ -23,9 +23,7 @@ class SendPasswordResetEmailUseCase
                     emit(Resource.Success(result))
                 } catch (e: FirebaseAuthInvalidUserException) {
                     if (e.errorCode == "ERROR_USER_NOT_FOUND") {
-                        emit(
-                            Resource.Error(UiText.StringResource(Strings.auth_error_user_not_found, email)),
-                        )
+                        emit(Resource.Error(UiText.StringResource(Strings.auth_error_user_not_found, email)))
                     } else {
                         emit(Resource.Error(UiText.StringResource(Strings.auth_invalid_user_exception)))
                     }

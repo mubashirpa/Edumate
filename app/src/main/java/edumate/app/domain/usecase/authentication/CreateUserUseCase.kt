@@ -36,11 +36,7 @@ class CreateUserUseCase
                 } catch (e: FirebaseAuthException) {
                     when (e.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> {
-                            emit(
-                                Resource.Error(
-                                    UiText.StringResource(Strings.auth_error_email_already_in_use),
-                                ),
-                            )
+                            emit(Resource.Error(UiText.StringResource(Strings.auth_error_email_already_in_use)))
                         }
 
                         else -> {
