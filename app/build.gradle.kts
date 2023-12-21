@@ -120,6 +120,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.jitsi.meet.sdk) { isTransitive = true }
     implementation(libs.jsoup)
+    implementation(libs.google.ai.client.generativeai)
 }
 
 ktlint {
@@ -152,6 +153,14 @@ androidComponents {
                 "String",
                 "\"" + localProperties["ONESIGNAL_APP_ID"] + "\"",
                 "Onesignal Application ID",
+            ),
+        )
+        variant.buildConfigFields.put(
+            "GEMINI_API_KEY",
+            BuildConfigField(
+                "String",
+                "\"" + localProperties["GEMINI_API_KEY"] + "\"",
+                "Google Gemini Api Key",
             ),
         )
     }
