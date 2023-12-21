@@ -1,6 +1,8 @@
 package edumate.app.di
 
 import android.app.Application
+import com.google.ai.client.generativeai.GenerativeModel
+import com.google.ai.client.generativeai.type.generationConfig
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -9,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import edumate.app.BuildConfig
 import edumate.app.data.AndroidMailMatcher
 import edumate.app.data.repository.*
 import edumate.app.domain.repository.*
@@ -117,5 +120,22 @@ object AppModule {
                 }
             }
         return client
+    }
+
+    // Gemini AI
+
+    @Singleton
+    @Provides
+    fun provideGenerativeModel(): GenerativeModel {
+        val config =
+            generationConfig {
+                temperature = 0.7f
+            }
+
+        return GenerativeModel(
+            modelName = "gemini-pro",
+            apiKey = BuildConfig.GEMINI_API_KEY,
+            generationConfig = config,
+        )
     }
 }
