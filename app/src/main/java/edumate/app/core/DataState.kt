@@ -1,13 +1,28 @@
 package edumate.app.core
 
-sealed class DataState {
-    data object UNKNOWN : DataState()
+sealed interface DataState {
+    /**
+     * Empty state when the screen is first shown
+     */
+    data object UNKNOWN : DataState
 
-    data object LOADING : DataState()
+    /**
+     * Still loading
+     */
+    data object LOADING : DataState
 
-    data class ERROR(val message: UiText) : DataState()
+    /**
+     * There was an error fetching data
+     */
+    data class ERROR(val message: UiText) : DataState
 
-    data class EMPTY(val message: UiText) : DataState()
+    /**
+     * Data has been fetched but empty
+     */
+    data class EMPTY(val message: UiText) : DataState
 
-    data object SUCCESS : DataState()
+    /**
+     * Data has been fetched
+     */
+    data object SUCCESS : DataState
 }
