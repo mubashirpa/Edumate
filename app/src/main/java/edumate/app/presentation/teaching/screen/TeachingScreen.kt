@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -21,48 +20,56 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import edumate.app.core.DataState
-import edumate.app.core.ext.supportWideScreen
+import edumate.app.core.Resource
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.teaching.TeachingUiEvent
-import edumate.app.presentation.teaching.TeachingViewModel
+import edumate.app.presentation.teaching.TeachingUiState
 import edumate.app.presentation.teaching.screen.components.DeleteCourseDialog
 import edumate.app.presentation.teaching.screen.components.TeachingListItem
+import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun TeachingScreen(
-    viewModel: TeachingViewModel = hiltViewModel(),
+    uiState: TeachingUiState,
+    onEvent: (TeachingUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
-    contentPadding: PaddingValues,
+    innerPadding: PaddingValues,
     refreshUsingActionButton: Boolean,
     navigateToCreateClass: (courseId: String) -> Unit,
     navigateToClassDetails: (courseId: String) -> Unit,
 ) {
     val context = LocalContext.current
+    val contentPadding =
+        PaddingValues(
+            start = 16.dp,
+            top = 12.dp,
+            end = 16.dp,
+            bottom = innerPadding.calculateBottomPadding() + 88.dp, // FloatingActionButton height including margin,
+        )
     val refreshState =
         rememberPullRefreshState(
-            refreshing = viewModel.uiState.refreshing,
+            refreshing = uiState.refreshing,
             onRefresh = {
-                viewModel.onEvent(TeachingUiEvent.OnRefresh)
+                onEvent(TeachingUiEvent.OnRefresh)
             },
         )
 
     LaunchedEffect(refreshUsingActionButton) {
         if (refreshUsingActionButton) {
-            viewModel.onEvent(TeachingUiEvent.OnRefresh)
+            onEvent(TeachingUiEvent.OnRefresh)
         }
     }
 
-    viewModel.uiState.userMessage?.let { userMessage ->
+    uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
-            viewModel.onEvent(TeachingUiEvent.UserMessageShown)
+            onEvent(TeachingUiEvent.UserMessageShown)
         }
     }
 
@@ -72,76 +79,70 @@ fun TeachingScreen(
                 .fillMaxSize()
                 .pullRefresh(refreshState),
     ) {
-        when (val dataState = viewModel.uiState.dataState) {
-            is DataState.EMPTY -> {
+        when (val teachingCoursesResource = uiState.teachingCoursesResource) {
+            is Resource.Unknown -> {
+                // Nothing is shown
+            }
+
+            is Resource.Error -> {
                 ErrorScreen(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp)
-                            .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString(),
+                            .padding(innerPadding),
+                    errorMessage = teachingCoursesResource.message!!.asString(),
                 )
             }
 
-            is DataState.ERROR -> {
-                ErrorScreen(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 16.dp, vertical = 10.dp)
-                            .navigationBarsPadding(),
-                    errorMessage = dataState.message.asString(),
-                )
-            }
-
-            DataState.LOADING -> {
+            is Resource.Loading -> {
                 LoadingIndicator(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .navigationBarsPadding(),
+                            .padding(innerPadding),
                 )
             }
 
-            DataState.SUCCESS -> {
-                LazyColumn(
-                    modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .supportWideScreen(),
-                    contentPadding = contentPadding,
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    content = {
-                        itemsIndexed(
-                            viewModel.uiState.courses,
-                            key = { _, item -> item.id },
-                        ) { index, course ->
-                            TeachingListItem(
-                                course = course,
-                                index = index,
-                                modifier = Modifier.animateItemPlacement(),
-                                onShareClick = { share(context, it) },
-                                onEditClick = navigateToCreateClass,
-                                onDeleteClick = {
-                                    viewModel.onEvent(
-                                        TeachingUiEvent.OnOpenDeleteCourseDialogChange(
-                                            it,
-                                        ),
-                                    )
-                                },
-                                onClick = navigateToClassDetails,
-                            )
-                        }
-                    },
-                )
+            is Resource.Success -> {
+                val courses = teachingCoursesResource.data
+                if (courses.isNullOrEmpty()) {
+                    ErrorScreen(
+                        modifier =
+                            Modifier
+                                .fillMaxSize()
+                                .padding(innerPadding),
+                        errorMessage = stringResource(id = Strings.add_a_class_to_get_started),
+                    )
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = contentPadding,
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        content = {
+                            itemsIndexed(
+                                teachingCoursesResource.data,
+                                key = { _, item -> item.id },
+                            ) { index, course ->
+                                TeachingListItem(
+                                    course = course,
+                                    index = index,
+                                    modifier = Modifier.animateItemPlacement(),
+                                    onShareClick = { share(context, it) },
+                                    onEditClick = navigateToCreateClass,
+                                    onDeleteClick = {
+                                        onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(it))
+                                    },
+                                    onClick = navigateToClassDetails,
+                                )
+                            }
+                        },
+                    )
+                }
             }
-
-            DataState.UNKNOWN -> {}
         }
 
         PullRefreshIndicator(
-            viewModel.uiState.refreshing,
+            uiState.refreshing,
             refreshState,
             Modifier.align(Alignment.TopCenter),
         )
@@ -149,15 +150,15 @@ fun TeachingScreen(
 
     DeleteCourseDialog(
         onDismissRequest = {
-            viewModel.onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(null))
+            onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(null))
         },
-        courseId = viewModel.uiState.deleteCourseId,
+        courseId = uiState.deleteCourseId,
         onConfirmClick = {
-            viewModel.onEvent(TeachingUiEvent.OnDeleteCourse(it))
+            onEvent(TeachingUiEvent.OnDeleteCourse(it))
         },
     )
 
-    ProgressDialog(openDialog = viewModel.uiState.openProgressDialog)
+    ProgressDialog(openDialog = uiState.openProgressDialog)
 }
 
 private fun share(

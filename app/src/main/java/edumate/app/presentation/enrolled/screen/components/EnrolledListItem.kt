@@ -116,7 +116,9 @@ private fun EnrolledMenuButton(onUnEnrollClick: () -> Unit) {
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text(stringResource(id = Strings.unenrol)) },
+                text = {
+                    Text(stringResource(id = Strings.unenrol))
+                },
                 onClick = {
                     expanded = false
                     onUnEnrollClick()

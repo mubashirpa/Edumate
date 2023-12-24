@@ -7,9 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.DataState
 import edumate.app.core.Resource
-import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.DeleteCourse
 import edumate.app.domain.usecase.courses.ListCourses
@@ -18,7 +16,6 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
-import edumate.app.R.string as Strings
 
 @HiltViewModel
 class TeachingViewModel
@@ -69,47 +66,39 @@ class TeachingViewModel
             listCoursesJob?.cancel()
             listCoursesJob =
                 listCoursesUseCase(teacherId = teacherId).onEach { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState =
-                                if (refreshing) {
-                                    uiState.copy(refreshing = true)
-                                } else {
-                                    uiState.copy(dataState = DataState.LOADING)
-                                }
-                        }
+                    if (refreshing) {
+                        when (resource) {
+                            is Resource.Unknown -> {}
 
-                        is Resource.Success -> {
-                            val courses = resource.data
-                            uiState =
-                                if (courses.isNullOrEmpty()) {
-                                    uiState.copy(
-                                        dataState =
-                                            DataState.EMPTY(
-                                                UiText.StringResource(Strings.add_a_class_to_get_started),
-                                            ),
-                                        refreshing = false,
-                                    )
-                                } else {
-                                    uiState.copy(
-                                        courses = courses,
-                                        dataState = DataState.SUCCESS,
-                                        refreshing = false,
-                                    )
-                                }
-                        }
+                            is Resource.Loading -> {
+                                uiState = uiState.copy(refreshing = true)
+                            }
 
-                        is Resource.Error -> {
-                            uiState =
-                                if (refreshing) {
+                            is Resource.Success -> {
+                                uiState =
                                     uiState.copy(
+                                        teachingCoursesResource = resource,
                                         refreshing = false,
-                                        userMessage = resource.message,
                                     )
-                                } else {
-                                    uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
-                                }
+                            }
+
+                            is Resource.Error -> {
+                                uiState =
+                                    if (uiState.teachingCoursesResource is Resource.Loading) {
+                                        uiState.copy(
+                                            teachingCoursesResource = resource,
+                                            refreshing = false,
+                                        )
+                                    } else {
+                                        uiState.copy(
+                                            refreshing = false,
+                                            userMessage = resource.message,
+                                        )
+                                    }
+                            }
                         }
+                    } else {
+                        uiState = uiState.copy(teachingCoursesResource = resource)
                     }
                 }.launchIn(viewModelScope)
         }
@@ -118,6 +107,8 @@ class TeachingViewModel
             // TODO("Delete other resources related to course like announcements")
             deleteCourseUseCase(courseId).onEach { resource ->
                 when (resource) {
+                    is Resource.Unknown -> {}
+
                     is Resource.Loading -> {
                         uiState =
                             uiState.copy(
