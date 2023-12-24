@@ -3,8 +3,10 @@ package edumate.app.presentation.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -25,9 +27,10 @@ import edumate.app.R.string as Strings
 fun ErrorScreen(
     modifier: Modifier = Modifier,
     errorMessage: String = stringResource(id = Strings.error_unexpected),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier.padding(contentPadding),
         contentAlignment = Alignment.Center,
     ) {
         Text(
@@ -42,10 +45,11 @@ fun ErrorScreen(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
     errorMessage: String = stringResource(id = Strings.error_unknown),
-    buttonTitle: String = stringResource(id = Strings.retry),
+    buttonText: String = stringResource(id = Strings.retry),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
 ) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(contentPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
@@ -55,7 +59,7 @@ fun ErrorScreen(
         )
         Spacer(modifier = Modifier.height(24.dp))
         Button(onClick = onRetryClick) {
-            Text(text = buttonTitle)
+            Text(text = buttonText)
         }
     }
 }
@@ -65,11 +69,12 @@ fun AnimatedErrorScreen(
     url: String,
     modifier: Modifier = Modifier,
     errorMessage: String = stringResource(id = Strings.error_unexpected),
+    contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 12.dp),
 ) {
     val composition by rememberLottieComposition(LottieCompositionSpec.Url(url))
 
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(contentPadding),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
