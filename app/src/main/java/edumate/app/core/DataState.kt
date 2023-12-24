@@ -1,5 +1,6 @@
 package edumate.app.core
 
+@Deprecated("Deprecated class and will be removed later")
 sealed interface DataState {
     /**
      * Empty state when the screen is first shown
