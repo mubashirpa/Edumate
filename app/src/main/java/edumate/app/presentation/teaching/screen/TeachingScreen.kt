@@ -44,12 +44,13 @@ fun TeachingScreen(
     navigateToClassDetails: (courseId: String) -> Unit,
 ) {
     val context = LocalContext.current
+    val bottomPadding = innerPadding.calculateBottomPadding()
     val contentPadding =
         PaddingValues(
             start = 16.dp,
             top = 12.dp,
             end = 16.dp,
-            bottom = innerPadding.calculateBottomPadding() + 88.dp, // FloatingActionButton height including margin,
+            bottom = bottomPadding + 88.dp, // FloatingActionButton height including margin,
         )
     val refreshState =
         rememberPullRefreshState(
@@ -89,7 +90,7 @@ fun TeachingScreen(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(innerPadding),
+                            .padding(bottom = bottomPadding),
                     errorMessage = teachingCoursesResource.message!!.asString(),
                 )
             }
@@ -99,7 +100,7 @@ fun TeachingScreen(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(innerPadding),
+                            .padding(bottom = bottomPadding),
                 )
             }
 
@@ -110,7 +111,7 @@ fun TeachingScreen(
                         modifier =
                             Modifier
                                 .fillMaxSize()
-                                .padding(innerPadding),
+                                .padding(bottom = bottomPadding),
                         errorMessage = stringResource(id = Strings.add_a_class_to_get_started),
                     )
                 } else {
