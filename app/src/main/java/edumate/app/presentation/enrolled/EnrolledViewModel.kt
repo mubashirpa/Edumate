@@ -7,8 +7,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.ResourceNew
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.courses.ListCourses
 import edumate.app.domain.usecase.students.DeleteStudent
@@ -72,13 +72,13 @@ class EnrolledViewModel
                 listCoursesUseCase(studentId = studentId).onEach { resource ->
                     if (refreshing) {
                         when (resource) {
-                            is Resource.Unknown -> {}
+                            is ResourceNew.Unknown -> {}
 
-                            is Resource.Loading -> {
+                            is ResourceNew.Loading -> {
                                 uiState = uiState.copy(refreshing = true)
                             }
 
-                            is Resource.Success -> {
+                            is ResourceNew.Success -> {
                                 uiState =
                                     uiState.copy(
                                         enrolledCoursesResource = resource,
@@ -86,9 +86,9 @@ class EnrolledViewModel
                                     )
                             }
 
-                            is Resource.Error -> {
+                            is ResourceNew.Error -> {
                                 uiState =
-                                    if (uiState.enrolledCoursesResource is Resource.Loading) {
+                                    if (uiState.enrolledCoursesResource is ResourceNew.Loading) {
                                         uiState.copy(enrolledCoursesResource = resource, refreshing = false)
                                     } else {
                                         uiState.copy(
@@ -111,9 +111,9 @@ class EnrolledViewModel
             // TODO("Delete other resources related to course")
             deleteStudentUseCase(courseId, userId).onEach { resource ->
                 when (resource) {
-                    is Resource.Unknown -> {}
+                    is ResourceNew.Unknown -> {}
 
-                    is Resource.Loading -> {
+                    is ResourceNew.Loading -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = true,
@@ -121,12 +121,12 @@ class EnrolledViewModel
                             )
                     }
 
-                    is Resource.Success -> {
+                    is ResourceNew.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchClasses(currentUser?.uid, true)
                     }
 
-                    is Resource.Error -> {
+                    is ResourceNew.Error -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,

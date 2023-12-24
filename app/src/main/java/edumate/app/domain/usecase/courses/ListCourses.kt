@@ -1,7 +1,7 @@
 package edumate.app.domain.usecase.courses
 
-import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.ResourceNew
 import edumate.app.data.remote.mapper.toCourse
 import edumate.app.domain.model.courses.Course
 import edumate.app.domain.repository.CoursesRepository
@@ -18,15 +18,15 @@ class ListCourses
         operator fun invoke(
             studentId: String? = null,
             teacherId: String? = null,
-        ): Flow<Resource<List<Course>>> =
+        ): Flow<ResourceNew<List<Course>>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(ResourceNew.Loading())
                     val courses = coursesRepository.list(studentId, teacherId).map { it.toCourse() }
-                    emit(Resource.Success(courses))
+                    emit(ResourceNew.Success(courses))
                 } catch (e: Exception) {
                     emit(
-                        Resource.Error(
+                        ResourceNew.Error(
                             UiText.StringResource(
                                 Strings.cannot_retrieve_courses_at_this_time_please_try_again_later,
                             ),

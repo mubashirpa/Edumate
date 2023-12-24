@@ -22,7 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import edumate.app.core.Resource
+import edumate.app.core.utils.ResourceNew
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
@@ -80,11 +80,11 @@ fun TeachingScreen(
                 .pullRefresh(refreshState),
     ) {
         when (val teachingCoursesResource = uiState.teachingCoursesResource) {
-            is Resource.Unknown -> {
+            is ResourceNew.Unknown -> {
                 // Nothing is shown
             }
 
-            is Resource.Error -> {
+            is ResourceNew.Error -> {
                 ErrorScreen(
                     modifier =
                         Modifier
@@ -94,7 +94,7 @@ fun TeachingScreen(
                 )
             }
 
-            is Resource.Loading -> {
+            is ResourceNew.Loading -> {
                 LoadingIndicator(
                     modifier =
                         Modifier
@@ -103,7 +103,7 @@ fun TeachingScreen(
                 )
             }
 
-            is Resource.Success -> {
+            is ResourceNew.Success -> {
                 val courses = teachingCoursesResource.data
                 if (courses.isNullOrEmpty()) {
                     ErrorScreen(

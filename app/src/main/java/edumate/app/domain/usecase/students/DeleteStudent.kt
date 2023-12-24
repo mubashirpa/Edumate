@@ -1,7 +1,7 @@
 package edumate.app.domain.usecase.students
 
-import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.ResourceNew
 import edumate.app.domain.repository.StudentsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -15,14 +15,14 @@ class DeleteStudent
         operator fun invoke(
             courseId: String,
             userId: String,
-        ): Flow<Resource<String>> =
+        ): Flow<ResourceNew<String>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(ResourceNew.Loading())
                     studentsRepository.delete(courseId, userId)
-                    emit(Resource.Success(userId))
+                    emit(ResourceNew.Success(userId))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.DynamicString(e.message!!)))
+                    emit(ResourceNew.Error(UiText.DynamicString(e.message!!)))
                 }
             }
     }
