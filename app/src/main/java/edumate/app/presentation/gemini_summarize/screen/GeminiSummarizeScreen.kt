@@ -1,8 +1,8 @@
 package edumate.app.presentation.gemini_summarize.screen
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.togetherWith
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -126,22 +126,15 @@ fun GeminiSummarizeScreen(viewModel: GeminiSummarizeViewModel = hiltViewModel())
                     CircularProgressIndicator()
                 }
             }
+
             is GeminiSummarizeUiState.Success -> {
-                AnimatedContent(
-                    targetState = (uiState as GeminiSummarizeUiState.Success).outputText,
-                    transitionSpec = {
-                        slideIntoContainer(AnimatedContentTransitionScope.SlideDirection.Start) togetherWith
-                            slideOutOfContainer(
-                                AnimatedContentTransitionScope.SlideDirection.End,
-                            )
-                    },
-                    label = "",
-                ) {
-                    Text(
-                        text = it,
-                        modifier = Modifier.padding(10.dp),
-                    )
-                }
+                Text(
+                    text = (uiState as GeminiSummarizeUiState.Success).outputText,
+                    modifier =
+                        Modifier
+                            .padding(10.dp)
+                            .animateContentSize(animationSpec = tween(300, easing = LinearEasing)),
+                )
             }
 
             is GeminiSummarizeUiState.Error -> {
