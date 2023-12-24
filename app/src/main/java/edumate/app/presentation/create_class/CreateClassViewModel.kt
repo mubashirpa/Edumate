@@ -11,6 +11,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.FirebaseConstants
 import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.ResourceNew
 import edumate.app.domain.model.courses.Course
 import edumate.app.domain.model.courses.CourseState
 import edumate.app.domain.model.user_profiles.UserProfile
@@ -183,26 +184,29 @@ class CreateClassViewModel
             message: UiText?,
         ) {
             deleteCourseUseCase(id).onEach { resource ->
-                uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
-                        }
+                when (resource) {
+                    is ResourceNew.Unknown -> {}
 
-                        is Resource.Success -> {
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = message,
-                            )
-                        }
-
-                        is Resource.Error -> {
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = message,
-                            )
-                        }
+                    is ResourceNew.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
                     }
+
+                    is ResourceNew.Success -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = message,
+                            )
+                    }
+
+                    is ResourceNew.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = message,
+                            )
+                    }
+                }
             }.launchIn(viewModelScope)
         }
 

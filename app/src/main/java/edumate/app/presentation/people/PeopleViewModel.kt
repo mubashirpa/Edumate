@@ -10,6 +10,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.DataState
 import edumate.app.core.Resource
 import edumate.app.core.UiText
+import edumate.app.core.utils.ResourceNew
 import edumate.app.core.utils.moveItemToFirstPosition
 import edumate.app.domain.model.user_profiles.UserProfile
 import edumate.app.domain.usecase.ListPeoples
@@ -277,7 +278,9 @@ class PeopleViewModel
         private fun deleteStudent(userId: String) {
             deleteStudentUseCase(courseId, userId).onEach { resource ->
                 when (resource) {
-                    is Resource.Loading -> {
+                    is ResourceNew.Unknown -> {}
+
+                    is ResourceNew.Loading -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = true,
@@ -285,12 +288,12 @@ class PeopleViewModel
                             )
                     }
 
-                    is Resource.Success -> {
+                    is ResourceNew.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchPeoples(true)
                     }
 
-                    is Resource.Error -> {
+                    is ResourceNew.Error -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,
