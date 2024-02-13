@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_class
+package edumate.app.presentation.createClass
 
 import edumate.app.core.UiText
 
