@@ -1,50 +1,34 @@
 package edumate.app.data.remote.mapper
 
-import edumate.app.data.remote.dto.CourseDto
-import edumate.app.domain.model.courses.Course
+import edumate.app.data.remote.dto.courses.Course
+import edumate.app.data.remote.dto.courses.CoursesDto
+import edumate.app.domain.model.courses.Courses
+import edumate.app.domain.model.courses.Course as CourseDomainModel
 
-fun CourseDto.toCourse(): Course {
+fun CourseDomainModel.toCourse(): Course {
     return Course(
-        id,
-        name,
-        section,
-        descriptionHeading,
-        description,
-        room,
-        ownerId,
-        creationTime,
-        updateTime,
-        enrollmentCode,
-        courseState,
-        alternateLink,
-        courseGroupId,
-        teacherGroupId,
-        guardiansEnabled,
-        calendarId,
-        gradeBookSettings,
-        creatorProfile,
+        description = description,
+        id = id,
+        name = name,
+        ownerId = ownerId,
+        room = room,
+        section = section,
     )
 }
 
-fun Course.toCoursesDto(): CourseDto {
-    return CourseDto(
-        id,
-        name,
-        section,
-        descriptionHeading,
-        description,
-        room,
-        ownerId,
-        creationTime,
-        updateTime,
-        enrollmentCode,
-        courseState,
-        alternateLink,
-        courseGroupId,
-        teacherGroupId,
-        guardiansEnabled,
-        calendarId,
-        gradeBookSettings,
-        creatorProfile,
+fun Course.toCourseDomainModel(): CourseDomainModel {
+    return CourseDomainModel(
+        description = description,
+        id = id,
+        name = name,
+        ownerId = ownerId,
+        room = room,
+        section = section,
+    )
+}
+
+fun CoursesDto.toCourses(): Courses {
+    return Courses(
+        courses = courses?.map { it.toCourseDomainModel() },
     )
 }
