@@ -165,9 +165,11 @@ fun CreateClassScreen(
                             imeAction = ImeAction.Next,
                         ),
                     keyboardActions =
-                        KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -186,9 +188,11 @@ fun CreateClassScreen(
                             imeAction = ImeAction.Next,
                         ),
                     keyboardActions =
-                        KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -207,9 +211,11 @@ fun CreateClassScreen(
                             imeAction = ImeAction.Next,
                         ),
                     keyboardActions =
-                        KeyboardActions(onNext = {
-                            focusManager.moveFocus(FocusDirection.Down)
-                        }),
+                        KeyboardActions(
+                            onNext = {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            },
+                        ),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -228,10 +234,12 @@ fun CreateClassScreen(
                             imeAction = ImeAction.Done,
                         ),
                     keyboardActions =
-                        KeyboardActions(onDone = {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
-                        }),
+                        KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            },
+                        ),
                     singleLine = true,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
