@@ -1,6 +1,6 @@
 package edumate.app.domain.usecase.students
 
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.FirebaseAuthRepository
 import edumate.app.domain.repository.StudentsRepository
@@ -8,21 +8,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class AddStudent
+class AddStudentUseCase
     @Inject
     constructor(
         private val studentsRepository: StudentsRepository,
         private val firebaseAuthRepository: FirebaseAuthRepository,
     ) {
-        operator fun invoke(courseId: String): Flow<Resource<String>> =
+        operator fun invoke(courseId: String): Flow<Result<String>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(Result.Loading())
                     val userId = firebaseAuthRepository.currentUserId
                     studentsRepository.create(courseId, userId)
-                    emit(Resource.Success(userId))
+                    emit(Result.Success(userId))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.DynamicString(e.message!!)))
+                    emit(Result.Error(UiText.DynamicString(e.message!!)))
                 }
             }
     }

@@ -1,13 +1,13 @@
 package edumate.app.domain.usecase.teachers
 
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.TeachersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class DeleteTeacher
+class DeleteTeacherUseCase
     @Inject
     constructor(
         private val teachersRepository: TeachersRepository,
@@ -15,14 +15,14 @@ class DeleteTeacher
         operator fun invoke(
             courseId: String,
             userId: String,
-        ): Flow<Resource<String>> =
+        ): Flow<Result<String>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(Result.Loading())
                     teachersRepository.delete(courseId, userId)
-                    emit(Resource.Success(userId))
+                    emit(Result.Success(userId))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.DynamicString(e.message!!)))
+                    emit(Result.Error(UiText.DynamicString(e.message!!)))
                 }
             }
     }
