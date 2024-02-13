@@ -1,5 +1,4 @@
 import com.android.build.api.variant.BuildConfigField
-import org.jlleitschuh.gradle.ktlint.reporter.ReporterType
 import java.io.FileInputStream
 import java.util.Properties
 
@@ -11,7 +10,6 @@ plugins {
     alias(libs.plugins.com.google.gms.google.services)
     alias(libs.plugins.org.jetbrains.kotlin.android)
     alias(libs.plugins.org.jetbrains.kotlin.serialization)
-    alias(libs.plugins.org.jlleitschuh.gradle.ktlint)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -121,25 +119,6 @@ dependencies {
     implementation(libs.jitsi.meet.sdk) { isTransitive = true }
     implementation(libs.jsoup)
     implementation(libs.google.ai.client.generativeai)
-}
-
-ktlint {
-    version.set("1.1.0")
-    debug.set(true)
-    verbose.set(true)
-    android.set(true)
-    outputToConsole.set(true)
-    outputColorName.set("RED")
-    ignoreFailures.set(false)
-    reporters {
-        reporter(ReporterType.PLAIN)
-        reporter(ReporterType.CHECKSTYLE)
-        reporter(ReporterType.SARIF)
-    }
-    filter {
-        exclude("**/generated/**")
-        include("**/kotlin/**")
-    }
 }
 
 androidComponents {
