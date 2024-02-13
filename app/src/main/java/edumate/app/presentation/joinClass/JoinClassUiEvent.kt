@@ -1,4 +1,4 @@
-package edumate.app.presentation.join_class
+package edumate.app.presentation.joinClass
 
 import edumate.app.presentation.class_details.UserType
 

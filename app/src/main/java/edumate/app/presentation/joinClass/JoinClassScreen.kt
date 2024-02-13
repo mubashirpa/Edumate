@@ -1,4 +1,4 @@
-package edumate.app.presentation.join_class.screen
+package edumate.app.presentation.joinClass
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -61,8 +60,6 @@ import edumate.app.presentation.class_details.UserType
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.components.UserAvatar
-import edumate.app.presentation.join_class.JoinClassUiEvent
-import edumate.app.presentation.join_class.JoinClassUiState
 import kotlinx.coroutines.flow.Flow
 import edumate.app.R.string as Strings
 
@@ -87,6 +84,7 @@ fun JoinClassScreen(
         rememberModalBottomSheetState(
             skipPartiallyExpanded = true,
         )
+    val isClassCodeError = uiState.classCodeError != null
 
     LaunchedEffect(context) {
         focusRequester.requestFocus()
@@ -104,7 +102,10 @@ fun JoinClassScreen(
     }
 
     Scaffold(
-        modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -140,106 +141,94 @@ fun JoinClassScreen(
         },
         snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
     ) { innerPadding ->
-        Box(
+        Column(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .consumeWindowInsets(innerPadding)
-                    .padding(innerPadding),
-            contentAlignment = Alignment.TopCenter,
+                    .padding(innerPadding)
+                    .padding(horizontal = 16.dp, vertical = 12.dp)
+                    .imePadding()
+                    .verticalScroll(rememberScrollState()),
         ) {
-            Column(
+            AssistChip(
+                onClick = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(true)) },
+                label = {
+                    Text(
+                        text =
+                            if (isStudent) {
+                                stringResource(id = Strings.student)
+                            } else {
+                                stringResource(id = Strings.teacher)
+                            },
+                    )
+                },
+                trailingIcon = {
+                    Icon(
+                        Icons.Filled.ArrowDropDown,
+                        contentDescription = null,
+                        Modifier.size(AssistChipDefaults.IconSize),
+                    )
+                },
+            )
+            Spacer(modifier = Modifier.height(10.dp))
+            Text(
+                text =
+                    if (isStudent) {
+                        stringResource(id = Strings.enter_the_code_shared_by_your_teacher)
+                    } else {
+                        stringResource(id = Strings.enter_the_code_shared_by_the_class_owner)
+                    },
+                style = MaterialTheme.typography.bodyMedium,
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            TextField(
+                value = uiState.classCode,
+                onValueChange = {
+                    onEvent(JoinClassUiEvent.OnClassCodeChange(it))
+                },
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp, vertical = 10.dp)
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-            ) {
-                AssistChip(
-                    onClick = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(true)) },
-                    label = {
-                        Text(
-                            text =
-                                if (isStudent) {
-                                    stringResource(id = Strings.student)
-                                } else {
-                                    stringResource(id = Strings.teacher)
-                                },
-                        )
+                        .fillMaxWidth()
+                        .focusRequester(focusRequester),
+                label = {
+                    Text(text = stringResource(id = Strings.class_code))
+                },
+                supportingText =
+                    if (isClassCodeError) {
+                        {
+                            Text(
+                                text =
+                                    if (isStudent) {
+                                        stringResource(id = Strings.ask_your_teacher_for_the_class_code)
+                                    } else {
+                                        stringResource(id = Strings.ask_the_class_owner_for_the_class_code)
+                                    },
+                            )
+                        }
+                    } else {
+                        null
                     },
-                    trailingIcon = {
-                        Icon(
-                            Icons.Filled.ArrowDropDown,
-                            contentDescription = null,
-                            Modifier.size(AssistChipDefaults.IconSize),
-                        )
-                    },
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Text(
-                    text =
-                        if (isStudent) {
-                            stringResource(id = Strings.enter_the_code_shared_by_your_teacher)
-                        } else {
-                            stringResource(id = Strings.enter_the_code_shared_by_the_class_owner)
-                        },
-                    style = MaterialTheme.typography.bodyMedium,
-                )
-                Spacer(modifier = Modifier.height(16.dp))
-                @Suppress("SENSELESS_COMPARISON")
-                TextField(
-                    value = uiState.classCode,
-                    onValueChange = {
-                        onEvent(JoinClassUiEvent.OnClassCodeChange(it))
-                    },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .focusRequester(focusRequester),
-                    label = {
-                        Text(text = stringResource(id = Strings.class_code))
-                    },
-                    supportingText =
-                        if (uiState.classCodeError != null) {
-                            {
-                                Text(
-                                    text =
-                                        if (isStudent) {
-                                            stringResource(id = Strings.ask_your_teacher_for_the_class_code)
-                                        } else {
-                                            stringResource(
-                                                id = Strings.ask_the_class_owner_for_the_class_code,
-                                            )
-                                        },
-                                )
-                            }
-                        } else {
-                            null
-                        },
-                    isError = uiState.classCodeError != null,
-                    keyboardOptions =
-                        KeyboardOptions(
-                            imeAction = ImeAction.Done,
-                        ),
-                    keyboardActions =
-                        KeyboardActions(onDone = {
+                isError = isClassCodeError,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions =
+                    KeyboardActions(
+                        onDone = {
                             focusManager.clearFocus()
                             keyboardController?.hide()
-                        }),
-                    singleLine = true,
-                )
-                Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = {
-                        onEvent(JoinClassUiEvent.JoinClass)
-                    },
-                    modifier = Modifier.fillMaxWidth(),
-                ) {
-                    Text(text = stringResource(id = Strings.join))
-                }
-                Spacer(modifier = Modifier.height(10.dp))
+                        },
+                    ),
+                singleLine = true,
+            )
+            Spacer(modifier = Modifier.height(24.dp))
+            Button(
+                onClick = {
+                    onEvent(JoinClassUiEvent.JoinClass)
+                },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Text(text = stringResource(id = Strings.join))
             }
+            Spacer(modifier = Modifier.height(12.dp))
         }
     }
 
@@ -270,7 +259,7 @@ fun JoinClassScreen(
                 ) {
                     RadioButton(
                         selected = isStudent,
-                        onClick = null, // null recommended for accessibility with screen readers
+                        onClick = null,
                     )
                     Text(
                         text = stringResource(id = Strings.student),
@@ -295,7 +284,7 @@ fun JoinClassScreen(
                 ) {
                     RadioButton(
                         selected = !isStudent,
-                        onClick = null, // null recommended for accessibility with screen readers
+                        onClick = null,
                     )
                     Text(
                         text = stringResource(id = Strings.teacher),

@@ -1,4 +1,4 @@
-package edumate.app.presentation.join_class
+package edumate.app.presentation.joinClass
 
 import com.google.firebase.auth.FirebaseUser
 import edumate.app.core.UiText
