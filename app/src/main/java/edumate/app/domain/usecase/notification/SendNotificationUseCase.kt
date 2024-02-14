@@ -1,6 +1,6 @@
 package edumate.app.domain.usecase.notification
 
-import edumate.app.domain.repository.NotificationApiService
+import edumate.app.domain.repository.NotificationService
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -9,7 +9,7 @@ import javax.inject.Inject
 class SendNotificationUseCase
     @Inject
     constructor(
-        private val notificationApiService: NotificationApiService,
+        private val notificationService: NotificationService,
     ) {
         private val defaultDispatcher: CoroutineDispatcher = Dispatchers.Default
 
@@ -19,9 +19,9 @@ class SendNotificationUseCase
             userIds: List<String> = emptyList(),
         ) = withContext(defaultDispatcher) {
             if (userIds.isEmpty()) {
-                notificationApiService.send(title, description)
+                notificationService.send(title, description)
             } else {
-                notificationApiService.send(title, description, userIds)
+                notificationService.send(title, description, userIds)
             }
         }
     }

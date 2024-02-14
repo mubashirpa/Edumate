@@ -3,8 +3,8 @@ package edumate.app.domain.usecase.courses
 import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.data.remote.mapper.toCourses
+import edumate.app.domain.model.courses.CourseState
 import edumate.app.domain.model.courses.Courses
-import edumate.app.domain.repository.CourseState
 import edumate.app.domain.repository.CoursesRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -17,7 +17,13 @@ class ListCoursesUseCase
         private val coursesRepository: CoursesRepository,
     ) {
         operator fun invoke(
-            courseState: CourseState? = null,
+            courseStates: List<CourseState> =
+                listOf(
+                    CourseState.ACTIVE,
+                    CourseState.ARCHIVED,
+                    CourseState.PROVISIONED,
+                    CourseState.DECLINED,
+                ),
             pageSize: Int? = null,
             pageToken: String? = null,
             studentId: String? = null,
@@ -27,7 +33,7 @@ class ListCoursesUseCase
                 try {
                     emit(Result.Loading())
                     val courses =
-                        coursesRepository.list(courseState, pageSize, pageToken, studentId, teacherId)
+                        coursesRepository.list(courseStates, pageSize, pageToken, studentId, teacherId)
                             .toCourses()
                     emit(Result.Success(courses))
                 } catch (e: Exception) {
