@@ -1,79 +1,93 @@
 package edumate.app.data.repository
 
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FieldValue
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
-import edumate.app.core.FirebaseConstants
-import edumate.app.data.remote.dto.CourseDto
+import edumate.app.core.Server
+import edumate.app.data.remote.dto.courses.Course
+import edumate.app.data.remote.dto.courses.CoursesDto
 import edumate.app.domain.model.courses.CourseState
 import edumate.app.domain.repository.CoursesRepository
-import kotlinx.coroutines.tasks.await
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
 import javax.inject.Inject
 
 class CoursesRepositoryImpl
     @Inject
     constructor(
-        private val firestore: FirebaseFirestore,
+        private val httpClient: HttpClient,
     ) : CoursesRepository {
-        override suspend fun create(courseDto: CourseDto): CourseDto? {
-            val id = courseDto.id
-            courses().document(id).set(courseDto.toMap()).await()
-            // After a course created, add $courseId in users/$uid/teaching array
-            firestore.collection(FirebaseConstants.Firestore.USERS_COLLECTION)
-                .document(courseDto.ownerId)
-                .update(FirebaseConstants.Firestore.TEACHING, FieldValue.arrayUnion(id)).await()
-            return get(id)
+        override suspend fun create(course: Course): Course? {
+            return httpClient.post(Server.API_BASE_URL) {
+                url { appendPathSegments(Server.ENDPOINT_COURSES) }
+                contentType(ContentType.Application.Json)
+                setBody(course)
+            }.body()
         }
 
         override suspend fun delete(id: String) {
-            courses().document(id).delete().await()
+            httpClient.delete(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(id)
+                }
+            }
         }
 
-        override suspend fun get(id: String): CourseDto? {
-            val documentSnapshot = courses().document(id).get().await()
-            return documentSnapshot.toObject<CourseDto>()
+        override suspend fun get(id: String): Course? {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(id)
+                }
+            }.body()
         }
 
         override suspend fun list(
+            courseStates: List<CourseState>,
+            pageSize: Int?,
+            pageToken: String?,
             studentId: String?,
             teacherId: String?,
-            courseState: CourseState,
-            pageSize: Int?,
-        ): List<CourseDto> {
-            var query: Query = courses()
-            query =
-                when {
-                    studentId != null -> {
-                        query.whereArrayContains(FirebaseConstants.Firestore.COURSE_GROUP_ID, studentId)
+        ): CoursesDto {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    courseStates.forEach { courseState ->
+                        parameters.append(Server.Parameters.COURSE_STATES, courseState.name)
                     }
-
-                    teacherId != null -> {
-                        query.whereArrayContains(FirebaseConstants.Firestore.TEACHER_GROUP_ID, teacherId)
+                    if (pageSize != null) {
+                        parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-
-                    else -> {
-                        return emptyList()
+                    if (pageToken != null) {
+                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    }
+                    if (studentId != null) {
+                        parameters.append(Server.Parameters.STUDENT_ID, studentId)
+                    }
+                    if (teacherId != null) {
+                        parameters.append(Server.Parameters.TEACHER_ID, teacherId)
                     }
                 }
-            query = query.orderBy(FirebaseConstants.Firestore.NAME, Query.Direction.ASCENDING)
-            if (pageSize != null && pageSize > 0) {
-                query = query.limit(pageSize.toLong())
-            }
-            return query.get().await().documents.mapNotNull { snapshot ->
-                snapshot.toObject<CourseDto>()
-            }
+            }.body()
         }
 
         override suspend fun update(
             id: String,
-            courseDto: CourseDto,
+            course: Course,
         ) {
-            courses().document(id).update(courseDto.toMap()).await()
-        }
-
-        private fun courses(): CollectionReference {
-            return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
+            return httpClient.put(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(id)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(course)
+            }.body()
         }
     }
