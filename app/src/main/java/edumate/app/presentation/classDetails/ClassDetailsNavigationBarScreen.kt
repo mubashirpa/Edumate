@@ -1,4 +1,4 @@
-package edumate.app.presentation.class_details
+package edumate.app.presentation.classDetails
 
 import androidx.annotation.StringRes
 import androidx.compose.material.icons.Icons

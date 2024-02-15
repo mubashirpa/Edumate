@@ -1,4 +1,4 @@
-package edumate.app.presentation.class_details.screen.components
+package edumate.app.presentation.classDetails.components
 
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -10,10 +10,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
-import edumate.app.presentation.class_details.ClassDetailsNavigationBarScreen
+import edumate.app.presentation.classDetails.ClassDetailsNavigationBarScreen
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun ClassDetailsNavigationBar(navController: NavController) {
     val screens =
         listOf(
             ClassDetailsNavigationBarScreen.Stream,
