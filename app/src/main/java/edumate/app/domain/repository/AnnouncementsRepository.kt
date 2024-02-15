@@ -1,22 +1,20 @@
 package edumate.app.domain.repository
 
-import edumate.app.data.remote.dto.AnnouncementDto
-import edumate.app.domain.model.AssigneeMode
-import edumate.app.domain.model.AssigneeMode.INDIVIDUAL_STUDENTS
-import edumate.app.domain.model.IndividualStudentsOptions
-import edumate.app.domain.model.announcements.AnnouncementState
+import edumate.app.data.remote.dto.classroom.announcements.Announcement
+import edumate.app.data.remote.dto.classroom.announcements.AnnouncementState
+import edumate.app.data.remote.dto.classroom.announcements.AnnouncementsDto
 
 interface AnnouncementsRepository {
     /**
      * Creates an announcement.
      * @param courseId Identifier of the course.
-     * @param announcementDto Instance of [AnnouncementDto].
-     * @return If successful, the response body contains a newly created instance of [AnnouncementDto].
+     * @param announcement An instance of [Announcement].
+     * @return If successful, the response body contains a newly created instance of [Announcement].
      */
     suspend fun create(
         courseId: String,
-        announcementDto: AnnouncementDto,
-    ): AnnouncementDto?
+        announcement: Announcement,
+    ): Announcement
 
     /**
      * Deletes  an announcement.
@@ -32,53 +30,44 @@ interface AnnouncementsRepository {
      * Returns an announcement.
      * @param courseId Identifier of the course.
      * @param id Identifier of the announcement.
-     * @return If successful, the response body contains an instance of [AnnouncementDto].
+     * @return If successful, the response body contains an instance of [Announcement].
      */
     suspend fun get(
         courseId: String,
         id: String,
-    ): AnnouncementDto?
+    ): Announcement
 
     /**
      * Returns an announcement.
      * @param courseId Identifier of the course.
-     * @param announcementState Restriction on the state of announcements returned.
-     * @param orderBy Optional sort ordering for results. Supported field is updateTime. Supported direction keywords are asc and desc. If not specified, updateTime desc is the default behavior. Examples: updateTime asc, updateTime.
+     * @param announcementStates Restriction on the state of announcements returned. If this
+     * argument is left unspecified, the default value is PUBLISHED.
+     * @param orderBy Optional sort ordering for results. Supported field is updateTime. Supported
+     * direction keywords are asc and desc. If not specified, updateTime desc is the default
+     * behavior. Examples: updateTime asc, updateTime.
      * @param pageSize Maximum number of items to return.
-     * @return If successful, the response body contains a list of [AnnouncementDto].
+     * @param pageToken nextPageToken value returned from a previous list call, indicating that the
+     * subsequent page of results should be returned.
+     * @return If successful, the response body contains an instance of [AnnouncementsDto].
      */
     suspend fun list(
         courseId: String,
-        announcementState: AnnouncementState = AnnouncementState.PUBLISHED,
-        orderBy: String = "updateTime desc",
+        announcementStates: List<AnnouncementState>? = listOf(AnnouncementState.PUBLISHED),
+        orderBy: String? = "updateTime desc",
         pageSize: Int? = null,
-    ): List<AnnouncementDto>
-
-    /**
-     * Modifies assignee mode and options of an announcement.
-     * @param courseId Identifier of the course.
-     * @param id Identifier of the announcement.
-     * @param assigneeMode Mode of the announcement describing whether it is accessible by all students or specified individual students.
-     * @param modifyIndividualStudentsOptions Set which students can view or cannot view the announcement. Must be specified only when [assigneeMode] is [INDIVIDUAL_STUDENTS].
-     * @return If successful, the response body contains an instance of [AnnouncementDto].
-     */
-    suspend fun modifyAssignees(
-        courseId: String,
-        id: String,
-        assigneeMode: AssigneeMode,
-        modifyIndividualStudentsOptions: IndividualStudentsOptions?,
-    ): AnnouncementDto?
+        pageToken: String? = null,
+    ): AnnouncementsDto
 
     /**
      * Updates one or more fields of an announcement.
      * @param courseId Identifier of the course.
      * @param id Identifier of the announcement.
-     * @param announcementDto Instance of [AnnouncementDto].
-     * @return If successful, the response body contains an instance of [AnnouncementDto].
+     * @param announcement An instance of [Announcement].
+     * @return If successful, the response body contains an instance of [Announcement].
      */
-    suspend fun patch(
+    suspend fun update(
         courseId: String,
         id: String,
-        announcementDto: AnnouncementDto,
-    ): AnnouncementDto?
+        announcement: Announcement,
+    ): Announcement
 }

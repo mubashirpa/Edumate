@@ -16,14 +16,29 @@ object Constants {
 
 object Server {
     const val API_BASE_URL = "http://localhost:8080/v1"
+    const val ENDPOINT_ANNOUNCEMENTS = "announcements"
     const val ENDPOINT_COURSES = "courses"
+    const val ENDPOINT_COURSE_WORK = "courseWork"
     const val ENDPOINT_NOTIFICATION = "notification"
+    const val ENDPOINT_STUDENTS = "students"
+    const val ENDPOINT_STUDENT_SUBMISSIONS = "studentSubmissions"
+    const val ENDPOINT_TEACHERS = "teachers"
 
     object Parameters {
+        const val ANNOUNCEMENT_STATES = "announcementStates"
         const val COURSE_STATES = "courseStates"
+        const val COURSE_WORK_STATES = "courseWorkStates"
+        const val ENROLLMENT_CODE = "enrollmentCode"
+        const val LATE = "late"
+        const val ORDER_BY = "orderBy"
         const val PAGE_SIZE = "pageSize"
         const val PAGE_TOKEN = "pageToken"
+        const val RECLAIM = "reclaim"
+        const val RETURN = "return"
+        const val STATES = "states"
         const val STUDENT_ID = "studentId"
         const val TEACHER_ID = "teacherId"
+        const val TURN_IN = "turnIn"
+        const val USER_ID = "userId"
     }
 }

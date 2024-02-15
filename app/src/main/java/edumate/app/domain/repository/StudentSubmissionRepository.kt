@@ -1,7 +1,8 @@
 package edumate.app.domain.repository
 
-import edumate.app.data.remote.dto.StudentSubmissionDto
-import edumate.app.domain.model.student_submissions.Attachment
+import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmission
+import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmissionsDto
+import edumate.app.data.remote.dto.classroom.studentSubmissions.SubmissionState
 
 interface StudentSubmissionRepository {
     /**
@@ -9,54 +10,55 @@ interface StudentSubmissionRepository {
      * @param courseId Identifier of the course.
      * @param courseWorkId Identifier of the course work.
      * @param id Identifier of the student submission.
-     * @return If successful, the response body contains an instance of [StudentSubmissionDto].
+     * @return If successful, the response body contains an instance of [StudentSubmission].
      */
     suspend fun get(
         courseId: String,
         courseWorkId: String,
         id: String,
-    ): StudentSubmissionDto?
+    ): StudentSubmission
 
     /**
      * Returns a list of student submissions that the requester is permitted to view.
      * @param courseId Identifier of the course.
      * @param courseWorkId Identifier of the student work to request.
-     * @return If successful, the response body contains a list of [StudentSubmissionDto].
+     * @param userId Optional argument to restrict returned student work to those owned by the
+     * student with the specified identifier.
+     * @param states Requested submission states. If specified, returned student submissions match
+     * one of the specified submission states.
+     * @param late Requested lateness value. If specified, returned student submissions are
+     * restricted by the requested value. If unspecified, submissions are returned regardless of
+     * late value.
+     * @param pageSize Maximum number of items to return. Zero or unspecified indicates that the
+     * server may assign a maximum.
+     * @param pageToken nextPageToken value returned from a previous list call, indicating that the
+     * subsequent page of results should be returned.
+     * @return If successful, the response body contains a list of [StudentSubmissionsDto].
      */
     suspend fun list(
         courseId: String,
         courseWorkId: String,
-    ): List<StudentSubmissionDto>
-
-    /**
-     * Modifies attachments of student submission.
-     * @param courseId Identifier of the course.
-     * @param courseWorkId Identifier of the course work.
-     * @param id Identifier of the student submission.
-     * @param addAttachments Attachments to add. A student submission may not have more than 20 attachments.
-     * @return If successful, the response body contains an instance of [StudentSubmissionDto].
-     */
-    suspend fun modifyAttachments(
-        courseId: String,
-        courseWorkId: String,
-        id: String,
-        addAttachments: List<Attachment>,
-    ): StudentSubmissionDto?
+        userId: String? = null,
+        states: List<SubmissionState>? = null,
+        late: LateValues? = null,
+        pageSize: Int? = null,
+        pageToken: String? = null,
+    ): StudentSubmissionsDto
 
     /**
      * Updates one or more fields of a student submission.
      * @param courseId Identifier of the course.
      * @param courseWorkId Identifier of the course work.
      * @param id Identifier of the student submission.
-     * @param studentSubmission Instance of student submission.
-     * @return If successful, the response body contains an instance of [StudentSubmissionDto].
+     * @param studentSubmission An instance of student submission.
+     * @return If successful, the response body contains an instance of [StudentSubmission].
      */
-    suspend fun patch(
+    suspend fun update(
         courseId: String,
         courseWorkId: String,
         id: String,
-        studentSubmission: StudentSubmissionDto,
-    ): StudentSubmissionDto?
+        studentSubmission: StudentSubmission,
+    ): StudentSubmission
 
     /**
      * Reclaims a student submission on behalf of the student that owns it.
@@ -93,4 +95,10 @@ interface StudentSubmissionRepository {
         courseWorkId: String,
         id: String,
     )
+}
+
+enum class LateValues {
+    LATE_ONLY,
+    LATE_VALUES_UNSPECIFIED,
+    NOT_LATE_ONLY,
 }

@@ -1,8 +1,8 @@
 package edumate.app.domain.repository
 
-import edumate.app.data.remote.dto.courses.Course
-import edumate.app.data.remote.dto.courses.CoursesDto
-import edumate.app.domain.model.courses.CourseState
+import edumate.app.data.remote.dto.classroom.courses.Course
+import edumate.app.data.remote.dto.classroom.courses.CoursesDto
+import edumate.app.domain.model.classroom.courses.CourseState
 
 interface CoursesRepository {
     /**
@@ -38,10 +38,10 @@ interface CoursesRepository {
      * identifier.
      * @param teacherId Restricts returned courses to those having a teacher with the specified
      * identifier.
-     * @return @return If successful, the response body contains a list of [CoursesDto].
+     * @return @return If successful, the response body contains an instance of [CoursesDto].
      */
     suspend fun list(
-        courseStates: List<CourseState> =
+        courseStates: List<CourseState>? =
             listOf(
                 CourseState.ACTIVE,
                 CourseState.ARCHIVED,

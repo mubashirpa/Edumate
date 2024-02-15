@@ -1,9 +1,9 @@
 package edumate.app.data.repository
 
 import edumate.app.core.Server
-import edumate.app.data.remote.dto.courses.Course
-import edumate.app.data.remote.dto.courses.CoursesDto
-import edumate.app.domain.model.courses.CourseState
+import edumate.app.data.remote.dto.classroom.courses.Course
+import edumate.app.data.remote.dto.classroom.courses.CoursesDto
+import edumate.app.domain.model.classroom.courses.CourseState
 import edumate.app.domain.repository.CoursesRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -49,7 +49,7 @@ class CoursesRepositoryImpl
         }
 
         override suspend fun list(
-            courseStates: List<CourseState>,
+            courseStates: List<CourseState>?,
             pageSize: Int?,
             pageToken: String?,
             studentId: String?,
@@ -58,8 +58,8 @@ class CoursesRepositoryImpl
             return httpClient.get(Server.API_BASE_URL) {
                 url {
                     appendPathSegments(Server.ENDPOINT_COURSES)
-                    courseStates.forEach { courseState ->
-                        parameters.append(Server.Parameters.COURSE_STATES, courseState.name)
+                    courseStates?.forEach { state ->
+                        parameters.append(Server.Parameters.COURSE_STATES, state.name)
                     }
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())

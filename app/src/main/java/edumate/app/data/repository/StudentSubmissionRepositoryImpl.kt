@@ -1,64 +1,97 @@
 package edumate.app.data.repository
 
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
-import edumate.app.core.FirebaseConstants
-import edumate.app.data.remote.dto.StudentSubmissionDto
-import edumate.app.domain.model.student_submissions.AssignmentSubmission
-import edumate.app.domain.model.student_submissions.Attachment
-import edumate.app.domain.model.student_submissions.SubmissionState
+import edumate.app.core.Server
+import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmission
+import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmissionsDto
+import edumate.app.data.remote.dto.classroom.studentSubmissions.SubmissionState
+import edumate.app.domain.repository.LateValues
 import edumate.app.domain.repository.StudentSubmissionRepository
-import kotlinx.coroutines.tasks.await
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
 import javax.inject.Inject
 
 class StudentSubmissionRepositoryImpl
     @Inject
     constructor(
-        private val firestore: FirebaseFirestore,
+        private val httpClient: HttpClient,
     ) : StudentSubmissionRepository {
         override suspend fun get(
             courseId: String,
             courseWorkId: String,
             id: String,
-        ): StudentSubmissionDto? {
-            val documentSnapshot = studentSubmissions(courseId, courseWorkId).document(id).get().await()
-            return documentSnapshot.toObject<StudentSubmissionDto>()
+        ): StudentSubmission {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments(id)
+                }
+            }.body()
         }
 
         override suspend fun list(
             courseId: String,
             courseWorkId: String,
-        ): List<StudentSubmissionDto> {
-            return studentSubmissions(courseId, courseWorkId)
-                .orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING).get()
-                .await().documents.mapNotNull { snapshot ->
-                    snapshot.toObject<StudentSubmissionDto>()
+            userId: String?,
+            states: List<SubmissionState>?,
+            late: LateValues?,
+            pageSize: Int?,
+            pageToken: String?,
+        ): StudentSubmissionsDto {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    if (late != null) {
+                        parameters.append(Server.Parameters.LATE, late.name)
+                    }
+                    if (pageSize != null) {
+                        parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
+                    }
+                    if (pageToken != null) {
+                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    }
+                    states?.forEach { state ->
+                        parameters.append(Server.Parameters.STATES, state.name)
+                    }
+                    if (userId != null) {
+                        parameters.append(Server.Parameters.USER_ID, userId)
+                    }
                 }
+            }.body()
         }
 
-        override suspend fun modifyAttachments(
+        override suspend fun update(
             courseId: String,
             courseWorkId: String,
             id: String,
-            addAttachments: List<Attachment>,
-        ): StudentSubmissionDto? {
-            val assignmentSubmission = AssignmentSubmission(attachments = addAttachments)
-            studentSubmissions(courseId, courseWorkId).document(id)
-                .update(FirebaseConstants.Firestore.ASSIGNMENT_SUBMISSION, assignmentSubmission).await()
-            return get(courseId, courseWorkId, id)
-        }
-
-        override suspend fun patch(
-            courseId: String,
-            courseWorkId: String,
-            id: String,
-            studentSubmission: StudentSubmissionDto,
-        ): StudentSubmissionDto? {
-            studentSubmissions(courseId, courseWorkId).document(id).set(studentSubmission.toMap())
-                .await()
-            return get(courseId, courseWorkId, id)
+            studentSubmission: StudentSubmission,
+        ): StudentSubmission {
+            return httpClient.put(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments(id)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(studentSubmission)
+            }.body()
         }
 
         override suspend fun reclaim(
@@ -66,8 +99,16 @@ class StudentSubmissionRepositoryImpl
             courseWorkId: String,
             id: String,
         ) {
-            studentSubmissions(courseId, courseWorkId).document(id)
-                .update(FirebaseConstants.Firestore.STATE, SubmissionState.RECLAIMED_BY_STUDENT).await()
+            httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments("$id:${Server.Parameters.RECLAIM}")
+                }
+            }
         }
 
         override suspend fun `return`(
@@ -75,8 +116,16 @@ class StudentSubmissionRepositoryImpl
             courseWorkId: String,
             id: String,
         ) {
-            studentSubmissions(courseId, courseWorkId).document(id)
-                .update(FirebaseConstants.Firestore.STATE, SubmissionState.RETURNED).await()
+            httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments("$id:${Server.Parameters.RETURN}")
+                }
+            }
         }
 
         override suspend fun turnIn(
@@ -84,17 +133,15 @@ class StudentSubmissionRepositoryImpl
             courseWorkId: String,
             id: String,
         ) {
-            studentSubmissions(courseId, courseWorkId).document(id)
-                .update(FirebaseConstants.Firestore.STATE, SubmissionState.TURNED_IN).await()
-        }
-
-        private fun studentSubmissions(
-            courseId: String,
-            courseWorkId: String,
-        ): CollectionReference {
-            return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
-                .document(courseId).collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION)
-                .document(courseWorkId)
-                .collection(FirebaseConstants.Firestore.STUDENT_SUBMISSIONS_COLLECTION)
+            httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments("$id:${Server.Parameters.TURN_IN}")
+                }
+            }
         }
     }

@@ -1,85 +1,112 @@
 package edumate.app.data.repository
 
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.toObject
-import edumate.app.core.FirebaseConstants
-import edumate.app.data.remote.dto.CourseWorkDto
-import edumate.app.domain.model.AssigneeMode
-import edumate.app.domain.model.IndividualStudentsOptions
-import edumate.app.domain.model.course_work.CourseWorkState
+import edumate.app.core.Server
+import edumate.app.data.remote.dto.classroom.courseWork.CourseWork
+import edumate.app.data.remote.dto.classroom.courseWork.CourseWorkDto
+import edumate.app.data.remote.dto.classroom.courseWork.CourseWorkState
 import edumate.app.domain.repository.CourseWorkRepository
-import kotlinx.coroutines.tasks.await
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
 import javax.inject.Inject
 
 class CourseWorkRepositoryImpl
     @Inject
     constructor(
-        private val firestore: FirebaseFirestore,
+        private val httpClient: HttpClient,
     ) : CourseWorkRepository {
         override suspend fun create(
             courseId: String,
-            courseWorkDto: CourseWorkDto,
-        ): CourseWorkDto? {
-            val id = courseWorkDto.id
-            courseWork(courseId).document(id).set(courseWorkDto.toMap()).await()
-            return get(courseId, id)
+            courseWork: CourseWork,
+        ): CourseWork {
+            return httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(courseWork)
+            }.body()
         }
 
         override suspend fun delete(
             courseId: String,
             id: String,
         ) {
-            courseWork(courseId).document(id).delete().await()
+            httpClient.delete(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(id)
+                }
+            }
         }
 
         override suspend fun get(
             courseId: String,
             id: String,
-        ): CourseWorkDto? {
-            val documentSnapshot = courseWork(courseId).document(id).get().await()
-            return documentSnapshot.toObject<CourseWorkDto>()
+        ): CourseWork {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(id)
+                }
+            }.body()
         }
 
         override suspend fun list(
             courseId: String,
-            courseWorkState: CourseWorkState,
-            orderBy: String,
+            courseWorkStates: List<CourseWorkState>?,
+            orderBy: String?,
             pageSize: Int?,
-        ): List<CourseWorkDto> {
-            var query: Query = courseWork(courseId)
-            query = query.whereEqualTo(FirebaseConstants.Firestore.STATE, courseWorkState)
-            // TODO("Use orderBy")
-            query = query.orderBy(FirebaseConstants.Firestore.CREATION_TIME, Query.Direction.DESCENDING)
-            if (pageSize != null && pageSize > 0) {
-                query = query.limit(pageSize.toLong())
-            }
-            return query.get().await().documents.mapNotNull { snapshot ->
-                snapshot.toObject<CourseWorkDto>()
-            }
+            pageToken: String?,
+        ): CourseWorkDto {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    courseWorkStates?.forEach { state ->
+                        parameters.append(Server.Parameters.COURSE_WORK_STATES, state.name)
+                    }
+                    if (orderBy != null) {
+                        parameters.append(Server.Parameters.ORDER_BY, orderBy)
+                    }
+                    if (pageSize != null) {
+                        parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
+                    }
+                    if (pageToken != null) {
+                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    }
+                }
+            }.body()
         }
 
-        override suspend fun modifyAssignees(
+        override suspend fun update(
             courseId: String,
             id: String,
-            assigneeMode: AssigneeMode,
-            modifyIndividualStudentsOptions: IndividualStudentsOptions?,
-        ): CourseWorkDto? {
-            TODO("Feature is not available yet")
-        }
-
-        override suspend fun patch(
-            courseId: String,
-            id: String,
-            courseWorkDto: CourseWorkDto,
-        ): CourseWorkDto? {
-            courseWork(courseId).document(id).update(courseWorkDto.toMap()).await()
-            return get(courseId, id)
-        }
-
-        private fun courseWork(courseId: String): CollectionReference {
-            return firestore.collection(FirebaseConstants.Firestore.COURSES_COLLECTION)
-                .document(courseId).collection(FirebaseConstants.Firestore.COURSE_WORK_COLLECTION)
+            courseWork: CourseWork,
+        ): CourseWork {
+            return httpClient.put(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(id)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(courseWork)
+            }.body()
         }
     }

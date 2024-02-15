@@ -1,79 +1,112 @@
 package edumate.app.data.repository
 
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.getValue
-import edumate.app.core.FirebaseConstants
-import edumate.app.data.remote.dto.AnnouncementDto
-import edumate.app.domain.model.AssigneeMode
-import edumate.app.domain.model.IndividualStudentsOptions
-import edumate.app.domain.model.announcements.AnnouncementState
+import edumate.app.core.Server
+import edumate.app.data.remote.dto.classroom.announcements.Announcement
+import edumate.app.data.remote.dto.classroom.announcements.AnnouncementState
+import edumate.app.data.remote.dto.classroom.announcements.AnnouncementsDto
 import edumate.app.domain.repository.AnnouncementsRepository
-import kotlinx.coroutines.tasks.await
+import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.delete
+import io.ktor.client.request.get
+import io.ktor.client.request.post
+import io.ktor.client.request.put
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.appendPathSegments
+import io.ktor.http.contentType
 import javax.inject.Inject
 
 class AnnouncementsRepositoryImpl
     @Inject
     constructor(
-        private val database: DatabaseReference,
+        private val httpClient: HttpClient,
     ) : AnnouncementsRepository {
         override suspend fun create(
             courseId: String,
-            announcementDto: AnnouncementDto,
-        ): AnnouncementDto? {
-            val id = announcementDto.id
-            database.child(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).child(courseId).child(id)
-                .setValue(announcementDto.toMap()).await()
-            return get(courseId, id)
+            announcement: Announcement,
+        ): Announcement {
+            return httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(announcement)
+            }.body()
         }
 
         override suspend fun delete(
             courseId: String,
             id: String,
         ) {
-            database.child(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).child(courseId).child(id)
-                .removeValue().await()
+            httpClient.delete(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
+                    appendPathSegments(id)
+                }
+            }
         }
 
         override suspend fun get(
             courseId: String,
             id: String,
-        ): AnnouncementDto? {
-            val documentSnapshot =
-                database.child(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).child(courseId).child(id)
-                    .get().await()
-            return documentSnapshot.getValue<AnnouncementDto>()
+        ): Announcement {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
+                    appendPathSegments(id)
+                }
+            }.body()
         }
 
         override suspend fun list(
             courseId: String,
-            announcementState: AnnouncementState,
-            orderBy: String,
+            announcementStates: List<AnnouncementState>?,
+            orderBy: String?,
             pageSize: Int?,
-        ): List<AnnouncementDto> {
-            // TODO("Use announcementState, orderBy and pageSize")
-            val announcements =
-                database.child(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).child(courseId)
-                    .orderByChild(FirebaseConstants.Database.CREATION_TIME).get()
-                    .await().children.mapNotNull { snapshot -> snapshot.getValue<AnnouncementDto>() }
-            return announcements.filter { it.state == AnnouncementState.PUBLISHED }
+            pageToken: String?,
+        ): AnnouncementsDto {
+            return httpClient.get(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
+                    announcementStates?.forEach { state ->
+                        parameters.append(Server.Parameters.ANNOUNCEMENT_STATES, state.name)
+                    }
+                    if (orderBy != null) {
+                        parameters.append(Server.Parameters.ORDER_BY, orderBy)
+                    }
+                    if (pageSize != null) {
+                        parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
+                    }
+                    if (pageToken != null) {
+                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    }
+                }
+            }.body()
         }
 
-        override suspend fun modifyAssignees(
+        override suspend fun update(
             courseId: String,
             id: String,
-            assigneeMode: AssigneeMode,
-            modifyIndividualStudentsOptions: IndividualStudentsOptions?,
-        ): AnnouncementDto? {
-            TODO("Feature is not available yet")
-        }
-
-        override suspend fun patch(
-            courseId: String,
-            id: String,
-            announcementDto: AnnouncementDto,
-        ): AnnouncementDto? {
-            database.child(FirebaseConstants.Database.ANNOUNCEMENTS_PATH).child(courseId).child(id)
-                .updateChildren(announcementDto.toMap()).await()
-            return get(courseId, id)
+            announcement: Announcement,
+        ): Announcement {
+            return httpClient.put(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
+                    appendPathSegments(id)
+                }
+                contentType(ContentType.Application.Json)
+                setBody(announcement)
+            }.body()
         }
     }
