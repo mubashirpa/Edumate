@@ -1,4 +1,4 @@
-package edumate.app.presentation.get_started
+package edumate.app.presentation.getStarted
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -21,7 +21,7 @@ import edumate.app.R.string as Strings
 
 @Composable
 fun GetStartedScreen(navigateToLogin: () -> Unit) {
-    val backgroundPlaceholder = rememberAsyncImagePainter(Constants.GET_STARTED_BACKDROP_ASSET_URL)
+    val backgroundPlaceholder = rememberAsyncImagePainter(Constants.BACKDROP_GET_STARTED_LOCAL)
 
     Scaffold { innerPadding ->
         Box(
@@ -34,7 +34,7 @@ fun GetStartedScreen(navigateToLogin: () -> Unit) {
             AsyncImage(
                 model =
                     ImageRequest.Builder(LocalContext.current)
-                        .data(Constants.GET_STARTED_BACKDROP_URL)
+                        .data(Constants.BACKDROP_GET_STARTED)
                         .crossfade(true)
                         .build(),
                 placeholder = backgroundPlaceholder,
