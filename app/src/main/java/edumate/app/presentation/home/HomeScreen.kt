@@ -1,4 +1,4 @@
-package edumate.app.presentation.home.screen
+package edumate.app.presentation.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -54,11 +54,8 @@ import edumate.app.navigation.EdumateModalNavigationDrawer
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.EnrolledViewModel
 import edumate.app.presentation.enrolled.screen.EnrolledScreen
-import edumate.app.presentation.home.HomeTabsScreen
-import edumate.app.presentation.home.HomeUiEvent
-import edumate.app.presentation.home.HomeUiState
+import edumate.app.presentation.teaching.TeachingScreen
 import edumate.app.presentation.teaching.TeachingViewModel
-import edumate.app.presentation.teaching.screen.TeachingScreen
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import edumate.app.R.string as Strings
