@@ -21,6 +21,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.engine.cio.CIO
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.json.Json
 import javax.inject.Singleton
 
 @Module
@@ -30,15 +31,15 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideAnnouncementsRepository(database: DatabaseReference): AnnouncementsRepository = AnnouncementsRepositoryImpl(database)
+    fun provideAnnouncementsRepository(httpClient: HttpClient): AnnouncementsRepository = AnnouncementsRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
-    fun provideCoursesRepository(firestore: FirebaseFirestore): CoursesRepository = CoursesRepositoryImpl(firestore)
+    fun provideCoursesRepository(httpClient: HttpClient): CoursesRepository = CoursesRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
-    fun provideCourseWorkRepository(firestore: FirebaseFirestore): CourseWorkRepository = CourseWorkRepositoryImpl(firestore)
+    fun provideCourseWorkRepository(httpClient: HttpClient): CourseWorkRepository = CourseWorkRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
@@ -62,20 +63,20 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideNotificationApiService(client: HttpClient): NotificationApiService = NotificationApiServiceImpl(client)
+    fun provideNotificationApiService(client: HttpClient): NotificationService = NotificationServiceImpl(client)
 
     @Singleton
     @Provides
-    fun provideStudentsRepository(firestore: FirebaseFirestore): StudentsRepository = StudentsRepositoryImpl(firestore)
+    fun provideStudentsRepository(httpClient: HttpClient): StudentsRepository = StudentsRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
-    fun provideStudentSubmissionRepository(firestore: FirebaseFirestore): StudentSubmissionRepository =
-        StudentSubmissionRepositoryImpl(firestore)
+    fun provideStudentSubmissionRepository(httpClient: HttpClient): StudentSubmissionRepository =
+        StudentSubmissionRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
-    fun provideTeachersRepository(firestore: FirebaseFirestore): TeachersRepository = TeachersRepositoryImpl(firestore)
+    fun provideTeachersRepository(httpClient: HttpClient): TeachersRepository = TeachersRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
@@ -115,8 +116,15 @@ object AppModule {
     fun provideHttpClient(): HttpClient {
         val client =
             HttpClient(CIO) {
+                expectSuccess = true
                 install(ContentNegotiation) {
-                    json()
+                    json(
+                        Json {
+                            isLenient = true
+                            ignoreUnknownKeys = true
+                            useAlternativeNames = false
+                        },
+                    )
                 }
             }
         return client
