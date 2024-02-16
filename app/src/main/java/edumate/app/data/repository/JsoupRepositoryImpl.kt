@@ -1,6 +1,6 @@
 package edumate.app.data.repository
 
-import edumate.app.domain.model.Link
+import edumate.app.data.remote.dto.classroom.Link
 import edumate.app.domain.repository.JsoupRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

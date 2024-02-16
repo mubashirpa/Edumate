@@ -1,20 +1,24 @@
 package edumate.app.data.mapper
 
+import edumate.app.data.remote.dto.classroom.DriveFile
 import edumate.app.data.remote.dto.classroom.DriveFolder
 import edumate.app.data.remote.dto.classroom.Link
 import edumate.app.data.remote.dto.classroom.Material
+import edumate.app.domain.model.classroom.DriveFile as DriveFileDomainModel
 import edumate.app.domain.model.classroom.DriveFolder as DriveFolderDomainModel
 import edumate.app.domain.model.classroom.Link as LinkDomainModel
 import edumate.app.domain.model.classroom.Material as MaterialDomainModel
 
 fun Material.toMaterialDomainModel(): MaterialDomainModel {
     return MaterialDomainModel(
+        driveFile = driveFile?.toDriveFileDomainModel(),
         link = link?.toLinkDomainModel(),
     )
 }
 
 fun MaterialDomainModel.toMaterial(): Material {
     return Material(
+        driveFile = driveFile?.toDriveFile(),
         link = link?.toLink(),
     )
 }
@@ -48,5 +52,21 @@ fun LinkDomainModel.toLink(): Link {
         thumbnailUrl = thumbnailUrl,
         title = title,
         url = url,
+    )
+}
+
+private fun DriveFile.toDriveFileDomainModel(): DriveFileDomainModel {
+    return DriveFileDomainModel(
+        alternateLink = alternateLink,
+        thumbnailUrl = thumbnailUrl,
+        title = title,
+    )
+}
+
+private fun DriveFileDomainModel.toDriveFile(): DriveFile {
+    return DriveFile(
+        alternateLink = alternateLink,
+        thumbnailUrl = thumbnailUrl,
+        title = title,
     )
 }
