@@ -15,7 +15,7 @@ sealed class CreateAnnouncementUiEvent {
     data class OnShowAddAttachmentBottomSheetChange(val showBottomSheet: Boolean) :
         CreateAnnouncementUiEvent()
 
-    data class OnTextChange(val text: String) : CreateAnnouncementUiEvent()
+    data class OnTextValueChange(val text: String) : CreateAnnouncementUiEvent()
 
     data object PostAnnouncement : CreateAnnouncementUiEvent()
 

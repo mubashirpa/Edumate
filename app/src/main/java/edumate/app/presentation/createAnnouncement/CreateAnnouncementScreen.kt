@@ -243,7 +243,7 @@ private fun ColumnScope.CreateAnnouncementScreenContent(
                 OutlinedTextField(
                     value = uiState.text,
                     onValueChange = {
-                        onEvent(CreateAnnouncementUiEvent.OnTextChange(it))
+                        onEvent(CreateAnnouncementUiEvent.OnTextValueChange(it))
                     },
                     modifier =
                         Modifier

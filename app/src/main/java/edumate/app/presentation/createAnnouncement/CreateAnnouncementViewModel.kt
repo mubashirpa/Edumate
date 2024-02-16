@@ -113,7 +113,7 @@ class CreateAnnouncementViewModel
                     uiState = uiState.copy(showAddAttachmentBottomSheet = event.showBottomSheet)
                 }
 
-                is CreateAnnouncementUiEvent.OnTextChange -> {
+                is CreateAnnouncementUiEvent.OnTextValueChange -> {
                     uiState =
                         uiState.copy(
                             text = event.text,
