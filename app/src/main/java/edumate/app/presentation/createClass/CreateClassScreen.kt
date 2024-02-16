@@ -1,11 +1,10 @@
 package edumate.app.presentation.createClass
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -71,13 +70,6 @@ fun CreateClassScreen(
             Strings.save
         }
 
-    LaunchedEffect(Unit) {
-        try {
-            focusRequester.requestFocus()
-        } catch (_: Exception) {
-        }
-    }
-
     LaunchedEffect(context) {
         createClassResults.collect {
             navigateToClassDetails(it)
@@ -136,9 +128,10 @@ fun CreateClassScreen(
                     Modifier
                         .fillMaxSize()
                         .padding(innerPadding)
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
+                        .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 24.dp)
                         .imePadding()
                         .verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(16.dp),
             ) {
                 TextField(
                     value = uiState.name,
@@ -172,7 +165,6 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = uiState.section,
                     onValueChange = {
@@ -195,7 +187,6 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = uiState.room,
                     onValueChange = {
@@ -218,7 +209,6 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
-                Spacer(modifier = Modifier.height(16.dp))
                 TextField(
                     value = uiState.subject,
                     onValueChange = {
@@ -242,19 +232,24 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
-                Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
                         onEvent(CreateClassUiEvent.OnCreateClick)
                     },
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                 ) {
                     Text(text = stringResource(id = buttonText))
                 }
-                Spacer(modifier = Modifier.height(12.dp))
             }
         }
     }
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }

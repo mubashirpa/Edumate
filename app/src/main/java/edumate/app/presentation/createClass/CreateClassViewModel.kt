@@ -9,10 +9,10 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
 import edumate.app.core.UiText
-import edumate.app.domain.model.courses.Course
-import edumate.app.domain.usecase.courses.CreateCourseUseCase
-import edumate.app.domain.usecase.courses.GetCourseUseCase
-import edumate.app.domain.usecase.courses.UpdateCourseUseCase
+import edumate.app.domain.model.classroom.courses.Course
+import edumate.app.domain.usecase.classroom.courses.CreateCourseUseCase
+import edumate.app.domain.usecase.classroom.courses.GetCourseUseCase
+import edumate.app.domain.usecase.classroom.courses.UpdateCourseUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
 import edumate.app.navigation.Routes
 import kotlinx.coroutines.channels.Channel
@@ -48,7 +48,7 @@ class CreateClassViewModel
 
         init {
             if (courseId != null) {
-                getCourse()
+                getCourse(courseId)
             }
         }
 
@@ -102,6 +102,7 @@ class CreateClassViewModel
                     name = name,
                     room = uiState.room.ifEmpty { null },
                     section = uiState.section.ifEmpty { null },
+                    subject = uiState.subject.ifEmpty { null },
                 )
 
             createCourseUseCase(course.value).onEach { result ->
@@ -137,8 +138,8 @@ class CreateClassViewModel
             }.launchIn(viewModelScope)
         }
 
-        private fun getCourse() {
-            getCourseUseCase(courseId!!).onEach { resource ->
+        private fun getCourse(id: String) {
+            getCourseUseCase(id).onEach { resource ->
                 when (resource) {
                     is Result.Empty -> {}
 
@@ -164,7 +165,7 @@ class CreateClassViewModel
                                     name = updatedCourse.name.orEmpty(),
                                     room = updatedCourse.room.orEmpty(),
                                     section = updatedCourse.section.orEmpty(),
-                                    subject = "",
+                                    subject = updatedCourse.subject.orEmpty(),
                                 )
                         } else {
                             uiState =
@@ -192,6 +193,7 @@ class CreateClassViewModel
                     name = name,
                     room = uiState.room.ifEmpty { null },
                     section = uiState.section.ifEmpty { null },
+                    subject = uiState.subject.ifEmpty { null },
                 )
 
             updateCourseUseCase(id, course.value).onEach { resource ->
