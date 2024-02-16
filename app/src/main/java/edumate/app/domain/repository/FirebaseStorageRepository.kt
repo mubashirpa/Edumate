@@ -1,12 +1,13 @@
 package edumate.app.domain.repository
 
 import android.net.Uri
-import com.google.firebase.storage.StorageReference
 
 interface FirebaseStorageRepository {
     /**
-     * Asynchronously uploads from a content URI to this [StorageReference].
-     * @param uri The source of the upload. This can be a file:// scheme or any content URI. A content resolver will be used to load the data.
+     * Uploads a file from a content [Uri].
+     * @param uri The source of the upload. This can be a file:// scheme or any content [Uri].
+     * @param path The destination path in the storage where the file will be uploaded.
+     * @return A [Uri] representing the uploaded file, or null if the upload fails.
      */
     suspend fun uploadFile(
         uri: Uri,
@@ -14,7 +15,8 @@ interface FirebaseStorageRepository {
     ): Uri?
 
     /**
-     * Deletes the object at this [StorageReference].
+     * Deletes a file from the storage at the specified path.
+     * @param path The path of the file to delete.
      */
     suspend fun deleteFile(path: String)
 }

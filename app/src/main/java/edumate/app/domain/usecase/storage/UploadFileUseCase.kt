@@ -1,7 +1,7 @@
 package edumate.app.domain.usecase.storage
 
 import android.net.Uri
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.FirebaseStorageRepository
 import kotlinx.coroutines.flow.Flow
@@ -17,14 +17,14 @@ class UploadFileUseCase
         operator fun invoke(
             uri: Uri,
             path: String,
-        ): Flow<Resource<Uri?>> =
+        ): Flow<Result<Uri?>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(Result.Loading())
                     val downloadUri = storageRepository.uploadFile(uri, path)
-                    emit(Resource.Success(downloadUri))
+                    emit(Result.Success(downloadUri))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.StringResource(Strings.error_unknown)))
+                    emit(Result.Error(UiText.StringResource(Strings.error_unknown)))
                 }
             }
     }

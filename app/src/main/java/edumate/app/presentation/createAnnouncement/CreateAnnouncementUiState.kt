@@ -1,17 +1,18 @@
-package edumate.app.presentation.create_announcement
+package edumate.app.presentation.createAnnouncement
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import edumate.app.core.UiText
-import edumate.app.domain.model.Material
+import edumate.app.domain.model.classroom.Material
 
 data class CreateAnnouncementUiState(
     val attachments: SnapshotStateList<Material> = mutableStateListOf(),
-    val loading: Boolean = false,
+    val isLoading: Boolean = false,
     val openAddLinkDialog: Boolean = false,
-    val openAttachmentMenu: Boolean = false,
     val openProgressDialog: Boolean = false,
+    val showAddAttachmentBottomSheet: Boolean = false,
     val text: String = "",
     val textError: UiText? = null,
+    val userId: String = "",
     val userMessage: UiText? = null,
 )

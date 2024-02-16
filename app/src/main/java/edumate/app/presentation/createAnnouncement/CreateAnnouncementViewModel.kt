@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_announcement
+package edumate.app.presentation.createAnnouncement
 
 import android.net.Uri
 import androidx.compose.runtime.getValue
@@ -7,24 +7,20 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.database.FirebaseDatabase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.FirebaseConstants
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.AssigneeMode
-import edumate.app.domain.model.DriveFile
-import edumate.app.domain.model.Link
-import edumate.app.domain.model.Material
-import edumate.app.domain.model.announcements.Announcement
-import edumate.app.domain.model.announcements.AnnouncementState
-import edumate.app.domain.model.user_profiles.UserProfile
+import edumate.app.domain.model.classroom.DriveFile
+import edumate.app.domain.model.classroom.Link
+import edumate.app.domain.model.classroom.Material
+import edumate.app.domain.model.classroom.announcements.Announcement
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
-import edumate.app.domain.usecase.announcements.CreateAnnouncement
-import edumate.app.domain.usecase.announcements.GetAnnouncement
-import edumate.app.domain.usecase.announcements.PatchAnnouncement
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.classroom.announcements.CreateAnnouncementUseCase
+import edumate.app.domain.usecase.classroom.announcements.GetAnnouncementUseCase
+import edumate.app.domain.usecase.classroom.announcements.UpdateAnnouncementUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -44,9 +40,9 @@ class CreateAnnouncementViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val createAnnouncementUseCase: CreateAnnouncement,
-        private val getAnnouncementUseCase: GetAnnouncement,
-        private val patchAnnouncementUseCase: PatchAnnouncement,
+        private val createAnnouncementUseCase: CreateAnnouncementUseCase,
+        private val getAnnouncementUseCase: GetAnnouncementUseCase,
+        private val updateAnnouncementUseCase: UpdateAnnouncementUseCase,
         private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
         private val uploadFileUseCase: UploadFileUseCase,
         private val deleteFileUseCase: DeleteFileUseCase,
@@ -66,36 +62,13 @@ class CreateAnnouncementViewModel
         private var getUrlMetadataJob: Job? = null
 
         init {
-            val id = generateAnnouncementId()
-
-            announcement.value =
-                announcement.value.copy(
-                    courseId = courseId,
-                    id = id,
-                    state = AnnouncementState.PUBLISHED,
-                    alternateLink = "${FirebaseConstants.Hosting.EDUMATEAPP}/c/p/details?cid=$courseId&aid=$id",
-                    assigneeMode = AssigneeMode.ALL_STUDENTS,
-                )
-
             getCurrentUserUseCase().map { user ->
                 if (user != null) {
-                    announcement.value =
-                        announcement.value.copy(
-                            creatorUserId = user.uid,
-                            creatorProfile =
-                                UserProfile(
-                                    displayName = user.displayName,
-                                    emailAddress = user.email,
-                                    id = user.uid,
-                                    photoUrl = user.photoUrl?.toString(),
-                                    verified = user.isEmailVerified,
-                                ),
-                        )
+                    uiState = uiState.copy(userId = user.uid)
                 }
             }.launchIn(viewModelScope)
-
             if (announcementId != "null") {
-                fetchAnnouncement()
+                getAnnouncement(announcementId)
             }
         }
 
@@ -108,7 +81,7 @@ class CreateAnnouncementViewModel
                             title = event.link,
                         )
                     uiState.attachments.add(Material(link = link))
-                    fetchUrlMetadata(event.link)
+                    getUrlMetadata(event.link)
                 }
 
                 is CreateAnnouncementUiEvent.OnFilePicked -> {
@@ -116,11 +89,7 @@ class CreateAnnouncementViewModel
                 }
 
                 is CreateAnnouncementUiEvent.OnOpenAddLinkDialogChange -> {
-                    uiState = uiState.copy(openAddLinkDialog = event.open)
-                }
-
-                is CreateAnnouncementUiEvent.OnOpenAttachmentMenuChange -> {
-                    uiState = uiState.copy(openAttachmentMenu = event.open)
+                    uiState = uiState.copy(openAddLinkDialog = event.openDialog)
                 }
 
                 is CreateAnnouncementUiEvent.OnRemoveAttachment -> {
@@ -131,11 +100,17 @@ class CreateAnnouncementViewModel
                         }
 
                         attachment.link != null -> {
-                            // Stop urlUseCaseJob to avoid conflict
+                            // Cancel getUrlMetadataJob to prevent potential conflicts.
+                            // If getUrlMetadataJob is running in the background and succeeds,
+                            // it may re-add the deleted data.
                             getUrlMetadataJob?.cancel()
                             uiState.attachments.removeAt(event.position)
                         }
                     }
+                }
+
+                is CreateAnnouncementUiEvent.OnShowAddAttachmentBottomSheetChange -> {
+                    uiState = uiState.copy(showAddAttachmentBottomSheet = event.showBottomSheet)
                 }
 
                 is CreateAnnouncementUiEvent.OnTextChange -> {
@@ -148,9 +123,9 @@ class CreateAnnouncementViewModel
 
                 CreateAnnouncementUiEvent.PostAnnouncement -> {
                     if (announcementId != "null") {
-                        updateAnnouncement()
+                        updateAnnouncement(announcementId)
                     } else {
-                        postAnnouncement()
+                        createAnnouncement()
                     }
                 }
 
@@ -160,7 +135,7 @@ class CreateAnnouncementViewModel
             }
         }
 
-        private fun postAnnouncement() {
+        private fun createAnnouncement() {
             val text = uiState.text
             val textResult = validateTextField.execute(text)
 
@@ -175,17 +150,27 @@ class CreateAnnouncementViewModel
                     materials = uiState.attachments,
                 )
 
-            createAnnouncementUseCase(courseId, announcement.value).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
+            createAnnouncementUseCase(courseId, announcement.value).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
                         uiState = uiState.copy(openProgressDialog = true)
                     }
 
-                    is Resource.Success -> {
-                        val announcementResponse = resource.data
+                    is Result.Success -> {
+                        val announcementResponse = result.data
                         if (announcementResponse != null) {
                             uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(announcementResponse.id)
+                            resultChannel.send(announcementResponse.id.orEmpty())
                         } else {
                             uiState =
                                 uiState.copy(
@@ -194,57 +179,50 @@ class CreateAnnouncementViewModel
                                 )
                         }
                     }
-
-                    is Resource.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = resource.message,
-                            )
-                    }
                 }
             }.launchIn(viewModelScope)
         }
 
-        private fun fetchAnnouncement() {
-            getAnnouncementUseCase(courseId, announcementId).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
-                        uiState = uiState.copy(loading = true)
+        private fun getAnnouncement(id: String) {
+            getAnnouncementUseCase(courseId, id).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
                     }
 
-                    is Resource.Success -> {
-                        val announcementResponse = resource.data
+                    is Result.Loading -> {
+                        uiState = uiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        val announcementResponse = result.data
                         if (announcementResponse != null) {
                             announcement.value = announcementResponse
-                            uiState.attachments.addAll(announcementResponse.materials)
-
+                            uiState.attachments.addAll(announcementResponse.materials.orEmpty())
                             uiState =
                                 uiState.copy(
-                                    loading = false,
-                                    text = announcementResponse.text,
+                                    isLoading = false,
+                                    text = announcementResponse.text.orEmpty(),
                                 )
                         } else {
                             uiState =
                                 uiState.copy(
-                                    loading = false,
+                                    isLoading = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
                         }
-                    }
-
-                    is Resource.Error -> {
-                        uiState =
-                            uiState.copy(
-                                loading = false,
-                                userMessage = resource.message,
-                            )
                     }
                 }
             }.launchIn(viewModelScope)
         }
 
-        private fun updateAnnouncement() {
+        private fun updateAnnouncement(id: String) {
             val text = uiState.text
             val textResult = validateTextField.execute(text)
 
@@ -259,21 +237,31 @@ class CreateAnnouncementViewModel
                     materials = uiState.attachments,
                 )
 
-            patchAnnouncementUseCase(
+            updateAnnouncementUseCase(
                 courseId,
-                announcement.value.id,
+                id,
                 announcement.value,
-            ).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
+            ).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
                         uiState = uiState.copy(openProgressDialog = true)
                     }
 
-                    is Resource.Success -> {
-                        val announcementResponse = resource.data
+                    is Result.Success -> {
+                        val announcementResponse = result.data
                         if (announcementResponse != null) {
                             uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(announcementResponse.id)
+                            resultChannel.send(announcementResponse.id.orEmpty())
                         } else {
                             uiState =
                                 uiState.copy(
@@ -281,14 +269,6 @@ class CreateAnnouncementViewModel
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
                         }
-                    }
-
-                    is Resource.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = resource.message,
-                            )
                     }
                 }
             }.launchIn(viewModelScope)
@@ -300,25 +280,33 @@ class CreateAnnouncementViewModel
         ) {
             val fileExtension = fileUtils.getFileExtension(uri)
             val fileName = fileUtils.getFileName(uri) ?: "${uri.lastPathSegment}.$fileExtension"
-            val mimeType = fileUtils.getMimeType(uri)
             val filePath =
                 "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/announcements/${announcement.value.id}/$fileName"
 
-            uploadFileUseCase(uri, filePath).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
+            uploadFileUseCase(uri, filePath).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
                         uiState = uiState.copy(openProgressDialog = true)
                     }
 
-                    is Resource.Success -> {
-                        val fileUrl = resource.data
+                    is Result.Success -> {
+                        val fileUrl = result.data
                         uiState =
                             if (fileUrl != null) {
                                 val driveFile =
                                     DriveFile(
-                                        url = fileUrl.toString(),
+                                        alternateLink = fileUrl.toString(),
                                         title = fileName,
-                                        type = mimeType,
                                     )
                                 uiState.attachments.add(Material(driveFile = driveFile))
                                 uiState.copy(openProgressDialog = false)
@@ -329,14 +317,6 @@ class CreateAnnouncementViewModel
                                 )
                             }
                     }
-
-                    is Resource.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = resource.message,
-                            )
-                    }
                 }
             }.launchIn(viewModelScope)
         }
@@ -346,43 +326,36 @@ class CreateAnnouncementViewModel
             val filePath =
                 "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/announcements/${announcement.value.id}/$fileName"
 
-            deleteFileUseCase(filePath).onEach { resource ->
-                uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
-                        }
-
-                        is Resource.Success -> {
-                            // Stop urlUseCaseJob to avoid problems
-                            getUrlMetadataJob?.cancel()
-                            uiState.attachments.removeAt(position)
-                            uiState.copy(openProgressDialog = false)
-                        }
-
-                        is Resource.Error -> {
+            deleteFileUseCase(filePath).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+                    is Result.Error -> {
+                        uiState =
                             uiState.copy(
                                 openProgressDialog = false,
-                                userMessage = resource.message,
+                                userMessage = result.message,
                             )
-                        }
                     }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState.attachments.removeAt(position)
+                        uiState = uiState.copy(openProgressDialog = false)
+                    }
+                }
             }.launchIn(viewModelScope)
         }
 
-        private fun fetchUrlMetadata(url: String) {
+        private fun getUrlMetadata(url: String) {
             val position = uiState.attachments.lastIndex
             getUrlMetadataJob =
-                getUrlMetadataUseCase(url).onEach { resource ->
-                    if (resource is Resource.Success) {
-                        uiState.attachments[position] = Material(link = resource.data)
+                getUrlMetadataUseCase(url).onEach { result ->
+                    if (result is Result.Success) {
+                        uiState.attachments[position] = Material(link = result.data)
                     }
                 }.launchIn(viewModelScope)
-        }
-
-        private fun generateAnnouncementId(): String {
-            return FirebaseDatabase.getInstance()
-                .getReference(FirebaseConstants.Database.ANNOUNCEMENTS_PATH)
-                .child(courseId).push().key.orEmpty()
         }
     }

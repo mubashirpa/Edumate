@@ -1,6 +1,6 @@
 package edumate.app.domain.usecase.storage
 
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.FirebaseStorageRepository
 import kotlinx.coroutines.flow.Flow
@@ -13,14 +13,14 @@ class DeleteFileUseCase
     constructor(
         private val storageRepository: FirebaseStorageRepository,
     ) {
-        operator fun invoke(path: String): Flow<Resource<Boolean>> =
+        operator fun invoke(path: String): Flow<Result<Boolean>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(Result.Loading())
                     storageRepository.deleteFile(path)
-                    emit(Resource.Success(true))
+                    emit(Result.Success(true))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.StringResource(Strings.error_unknown)))
+                    emit(Result.Error(UiText.StringResource(Strings.error_unknown)))
                 }
             }
     }
