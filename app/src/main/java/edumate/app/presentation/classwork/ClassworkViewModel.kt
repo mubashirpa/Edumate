@@ -7,12 +7,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.DataState
-import edumate.app.core.Resource
-import edumate.app.core.UiText
+import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.course_work.DeleteCourseWork
-import edumate.app.domain.usecase.course_work.ListCourseWorks
+import edumate.app.domain.usecase.classroom.courseWork.DeleteCourseWorkUseCase
+import edumate.app.domain.usecase.classroom.courseWork.ListCourseWorksUseCase
 import edumate.app.navigation.Routes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -26,8 +24,8 @@ class ClassworkViewModel
     constructor(
         savedStateHandle: SavedStateHandle,
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val listCourseWorksUseCase: ListCourseWorks,
-        private val deleteCourseWorkUseCase: DeleteCourseWork,
+        private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase,
+        private val listCourseWorksUseCase: ListCourseWorksUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(ClassworkUiState())
             private set
@@ -39,7 +37,7 @@ class ClassworkViewModel
             getCurrentUserUseCase().map { user ->
                 uiState = uiState.copy(currentUser = user)
             }.launchIn(viewModelScope)
-            fetchClasswork(false)
+            listCourseWork(false)
         }
 
         fun onEvent(event: ClassworkUiEvent) {
@@ -48,24 +46,24 @@ class ClassworkViewModel
                     uiState = uiState.copy(appBarMenuExpanded = event.expanded)
                 }
 
-                is ClassworkUiEvent.OnDeleteClasswork -> {
-                    deleteClasswork(event.classworkId)
+                is ClassworkUiEvent.OnDeleteCourseWork -> {
+                    deleteCourseWork(event.id)
                 }
 
-                is ClassworkUiEvent.OnOpenDeleteClassworkDialogChange -> {
-                    uiState = uiState.copy(deleteClasswork = event.classwork)
+                is ClassworkUiEvent.OnOpenDeleteCourseWorkDialogChange -> {
+                    uiState = uiState.copy(deleteCourseWork = event.courseWork)
                 }
 
-                is ClassworkUiEvent.OnOpenFabMenuChange -> {
-                    uiState = uiState.copy(openFabMenu = event.open)
+                is ClassworkUiEvent.OnShowCreateCourseWorkBottomSheetChange -> {
+                    uiState = uiState.copy(showCreateCourseWorkBottomSheet = event.showBottomSheet)
                 }
 
                 ClassworkUiEvent.OnRefresh -> {
-                    fetchClasswork(true)
+                    listCourseWork(true)
                 }
 
                 ClassworkUiEvent.OnRetry -> {
-                    fetchClasswork(false)
+                    listCourseWork(false)
                 }
 
                 ClassworkUiEvent.UserMessageShown -> {
@@ -74,80 +72,74 @@ class ClassworkViewModel
             }
         }
 
-        private fun fetchClasswork(refreshing: Boolean) {
-            // DataState.LOADING is only used when initial loading and retry
-            // Otherwise show the PullRefreshIndicator using refreshing = true
-            // Likewise, DataState.ERROR is only used when initial loading and retry
-            // Otherwise show snackbar by using userMessage.
-            // Cancel ongoing getCourseWorksJob before recall.
+        private fun listCourseWork(refreshing: Boolean) {
+            // Cancel any ongoing listCourseWorksJob before making a new call.
             listCourseWorksJob?.cancel()
             listCourseWorksJob =
-                listCourseWorksUseCase(courseId).onEach { resource ->
-                    when (resource) {
-                        is Resource.Loading -> {
+                listCourseWorksUseCase(courseId).onEach { result ->
+                    when (result) {
+                        is Result.Empty -> {}
+
+                        is Result.Error -> {
+                            // The Result.Error state is only used during initial loading and retry attempts.
+                            // Otherwise, a snackbar is displayed using the userMessage property.
+                            uiState =
+                                if (refreshing) {
+                                    uiState.copy(
+                                        refreshing = false,
+                                        userMessage = result.message,
+                                    )
+                                } else {
+                                    uiState.copy(courseWorkResult = result)
+                                }
+                        }
+
+                        is Result.Loading -> {
+                            // The Result.Loading state is only used during initial loading and retry attempts.
+                            // In other cases, the PullRefreshIndicator is shown with refreshing = true.
                             uiState =
                                 if (refreshing) {
                                     uiState.copy(refreshing = true)
                                 } else {
-                                    uiState.copy(dataState = DataState.LOADING)
+                                    uiState.copy(courseWorkResult = result)
                                 }
                         }
 
-                        is Resource.Success -> {
-                            val classwork = resource.data
+                        is Result.Success -> {
                             uiState =
-                                if (classwork.isNullOrEmpty()) {
-                                    uiState.copy(
-                                        // Message is set from ui
-                                        dataState = DataState.EMPTY(UiText.Empty),
-                                        refreshing = false,
-                                    )
-                                } else {
-                                    uiState.copy(
-                                        classwork = classwork,
-                                        dataState = DataState.SUCCESS,
-                                        refreshing = false,
-                                    )
-                                }
-                        }
-
-                        is Resource.Error -> {
-                            uiState =
-                                if (refreshing) {
-                                    uiState.copy(
-                                        refreshing = false,
-                                        userMessage = resource.message,
-                                    )
-                                } else {
-                                    uiState.copy(dataState = DataState.ERROR(message = resource.message!!))
-                                }
+                                uiState.copy(
+                                    courseWorkResult = result,
+                                    refreshing = false,
+                                )
                         }
                     }
                 }.launchIn(viewModelScope)
         }
 
-        private fun deleteClasswork(id: String) {
-            deleteCourseWorkUseCase(courseId, id).onEach { resource ->
-                when (resource) {
-                    is Resource.Loading -> {
+        private fun deleteCourseWork(id: String) {
+            deleteCourseWorkUseCase(courseId, id).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
                         uiState =
                             uiState.copy(
-                                deleteClasswork = null,
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState =
+                            uiState.copy(
+                                deleteCourseWork = null,
                                 openProgressDialog = true,
                             )
                     }
 
-                    is Resource.Success -> {
+                    is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        fetchClasswork(true)
-                    }
-
-                    is Resource.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = resource.message,
-                            )
+                        listCourseWork(true)
                     }
                 }
             }.launchIn(viewModelScope)
