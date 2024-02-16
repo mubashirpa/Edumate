@@ -17,12 +17,11 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import edumate.app.R.string as Strings
 
 @SuppressLint("UnrememberedMutableState")
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddLinkDialog(
     onDismissRequest: () -> Unit,
@@ -30,28 +29,22 @@ fun AddLinkDialog(
     onConfirmClick: (link: String) -> Unit,
 ) {
     if (openDialog) {
-        var link by rememberSaveable(stateSaver = TextFieldValue.Saver) {
-            mutableStateOf(TextFieldValue(""))
+        var link by rememberSaveable {
+            mutableStateOf("")
         }
-        val confirmEnabled = derivedStateOf { URLUtil.isValidUrl(link.text) }
+        val confirmEnabled by derivedStateOf {
+            URLUtil.isValidUrl(link)
+        }
 
-        BasicAlertDialog(onDismissRequest = onDismissRequest) {
-            val focusRequester = remember { FocusRequester() }
+        Dialog(onDismissRequest = onDismissRequest) {
+            val focusRequester =
+                remember {
+                    FocusRequester()
+                }
             val focusManager = LocalFocusManager.current
             val keyboardController = LocalSoftwareKeyboardController.current
 
-            LaunchedEffect(Unit) {
-                try {
-                    focusRequester.requestFocus()
-                } catch (_: Exception) {
-                }
-            }
-
             Surface(
-                modifier =
-                    Modifier
-                        .wrapContentWidth()
-                        .wrapContentHeight(),
                 shape = AlertDialogDefaults.shape,
                 color = AlertDialogDefaults.containerColor,
                 tonalElevation = AlertDialogDefaults.TonalElevation,
@@ -95,9 +88,9 @@ fun AddLinkDialog(
                         TextButton(
                             onClick = {
                                 onDismissRequest()
-                                onConfirmClick(link.text.trim())
+                                onConfirmClick(link.trim())
                             },
-                            enabled = confirmEnabled.value,
+                            enabled = confirmEnabled,
                         ) {
                             Text(stringResource(id = Strings.add))
                         }

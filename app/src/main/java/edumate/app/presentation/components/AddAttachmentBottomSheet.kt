@@ -23,18 +23,14 @@ import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AttachmentMenuBottomSheet(
+fun AddAttachmentBottomSheet(
     onDismissRequest: () -> Unit,
-    openBottomSheet: Boolean,
+    showBottomSheet: Boolean,
     onInsertLinkClick: () -> Unit,
     onUploadFileClick: () -> Unit,
 ) {
-    val bottomSheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
-
-    if (openBottomSheet) {
+    if (showBottomSheet) {
+        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val bottomMargin =
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
 
@@ -53,7 +49,10 @@ fun AttachmentMenuBottomSheet(
                         onInsertLinkClick()
                     },
                 leadingContent = {
-                    Icon(imageVector = Icons.Outlined.InsertLink, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Outlined.InsertLink,
+                        contentDescription = null,
+                    )
                 },
             )
             ListItem(
@@ -66,7 +65,10 @@ fun AttachmentMenuBottomSheet(
                         onUploadFileClick()
                     },
                 leadingContent = {
-                    Icon(imageVector = Icons.Outlined.UploadFile, contentDescription = null)
+                    Icon(
+                        imageVector = Icons.Outlined.UploadFile,
+                        contentDescription = null,
+                    )
                 },
             )
             Spacer(modifier = Modifier.height(bottomMargin))
