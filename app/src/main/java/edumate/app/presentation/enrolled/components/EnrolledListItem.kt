@@ -1,4 +1,4 @@
-package edumate.app.presentation.enrolled.screen.components
+package edumate.app.presentation.enrolled.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -15,7 +15,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edumate.app.domain.model.courses.Course
+import edumate.app.domain.model.classroom.courses.Course
 import edumate.app.R.string as Strings
 
 @Composable
@@ -42,7 +42,9 @@ fun EnrolledListItem(
     val backgroundImage = images[index % images.size]
 
     Card(
-        onClick = { onClick(course.id) },
+        onClick = {
+            course.id?.let(onClick)
+        },
         modifier = modifier.aspectRatio(8f / 3f),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -67,7 +69,7 @@ fun EnrolledListItem(
                     Column(modifier = Modifier.weight(1f)) {
                         // headlineContent
                         Text(
-                            text = course.name,
+                            text = course.name.orEmpty(),
                             color = Color.White,
                             overflow = TextOverflow.Ellipsis,
                             maxLines = 1,
@@ -85,12 +87,14 @@ fun EnrolledListItem(
                     Spacer(modifier = Modifier.width(16.dp))
                     // trailingContent
                     EnrolledMenuButton(
-                        onUnEnrollClick = { onUnEnrollClick(course.id) },
+                        onUnEnrollClick = {
+                            course.id?.let(onUnEnrollClick)
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = course.creatorProfile?.displayName.orEmpty(),
+                    text = course.ownerId.orEmpty(),
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
                 )

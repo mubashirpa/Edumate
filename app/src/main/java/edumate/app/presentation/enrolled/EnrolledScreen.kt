@@ -1,4 +1,4 @@
-package edumate.app.presentation.enrolled.screen
+package edumate.app.presentation.enrolled
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
@@ -6,12 +6,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,14 +22,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import edumate.app.core.utils.ResourceNew
+import edumate.app.core.Result
 import edumate.app.presentation.components.ErrorScreen
-import edumate.app.presentation.components.LoadingIndicator
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.enrolled.EnrolledUiEvent
-import edumate.app.presentation.enrolled.EnrolledUiState
-import edumate.app.presentation.enrolled.screen.components.EnrolledListItem
-import edumate.app.presentation.enrolled.screen.components.UnEnrolDialog
+import edumate.app.presentation.enrolled.components.EnrolledListItem
+import edumate.app.presentation.enrolled.components.UnEnrolDialog
 import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -51,7 +50,7 @@ fun EnrolledScreen(
         )
     val refreshState =
         rememberPullRefreshState(
-            refreshing = uiState.refreshing,
+            refreshing = uiState.isRefreshing,
             onRefresh = {
                 onEvent(EnrolledUiEvent.OnRefresh)
             },
@@ -77,38 +76,40 @@ fun EnrolledScreen(
                 .fillMaxSize()
                 .pullRefresh(refreshState),
     ) {
-        when (val enrolledCoursesResource = uiState.enrolledCoursesResource) {
-            is ResourceNew.Unknown -> {
+        when (val enrolledCoursesResult = uiState.enrolledCoursesResult) {
+            is Result.Empty -> {
                 // Nothing is shown
             }
 
-            is ResourceNew.Error -> {
+            is Result.Error -> {
                 ErrorScreen(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(bottom = bottomPadding),
-                    errorMessage = enrolledCoursesResource.message!!.asString(),
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                    errorMessage = enrolledCoursesResult.message!!.asString(),
                 )
             }
 
-            is ResourceNew.Loading -> {
-                LoadingIndicator(
+            is Result.Loading -> {
+                Box(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(bottom = bottomPadding),
-                )
+                            .wrapContentSize(Alignment.Center),
+                ) {
+                    CircularProgressIndicator()
+                }
             }
 
-            is ResourceNew.Success -> {
-                val courses = enrolledCoursesResource.data
+            is Result.Success -> {
+                val courses = enrolledCoursesResult.data
                 if (courses.isNullOrEmpty()) {
                     ErrorScreen(
                         modifier =
                             Modifier
                                 .fillMaxSize()
-                                .padding(bottom = bottomPadding),
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                         errorMessage = stringResource(id = Strings.join_a_class_to_get_started),
                     )
                 } else {
@@ -118,8 +119,8 @@ fun EnrolledScreen(
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         content = {
                             itemsIndexed(
-                                enrolledCoursesResource.data,
-                                key = { _, item -> item.id },
+                                items = enrolledCoursesResult.data,
+                                key = { _, item -> item.id!! },
                             ) { index, course ->
                                 EnrolledListItem(
                                     course = course,
@@ -138,9 +139,9 @@ fun EnrolledScreen(
         }
 
         PullRefreshIndicator(
-            uiState.refreshing,
-            refreshState,
-            Modifier.align(Alignment.TopCenter),
+            refreshing = uiState.isRefreshing,
+            state = refreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
         )
     }
 
@@ -148,9 +149,9 @@ fun EnrolledScreen(
         onDismissRequest = {
             onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(null))
         },
-        courseId = uiState.unEnrolCourseId,
+        openDialog = uiState.unEnrolCourseId != null,
         onConfirmClick = {
-            onEvent(EnrolledUiEvent.OnUnEnroll(it))
+            onEvent(EnrolledUiEvent.OnUnEnroll(uiState.unEnrolCourseId!!))
         },
     )
 

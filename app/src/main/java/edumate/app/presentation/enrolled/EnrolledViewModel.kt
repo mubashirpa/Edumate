@@ -5,13 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
+import edumate.app.core.Result
 import edumate.app.core.UiText
-import edumate.app.core.utils.ResourceNew
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.courses.ListCourses
-import edumate.app.domain.usecase.students.DeleteStudent
+import edumate.app.domain.usecase.classroom.courses.ListCoursesUseCase
+import edumate.app.domain.usecase.classroom.students.DeleteStudentUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -24,19 +23,20 @@ class EnrolledViewModel
     @Inject
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val listCoursesUseCase: ListCourses,
-        private val deleteStudentUseCase: DeleteStudent,
+        private val listCoursesUseCase: ListCoursesUseCase,
+        private val deleteStudentUseCase: DeleteStudentUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(EnrolledUiState())
             private set
 
-        private var currentUser: FirebaseUser? = null
         private var listCoursesJob: Job? = null
 
         init {
             getCurrentUserUseCase().map { user ->
-                currentUser = user
-                fetchClasses(user?.uid, false)
+                if (user != null) {
+                    uiState = uiState.copy(userId = user.uid)
+                    getCourses(user.uid, false)
+                }
             }.launchIn(viewModelScope)
         }
 
@@ -47,13 +47,17 @@ class EnrolledViewModel
                 }
 
                 is EnrolledUiEvent.OnUnEnroll -> {
-                    if (currentUser != null) {
-                        unEnroll(event.courseId, currentUser!!.uid)
+                    val userId = uiState.userId
+                    if (userId != null) {
+                        unEnrollCourse(event.courseId, userId)
                     }
                 }
 
                 EnrolledUiEvent.OnRefresh -> {
-                    fetchClasses(currentUser?.uid, true)
+                    val userId = uiState.userId
+                    if (userId != null) {
+                        getCourses(userId, true)
+                    }
                 }
 
                 EnrolledUiEvent.UserMessageShown -> {
@@ -62,58 +66,70 @@ class EnrolledViewModel
             }
         }
 
-        private fun fetchClasses(
-            studentId: String?,
+        private fun getCourses(
+            studentId: String,
             refreshing: Boolean,
         ) {
-            // Cancel ongoing listCoursesJob before recall.
+            // Cancel any ongoing listCourseWorksJob before making a new call.
             listCoursesJob?.cancel()
             listCoursesJob =
-                listCoursesUseCase(studentId = studentId).onEach { resource ->
-                    if (refreshing) {
-                        when (resource) {
-                            is ResourceNew.Unknown -> {}
+                listCoursesUseCase(studentId = studentId).onEach { result ->
+                    when (result) {
+                        is Result.Empty -> {}
 
-                            is ResourceNew.Loading -> {
-                                uiState = uiState.copy(refreshing = true)
-                            }
-
-                            is ResourceNew.Success -> {
-                                uiState =
+                        is Result.Error -> {
+                            // The Result.Error state is only used during initial loading and retry attempts.
+                            // Otherwise, a snackbar is displayed using the userMessage property.
+                            uiState =
+                                if (refreshing) {
                                     uiState.copy(
-                                        enrolledCoursesResource = resource,
-                                        refreshing = false,
+                                        isRefreshing = false,
+                                        userMessage = result.message,
                                     )
-                            }
-
-                            is ResourceNew.Error -> {
-                                uiState =
-                                    if (uiState.enrolledCoursesResource is ResourceNew.Loading) {
-                                        uiState.copy(enrolledCoursesResource = resource, refreshing = false)
-                                    } else {
-                                        uiState.copy(
-                                            refreshing = false,
-                                            userMessage = resource.message,
-                                        )
-                                    }
-                            }
+                                } else {
+                                    uiState.copy(enrolledCoursesResult = result)
+                                }
                         }
-                    } else {
-                        uiState = uiState.copy(enrolledCoursesResource = resource)
+
+                        is Result.Loading -> {
+                            // The Result.Loading state is only used during initial loading and retry attempts.
+                            // In other cases, the PullRefreshIndicator is shown with refreshing = true.
+                            uiState =
+                                if (refreshing) {
+                                    uiState.copy(isRefreshing = true)
+                                } else {
+                                    uiState.copy(enrolledCoursesResult = result)
+                                }
+                        }
+
+                        is Result.Success -> {
+                            uiState =
+                                uiState.copy(
+                                    enrolledCoursesResult = result,
+                                    isRefreshing = false,
+                                )
+                        }
                     }
                 }.launchIn(viewModelScope)
         }
 
-        private fun unEnroll(
+        private fun unEnrollCourse(
             courseId: String,
             userId: String,
         ) {
-            // TODO("Delete other resources related to course")
-            deleteStudentUseCase(courseId, userId).onEach { resource ->
-                when (resource) {
-                    is ResourceNew.Unknown -> {}
+            deleteStudentUseCase(courseId, userId).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
 
-                    is ResourceNew.Loading -> {
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = UiText.StringResource(Strings.unable_to_leave_class),
+                            )
+                    }
+
+                    is Result.Loading -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = true,
@@ -121,17 +137,9 @@ class EnrolledViewModel
                             )
                     }
 
-                    is ResourceNew.Success -> {
+                    is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        fetchClasses(currentUser?.uid, true)
-                    }
-
-                    is ResourceNew.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = UiText.StringResource(Strings.unable_to_leave_class),
-                            )
+                        getCourses(userId, true)
                     }
                 }
             }.launchIn(viewModelScope)

@@ -1,4 +1,4 @@
-package edumate.app.presentation.enrolled.screen.components
+package edumate.app.presentation.enrolled.components
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
@@ -10,10 +10,10 @@ import edumate.app.R.string as Strings
 @Composable
 fun UnEnrolDialog(
     onDismissRequest: () -> Unit,
-    courseId: String?,
-    onConfirmClick: (courseId: String) -> Unit,
+    openDialog: Boolean,
+    onConfirmClick: () -> Unit,
 ) {
-    if (courseId != null) {
+    if (openDialog) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
@@ -23,7 +23,7 @@ fun UnEnrolDialog(
                 Text(text = stringResource(id = Strings.dialog_unenrol_text))
             },
             confirmButton = {
-                TextButton(onClick = { onConfirmClick(courseId) }) {
+                TextButton(onClick = onConfirmClick) {
                     Text(stringResource(id = Strings.unenrol))
                 }
             },
