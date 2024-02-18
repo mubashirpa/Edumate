@@ -8,11 +8,15 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
 import edumate.app.core.UiText
+import edumate.app.domain.model.classroom.students.Student
+import edumate.app.domain.model.classroom.teachers.Teacher
+import edumate.app.domain.model.userProfiles.Name
+import edumate.app.domain.model.userProfiles.UserProfile
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.students.AddStudentUseCase
-import edumate.app.domain.usecase.teachers.AddTeacherUseCase
+import edumate.app.domain.usecase.classroom.students.CreateStudentUseCase
+import edumate.app.domain.usecase.classroom.teachers.CreateTeacherUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
-import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.classDetails.UserType
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -26,8 +30,8 @@ class JoinClassViewModel
     @Inject
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val addStudentUseCase: AddStudentUseCase,
-        private val addTeacherUseCase: AddTeacherUseCase,
+        private val createStudentUseCase: CreateStudentUseCase,
+        private val createTeacherUseCase: CreateTeacherUseCase,
         private val validateTextField: ValidateTextField,
     ) : ViewModel() {
         var uiState by mutableStateOf(JoinClassUiState())
@@ -44,7 +48,7 @@ class JoinClassViewModel
 
         fun onEvent(event: JoinClassUiEvent) {
             when (event) {
-                is JoinClassUiEvent.OnClassCodeChange -> {
+                is JoinClassUiEvent.OnClassCodeValueChange -> {
                     uiState =
                         uiState.copy(
                             classCode = event.classCode,
@@ -52,8 +56,8 @@ class JoinClassViewModel
                         )
                 }
 
-                is JoinClassUiEvent.OnOpenUserTypeBottomSheetChange -> {
-                    uiState = uiState.copy(openUserTypeBottomSheet = event.open)
+                is JoinClassUiEvent.OnShowUserTypeBottomSheetChange -> {
+                    uiState = uiState.copy(showUserTypeBottomSheet = event.showBottomSheet)
                 }
 
                 is JoinClassUiEvent.OnUserTypeChange -> {
@@ -88,7 +92,24 @@ class JoinClassViewModel
                 return
             }
 
-            addStudentUseCase(classCode).onEach { result ->
+            val student =
+                Student(
+                    courseId = classCode,
+                    profile =
+                        UserProfile(
+                            emailAddress = uiState.currentUser?.email,
+                            id = uiState.currentUser?.uid,
+                            name = Name(fullName = uiState.currentUser?.displayName),
+                            photoUrl = uiState.currentUser?.photoUrl.toString(),
+                            verified = uiState.currentUser?.isEmailVerified,
+                        ),
+                    userId = uiState.currentUser?.uid,
+                )
+
+            createStudentUseCase(
+                courseId = classCode,
+                student = student,
+            ).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
 
@@ -126,7 +147,24 @@ class JoinClassViewModel
                 return
             }
 
-            addTeacherUseCase(classCode).onEach { result ->
+            val teacher =
+                Teacher(
+                    courseId = classCode,
+                    profile =
+                        UserProfile(
+                            emailAddress = uiState.currentUser?.email,
+                            id = uiState.currentUser?.uid,
+                            name = Name(fullName = uiState.currentUser?.displayName),
+                            photoUrl = uiState.currentUser?.photoUrl.toString(),
+                            verified = uiState.currentUser?.isEmailVerified,
+                        ),
+                    userId = uiState.currentUser?.uid,
+                )
+
+            createTeacherUseCase(
+                courseId = classCode,
+                teacher = teacher,
+            ).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
 

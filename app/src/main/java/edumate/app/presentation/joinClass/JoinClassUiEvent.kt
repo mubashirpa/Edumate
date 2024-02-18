@@ -1,11 +1,11 @@
 package edumate.app.presentation.joinClass
 
-import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.classDetails.UserType
 
 sealed class JoinClassUiEvent {
-    data class OnClassCodeChange(val classCode: String) : JoinClassUiEvent()
+    data class OnClassCodeValueChange(val classCode: String) : JoinClassUiEvent()
 
-    data class OnOpenUserTypeBottomSheetChange(val open: Boolean) : JoinClassUiEvent()
+    data class OnShowUserTypeBottomSheetChange(val showBottomSheet: Boolean) : JoinClassUiEvent()
 
     data class OnUserTypeChange(val userType: UserType) : JoinClassUiEvent()
 

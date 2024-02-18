@@ -56,7 +56,7 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import edumate.app.presentation.class_details.UserType
+import edumate.app.presentation.classDetails.UserType
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.components.UserAvatar
@@ -74,20 +74,22 @@ fun JoinClassScreen(
     onBackPressed: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState =
+        remember {
+            SnackbarHostState()
+        }
     val context = LocalContext.current
-    val focusRequester = remember { FocusRequester() }
+    val focusRequester =
+        remember {
+            FocusRequester()
+        }
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
     val isStudent = uiState.userType == UserType.STUDENT
-    val bottomSheetState =
-        rememberModalBottomSheetState(
-            skipPartiallyExpanded = true,
-        )
+    val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val isClassCodeError = uiState.classCodeError != null
 
     LaunchedEffect(context) {
-        focusRequester.requestFocus()
         joinClassResults.collect { courseId ->
             navigateToClassDetails(courseId)
         }
@@ -139,7 +141,9 @@ fun JoinClassScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            EdumateSnackbarHost(snackbarHostState)
+        },
     ) { innerPadding ->
         Column(
             modifier =
@@ -151,7 +155,9 @@ fun JoinClassScreen(
                     .verticalScroll(rememberScrollState()),
         ) {
             AssistChip(
-                onClick = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(true)) },
+                onClick = {
+                    onEvent(JoinClassUiEvent.OnShowUserTypeBottomSheetChange(true))
+                },
                 label = {
                     Text(
                         text =
@@ -184,7 +190,7 @@ fun JoinClassScreen(
             TextField(
                 value = uiState.classCode,
                 onValueChange = {
-                    onEvent(JoinClassUiEvent.OnClassCodeChange(it))
+                    onEvent(JoinClassUiEvent.OnClassCodeValueChange(it))
                 },
                 modifier =
                     Modifier
@@ -232,12 +238,14 @@ fun JoinClassScreen(
         }
     }
 
-    if (uiState.openUserTypeBottomSheet) {
+    if (uiState.showUserTypeBottomSheet) {
         val bottomMargin =
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
 
         ModalBottomSheet(
-            onDismissRequest = { onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false)) },
+            onDismissRequest = {
+                onEvent(JoinClassUiEvent.OnShowUserTypeBottomSheetChange(false))
+            },
             sheetState = bottomSheetState,
             windowInsets = WindowInsets(0),
         ) {
@@ -250,7 +258,7 @@ fun JoinClassScreen(
                             selected = isStudent,
                             onClick = {
                                 onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.STUDENT))
-                                onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
+                                onEvent(JoinClassUiEvent.OnShowUserTypeBottomSheetChange(false))
                             },
                             role = Role.RadioButton,
                         )
@@ -275,7 +283,7 @@ fun JoinClassScreen(
                             selected = !isStudent,
                             onClick = {
                                 onEvent(JoinClassUiEvent.OnUserTypeChange(UserType.TEACHER))
-                                onEvent(JoinClassUiEvent.OnOpenUserTypeBottomSheetChange(false))
+                                onEvent(JoinClassUiEvent.OnShowUserTypeBottomSheetChange(false))
                             },
                             role = Role.RadioButton,
                         )
@@ -298,4 +306,8 @@ fun JoinClassScreen(
     }
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 }
