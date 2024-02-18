@@ -53,7 +53,6 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",
                 "firebase-proguard-rules.pro",
-                "jitsi-meet-proguard-rules.pro",
             )
             signingConfig = signingConfigs.getByName("release")
         }
@@ -75,15 +74,6 @@ android {
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
-    }
-
-    splits {
-        abi {
-            isEnable = true
-            reset()
-            include("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
-            isUniversalApk = false
         }
     }
 }
@@ -116,7 +106,6 @@ dependencies {
     implementation(libs.onesignal)
     implementation(libs.datastore.preferences)
     implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jitsi.meet.sdk) { isTransitive = true }
     implementation(libs.jsoup)
     implementation(libs.google.ai.client.generativeai)
 }

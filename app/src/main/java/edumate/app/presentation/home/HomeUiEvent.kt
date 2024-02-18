@@ -5,5 +5,5 @@ sealed class HomeUiEvent {
 
     data class OnRefreshChange(val refreshing: Boolean) : HomeUiEvent()
 
-    data class OnShowAddCourseBottomSheetChange(val open: Boolean) : HomeUiEvent()
+    data class OnShowAddCourseBottomSheetChange(val showBottomSheet: Boolean) : HomeUiEvent()
 }

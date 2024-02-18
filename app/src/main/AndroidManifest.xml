@@ -33,13 +33,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".presentation.activities.MeetActivity"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:supportsPictureInPicture="true"
-            android:theme="@style/Theme.Edumate.Meet" />
 
         <!-- Per-app language preferences, Support Android 12 and lower -->
         <service

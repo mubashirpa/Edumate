@@ -38,7 +38,7 @@ class HomeViewModel
                     }
 
                     is HomeUiEvent.OnShowAddCourseBottomSheetChange -> {
-                        uiState.copy(showAddCourseBottomSheet = event.open)
+                        uiState.copy(showAddCourseBottomSheet = event.showBottomSheet)
                     }
                 }
         }

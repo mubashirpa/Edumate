@@ -15,7 +15,6 @@ generativeai = "0.1.2"
 google-services = "4.4.1"
 hilt = "2.50"
 hilt-navigation-compose = "1.2.0-rc01"
-jitsi-meet-sdk = "8.6.0"
 jsoup = "1.17.2"
 junit = "4.13.2"
 kotlin = "1.9.22"
@@ -64,7 +63,6 @@ google-ai-client-generativeai = { module = "com.google.ai.client.generativeai:ge
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hilt-navigation-compose" }
-jitsi-meet-sdk = { module = "org.jitsi.react:jitsi-meet-sdk", version.ref = "jitsi-meet-sdk" }
 jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 junit = { module = "junit:junit", version.ref = "junit" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
