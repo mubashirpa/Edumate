@@ -3,13 +3,13 @@ import java.io.FileInputStream
 import java.util.Properties
 
 plugins {
-    alias(libs.plugins.com.android.application)
-    alias(libs.plugins.com.google.dagger.hilt.android)
-    alias(libs.plugins.com.google.devtools.ksp)
-    alias(libs.plugins.com.google.firebase.crashlytics)
-    alias(libs.plugins.com.google.gms.google.services)
-    alias(libs.plugins.org.jetbrains.kotlin.android)
-    alias(libs.plugins.org.jetbrains.kotlin.serialization)
+    alias(libs.plugins.androidApplication)
+    alias(libs.plugins.devtoolsKsp)
+    alias(libs.plugins.firebaseCrashlytics)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.hiltAndroid)
+    alias(libs.plugins.kotlinAndroid)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 val keystorePropertiesFile: File = rootProject.file("keystore.properties")
@@ -94,20 +94,24 @@ dependencies {
     androidTestImplementation(libs.compose.ui.test.junit4)
     debugImplementation(libs.compose.ui.tooling)
     debugImplementation(libs.compose.ui.test.manifest)
-    implementation(libs.bundles.coil)
+
     implementation(platform(libs.firebase.bom))
+
+    implementation(libs.bundles.coil)
     implementation(libs.bundles.firebase)
     implementation(libs.bundles.hilt)
-    ksp(libs.hilt.android.compiler)
     implementation(libs.bundles.ktor)
-    implementation(libs.play.services.auth)
+
     implementation(libs.core.splashscreen)
+    implementation(libs.datastore.preferences)
+    implementation(libs.google.ai.client.generativeai)
+    implementation(libs.jsoup)
+    implementation(libs.kotlinx.serialization.json)
     implementation(libs.lottie.compose)
     implementation(libs.onesignal)
-    implementation(libs.datastore.preferences)
-    implementation(libs.kotlinx.serialization.json)
-    implementation(libs.jsoup)
-    implementation(libs.google.ai.client.generativeai)
+    implementation(libs.play.services.auth)
+
+    ksp(libs.hilt.android.compiler)
 }
 
 androidComponents {
@@ -116,19 +120,19 @@ androidComponents {
         val localProperties = Properties()
         localProperties.load(FileInputStream(localPropertiesFile))
         variant.buildConfigFields.put(
-            "ONESIGNAL_APP_ID",
-            BuildConfigField(
-                "String",
-                "\"" + localProperties["ONESIGNAL_APP_ID"] + "\"",
-                "Onesignal Application ID",
-            ),
-        )
-        variant.buildConfigFields.put(
             "GEMINI_API_KEY",
             BuildConfigField(
                 "String",
                 "\"" + localProperties["GEMINI_API_KEY"] + "\"",
                 "Google Gemini Api Key",
+            ),
+        )
+        variant.buildConfigFields.put(
+            "ONESIGNAL_APP_ID",
+            BuildConfigField(
+                "String",
+                "\"" + localProperties["ONESIGNAL_APP_ID"] + "\"",
+                "Onesignal Application ID",
             ),
         )
     }

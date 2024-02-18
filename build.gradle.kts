@@ -2,19 +2,19 @@ import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    alias(libs.plugins.com.android.application) apply false
-    alias(libs.plugins.com.github.ben.manes.versions)
-    alias(libs.plugins.com.google.dagger.hilt.android) apply false
-    alias(libs.plugins.com.google.devtools.ksp) apply false
-    alias(libs.plugins.com.google.firebase.crashlytics) apply false
-    alias(libs.plugins.com.google.gms.google.services) apply false
-    alias(libs.plugins.nl.littlerobots.version.catalog.update)
-    alias(libs.plugins.org.jetbrains.kotlin.android) apply false
-    alias(libs.plugins.org.jetbrains.kotlin.serialization) apply false
+    alias(libs.plugins.androidApplication) apply false
+    alias(libs.plugins.benManesVersions)
+    alias(libs.plugins.devtoolsKsp) apply false
+    alias(libs.plugins.firebaseCrashlytics) apply false
+    alias(libs.plugins.googleServices) apply false
+    alias(libs.plugins.hiltAndroid) apply false
+    alias(libs.plugins.kotlinAndroid) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.versionCatalogUpdate)
 }
 
 versionCatalogUpdate {
-    sortByKey.set(true)
+    sortByKey.set(false)
 
     keep {
         keepUnusedVersions.set(true)

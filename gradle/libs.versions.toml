@@ -8,7 +8,6 @@ compose-bom = "2024.02.00"
 core-ktx = "1.12.0"
 core-splashscreen = "1.0.1"
 datastore-preferences = "1.0.0"
-espresso-core = "3.5.1"
 firebase-bom = "32.7.2"
 firebase-crashlytics = "2.9.9"
 generativeai = "0.1.2"
@@ -29,6 +28,7 @@ minSdk = "26"
 onesignal = "5.1.4"
 play-services-auth = "20.7.0"
 targetSdk = "34"
+test-espresso-core = "3.5.1"
 test-ext-junit = "1.1.5"
 version-catalog-update = "0.8.4"
 
@@ -40,7 +40,6 @@ compose-bom = { module = "androidx.compose:compose-bom", version.ref = "compose-
 compose-material = { module = "androidx.compose.material:material" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 compose-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
-compose-material3-window = { module = "androidx.compose.material3:material3-window-size-class", version.ref = "material3" }
 compose-ui = { module = "androidx.compose.ui:ui" }
 compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 compose-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
@@ -55,8 +54,6 @@ firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
 firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
-firebase-database = { module = "com.google.firebase:firebase-database" }
-firebase-firestore = { module = "com.google.firebase:firebase-firestore" }
 firebase-inappmessaging = { module = "com.google.firebase:firebase-inappmessaging-display" }
 firebase-storage = { module = "com.google.firebase:firebase-storage" }
 google-ai-client-generativeai = { module = "com.google.ai.client.generativeai:generativeai", version.ref = "generativeai" }
@@ -74,8 +71,19 @@ lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", v
 lottie-compose = { module = "com.airbnb.android:lottie-compose", version.ref = "lottie-comopose" }
 onesignal = { module = "com.onesignal:OneSignal", version.ref = "onesignal" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "play-services-auth" }
-test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espresso-core" }
+test-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "test-espresso-core" }
 test-ext-junit = { module = "androidx.test.ext:junit", version.ref = "test-ext-junit" }
+
+[plugins]
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+benManesVersions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-versions" }
+devtoolsKsp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
+googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
+hiltAndroid = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+kotlinAndroid = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+versionCatalogUpdate = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
 
 [bundles]
 coil = [
@@ -86,7 +94,6 @@ compose = [
     "compose-material",
     "compose-material-icons-extended",
     "compose-material3",
-    "compose-material3-window",
     "compose-ui",
     "compose-ui-graphics",
     "compose-ui-tooling-preview",
@@ -96,8 +103,6 @@ firebase = [
     "firebase-analytics",
     "firebase-auth",
     "firebase-crashlytics",
-    "firebase-database",
-    "firebase-firestore",
     "firebase-inappmessaging",
     "firebase-storage",
 ]
@@ -111,14 +116,3 @@ ktor = [
     "ktor-client-core",
     "ktor-serialization-kotlinx-json",
 ]
-
-[plugins]
-com-android-application = { id = "com.android.application", version.ref = "agp" }
-com-github-ben-manes-versions = { id = "com.github.ben-manes.versions", version.ref = "ben-manes-versions" }
-com-google-dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
-com-google-devtools-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-com-google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics" }
-com-google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
-nl-littlerobots-version-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "version-catalog-update" }
-org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-org-jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
