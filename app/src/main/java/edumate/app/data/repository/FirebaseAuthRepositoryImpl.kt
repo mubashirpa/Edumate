@@ -6,7 +6,6 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.auth.auth
-import com.google.firebase.firestore.FirebaseFirestore
 import edumate.app.domain.repository.FirebaseAuthRepository
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -18,7 +17,6 @@ class FirebaseAuthRepositoryImpl
     @Inject
     constructor(
         private val firebaseAuth: FirebaseAuth,
-        private val firestore: FirebaseFirestore,
     ) : FirebaseAuthRepository {
         override val currentUserId: String
             get() = firebaseAuth.currentUser?.uid.orEmpty()

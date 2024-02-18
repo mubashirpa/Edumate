@@ -4,7 +4,6 @@ import android.app.Application
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import dagger.Module
 import dagger.Provides
@@ -42,10 +41,7 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideFirebaseAuthRepository(
-        firebaseAuth: FirebaseAuth,
-        firestore: FirebaseFirestore,
-    ): FirebaseAuthRepository = FirebaseAuthRepositoryImpl(firebaseAuth, firestore)
+    fun provideFirebaseAuthRepository(firebaseAuth: FirebaseAuth): FirebaseAuthRepository = FirebaseAuthRepositoryImpl(firebaseAuth)
 
     @Singleton
     @Provides
