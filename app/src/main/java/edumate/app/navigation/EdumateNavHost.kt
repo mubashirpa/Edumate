@@ -10,18 +10,17 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import edumate.app.presentation.class_details.ClassDetailsViewModel
-import edumate.app.presentation.class_details.screen.ClassDetailsScreen
-import edumate.app.presentation.create_class.CreateClassViewModel
-import edumate.app.presentation.create_class.screen.CreateClassScreen
+import edumate.app.presentation.classDetails.ClassDetailsScreen
+import edumate.app.presentation.classDetails.ClassDetailsViewModel
+import edumate.app.presentation.createClass.CreateClassScreen
+import edumate.app.presentation.createClass.CreateClassViewModel
+import edumate.app.presentation.gemini_summarize.screen.GeminiSummarizeScreen
+import edumate.app.presentation.home.HomeScreen
 import edumate.app.presentation.home.HomeViewModel
-import edumate.app.presentation.home.screen.HomeScreen
-import edumate.app.presentation.join_class.JoinClassViewModel
-import edumate.app.presentation.join_class.screen.JoinClassScreen
+import edumate.app.presentation.joinClass.JoinClassScreen
+import edumate.app.presentation.joinClass.JoinClassViewModel
 import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
-import edumate.app.presentation.settings.SettingsViewModel
-import edumate.app.presentation.settings.screen.SettingsScreen
 
 @Composable
 fun EdumateNavHost(
@@ -154,14 +153,15 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.SettingsScreen.route) {
-            val viewModel: SettingsViewModel = hiltViewModel()
-            SettingsScreen(
-                uiState = viewModel.uiState,
-                onEvent = viewModel::onEvent,
-                onBackPressed = {
-                    navController.navigateUp()
-                },
-            )
+//            val viewModel: SettingsViewModel = hiltViewModel()
+//            SettingsScreen(
+//                uiState = viewModel.uiState,
+//                onEvent = viewModel::onEvent,
+//                onBackPressed = {
+//                    navController.navigateUp()
+//                },
+//            )
+            GeminiSummarizeScreen()
         }
     }
 }

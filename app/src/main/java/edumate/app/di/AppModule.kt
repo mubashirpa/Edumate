@@ -4,7 +4,6 @@ import android.app.Application
 import com.google.ai.client.generativeai.GenerativeModel
 import com.google.ai.client.generativeai.type.generationConfig
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.StorageReference
 import dagger.Module
@@ -56,10 +55,6 @@ object AppModule {
     @Singleton
     @Provides
     fun provideJsoupRepository(): JsoupRepository = JsoupRepositoryImpl()
-
-    @Singleton
-    @Provides
-    fun provideMeetingsRepository(database: DatabaseReference): MeetingsRepository = MeetingsRepositoryImpl(database)
 
     @Singleton
     @Provides

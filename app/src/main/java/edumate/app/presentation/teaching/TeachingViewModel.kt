@@ -7,10 +7,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.utils.ResourceNew
+import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
-import edumate.app.domain.usecase.courses.DeleteCourse
-import edumate.app.domain.usecase.courses.ListCourses
+import edumate.app.domain.usecase.classroom.courses.DeleteCourseUseCase
+import edumate.app.domain.usecase.classroom.courses.ListCoursesUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -22,8 +22,8 @@ class TeachingViewModel
     @Inject
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val listCoursesUseCase: ListCourses,
-        private val deleteCourseUseCase: DeleteCourse,
+        private val listCoursesUseCase: ListCoursesUseCase,
+        private val deleteCourseUseCase: DeleteCourseUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(TeachingUiState())
             private set
@@ -65,51 +65,51 @@ class TeachingViewModel
             // Cancel ongoing listCoursesJob before recall.
             listCoursesJob?.cancel()
             listCoursesJob =
-                listCoursesUseCase(teacherId = teacherId).onEach { resource ->
+                listCoursesUseCase(teacherId = teacherId).onEach { result ->
                     if (refreshing) {
-                        when (resource) {
-                            is ResourceNew.Unknown -> {}
+                        when (result) {
+                            is Result.Empty -> {}
 
-                            is ResourceNew.Loading -> {
+                            is Result.Loading -> {
                                 uiState = uiState.copy(refreshing = true)
                             }
 
-                            is ResourceNew.Success -> {
+                            is Result.Success -> {
                                 uiState =
                                     uiState.copy(
-                                        teachingCoursesResource = resource,
+                                        teachingCoursesResult = result,
                                         refreshing = false,
                                     )
                             }
 
-                            is ResourceNew.Error -> {
+                            is Result.Error -> {
                                 uiState =
-                                    if (uiState.teachingCoursesResource is ResourceNew.Loading) {
+                                    if (uiState.teachingCoursesResult is Result.Loading) {
                                         uiState.copy(
-                                            teachingCoursesResource = resource,
+                                            teachingCoursesResult = result,
                                             refreshing = false,
                                         )
                                     } else {
                                         uiState.copy(
                                             refreshing = false,
-                                            userMessage = resource.message,
+                                            userMessage = result.message,
                                         )
                                     }
                             }
                         }
                     } else {
-                        uiState = uiState.copy(teachingCoursesResource = resource)
+                        uiState = uiState.copy(teachingCoursesResult = result)
                     }
                 }.launchIn(viewModelScope)
         }
 
         private fun deleteCourse(courseId: String) {
             // TODO("Delete other resources related to course like announcements")
-            deleteCourseUseCase(courseId).onEach { resource ->
-                when (resource) {
-                    is ResourceNew.Unknown -> {}
+            deleteCourseUseCase(courseId).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
 
-                    is ResourceNew.Loading -> {
+                    is Result.Loading -> {
                         uiState =
                             uiState.copy(
                                 deleteCourseId = null,
@@ -117,16 +117,16 @@ class TeachingViewModel
                             )
                     }
 
-                    is ResourceNew.Success -> {
+                    is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         fetchCourses(currentUser?.uid, true)
                     }
 
-                    is ResourceNew.Error -> {
+                    is Result.Error -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,
-                                userMessage = resource.message,
+                                userMessage = result.message,
                             )
                     }
                 }
