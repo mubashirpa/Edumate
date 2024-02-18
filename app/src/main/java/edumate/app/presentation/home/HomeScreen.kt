@@ -52,8 +52,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import edumate.app.navigation.EdumateModalNavigationDrawer
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.presentation.enrolled.EnrolledScreen
 import edumate.app.presentation.enrolled.EnrolledViewModel
-import edumate.app.presentation.enrolled.screen.EnrolledScreen
 import edumate.app.presentation.teaching.TeachingScreen
 import edumate.app.presentation.teaching.TeachingViewModel
 import kotlinx.coroutines.delay
@@ -75,11 +75,13 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
 
     BackHandler(enabled = drawerState.isOpen) {
-        coroutineScope.launch { drawerState.close() }
+        coroutineScope.launch {
+            drawerState.close()
+        }
     }
 
-    BackHandler(uiState.openFabMenu) {
-        onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+    BackHandler(enabled = uiState.showAddCourseBottomSheet) {
+        onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
     }
 
     EdumateModalNavigationDrawer(
@@ -136,7 +138,10 @@ private fun HomeScreenContent(
                             }
                         },
                     ) {
-                        Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            contentDescription = null,
+                        )
                     }
                 },
                 actions = {
@@ -158,7 +163,7 @@ private fun HomeScreenContent(
                     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                         IconButton(
                             onClick = {
-                                onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(true))
+                                onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(true))
                             },
                         ) {
                             Icon(
@@ -167,17 +172,20 @@ private fun HomeScreenContent(
                             )
                         }
                         DropdownMenu(
-                            expanded = uiState.appBarMenuExpanded,
+                            expanded = uiState.appBarDropdownExpanded,
                             onDismissRequest = {
-                                onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(false))
+                                onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
                             },
                         ) {
                             DropdownMenuItem(
-                                text = { Text(stringResource(id = Strings.refresh)) },
+                                text = {
+                                    Text(stringResource(id = Strings.refresh))
+                                },
                                 onClick = {
-                                    onEvent(HomeUiEvent.OnAppBarMenuExpandedChange(false))
+                                    onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
                                     onEvent(HomeUiEvent.OnRefreshChange(true))
                                     refreshScope.launch {
+                                        // TODO("Fix this")
                                         delay(500)
                                         onEvent(HomeUiEvent.OnRefreshChange(false))
                                     }
@@ -191,10 +199,13 @@ private fun HomeScreenContent(
         floatingActionButton = {
             FloatingActionButton(
                 onClick = {
-                    onEvent(HomeUiEvent.OnOpenFabMenuChange(true))
+                    onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(true))
                 },
             ) {
-                Icon(imageVector = Icons.Default.Add, contentDescription = null)
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = null,
+                )
             }
         },
     ) { innerPadding ->
@@ -242,7 +253,7 @@ private fun HomeScreenContent(
                             onEvent = viewModel::onEvent,
                             snackbarHostState = snackbarHostState,
                             innerPadding = innerPadding,
-                            refreshUsingActionButton = uiState.refreshing,
+                            refreshUsingActionButton = uiState.isRefreshing,
                             navigateToClassDetails = navigateToClassDetails,
                         )
                     }
@@ -254,7 +265,7 @@ private fun HomeScreenContent(
                             onEvent = viewModel::onEvent,
                             snackbarHostState = snackbarHostState,
                             innerPadding = innerPadding,
-                            refreshUsingActionButton = uiState.refreshing,
+                            refreshUsingActionButton = uiState.isRefreshing,
                             navigateToCreateClass = navigateToCreateClass,
                             navigateToClassDetails = navigateToClassDetails,
                         )
@@ -263,29 +274,33 @@ private fun HomeScreenContent(
             }
         }
 
-        if (uiState.openFabMenu) {
+        if (uiState.showAddCourseBottomSheet) {
             val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
             ModalBottomSheet(
                 onDismissRequest = {
-                    onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                    onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
                 },
                 sheetState = bottomSheetState,
                 windowInsets = WindowInsets(0),
             ) {
                 ListItem(
-                    headlineContent = { Text(text = stringResource(id = Strings.create_class)) },
+                    headlineContent = {
+                        Text(text = stringResource(id = Strings.create_class))
+                    },
                     modifier =
                         Modifier.clickable {
-                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
                             navigateToCreateClass(null)
                         },
                 )
                 ListItem(
-                    headlineContent = { Text(text = stringResource(id = Strings.join_class)) },
+                    headlineContent = {
+                        Text(text = stringResource(id = Strings.join_class))
+                    },
                     modifier =
                         Modifier.clickable {
-                            onEvent(HomeUiEvent.OnOpenFabMenuChange(false))
+                            onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
                             navigateToJoinClass()
                         },
                 )

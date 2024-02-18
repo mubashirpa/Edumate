@@ -29,16 +29,16 @@ class HomeViewModel
         fun onEvent(event: HomeUiEvent) {
             uiState =
                 when (event) {
-                    is HomeUiEvent.OnAppBarMenuExpandedChange -> {
-                        uiState.copy(appBarMenuExpanded = event.expanded)
-                    }
-
-                    is HomeUiEvent.OnOpenFabMenuChange -> {
-                        uiState.copy(openFabMenu = event.open)
+                    is HomeUiEvent.OnAppBarDropdownExpandedChange -> {
+                        uiState.copy(appBarDropdownExpanded = event.expanded)
                     }
 
                     is HomeUiEvent.OnRefreshChange -> {
-                        uiState.copy(refreshing = event.refreshing)
+                        uiState.copy(isRefreshing = event.refreshing)
+                    }
+
+                    is HomeUiEvent.OnShowAddCourseBottomSheetChange -> {
+                        uiState.copy(showAddCourseBottomSheet = event.open)
                     }
                 }
         }
