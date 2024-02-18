@@ -329,6 +329,7 @@ class CreateAnnouncementViewModel
             deleteFileUseCase(filePath).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
+
                     is Result.Error -> {
                         uiState =
                             uiState.copy(

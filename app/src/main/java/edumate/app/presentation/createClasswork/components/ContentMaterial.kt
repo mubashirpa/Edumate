@@ -1,5 +1,6 @@
-package edumate.app.presentation.create_classwork.screen.components
+package edumate.app.presentation.createClasswork.components
 
+import android.net.Uri
 import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,8 +27,8 @@ import coil.request.ImageRequest
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.FieldListItem
-import edumate.app.presentation.create_classwork.CreateClassworkUiEvent
-import edumate.app.presentation.create_classwork.CreateClassworkUiState
+import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
+import edumate.app.presentation.createClasswork.CreateClassworkUiState
 import edumate.app.R.string as Strings
 
 @Composable
@@ -37,15 +38,15 @@ fun ContentMaterial(
     onEvent: (CreateClassworkUiEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val fileUtils = remember { FileUtils(context) }
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        try {
-            focusRequester.requestFocus()
-        } catch (_: Exception) {
+    val fileUtils =
+        remember {
+            FileUtils(context)
         }
-    }
+    val focusRequester =
+        remember {
+            FocusRequester()
+        }
+    val isTitleError = uiState.titleError != null
 
     Column(modifier = Modifier.fillMaxSize()) {
         Column(
@@ -57,10 +58,11 @@ fun ContentMaterial(
         ) {
             FieldListItem(
                 headlineContent = {
-                    @Suppress("SENSELESS_COMPARISON")
                     OutlinedTextField(
                         value = uiState.title,
-                        onValueChange = { onEvent(CreateClassworkUiEvent.OnTitleChange(it)) },
+                        onValueChange = {
+                            onEvent(CreateClassworkUiEvent.OnTitleValueChange(it))
+                        },
                         modifier =
                             Modifier
                                 .fillMaxWidth()
@@ -69,12 +71,14 @@ fun ContentMaterial(
                             Text(text = stringResource(id = Strings.material_title))
                         },
                         supportingText =
-                            if (uiState.titleError != null) {
-                                { Text(text = uiState.titleError.asString()) }
+                            if (isTitleError) {
+                                {
+                                    Text(text = uiState.titleError!!.asString())
+                                }
                             } else {
                                 null
                             },
-                        isError = uiState.titleError != null,
+                        isError = isTitleError,
                         keyboardOptions =
                             KeyboardOptions(
                                 capitalization = KeyboardCapitalization.Sentences,
@@ -103,12 +107,16 @@ fun ContentMaterial(
                         Spacer(modifier = Modifier.width(16.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = courseTitle) },
+                            label = {
+                                Text(text = courseTitle)
+                            },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
-                            label = { Text(text = stringResource(id = Strings.all_students)) },
+                            label = {
+                                Text(text = stringResource(id = Strings.all_students))
+                            },
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
@@ -120,7 +128,9 @@ fun ContentMaterial(
                 headlineContent = {
                     OutlinedTextField(
                         value = uiState.description,
-                        onValueChange = { onEvent(CreateClassworkUiEvent.OnDescriptionChange(it)) },
+                        onValueChange = {
+                            onEvent(CreateClassworkUiEvent.OnDescriptionValueChange(it))
+                        },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
                             Text(text = stringResource(id = Strings.description))
@@ -155,9 +165,9 @@ fun ContentMaterial(
                                 headlineContent = {
                                     val title: String =
                                         if (material.driveFile != null) {
-                                            material.driveFile.title ?: material.driveFile.url
+                                            material.driveFile.title.orEmpty()
                                         } else {
-                                            material.link?.title ?: material.link?.url.orEmpty()
+                                            material.link?.title.orEmpty()
                                         }
                                     Text(
                                         text = title,
@@ -169,7 +179,9 @@ fun ContentMaterial(
                                     if (material.link?.thumbnailUrl.isNullOrEmpty()) {
                                         val icon =
                                             if (material.driveFile != null) {
-                                                when (fileUtils.getFileType(material.driveFile.type)) {
+                                                val mimeType =
+                                                    fileUtils.getMimeType(Uri.parse(material.driveFile.alternateLink.orEmpty()))
+                                                when (fileUtils.getFileType(mimeType)) {
                                                     FileType.IMAGE -> Icons.Default.Image
                                                     FileType.VIDEO -> Icons.Default.VideoFile
                                                     FileType.AUDIO -> Icons.Default.AudioFile
@@ -201,9 +213,7 @@ fun ContentMaterial(
                                 trailingContent = {
                                     IconButton(
                                         onClick = {
-                                            onEvent(
-                                                CreateClassworkUiEvent.OnRemoveAttachment(index),
-                                            )
+                                            onEvent(CreateClassworkUiEvent.OnRemoveAttachment(index))
                                         },
                                     ) {
                                         Icon(
@@ -225,7 +235,11 @@ fun ContentMaterial(
                             },
                             modifier =
                                 Modifier.clickable {
-                                    onEvent(CreateClassworkUiEvent.OnOpenAttachmentMenuChange(true))
+                                    onEvent(
+                                        CreateClassworkUiEvent.OnShowAddAttachmentBottomSheetChange(
+                                            true,
+                                        ),
+                                    )
                                 },
                         )
                     }
@@ -236,12 +250,20 @@ fun ContentMaterial(
         }
         Spacer(modifier = Modifier.height(20.dp))
         Button(
-            onClick = { onEvent(CreateClassworkUiEvent.CreateClasswork) },
+            onClick = {
+                onEvent(CreateClassworkUiEvent.CreateCourseWork)
+            },
             modifier =
                 Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
-        ) { Text(text = stringResource(id = Strings.post)) }
+        ) {
+            Text(text = stringResource(id = Strings.post))
+        }
         Spacer(modifier = Modifier.height(20.dp))
+    }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
     }
 }

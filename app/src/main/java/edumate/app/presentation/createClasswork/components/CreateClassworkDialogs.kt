@@ -1,4 +1,4 @@
-package edumate.app.presentation.create_classwork.screen.components
+package edumate.app.presentation.createClasswork.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.*
@@ -21,14 +21,11 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.semantics.isTraversalGroup
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import java.util.Calendar
 import java.util.Date
 import edumate.app.R.string as Strings
@@ -36,16 +33,22 @@ import edumate.app.R.string as Strings
 @SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentDatePickerDialog(
+fun DatePickerDialog(
     onDismissRequest: () -> Unit,
-    date: Date?,
+    calendar: Calendar?,
     openDialog: Boolean,
-    onConfirmClick: (date: Date) -> Unit,
+    onConfirmClick: (calendar: Calendar) -> Unit,
 ) {
-    // TODO("Block previous days from being selected")
     if (openDialog) {
-        val datePickerState = rememberDatePickerState()
-        val confirmEnabled = derivedStateOf { datePickerState.selectedDateMillis != null }
+        val datePickerState =
+            rememberDatePickerState(
+                initialSelectedDateMillis = calendar?.timeInMillis,
+                selectableDates = TodayAndOnwardsSelectableDates,
+            )
+        val confirmEnabled =
+            remember {
+                derivedStateOf { datePickerState.selectedDateMillis != null }
+            }
         val configuration = LocalConfiguration.current
 
         if (configuration.screenHeightDp > 400) {
@@ -62,25 +65,20 @@ fun ContentDatePickerDialog(
                         onDismissRequest()
                         datePickerState.selectedDateMillis?.let { selectedDateMillis ->
                             val cal = Calendar.getInstance()
-                            var hour = 0
-                            var minute = 0
-                            if (date != null) {
-                                cal.time = date
-                                hour = cal.get(Calendar.HOUR_OF_DAY)
-                                minute = cal.get(Calendar.MINUTE)
-                            }
                             cal.time = Date(selectedDateMillis)
-                            cal.set(Calendar.HOUR_OF_DAY, hour)
-                            cal.set(Calendar.MINUTE, minute)
                             cal.isLenient = false
-                            onConfirmClick(cal.time)
+                            onConfirmClick(cal)
                         }
                     },
                     enabled = confirmEnabled.value,
-                ) { Text(stringResource(id = Strings.ok)) }
+                ) {
+                    Text(stringResource(id = Strings.ok))
+                }
             },
             dismissButton = {
-                TextButton(onClick = onDismissRequest) { Text(stringResource(id = Strings.cancel)) }
+                TextButton(onClick = onDismissRequest) {
+                    Text(stringResource(id = Strings.cancel))
+                }
             },
         ) {
             DatePicker(
@@ -240,76 +238,64 @@ fun PointsDialog(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ContentTimePickerDialog(
+fun TimePickerDialog(
     onDismissRequest: () -> Unit,
-    date: Date?,
     openDialog: Boolean,
-    onConfirmClick: (date: Date) -> Unit,
+    onConfirmClick: (calendar: Calendar) -> Unit,
 ) {
-    val state = rememberTimePickerState(initialHour = 0, initialMinute = 0)
+    val state = rememberTimePickerState()
     val showingPicker = remember { mutableStateOf(true) }
     val configuration = LocalConfiguration.current
 
     if (openDialog) {
         TimePickerDialog(
-            title =
-                if (showingPicker.value) {
-                    stringResource(id = Strings.select_time)
-                } else {
-                    stringResource(id = Strings.enter_time)
-                },
-            onCancel = { onDismissRequest() },
-            onConfirm = {
-                onDismissRequest()
-                date?.let {
-                    val cal = Calendar.getInstance()
-                    cal.time = it
-                    cal.set(Calendar.HOUR_OF_DAY, state.hour)
-                    cal.set(Calendar.MINUTE, state.minute)
-                    cal.isLenient = false
-                    onConfirmClick(cal.time)
+            onDismissRequest = onDismissRequest,
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDismissRequest()
+                        val cal = Calendar.getInstance()
+                        cal.set(Calendar.HOUR_OF_DAY, state.hour)
+                        cal.set(Calendar.MINUTE, state.minute)
+                        cal.isLenient = false
+                        onConfirmClick(cal)
+                    },
+                ) {
+                    Text(stringResource(id = Strings.ok))
                 }
+            },
+            dismissButton = {
+                TextButton(onClick = onDismissRequest) {
+                    Text(stringResource(id = Strings.cancel))
+                }
+            },
+            title = {
+                val title =
+                    if (showingPicker.value) {
+                        stringResource(id = Strings.select_time)
+                    } else {
+                        stringResource(id = Strings.enter_time)
+                    }
+                Text(text = title)
             },
             toggle = {
                 if (configuration.screenHeightDp > 400) {
-                    // Make this take the entire viewport. This will guarantee that Screen readers
-                    // focus the toggle first.
-                    Box(
-                        modifier =
-                            Modifier
-                                .fillMaxSize()
-                                .semantics {
-                                    isTraversalGroup = true
-                                },
-                    ) {
-                        IconButton(
-                            modifier =
-                                Modifier
-                                    .padding(24.dp)
-                                    // This is a workaround so that the Icon comes up first
-                                    // in the talkback traversal order. So that users of a11y
-                                    // services can use the text input. When talkback traversal
-                                    // order is customizable we can remove this.
-                                    .align(Alignment.BottomStart)
-                                    .zIndex(5f),
-                            onClick = { showingPicker.value = !showingPicker.value },
-                        ) {
-                            val icon =
+                    IconButton(onClick = { showingPicker.value = !showingPicker.value }) {
+                        val icon =
+                            if (showingPicker.value) {
+                                Icons.Outlined.Keyboard
+                            } else {
+                                Icons.Outlined.Schedule
+                            }
+                        Icon(
+                            imageVector = icon,
+                            contentDescription =
                                 if (showingPicker.value) {
-                                    Icons.Outlined.Keyboard
+                                    stringResource(id = Strings.switch_to_text_input)
                                 } else {
-                                    Icons.Outlined.Schedule
-                                }
-                            Icon(
-                                icon,
-                                contentDescription =
-                                    if (showingPicker.value) {
-                                        stringResource(id = Strings.switch_to_text_input)
-                                    } else {
-                                        stringResource(id = Strings.switch_to_touch_input)
-                                    },
-                            )
-                        }
+                                    stringResource(id = Strings.switch_to_touch_input)
+                                },
+                        )
                     }
                 }
             },
@@ -320,5 +306,15 @@ fun ContentTimePickerDialog(
                 TimeInput(state = state)
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+private object TodayAndOnwardsSelectableDates : SelectableDates {
+    override fun isSelectableDate(utcTimeMillis: Long): Boolean {
+        // Get today's date in milliseconds
+        val now = System.currentTimeMillis()
+        // Check if provided date is from today onwards
+        return utcTimeMillis >= now
     }
 }
