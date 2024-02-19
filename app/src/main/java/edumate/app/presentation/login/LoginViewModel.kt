@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.GoogleSignInUseCase
 import edumate.app.domain.usecase.authentication.SignInUseCase
 import edumate.app.domain.usecase.validation.ValidateEmail
@@ -29,26 +29,30 @@ class LoginViewModel
 
         fun onEvent(event: LoginUiEvent) {
             when (event) {
-                is LoginUiEvent.EmailChanged -> {
+                is LoginUiEvent.OnEmailValueChange -> {
                     uiState =
                         uiState.copy(
                             email = event.email,
                             emailError = null,
                         )
                 }
-                is LoginUiEvent.OnGoogleSignInClick -> {
-                    signInWithGoogle(event.token)
-                }
-                is LoginUiEvent.PasswordChanged -> {
+
+                is LoginUiEvent.OnPasswordValueChange -> {
                     uiState =
                         uiState.copy(
                             password = event.password,
                             passwordError = null,
                         )
                 }
-                is LoginUiEvent.OnSignInClick -> {
+
+                is LoginUiEvent.SignInWithGoogle -> {
+                    signInWithGoogle(event.token)
+                }
+
+                is LoginUiEvent.SignIn -> {
                     signInWithEmailAndPassword(uiState.email, uiState.password)
                 }
+
                 is LoginUiEvent.UserMessageShown -> {
                     uiState = uiState.copy(userMessage = null)
                 }
@@ -76,22 +80,28 @@ class LoginViewModel
 
             if (hasError) return
 
-            signInUseCase(email, password).onEach { resource ->
+            signInUseCase(email, password).onEach { result ->
                 uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                    when (result) {
+                        is Result.Empty -> {
+                            uiState
                         }
-                        is Resource.Success -> {
+
+                        is Result.Error -> {
                             uiState.copy(
                                 openProgressDialog = false,
-                                isUserLoggedIn = true,
+                                userMessage = result.message,
                             )
                         }
-                        is Resource.Error -> {
+
+                        is Result.Loading -> {
+                            uiState.copy(openProgressDialog = true)
+                        }
+
+                        is Result.Success -> {
                             uiState.copy(
+                                isUserLoggedIn = true,
                                 openProgressDialog = false,
-                                userMessage = resource.message,
                             )
                         }
                     }
@@ -99,22 +109,28 @@ class LoginViewModel
         }
 
         private fun signInWithGoogle(idToken: String) {
-            googleSignInUseCase(idToken).onEach { resource ->
+            googleSignInUseCase(idToken).onEach { result ->
                 uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                    when (result) {
+                        is Result.Empty -> {
+                            uiState
                         }
-                        is Resource.Success -> {
+
+                        is Result.Error -> {
                             uiState.copy(
                                 openProgressDialog = false,
-                                isUserLoggedIn = true,
+                                userMessage = result.message,
                             )
                         }
-                        is Resource.Error -> {
+
+                        is Result.Loading -> {
+                            uiState.copy(openProgressDialog = true)
+                        }
+
+                        is Result.Success -> {
                             uiState.copy(
+                                isUserLoggedIn = true,
                                 openProgressDialog = false,
-                                userMessage = resource.message,
                             )
                         }
                     }

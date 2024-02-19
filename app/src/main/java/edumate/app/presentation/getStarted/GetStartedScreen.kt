@@ -23,7 +23,7 @@ import edumate.app.R.string as Strings
 fun GetStartedScreen(navigateToLogin: () -> Unit) {
     val backgroundPlaceholder = rememberAsyncImagePainter(Constants.BACKDROP_GET_STARTED_LOCAL)
 
-    Scaffold { innerPadding ->
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
         Box(
             modifier =
                 Modifier
@@ -39,7 +39,7 @@ fun GetStartedScreen(navigateToLogin: () -> Unit) {
                         .build(),
                 placeholder = backgroundPlaceholder,
                 error = backgroundPlaceholder,
-                contentDescription = stringResource(id = Strings.get_started),
+                contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize(),
             )
