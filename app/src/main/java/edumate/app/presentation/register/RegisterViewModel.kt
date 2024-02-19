@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.CreateUserUseCase
 import edumate.app.domain.usecase.authentication.GoogleSignInUseCase
 import edumate.app.domain.usecase.validation.ValidateEmail
@@ -22,8 +22,8 @@ class RegisterViewModel
     constructor(
         private val createUserUseCase: CreateUserUseCase,
         private val googleSignInUseCase: GoogleSignInUseCase,
-        private val validateName: ValidateName,
         private val validateEmail: ValidateEmail,
+        private val validateName: ValidateName,
         private val validatePassword: ValidatePassword,
     ) : ViewModel() {
         var uiState by mutableStateOf(RegisterUiState())
@@ -31,37 +31,42 @@ class RegisterViewModel
 
         fun onEvent(event: RegisterUiEvent) {
             when (event) {
-                is RegisterUiEvent.EmailChanged -> {
+                is RegisterUiEvent.OnEmailValueChange -> {
                     uiState =
                         uiState.copy(
                             email = event.email,
                             emailError = null,
                         )
                 }
-                is RegisterUiEvent.NameChanged -> {
+
+                is RegisterUiEvent.OnNameValueChange -> {
                     uiState =
                         uiState.copy(
                             name = event.name,
                             nameError = null,
                         )
                 }
-                is RegisterUiEvent.OnGoogleSignUpClick -> {
-                    signUpWithGoogle(event.token)
-                }
-                is RegisterUiEvent.PasswordChanged -> {
+
+                is RegisterUiEvent.OnPasswordValueChange -> {
                     uiState =
                         uiState.copy(
                             password = event.password,
                             passwordError = null,
                         )
                 }
-                is RegisterUiEvent.OnSignUpClick -> {
+
+                is RegisterUiEvent.SignInWithGoogle -> {
+                    signUpWithGoogle(event.token)
+                }
+
+                is RegisterUiEvent.SignUp -> {
                     createUserWithEmailAndPassword(
-                        uiState.name,
-                        uiState.email,
-                        uiState.password,
+                        name = uiState.name.trim(),
+                        email = uiState.email.trim(),
+                        password = uiState.password.trim(),
                     )
                 }
+
                 is RegisterUiEvent.UserMessageShown -> {
                     uiState = uiState.copy(userMessage = null)
                 }
@@ -93,22 +98,28 @@ class RegisterViewModel
 
             if (hasError) return
 
-            createUserUseCase(name, email, password).onEach { resource ->
+            createUserUseCase(name, email, password).onEach { result ->
                 uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                    when (result) {
+                        is Result.Empty -> {
+                            uiState
                         }
-                        is Resource.Success -> {
+
+                        is Result.Error -> {
                             uiState.copy(
                                 openProgressDialog = false,
-                                isUserLoggedIn = true,
+                                userMessage = result.message,
                             )
                         }
-                        is Resource.Error -> {
+
+                        is Result.Loading -> {
+                            uiState.copy(openProgressDialog = true)
+                        }
+
+                        is Result.Success -> {
                             uiState.copy(
+                                isUserLoggedIn = true,
                                 openProgressDialog = false,
-                                userMessage = resource.message,
                             )
                         }
                     }
@@ -116,25 +127,31 @@ class RegisterViewModel
         }
 
         private fun signUpWithGoogle(idToken: String) {
-            googleSignInUseCase(idToken).onEach { resource ->
+            googleSignInUseCase(idToken).onEach { result ->
                 uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                    when (result) {
+                        is Result.Empty -> {
+                            uiState
                         }
-                        is Resource.Success -> {
+
+                        is Result.Error -> {
                             uiState.copy(
                                 openProgressDialog = false,
-                                isUserLoggedIn = true,
+                                userMessage = result.message,
                             )
                         }
-                        is Resource.Error -> {
+
+                        is Result.Loading -> {
+                            uiState.copy(openProgressDialog = true)
+                        }
+
+                        is Result.Success -> {
                             uiState.copy(
+                                isUserLoggedIn = true,
                                 openProgressDialog = false,
-                                userMessage = resource.message,
                             )
                         }
                     }
-            }.launchIn(viewModelScope)
+            }
         }
     }

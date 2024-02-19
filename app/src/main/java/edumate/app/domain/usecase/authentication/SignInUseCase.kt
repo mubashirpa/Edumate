@@ -27,9 +27,13 @@ class SignInUseCase
                     val user = repository.signInWithEmailAndPassword(email, password)
                     if (user != null) {
                         val userEmail = user.email
+                        val userPhoneNumber = user.phoneNumber
                         OneSignal.login(user.uid)
                         if (userEmail != null) {
                             OneSignal.User.addEmail(userEmail)
+                        }
+                        if (userPhoneNumber != null) {
+                            OneSignal.User.addSms(userPhoneNumber)
                         }
                     }
                     emit(Result.Success(user))

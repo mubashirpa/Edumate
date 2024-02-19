@@ -41,7 +41,8 @@ class FirebaseAuthRepositoryImpl
             password: String,
         ): FirebaseUser? {
             val user = firebaseAuth.createUserWithEmailAndPassword(email, password).await().user
-            user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())?.await()
+            user?.updateProfile(UserProfileChangeRequest.Builder().setDisplayName(name).build())
+                ?.await()
             createUserInFireStore()
             return user
         }
@@ -70,7 +71,7 @@ class FirebaseAuthRepositoryImpl
             Firebase.auth.signOut()
         }
 
-        private suspend fun createUserInFireStore() {
+        private fun createUserInFireStore() {
             // TODO
         }
     }

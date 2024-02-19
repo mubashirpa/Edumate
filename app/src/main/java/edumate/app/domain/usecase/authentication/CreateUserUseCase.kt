@@ -4,7 +4,7 @@ import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.onesignal.OneSignal
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.FirebaseAuthRepository
 import kotlinx.coroutines.flow.Flow
@@ -21,32 +21,37 @@ class CreateUserUseCase
             name: String,
             email: String,
             password: String,
-        ): Flow<Resource<FirebaseUser?>> =
+        ): Flow<Result<FirebaseUser?>> =
             flow {
                 try {
-                    emit(Resource.Loading())
+                    emit(Result.Loading())
                     val user = repository.createUserWithEmailAndPassword(name, email, password)
                     if (user != null) {
+                        val userEmail = user.email
+                        val userPhoneNumber = user.phoneNumber
                         OneSignal.login(user.uid)
-                        if (user.email != null) {
-                            OneSignal.User.addEmail(user.email!!)
+                        if (userEmail != null) {
+                            OneSignal.User.addEmail(userEmail)
+                        }
+                        if (userPhoneNumber != null) {
+                            OneSignal.User.addSms(userPhoneNumber)
                         }
                     }
-                    emit(Resource.Success(user))
+                    emit(Result.Success(user))
                 } catch (e: FirebaseAuthException) {
                     when (e.errorCode) {
                         "ERROR_EMAIL_ALREADY_IN_USE" -> {
-                            emit(Resource.Error(UiText.StringResource(Strings.auth_error_email_already_in_use)))
+                            emit(Result.Error(UiText.StringResource(Strings.auth_error_email_already_in_use)))
                         }
 
                         else -> {
-                            emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
+                            emit(Result.Error(UiText.StringResource(Strings.auth_unknown_exception)))
                         }
                     }
                 } catch (e: FirebaseNetworkException) {
-                    emit(Resource.Error(UiText.StringResource(Strings.auth_network_exception)))
+                    emit(Result.Error(UiText.StringResource(Strings.auth_network_exception)))
                 } catch (e: Exception) {
-                    emit(Resource.Error(UiText.StringResource(Strings.auth_unknown_exception)))
+                    emit(Result.Error(UiText.StringResource(Strings.auth_unknown_exception)))
                 }
             }
     }

@@ -1,16 +1,16 @@
 package edumate.app.presentation
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -19,7 +19,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import edumate.app.navigation.EdumateNavHost
 import edumate.app.navigation.Routes
-import edumate.app.presentation.components.EdumateSnackbarHost
 
 @Composable
 fun EdumateApp(isLoggedIn: Boolean) {
@@ -29,11 +28,12 @@ fun EdumateApp(isLoggedIn: Boolean) {
         if (isLoggedIn) Routes.Screen.HOME_SCREEN else Routes.Graph.AUTHENTICATION
 
     Scaffold(
-        modifier = Modifier.fillMaxSize(),
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .imePadding(),
         snackbarHost = {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                EdumateSnackbarHost(hostState = snackbarHostState)
-            }
+            SnackbarHost(hostState = snackbarHostState)
         },
         contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->

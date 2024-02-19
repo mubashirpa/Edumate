@@ -1,20 +1,17 @@
-package edumate.app.presentation.recover.screen
+package edumate.app.presentation.recover
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.consumeWindowInsets
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,22 +29,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
-import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.recover.RecoverUiEvent
-import edumate.app.presentation.recover.RecoverViewModel
+import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import edumate.app.R.string as Strings
 
-@OptIn(
-    ExperimentalComposeUiApi::class,
-)
 @Composable
 fun RecoverScreen(
     viewModel: RecoverViewModel = hiltViewModel(),
@@ -59,14 +52,6 @@ fun RecoverScreen(
     val currentOnPasswordResetEmailSent by rememberUpdatedState(onPasswordResetEmailSent)
     val snackbarHostState = remember { SnackbarHostState() }
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val focusRequester = remember { FocusRequester() }
-
-    LaunchedEffect(Unit) {
-        try {
-            focusRequester.requestFocus()
-        } catch (_: Exception) {
-        }
-    }
 
     LaunchedEffect(viewModel, lifecycle) {
         // Whenever the uiState changes, check if the password reset email sent and
@@ -75,7 +60,6 @@ fun RecoverScreen(
             .filter { it.isPasswordResetEmailSend }
             .flowWithLifecycle(lifecycle)
             .collect {
-                currentOnPasswordResetEmailSent()
                 rootSnackbarScope.launch {
                     rootSnackbarHostState.showSnackbar(
                         context.getString(
@@ -84,6 +68,7 @@ fun RecoverScreen(
                         ),
                     )
                 }
+                currentOnPasswordResetEmailSent()
             }
     }
 
@@ -95,70 +80,76 @@ fun RecoverScreen(
         }
     }
 
+    RecoverScreenContent(
+        uiState = viewModel.uiState,
+        onEvent = viewModel::onEvent,
+        snackbarHostState = snackbarHostState,
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+private fun RecoverScreenContent(
+    uiState: RecoverUiState,
+    onEvent: (RecoverUiEvent) -> Unit,
+    snackbarHostState: SnackbarHostState,
+) {
+    val focusRequester = remember { FocusRequester() }
+
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         snackbarHost = {
-            EdumateSnackbarHost(snackbarHostState)
+            SnackbarHost(hostState = snackbarHostState)
         },
         content = { innerPadding ->
-            Box(
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .consumeWindowInsets(innerPadding)
-                        .padding(innerPadding),
-                contentAlignment = Alignment.TopCenter,
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(innerPadding)
+                        .padding(horizontal = 24.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
+                Text(
+                    text = stringResource(id = Strings.reset_password),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = Strings.password_reset_description),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                EmailField(
+                    value = uiState.email,
+                    onValueChange = {
+                        onEvent(RecoverUiEvent.OnEmailValueChange(it))
+                    },
                     modifier =
                         Modifier
-                            .fillMaxWidth(0.9f)
-                            .fillMaxHeight()
-                            .imePadding()
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                            .fillMaxWidth()
+                            .focusRequester(focusRequester),
+                    placeholder = {
+                        Text(text = stringResource(id = Strings.email))
+                    },
+                    isError = uiState.emailError != null,
+                    errorMessage = uiState.emailError?.asString().orEmpty(),
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        onEvent(RecoverUiEvent.Recover)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    shape = MaterialTheme.shapes.large,
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = stringResource(id = Strings.reset_password),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(id = Strings.password_reset_description),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    EmailField(
-                        value = viewModel.uiState.email,
-                        onValueChange = {
-                            viewModel.onEvent(RecoverUiEvent.EmailChanged(it.trim()))
-                        },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .focusRequester(focusRequester),
-                        placeholder = {
-                            Text(text = stringResource(id = Strings.email))
-                        },
-                        isError = viewModel.uiState.emailError != null,
-                        errorMessage = viewModel.uiState.emailError?.asString().orEmpty(),
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Button(
-                        onClick = {
-                            viewModel.onEvent(RecoverUiEvent.OnRecoverClick)
-                        },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        Text(text = stringResource(id = Strings.recover))
-                    }
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(text = stringResource(id = Strings.recover))
                 }
             }
         },
@@ -166,6 +157,22 @@ fun RecoverScreen(
 
     ProgressDialog(
         text = stringResource(id = Strings.sending_recovery_email),
-        openDialog = viewModel.uiState.openProgressDialog,
+        openDialog = uiState.openProgressDialog,
     )
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+}
+
+@Preview
+@Composable
+private fun RecoverScreenPreview() {
+    EdumateTheme(dynamicColor = false) {
+        RecoverScreenContent(
+            uiState = RecoverUiState(),
+            onEvent = {},
+            snackbarHostState = SnackbarHostState(),
+        )
+    }
 }

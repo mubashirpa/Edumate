@@ -1,5 +1,6 @@
 package edumate.app.presentation.recover
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -7,7 +8,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.Resource
+import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.SendPasswordResetEmailUseCase
 import edumate.app.domain.usecase.validation.ValidateEmail
 import edumate.app.navigation.Routes
@@ -26,12 +27,7 @@ class RecoverViewModel
         var uiState by mutableStateOf(RecoverUiState())
             private set
 
-        private val email: String? =
-            try {
-                checkNotNull(savedStateHandle[Routes.Args.RECOVER_EMAIL])
-            } catch (e: IllegalStateException) {
-                null
-            }
+        private val email: String? = savedStateHandle[Routes.Args.RECOVER_EMAIL]
 
         init {
             uiState = uiState.copy(email = email.orEmpty())
@@ -39,16 +35,18 @@ class RecoverViewModel
 
         fun onEvent(event: RecoverUiEvent) {
             when (event) {
-                is RecoverUiEvent.EmailChanged -> {
+                is RecoverUiEvent.OnEmailValueChange -> {
                     uiState =
                         uiState.copy(
                             email = event.email,
                             emailError = null,
                         )
                 }
-                is RecoverUiEvent.OnRecoverClick -> {
-                    sendPasswordResetEmail(uiState.email)
+
+                is RecoverUiEvent.Recover -> {
+                    sendPasswordResetEmail(uiState.email.trim())
                 }
+
                 is RecoverUiEvent.UserMessageShown -> {
                     uiState = uiState.copy(userMessage = null)
                 }
@@ -61,22 +59,29 @@ class RecoverViewModel
 
             if (!emailResult.successful) return
 
-            sendPasswordResetEmailUseCase(email).onEach { resource ->
+            sendPasswordResetEmailUseCase(email).onEach { result ->
                 uiState =
-                    when (resource) {
-                        is Resource.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                    when (result) {
+                        is Result.Empty -> {
+                            uiState
                         }
-                        is Resource.Success -> {
+
+                        is Result.Error -> {
+                            Log.d("hello", result.message.toString())
                             uiState.copy(
                                 openProgressDialog = false,
-                                isPasswordResetEmailSend = true,
+                                userMessage = result.message,
                             )
                         }
-                        is Resource.Error -> {
+
+                        is Result.Loading -> {
+                            uiState.copy(openProgressDialog = true)
+                        }
+
+                        is Result.Success -> {
                             uiState.copy(
+                                isPasswordResetEmailSend = true,
                                 openProgressDialog = false,
-                                userMessage = resource.message,
                             )
                         }
                     }

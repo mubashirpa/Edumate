@@ -12,69 +12,58 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import edumate.app.core.Constants
+import edumate.app.presentation.ui.theme.EdumateTheme
 import edumate.app.R.string as Strings
 
 @Composable
 fun GetStartedScreen(navigateToLogin: () -> Unit) {
     val backgroundPlaceholder = rememberAsyncImagePainter(Constants.BACKDROP_GET_STARTED_LOCAL)
+    val colorStops =
+        arrayOf(
+            0.1f to Color.Transparent,
+            1f to Color.Black,
+        )
 
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        Box(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .consumeWindowInsets(innerPadding),
-            contentAlignment = Alignment.TopCenter,
-        ) {
+        Box(contentAlignment = Alignment.TopCenter) {
             AsyncImage(
                 model =
                     ImageRequest.Builder(LocalContext.current)
                         .data(Constants.BACKDROP_GET_STARTED)
                         .crossfade(true)
                         .build(),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
                 placeholder = backgroundPlaceholder,
                 error = backgroundPlaceholder,
-                contentDescription = null,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxSize(),
             )
             Box(
                 modifier =
                     Modifier
                         .fillMaxSize()
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, Color.Black),
-                                startY = 500f,
-                            ),
-                        ),
+                        .background(Brush.verticalGradient(colorStops = colorStops)),
             )
             Column(
                 modifier =
                     Modifier
-                        .fillMaxWidth(0.9f)
-                        .fillMaxHeight()
-                        .padding(innerPadding),
+                        .fillMaxSize()
+                        .padding(innerPadding)
+                        .padding(horizontal = 24.dp, vertical = 32.dp),
                 verticalArrangement = Arrangement.Bottom,
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Row {
-                    Text(
-                        text = stringResource(id = Strings.app_name).lowercase(),
-                        color = Color.White,
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                    Text(
-                        text = ".",
-                        color = MaterialTheme.colorScheme.primary,
-                        style = MaterialTheme.typography.headlineLarge,
-                    )
-                }
+                Text(
+                    text = stringResource(id = Strings.app_name).lowercase(),
+                    color = Color.White,
+                    style = MaterialTheme.typography.headlineLarge,
+                )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
                     text = stringResource(id = Strings.get_started_message),
@@ -82,7 +71,7 @@ fun GetStartedScreen(navigateToLogin: () -> Unit) {
                     textAlign = TextAlign.Center,
                     style = MaterialTheme.typography.bodyLarge,
                 )
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = navigateToLogin,
                     modifier =
@@ -93,8 +82,15 @@ fun GetStartedScreen(navigateToLogin: () -> Unit) {
                 ) {
                     Text(text = stringResource(id = Strings.get_started))
                 }
-                Spacer(modifier = Modifier.height(30.dp))
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun GetStartedScreenPreview() {
+    EdumateTheme(dynamicColor = false) {
+        GetStartedScreen(navigateToLogin = {})
     }
 }

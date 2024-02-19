@@ -1,4 +1,4 @@
-package edumate.app.presentation.login.screen
+package edumate.app.presentation.login
 
 import android.app.Activity.RESULT_OK
 import android.content.ActivityNotFoundException
@@ -34,13 +34,9 @@ import com.google.android.gms.auth.api.identity.Identity
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.CommonStatusCodes
 import edumate.app.core.Constants
-import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.EmailField
 import edumate.app.presentation.components.PasswordField
 import edumate.app.presentation.components.ProgressDialog
-import edumate.app.presentation.login.LoginUiEvent
-import edumate.app.presentation.login.LoginUiState
-import edumate.app.presentation.login.LoginViewModel
 import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -165,153 +161,143 @@ private fun LoginScreenContent(
         }
 
     Scaffold(
+        modifier = Modifier.fillMaxSize(),
         snackbarHost = {
-            EdumateSnackbarHost(snackbarHostState)
+            SnackbarHost(hostState = snackbarHostState)
         },
         content = { innerPadding ->
-            Box(
+            Column(
                 modifier =
                     Modifier
-                        .fillMaxSize()
-                        .consumeWindowInsets(innerPadding)
-                        .padding(innerPadding),
-                contentAlignment = Alignment.TopCenter,
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState())
+                        .padding(innerPadding)
+                        .padding(horizontal = 24.dp, vertical = 32.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Column(
+                Text(
+                    text = stringResource(id = Strings.welcome_back),
+                    style = MaterialTheme.typography.headlineSmall,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = stringResource(id = Strings.please_sign_in_to_your_account),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                EmailField(
+                    value = uiState.email,
+                    onValueChange = {
+                        onEvent(LoginUiEvent.OnEmailValueChange(it))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(text = stringResource(id = Strings.email))
+                    },
+                    isError = uiState.emailError != null,
+                    errorMessage = uiState.emailError?.asString().orEmpty(),
+                    imeAction = ImeAction.Next,
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                PasswordField(
+                    value = uiState.password,
+                    onValueChange = {
+                        onEvent(LoginUiEvent.OnPasswordValueChange(it))
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    placeholder = {
+                        Text(text = stringResource(id = Strings.password))
+                    },
+                    isError = uiState.passwordError != null,
+                    errorMessage = uiState.passwordError?.asString().orEmpty(),
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = stringResource(id = Strings.forgot_password),
                     modifier =
                         Modifier
-                            .fillMaxWidth(0.9f)
-                            .fillMaxHeight()
-                            .imePadding()
-                            .verticalScroll(rememberScrollState()),
-                    horizontalAlignment = Alignment.CenterHorizontally,
+                            .align(Alignment.End)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = {
+                                    navigateToRecover(uiState.email)
+                                },
+                            ),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Button(
+                    onClick = {
+                        onEvent(LoginUiEvent.SignIn)
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    shape = MaterialTheme.shapes.large,
                 ) {
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = stringResource(id = Strings.welcome_back),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = stringResource(id = Strings.please_sign_in_to_your_account),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    EmailField(
-                        value = uiState.email,
-                        onValueChange = {
-                            onEvent(LoginUiEvent.OnEmailValueChange(it))
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = {
-                            Text(text = stringResource(id = Strings.email))
-                        },
-                        isError = uiState.emailError != null,
-                        errorMessage = uiState.emailError?.asString().orEmpty(),
-                        imeAction = ImeAction.Next,
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    PasswordField(
-                        value = uiState.password,
-                        onValueChange = {
-                            onEvent(LoginUiEvent.OnPasswordValueChange(it))
-                        },
-                        modifier = Modifier.fillMaxWidth(),
-                        placeholder = {
-                            Text(text = stringResource(id = Strings.password))
-                        },
-                        isError = uiState.passwordError != null,
-                        errorMessage = uiState.passwordError?.asString().orEmpty(),
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text(
-                        text = stringResource(id = Strings.forgot_password),
-                        modifier =
-                            Modifier
-                                .align(Alignment.End)
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = {
-                                        navigateToRecover(uiState.email)
-                                    },
-                                ),
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Button(
-                        onClick = {
-                            onEvent(LoginUiEvent.SignIn)
-                        },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        Text(text = stringResource(id = Strings.sign_in))
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-                    OutlinedButton(
-                        onClick = {
-                            oneTapClient.beginSignIn(signInRequest)
-                                .addOnSuccessListener { result ->
-                                    val request =
-                                        IntentSenderRequest.Builder(
-                                            result.pendingIntent.intentSender,
-                                        )
-                                            .build()
-                                    try {
-                                        activityResultLauncher.launch(request)
-                                    } catch (_: ActivityNotFoundException) {
-                                        snackbarScope.launch {
-                                            snackbarHostState.showSnackbar(
-                                                context.getString(
-                                                    Strings.error_auth_google_activity_not_found,
-                                                ),
-                                            )
-                                        }
-                                    }
-                                }
-                                .addOnFailureListener {
+                    Text(text = stringResource(id = Strings.sign_in))
+                }
+                Spacer(modifier = Modifier.height(12.dp))
+                OutlinedButton(
+                    onClick = {
+                        oneTapClient.beginSignIn(signInRequest)
+                            .addOnSuccessListener { result ->
+                                val request =
+                                    IntentSenderRequest.Builder(
+                                        result.pendingIntent.intentSender,
+                                    )
+                                        .build()
+                                try {
+                                    activityResultLauncher.launch(request)
+                                } catch (_: ActivityNotFoundException) {
                                     snackbarScope.launch {
                                         snackbarHostState.showSnackbar(
-                                            context.getString(Strings.error_auth_google_failed),
+                                            context.getString(
+                                                Strings.error_auth_google_activity_not_found,
+                                            ),
                                         )
                                     }
                                 }
-                        },
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(56.dp),
-                        shape = MaterialTheme.shapes.large,
-                    ) {
-                        Icon(
-                            painter = painterResource(id = Drawables.ic_google),
-                            contentDescription = stringResource(id = Strings.google),
-                            tint = Color.Unspecified,
-                        )
-                        Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
-                        Text(text = stringResource(id = Strings.sign_in_with_google))
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
-                    ClickableText(
-                        text = noAccountAnnotatedText,
-                        onClick = { offset ->
-                            noAccountAnnotatedText.getStringAnnotations(
-                                tag = "SignUp",
-                                start = offset,
-                                end = offset + signUpText.length,
-                            ).firstOrNull()?.let {
-                                navigateToRegister()
                             }
-                        },
+                            .addOnFailureListener {
+                                snackbarScope.launch {
+                                    snackbarHostState.showSnackbar(
+                                        context.getString(Strings.error_auth_google_failed),
+                                    )
+                                }
+                            }
+                    },
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(56.dp),
+                    shape = MaterialTheme.shapes.large,
+                ) {
+                    Icon(
+                        painter = painterResource(id = Drawables.ic_google),
+                        contentDescription = stringResource(id = Strings.google),
+                        tint = Color.Unspecified,
                     )
-                    Spacer(modifier = Modifier.height(30.dp))
+                    Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = Strings.sign_in_with_google))
                 }
+                Spacer(modifier = Modifier.height(24.dp))
+                ClickableText(
+                    text = noAccountAnnotatedText,
+                    onClick = { offset ->
+                        noAccountAnnotatedText.getStringAnnotations(
+                            tag = "SignUp",
+                            start = offset,
+                            end = offset + signUpText.length,
+                        ).firstOrNull()?.let {
+                            navigateToRegister()
+                        }
+                    },
+                )
             }
         },
     )

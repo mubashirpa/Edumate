@@ -8,9 +8,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import edumate.app.presentation.getStarted.GetStartedScreen
-import edumate.app.presentation.login.screen.LoginScreen
-import edumate.app.presentation.recover.screen.RecoverScreen
-import edumate.app.presentation.register.screen.RegisterScreen
+import edumate.app.presentation.login.LoginScreen
+import edumate.app.presentation.recover.RecoverScreen
+import edumate.app.presentation.register.RegisterScreen
 import kotlinx.coroutines.CoroutineScope
 
 fun NavGraphBuilder.authentication(
@@ -38,9 +38,7 @@ fun NavGraphBuilder.authentication(
                     }
                 },
                 navigateToRecover = { email ->
-                    navController.navigate(
-                        "${Screen.RecoverScreen.route}?${Routes.Args.RECOVER_EMAIL}=$email",
-                    )
+                    navController.navigate("${Screen.RecoverScreen.route}?${Routes.Args.RECOVER_EMAIL}=$email")
                 },
                 onLoginSuccess = {
                     navController.popBackStack(Routes.Graph.AUTHENTICATION, true)

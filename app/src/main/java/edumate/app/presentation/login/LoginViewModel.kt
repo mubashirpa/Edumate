@@ -19,8 +19,8 @@ import javax.inject.Inject
 class LoginViewModel
     @Inject
     constructor(
-        private val signInUseCase: SignInUseCase,
         private val googleSignInUseCase: GoogleSignInUseCase,
+        private val signInUseCase: SignInUseCase,
         private val validateEmail: ValidateEmail,
         private val validatePassword: ValidatePassword,
     ) : ViewModel() {
@@ -50,7 +50,10 @@ class LoginViewModel
                 }
 
                 is LoginUiEvent.SignIn -> {
-                    signInWithEmailAndPassword(uiState.email, uiState.password)
+                    signInWithEmailAndPassword(
+                        email = uiState.email.trim(),
+                        password = uiState.password.trim(),
+                    )
                 }
 
                 is LoginUiEvent.UserMessageShown -> {

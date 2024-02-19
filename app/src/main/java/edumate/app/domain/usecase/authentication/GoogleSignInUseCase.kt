@@ -25,9 +25,14 @@ class GoogleSignInUseCase
                     emit(Result.Loading())
                     val user = repository.signInWithGoogle(idToken)
                     if (user != null) {
+                        val userEmail = user.email
+                        val userPhoneNumber = user.phoneNumber
                         OneSignal.login(user.uid)
-                        if (user.email != null) {
-                            OneSignal.User.addEmail(user.email!!)
+                        if (userEmail != null) {
+                            OneSignal.User.addEmail(userEmail)
+                        }
+                        if (userPhoneNumber != null) {
+                            OneSignal.User.addSms(userPhoneNumber)
                         }
                     }
                     emit(Result.Success(user))
