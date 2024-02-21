@@ -5,12 +5,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.calculateEndPadding
 import androidx.compose.foundation.layout.calculateStartPadding
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
@@ -27,9 +24,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
@@ -38,7 +33,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.rememberDrawerState
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -54,6 +48,7 @@ import edumate.app.navigation.EdumateModalNavigationDrawer
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.enrolled.EnrolledScreen
 import edumate.app.presentation.enrolled.EnrolledViewModel
+import edumate.app.presentation.home.components.AddCourseBottomSheet
 import edumate.app.presentation.teaching.TeachingScreen
 import edumate.app.presentation.teaching.TeachingViewModel
 import kotlinx.coroutines.delay
@@ -184,8 +179,8 @@ private fun HomeScreenContent(
                                 onClick = {
                                     onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
                                     onEvent(HomeUiEvent.OnRefreshChange(true))
+                                    // Once the UI is refreshed, notify the ViewModel.
                                     refreshScope.launch {
-                                        // TODO("Fix this")
                                         delay(500)
                                         onEvent(HomeUiEvent.OnRefreshChange(false))
                                     }
@@ -274,38 +269,16 @@ private fun HomeScreenContent(
             }
         }
 
-        if (uiState.showAddCourseBottomSheet) {
-            val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-            ModalBottomSheet(
-                onDismissRequest = {
-                    onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
-                },
-                sheetState = bottomSheetState,
-                windowInsets = WindowInsets(0),
-            ) {
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(id = Strings.create_class))
-                    },
-                    modifier =
-                        Modifier.clickable {
-                            onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
-                            navigateToCreateClass(null)
-                        },
-                )
-                ListItem(
-                    headlineContent = {
-                        Text(text = stringResource(id = Strings.join_class))
-                    },
-                    modifier =
-                        Modifier.clickable {
-                            onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
-                            navigateToJoinClass()
-                        },
-                )
-                Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))
-            }
-        }
+        AddCourseBottomSheet(
+            showBottomSheet = uiState.showAddCourseBottomSheet,
+            onDismissRequest = {
+                onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
+            },
+            innerPadding = innerPadding,
+            onCreateClass = {
+                navigateToCreateClass(null)
+            },
+            onJoinClass = navigateToJoinClass,
+        )
     }
 }

@@ -5,6 +5,7 @@ import edumate.app.core.UiText
 import edumate.app.data.mapper.toCourse
 import edumate.app.domain.model.classroom.courses.Course
 import edumate.app.domain.repository.CoursesRepository
+import edumate.app.domain.repository.FirebaseAuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -13,8 +14,11 @@ import edumate.app.R.string as Strings
 class UpdateCourseUseCase
     @Inject
     constructor(
+        firebaseAuthRepository: FirebaseAuthRepository,
         private val coursesRepository: CoursesRepository,
     ) {
+        val userId = firebaseAuthRepository.currentUserId
+
         operator fun invoke(
             id: String,
             course: Course,
@@ -22,7 +26,7 @@ class UpdateCourseUseCase
             flow {
                 try {
                     emit(Result.Loading())
-                    coursesRepository.update(id, course.toCourse())
+                    coursesRepository.update(userId, id, course.toCourse())
                     emit(Result.Success(id))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_update_course)))

@@ -3,7 +3,7 @@ package edumate.app.presentation.createClass
 import edumate.app.core.UiText
 
 data class CreateClassUiState(
-    val loading: Boolean = false,
+    val isLoading: Boolean = false,
     val name: String = "",
     val nameError: UiText? = null,
     val openProgressDialog: Boolean = false,

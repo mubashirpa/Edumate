@@ -1,11 +1,11 @@
 package edumate.app.presentation.createClass
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -20,6 +20,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -40,10 +41,12 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
+import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -73,6 +76,10 @@ fun CreateClassScreen(
     LaunchedEffect(context) {
         createClassResults.collect {
             navigateToClassDetails(it)
+        }
+        try {
+            focusRequester.requestFocus()
+        } catch (_: IllegalStateException) {
         }
     }
 
@@ -111,9 +118,11 @@ fun CreateClassScreen(
                 scrollBehavior = scrollBehavior,
             )
         },
-        snackbarHost = { EdumateSnackbarHost(snackbarHostState) },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        },
     ) { innerPadding ->
-        if (uiState.loading) {
+        if (uiState.isLoading) {
             Box(
                 modifier =
                     Modifier
@@ -127,11 +136,9 @@ fun CreateClassScreen(
                 modifier =
                     Modifier
                         .fillMaxSize()
+                        .verticalScroll(rememberScrollState())
                         .padding(innerPadding)
-                        .padding(start = 16.dp, top = 12.dp, end = 16.dp, bottom = 24.dp)
-                        .imePadding()
-                        .verticalScroll(rememberScrollState()),
-                verticalArrangement = Arrangement.spacedBy(16.dp),
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
             ) {
                 TextField(
                     value = uiState.name,
@@ -165,6 +172,7 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 TextField(
                     value = uiState.section,
                     onValueChange = {
@@ -187,6 +195,7 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 TextField(
                     value = uiState.room,
                     onValueChange = {
@@ -209,6 +218,7 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
+                Spacer(modifier = Modifier.height(12.dp))
                 TextField(
                     value = uiState.subject,
                     onValueChange = {
@@ -232,14 +242,12 @@ fun CreateClassScreen(
                         ),
                     singleLine = true,
                 )
+                Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        onEvent(CreateClassUiEvent.OnCreateClick)
+                        onEvent(CreateClassUiEvent.CreateClass)
                     },
-                    modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(top = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(text = stringResource(id = buttonText))
                 }
@@ -248,8 +256,18 @@ fun CreateClassScreen(
     }
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
+}
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+@Preview
+@Composable
+private fun CreateClassScreenPreview() {
+    EdumateTheme(dynamicColor = false) {
+        CreateClassScreen(
+            uiState = CreateClassUiState(),
+            onEvent = {},
+            createClassResults = flow {},
+            navigateToClassDetails = {},
+            onBackPressed = {},
+        )
     }
 }

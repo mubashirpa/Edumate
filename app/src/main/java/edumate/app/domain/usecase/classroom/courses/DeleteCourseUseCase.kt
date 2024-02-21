@@ -3,6 +3,7 @@ package edumate.app.domain.usecase.classroom.courses
 import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.repository.CoursesRepository
+import edumate.app.domain.repository.FirebaseAuthRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -11,13 +12,16 @@ import edumate.app.R.string as Strings
 class DeleteCourseUseCase
     @Inject
     constructor(
+        firebaseAuthRepository: FirebaseAuthRepository,
         private val coursesRepository: CoursesRepository,
     ) {
+        val userId = firebaseAuthRepository.currentUserId
+
         operator fun invoke(id: String): Flow<Result<String>> =
             flow {
                 try {
                     emit(Result.Loading())
-                    coursesRepository.delete(id)
+                    coursesRepository.delete(userId, id)
                     emit(Result.Success(id))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_delete_course)))

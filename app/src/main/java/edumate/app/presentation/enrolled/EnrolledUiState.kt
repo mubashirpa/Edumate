@@ -8,7 +8,7 @@ data class EnrolledUiState(
     val enrolledCoursesResult: Result<List<Course>> = Result.Empty(),
     val isRefreshing: Boolean = false,
     val openProgressDialog: Boolean = false,
-    val unEnrolCourseId: String? = null,
+    val unEnrollCourseId: String? = null,
     val userId: String? = null,
     val userMessage: UiText? = null,
 )

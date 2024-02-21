@@ -10,10 +10,10 @@ import edumate.app.R.string as Strings
 @Composable
 fun DeleteCourseDialog(
     onDismissRequest: () -> Unit,
-    courseId: String?,
-    onConfirmClick: (courseId: String) -> Unit,
+    openDialog: Boolean,
+    onConfirmClick: () -> Unit,
 ) {
-    if (courseId != null) {
+    if (openDialog) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
@@ -23,7 +23,7 @@ fun DeleteCourseDialog(
                 Text(text = stringResource(id = Strings.dialog_delete_course_text))
             },
             confirmButton = {
-                TextButton(onClick = { onConfirmClick(courseId) }) {
+                TextButton(onClick = onConfirmClick) {
                     Text(stringResource(id = Strings.delete))
                 }
             },

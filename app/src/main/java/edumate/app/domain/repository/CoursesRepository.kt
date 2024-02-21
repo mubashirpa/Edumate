@@ -7,28 +7,41 @@ import edumate.app.domain.model.classroom.courses.CourseState
 interface CoursesRepository {
     /**
      * Creates a course.
+     * @param userId Identifier of the user making the request.
      * @param course Instance of [Course].
      * @return If successful, the response body contains a newly created instance of [Course].
      */
-    suspend fun create(course: Course): Course?
+    suspend fun create(
+        userId: String,
+        course: Course,
+    ): Course?
 
     /**
      * Deletes a course.
+     * @param userId Identifier of the user making the request.
      * @param id Identifier of the course to delete.
      */
-    suspend fun delete(id: String)
+    suspend fun delete(
+        userId: String,
+        id: String,
+    )
 
     /**
      * Returns a course.
+     * @param userId Identifier of the user making the request.
      * @param id Identifier of the course to return.
      * @return If successful, the response body contains an instance of [Course].
      */
-    suspend fun get(id: String): Course?
+    suspend fun get(
+        userId: String,
+        id: String,
+    ): Course?
 
     /**
      * Returns a list of courses that the requesting user is permitted to view, restricted to those
      * that match the request. Returned courses are ordered by creation time, with the most recently
      * created coming first.
+     * @param userId Identifier of the user making the request.
      * @param courseStates Restricts returned courses to those in one of the specified states. The
      * default value is ACTIVE, ARCHIVED, PROVISIONED, DECLINED.
      * @param pageSize Maximum number of items to return.
@@ -41,6 +54,7 @@ interface CoursesRepository {
      * @return @return If successful, the response body contains an instance of [CoursesDto].
      */
     suspend fun list(
+        userId: String,
         courseStates: List<CourseState>? =
             listOf(
                 CourseState.ACTIVE,
@@ -56,10 +70,12 @@ interface CoursesRepository {
 
     /**
      * Updates a course.
+     * @param userId Identifier of the user making the request.
      * @param id Identifier of the course to update.
      * @param course Instance of [Course].
      */
     suspend fun update(
+        userId: String,
         id: String,
         course: Course,
     )

@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -53,15 +53,15 @@ fun TeachingScreen(
         )
     val refreshState =
         rememberPullRefreshState(
-            refreshing = uiState.refreshing,
+            refreshing = uiState.isRefreshing,
             onRefresh = {
-                onEvent(TeachingUiEvent.OnRefresh)
+                onEvent(TeachingUiEvent.Refresh)
             },
         )
 
     LaunchedEffect(refreshUsingActionButton) {
         if (refreshUsingActionButton) {
-            onEvent(TeachingUiEvent.OnRefresh)
+            onEvent(TeachingUiEvent.Refresh)
         }
     }
 
@@ -89,7 +89,7 @@ fun TeachingScreen(
                     modifier =
                         Modifier
                             .fillMaxSize()
-                            .padding(bottom = bottomPadding),
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
                     errorMessage = teachingCoursesResult.message!!.asString(),
                 )
             }
@@ -106,13 +106,13 @@ fun TeachingScreen(
             }
 
             is Result.Success -> {
-                val courses = teachingCoursesResult.data.orEmpty()
-                if (courses.isEmpty()) {
+                val courses = teachingCoursesResult.data
+                if (courses.isNullOrEmpty()) {
                     ErrorScreen(
                         modifier =
                             Modifier
                                 .fillMaxSize()
-                                .padding(bottom = bottomPadding),
+                                .padding(horizontal = 16.dp, vertical = 12.dp),
                         errorMessage = stringResource(id = Strings.add_a_class_to_get_started),
                     )
                 } else {
@@ -121,15 +121,16 @@ fun TeachingScreen(
                         contentPadding = contentPadding,
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         content = {
-                            itemsIndexed(
+                            items(
                                 items = courses,
-                                key = { _, course -> course.id!! },
-                            ) { index, course ->
+                                key = { it.id!! },
+                            ) { course ->
                                 TeachingListItem(
                                     course = course,
-                                    index = index,
                                     modifier = Modifier.animateItemPlacement(),
-                                    onShareClick = { share(context, it) },
+                                    onShareClick = {
+                                        share(context, it)
+                                    },
                                     onEditClick = navigateToCreateClass,
                                     onDeleteClick = {
                                         onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(it))
@@ -144,9 +145,9 @@ fun TeachingScreen(
         }
 
         PullRefreshIndicator(
-            uiState.refreshing,
-            refreshState,
-            Modifier.align(Alignment.TopCenter),
+            refreshing = uiState.isRefreshing,
+            state = refreshState,
+            modifier = Modifier.align(Alignment.TopCenter),
         )
     }
 
@@ -154,9 +155,9 @@ fun TeachingScreen(
         onDismissRequest = {
             onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(null))
         },
-        courseId = uiState.deleteCourseId,
+        openDialog = uiState.deleteCourseId != null,
         onConfirmClick = {
-            onEvent(TeachingUiEvent.OnDeleteCourse(it))
+            onEvent(TeachingUiEvent.DeleteCourse(uiState.deleteCourseId!!))
         },
     )
 

@@ -38,18 +38,11 @@ class CreateClassViewModel
         private val resultChannel = Channel<String>()
         val createClassResults = resultChannel.receiveAsFlow()
 
-        private val courseId: String? =
-            try {
-                checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASS_COURSE_ID])
-            } catch (e: IllegalStateException) {
-                null
-            }
+        private val courseId: String? = savedStateHandle[Routes.Args.CREATE_CLASS_COURSE_ID]
         val course = mutableStateOf(Course())
 
         init {
-            if (courseId != null) {
-                getCourse(courseId)
-            }
+            courseId?.let(::getCourse)
         }
 
         fun onEvent(event: CreateClassUiEvent) {
@@ -74,7 +67,7 @@ class CreateClassViewModel
                     uiState = uiState.copy(subject = event.subject)
                 }
 
-                CreateClassUiEvent.OnCreateClick -> {
+                CreateClassUiEvent.CreateClass -> {
                     if (courseId == null) {
                         createCourse()
                     } else {
@@ -139,38 +132,38 @@ class CreateClassViewModel
         }
 
         private fun getCourse(id: String) {
-            getCourseUseCase(id).onEach { resource ->
-                when (resource) {
+            getCourseUseCase(id).onEach { result ->
+                when (result) {
                     is Result.Empty -> {}
 
                     is Result.Error -> {
                         uiState =
                             uiState.copy(
-                                loading = false,
-                                userMessage = resource.message,
+                                isLoading = false,
+                                userMessage = result.message,
                             )
                     }
 
                     is Result.Loading -> {
-                        uiState = uiState.copy(loading = true)
+                        uiState = uiState.copy(isLoading = true)
                     }
 
                     is Result.Success -> {
-                        val updatedCourse = resource.data
-                        if (updatedCourse != null) {
-                            course.value = updatedCourse
+                        val courseResponse = result.data
+                        if (courseResponse != null) {
+                            course.value = courseResponse
                             uiState =
                                 uiState.copy(
-                                    loading = false,
-                                    name = updatedCourse.name.orEmpty(),
-                                    room = updatedCourse.room.orEmpty(),
-                                    section = updatedCourse.section.orEmpty(),
-                                    subject = updatedCourse.subject.orEmpty(),
+                                    isLoading = false,
+                                    name = courseResponse.name.orEmpty(),
+                                    room = courseResponse.room.orEmpty(),
+                                    section = courseResponse.section.orEmpty(),
+                                    subject = courseResponse.subject.orEmpty(),
                                 )
                         } else {
                             uiState =
                                 uiState.copy(
-                                    loading = false,
+                                    isLoading = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
                         }
@@ -196,15 +189,15 @@ class CreateClassViewModel
                     subject = uiState.subject.ifEmpty { null },
                 )
 
-            updateCourseUseCase(id, course.value).onEach { resource ->
-                when (resource) {
+            updateCourseUseCase(id, course.value).onEach { result ->
+                when (result) {
                     is Result.Empty -> {}
 
                     is Result.Error -> {
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,
-                                userMessage = resource.message,
+                                userMessage = result.message,
                             )
                     }
 
@@ -213,7 +206,7 @@ class CreateClassViewModel
                     }
 
                     is Result.Success -> {
-                        val courseId = resource.data
+                        val courseId = result.data
                         if (courseId != null) {
                             uiState = uiState.copy(openProgressDialog = false)
                             resultChannel.send(courseId)

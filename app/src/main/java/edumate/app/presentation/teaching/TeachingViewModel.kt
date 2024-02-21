@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
@@ -28,28 +27,35 @@ class TeachingViewModel
         var uiState by mutableStateOf(TeachingUiState())
             private set
 
-        private var currentUser: FirebaseUser? = null
         private var listCoursesJob: Job? = null
 
         init {
             getCurrentUserUseCase().map { user ->
-                currentUser = user
-                fetchCourses(user?.uid, false)
+                if (user != null) {
+                    uiState = uiState.copy(userId = user.uid)
+                    getCourses(user.uid, false)
+                }
             }.launchIn(viewModelScope)
         }
 
         fun onEvent(event: TeachingUiEvent) {
             when (event) {
-                is TeachingUiEvent.OnDeleteCourse -> {
-                    deleteCourse(event.courseId)
+                is TeachingUiEvent.DeleteCourse -> {
+                    val userId = uiState.userId
+                    if (userId != null) {
+                        deleteCourse(event.courseId, userId)
+                    }
                 }
 
                 is TeachingUiEvent.OnOpenDeleteCourseDialogChange -> {
                     uiState = uiState.copy(deleteCourseId = event.courseId)
                 }
 
-                TeachingUiEvent.OnRefresh -> {
-                    fetchCourses(currentUser?.uid, true)
+                TeachingUiEvent.Refresh -> {
+                    val userId = uiState.userId
+                    if (userId != null) {
+                        getCourses(userId, true)
+                    }
                 }
 
                 TeachingUiEvent.UserMessageShown -> {
@@ -58,56 +64,68 @@ class TeachingViewModel
             }
         }
 
-        private fun fetchCourses(
-            teacherId: String?,
+        private fun getCourses(
+            teacherId: String,
             refreshing: Boolean,
         ) {
-            // Cancel ongoing listCoursesJob before recall.
+            // Cancel any ongoing listCoursesJob before making a new call.
             listCoursesJob?.cancel()
             listCoursesJob =
                 listCoursesUseCase(teacherId = teacherId).onEach { result ->
-                    if (refreshing) {
-                        when (result) {
-                            is Result.Empty -> {}
+                    when (result) {
+                        is Result.Empty -> {}
 
-                            is Result.Loading -> {
-                                uiState = uiState.copy(refreshing = true)
-                            }
-
-                            is Result.Success -> {
-                                uiState =
+                        is Result.Error -> {
+                            // The Result.Error state is only used during initial loading and retry attempts.
+                            // Otherwise, a snackbar is displayed using the userMessage property.
+                            uiState =
+                                if (refreshing) {
                                     uiState.copy(
-                                        teachingCoursesResult = result,
-                                        refreshing = false,
+                                        isRefreshing = false,
+                                        userMessage = result.message,
                                     )
-                            }
-
-                            is Result.Error -> {
-                                uiState =
-                                    if (uiState.teachingCoursesResult is Result.Loading) {
-                                        uiState.copy(
-                                            teachingCoursesResult = result,
-                                            refreshing = false,
-                                        )
-                                    } else {
-                                        uiState.copy(
-                                            refreshing = false,
-                                            userMessage = result.message,
-                                        )
-                                    }
-                            }
+                                } else {
+                                    uiState.copy(teachingCoursesResult = result)
+                                }
                         }
-                    } else {
-                        uiState = uiState.copy(teachingCoursesResult = result)
+
+                        is Result.Loading -> {
+                            // The Result.Loading state is only used during initial loading and retry attempts.
+                            // In other cases, the PullRefreshIndicator is shown with refreshing = true.
+                            uiState =
+                                if (refreshing) {
+                                    uiState.copy(isRefreshing = true)
+                                } else {
+                                    uiState.copy(teachingCoursesResult = result)
+                                }
+                        }
+
+                        is Result.Success -> {
+                            uiState =
+                                uiState.copy(
+                                    isRefreshing = false,
+                                    teachingCoursesResult = result,
+                                )
+                        }
                     }
                 }.launchIn(viewModelScope)
         }
 
-        private fun deleteCourse(courseId: String) {
-            // TODO("Delete other resources related to course like announcements")
+        private fun deleteCourse(
+            courseId: String,
+            userId: String,
+        ) {
             deleteCourseUseCase(courseId).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
 
                     is Result.Loading -> {
                         uiState =
@@ -119,15 +137,7 @@ class TeachingViewModel
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        fetchCourses(currentUser?.uid, true)
-                    }
-
-                    is Result.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = result.message,
-                            )
+                        getCourses(userId, true)
                     }
                 }
             }.launchIn(viewModelScope)

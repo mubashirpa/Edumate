@@ -9,10 +9,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import javax.inject.Inject
@@ -22,33 +24,46 @@ class CoursesRepositoryImpl
     constructor(
         private val httpClient: HttpClient,
     ) : CoursesRepository {
-        override suspend fun create(course: Course): Course? {
+        override suspend fun create(
+            userId: String,
+            course: Course,
+        ): Course? {
             return httpClient.post(Server.API_BASE_URL) {
                 url { appendPathSegments(Server.ENDPOINT_COURSES) }
                 contentType(ContentType.Application.Json)
                 setBody(course)
+                header(HttpHeaders.Authorization, userId)
             }.body()
         }
 
-        override suspend fun delete(id: String) {
+        override suspend fun delete(
+            userId: String,
+            id: String,
+        ) {
             httpClient.delete(Server.API_BASE_URL) {
                 url {
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, userId)
             }
         }
 
-        override suspend fun get(id: String): Course? {
+        override suspend fun get(
+            userId: String,
+            id: String,
+        ): Course? {
             return httpClient.get(Server.API_BASE_URL) {
                 url {
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, userId)
             }.body()
         }
 
         override suspend fun list(
+            userId: String,
             courseStates: List<CourseState>?,
             pageSize: Int?,
             pageToken: String?,
@@ -74,10 +89,12 @@ class CoursesRepositoryImpl
                         parameters.append(Server.Parameters.TEACHER_ID, teacherId)
                     }
                 }
+                header(HttpHeaders.Authorization, userId)
             }.body()
         }
 
         override suspend fun update(
+            userId: String,
             id: String,
             course: Course,
         ) {
@@ -88,6 +105,7 @@ class CoursesRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(course)
+                header(HttpHeaders.Authorization, userId)
             }.body()
         }
     }

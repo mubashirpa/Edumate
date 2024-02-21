@@ -21,26 +21,10 @@ import edumate.app.R.string as Strings
 @Composable
 fun EnrolledListItem(
     course: Course,
-    index: Int,
     modifier: Modifier = Modifier,
     onUnEnrollClick: (courseId: String) -> Unit,
     onClick: (courseId: String) -> Unit,
 ) {
-    val images =
-        remember {
-            listOf(
-                "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Math_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
-                "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
-                "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg",
-            )
-        }
-    val backgroundImage = images[index % images.size]
-
     Card(
         onClick = {
             course.id?.let(onClick)
@@ -51,7 +35,7 @@ fun EnrolledListItem(
             AsyncImage(
                 model =
                     ImageRequest.Builder(LocalContext.current)
-                        .data(backgroundImage)
+                        .data(course.photoUrl)
                         .crossfade(true)
                         .build(),
                 contentDescription = null,
@@ -67,7 +51,6 @@ fun EnrolledListItem(
             ) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
-                        // headlineContent
                         Text(
                             text = course.name.orEmpty(),
                             color = Color.White,
@@ -75,7 +58,6 @@ fun EnrolledListItem(
                             maxLines = 1,
                             style = MaterialTheme.typography.headlineSmall,
                         )
-                        // supportingContent
                         Text(
                             text = course.section.orEmpty(),
                             color = Color.White,
@@ -85,7 +67,6 @@ fun EnrolledListItem(
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
-                    // trailingContent
                     EnrolledMenuButton(
                         onUnEnrollClick = {
                             course.id?.let(onUnEnrollClick)
@@ -94,7 +75,7 @@ fun EnrolledListItem(
                 }
                 Spacer(modifier = Modifier.weight(1f))
                 Text(
-                    text = course.ownerId.orEmpty(),
+                    text = course.owner?.name?.fullName.orEmpty(),
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,
                 )

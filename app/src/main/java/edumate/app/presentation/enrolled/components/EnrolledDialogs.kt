@@ -8,7 +8,7 @@ import androidx.compose.ui.res.stringResource
 import edumate.app.R.string as Strings
 
 @Composable
-fun UnEnrolDialog(
+fun UnEnrollDialog(
     onDismissRequest: () -> Unit,
     openDialog: Boolean,
     onConfirmClick: () -> Unit,

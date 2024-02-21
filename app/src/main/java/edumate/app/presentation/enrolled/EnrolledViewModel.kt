@@ -43,17 +43,17 @@ class EnrolledViewModel
         fun onEvent(event: EnrolledUiEvent) {
             when (event) {
                 is EnrolledUiEvent.OnOpenUnEnrolDialogChange -> {
-                    uiState = uiState.copy(unEnrolCourseId = event.courseId)
+                    uiState = uiState.copy(unEnrollCourseId = event.courseId)
                 }
 
-                is EnrolledUiEvent.OnUnEnroll -> {
+                is EnrolledUiEvent.UnEnroll -> {
                     val userId = uiState.userId
                     if (userId != null) {
-                        unEnrollCourse(event.courseId, userId)
+                        unEnroll(event.courseId, userId)
                     }
                 }
 
-                EnrolledUiEvent.OnRefresh -> {
+                EnrolledUiEvent.Refresh -> {
                     val userId = uiState.userId
                     if (userId != null) {
                         getCourses(userId, true)
@@ -70,7 +70,7 @@ class EnrolledViewModel
             studentId: String,
             refreshing: Boolean,
         ) {
-            // Cancel any ongoing listCourseWorksJob before making a new call.
+            // Cancel any ongoing listCoursesJob before making a new call.
             listCoursesJob?.cancel()
             listCoursesJob =
                 listCoursesUseCase(studentId = studentId).onEach { result ->
@@ -113,7 +113,7 @@ class EnrolledViewModel
                 }.launchIn(viewModelScope)
         }
 
-        private fun unEnrollCourse(
+        private fun unEnroll(
             courseId: String,
             userId: String,
         ) {
@@ -133,7 +133,7 @@ class EnrolledViewModel
                         uiState =
                             uiState.copy(
                                 openProgressDialog = true,
-                                unEnrolCourseId = null,
+                                unEnrollCourseId = null,
                             )
                     }
 

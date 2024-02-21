@@ -9,7 +9,7 @@ sealed class CreateClassUiEvent {
 
     data class OnSubjectValueChange(val subject: String) : CreateClassUiEvent()
 
-    data object OnCreateClick : CreateClassUiEvent()
+    data object CreateClass : CreateClassUiEvent()
 
     data object UserMessageShown : CreateClassUiEvent()
 }

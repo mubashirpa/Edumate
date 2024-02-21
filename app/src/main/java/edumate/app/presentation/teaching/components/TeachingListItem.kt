@@ -23,37 +23,25 @@ import edumate.app.R.string as Strings
 @Composable
 fun TeachingListItem(
     course: Course,
-    index: Int,
     modifier: Modifier = Modifier,
     onShareClick: (link: String) -> Unit,
     onEditClick: (courseId: String) -> Unit,
     onDeleteClick: (courseId: String) -> Unit,
     onClick: (courseId: String) -> Unit,
 ) {
-    val images =
-        remember {
-            listOf(
-                "https://gstatic.com/classroom/themes/Geography_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Writing_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Math_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Chemistry_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Physics_thumb.jpg",
-                "https://gstatic.com/classroom/themes/Psychology_thumb.jpg",
-                "https://gstatic.com/classroom/themes/img_graduation_thumb.jpg",
-                "https://gstatic.com/classroom/themes/SocialStudies_thumb.jpg",
-            )
-        }
-    val backgroundImage = images[index % images.size]
+    val students = course.students?.size ?: 0
 
     Card(
-        onClick = { onClick(course.id.orEmpty()) },
+        onClick = {
+            course.id?.let(onClick)
+        },
         modifier = modifier.aspectRatio(8f / 3f),
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             AsyncImage(
                 model =
                     ImageRequest.Builder(LocalContext.current)
-                        .data(backgroundImage)
+                        .data(course.photoUrl)
                         .crossfade(true)
                         .build(),
                 contentDescription = null,
@@ -69,7 +57,6 @@ fun TeachingListItem(
             ) {
                 Row {
                     Column(modifier = Modifier.weight(1f)) {
-                        // headlineContent
                         Text(
                             text = course.name.orEmpty(),
                             color = Color.White,
@@ -77,7 +64,6 @@ fun TeachingListItem(
                             maxLines = 1,
                             style = MaterialTheme.typography.headlineSmall,
                         )
-                        // supportingContent
                         Text(
                             text = course.section.orEmpty(),
                             color = Color.White,
@@ -87,11 +73,16 @@ fun TeachingListItem(
                         )
                     }
                     Spacer(modifier = Modifier.width(16.dp))
-                    // trailingContent
                     TeachingMenuButton(
-                        onShareClick = { onShareClick(course.alternateLink.orEmpty()) },
-                        onEditClick = { onEditClick(course.id.orEmpty()) },
-                        onDeleteClick = { onDeleteClick(course.id.orEmpty()) },
+                        onShareClick = {
+                            course.alternateLink?.let(onShareClick)
+                        },
+                        onEditClick = {
+                            course.id?.let(onEditClick)
+                        },
+                        onDeleteClick = {
+                            course.id?.let(onDeleteClick)
+                        },
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -99,8 +90,8 @@ fun TeachingListItem(
                     text =
                         pluralStringResource(
                             id = Plurals.number_of_students,
-                            count = 0, // TODO
-                            0,
+                            count = students,
+                            students,
                         ),
                     color = Color.White,
                     style = MaterialTheme.typography.labelMedium,

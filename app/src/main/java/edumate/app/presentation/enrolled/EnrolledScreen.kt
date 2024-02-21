@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
@@ -26,7 +26,7 @@ import edumate.app.core.Result
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.enrolled.components.EnrolledListItem
-import edumate.app.presentation.enrolled.components.UnEnrolDialog
+import edumate.app.presentation.enrolled.components.UnEnrollDialog
 import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
@@ -46,19 +46,19 @@ fun EnrolledScreen(
             start = 16.dp,
             top = 12.dp,
             end = 16.dp,
-            bottom = bottomPadding + 88.dp, // FloatingActionButton height including margin,
+            bottom = bottomPadding + 88.dp,
         )
     val refreshState =
         rememberPullRefreshState(
             refreshing = uiState.isRefreshing,
             onRefresh = {
-                onEvent(EnrolledUiEvent.OnRefresh)
+                onEvent(EnrolledUiEvent.Refresh)
             },
         )
 
     LaunchedEffect(refreshUsingActionButton) {
         if (refreshUsingActionButton) {
-            onEvent(EnrolledUiEvent.OnRefresh)
+            onEvent(EnrolledUiEvent.Refresh)
         }
     }
 
@@ -118,13 +118,12 @@ fun EnrolledScreen(
                         contentPadding = contentPadding,
                         verticalArrangement = Arrangement.spacedBy(10.dp),
                         content = {
-                            itemsIndexed(
+                            items(
                                 items = enrolledCoursesResult.data,
-                                key = { _, item -> item.id!! },
-                            ) { index, course ->
+                                key = { it.id!! },
+                            ) { course ->
                                 EnrolledListItem(
                                     course = course,
-                                    index = index,
                                     modifier = Modifier.animateItemPlacement(),
                                     onUnEnrollClick = {
                                         onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(it))
@@ -145,13 +144,13 @@ fun EnrolledScreen(
         )
     }
 
-    UnEnrolDialog(
+    UnEnrollDialog(
         onDismissRequest = {
             onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(null))
         },
-        openDialog = uiState.unEnrolCourseId != null,
+        openDialog = uiState.unEnrollCourseId != null,
         onConfirmClick = {
-            onEvent(EnrolledUiEvent.OnUnEnroll(uiState.unEnrolCourseId!!))
+            onEvent(EnrolledUiEvent.UnEnroll(uiState.unEnrollCourseId!!))
         },
     )
 

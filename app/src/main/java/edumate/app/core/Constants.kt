@@ -12,11 +12,12 @@ object Constants {
     const val BACKDROP_GET_STARTED =
         "https://firebasestorage.googleapis.com/v0/b/edu-mate-app.appspot.com/o/get_started.jpg?alt=media&token=6b9e6215-c0a4-4046-a15d-42cb5a102986"
     const val BACKDROP_GET_STARTED_LOCAL = "file:///android_asset/images/get_started.png"
-    const val GOOGLE_SERVER_CLIENT_ID = "397578092741-alqtcebud1r0tsddkm90gj3bfjebkdk0.apps.googleusercontent.com"
+    const val GOOGLE_SERVER_CLIENT_ID =
+        "397578092741-alqtcebud1r0tsddkm90gj3bfjebkdk0.apps.googleusercontent.com"
 }
 
 object Server {
-    const val API_BASE_URL = "http://localhost:8080/v1"
+    const val API_BASE_URL = "http://192.168.2.121:8080/v1"
     const val ENDPOINT_ANNOUNCEMENTS = "announcements"
     const val ENDPOINT_COURSES = "courses"
     const val ENDPOINT_COURSE_WORK = "courseWork"
