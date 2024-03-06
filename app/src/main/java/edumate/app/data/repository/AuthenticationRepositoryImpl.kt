@@ -51,6 +51,12 @@ class AuthenticationRepositoryImpl
                     awaitClose { firebaseAuth.removeAuthStateListener(listener) }
                 }
 
+        override suspend fun getIdToken(): String {
+            val user = firebaseAuth.currentUser
+            val task = user?.getIdToken(true)?.await()
+            return task?.token.orEmpty()
+        }
+
         override suspend fun createUserWithEmailAndPassword(
             name: String,
             email: String,

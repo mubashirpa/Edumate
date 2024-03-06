@@ -25,6 +25,12 @@ interface AuthenticationRepository {
     val currentUser: Flow<UserProfile>
 
     /**
+     * Access token (ID token) obtained from Firebase Authentication.
+     * This token is used to authenticate requests made to Firebase services on behalf of the user.
+     */
+    suspend fun getIdToken(): String
+
+    /**
      * Tries to create a new user account with the given email address and password.
      * If successful, it also signs the user in to the app.
      * @param name The name of the user.
