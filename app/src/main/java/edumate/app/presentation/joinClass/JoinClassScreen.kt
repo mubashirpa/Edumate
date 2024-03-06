@@ -133,7 +133,7 @@ fun JoinClassScreen(
                     .padding(horizontal = 16.dp, vertical = 12.dp),
         ) {
             Text(
-                text = stringResource(id = Strings.enter_the_code_shared_by_your_teacher),
+                text = stringResource(id = Strings.ask_your_teacher_for_the_class_code_then_enter_it_here),
                 style = MaterialTheme.typography.bodyMedium,
             )
             Spacer(modifier = Modifier.height(12.dp))

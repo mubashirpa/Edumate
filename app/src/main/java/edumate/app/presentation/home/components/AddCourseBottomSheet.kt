@@ -18,13 +18,13 @@ import edumate.app.R
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddCourseBottomSheet(
-    showBottomSheet: Boolean,
+    show: Boolean,
     onDismissRequest: () -> Unit,
     innerPadding: PaddingValues,
     onCreateClass: () -> Unit,
     onJoinClass: () -> Unit,
 ) {
-    if (showBottomSheet) {
+    if (show) {
         val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         ModalBottomSheet(
@@ -34,22 +34,22 @@ fun AddCourseBottomSheet(
         ) {
             ListItem(
                 headlineContent = {
-                    Text(text = stringResource(id = R.string.create_class))
-                },
-                modifier =
-                    Modifier.clickable {
-                        onDismissRequest()
-                        onCreateClass()
-                    },
-            )
-            ListItem(
-                headlineContent = {
                     Text(text = stringResource(id = R.string.join_class))
                 },
                 modifier =
                     Modifier.clickable {
                         onDismissRequest()
                         onJoinClass()
+                    },
+            )
+            ListItem(
+                headlineContent = {
+                    Text(text = stringResource(id = R.string.create_class))
+                },
+                modifier =
+                    Modifier.clickable {
+                        onDismissRequest()
+                        onCreateClass()
                     },
             )
             Spacer(modifier = Modifier.height(innerPadding.calculateBottomPadding()))

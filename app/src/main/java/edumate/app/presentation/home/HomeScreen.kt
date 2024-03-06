@@ -269,7 +269,7 @@ private fun HomeScreenContent(
         }
 
         AddCourseBottomSheet(
-            showBottomSheet = uiState.showAddCourseBottomSheet,
+            show = uiState.showAddCourseBottomSheet,
             onDismissRequest = {
                 onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
             },

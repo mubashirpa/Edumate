@@ -45,6 +45,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.ui.theme.EdumateTheme
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import edumate.app.R.string as Strings
@@ -254,9 +255,14 @@ fun CreateClassScreen(
     ProgressDialog(openDialog = uiState.openProgressDialog)
 
     LaunchedEffect(uiState.isLoading) {
-        try {
-            focusRequester.requestFocus()
-        } catch (_: IllegalStateException) {
+        if (!uiState.isLoading) {
+            // Workaround for preventing IllegalStateException due to requesting focus during composition.
+            // A delay is introduced to ensure focus is requested only when the UI is fully loaded.
+            delay(500)
+            try {
+                focusRequester.requestFocus()
+            } catch (_: IllegalStateException) {
+            }
         }
     }
 }
