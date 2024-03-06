@@ -24,12 +24,15 @@ import edumate.app.R.string as Strings
 fun TeachingListItem(
     course: Course,
     modifier: Modifier = Modifier,
+    userId: String,
     onShareClick: (link: String) -> Unit,
     onEditClick: (courseId: String) -> Unit,
-    onDeleteClick: (courseId: String) -> Unit,
+    onDeleteClick: () -> Unit,
+    onLeaveClick: () -> Unit,
     onClick: (courseId: String) -> Unit,
 ) {
     val students = course.students?.size ?: 0
+    val isOwner = course.ownerId == userId
 
     Card(
         onClick = {
@@ -74,15 +77,15 @@ fun TeachingListItem(
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     TeachingMenuButton(
+                        isOwner = isOwner,
                         onShareClick = {
                             course.alternateLink?.let(onShareClick)
                         },
                         onEditClick = {
                             course.id?.let(onEditClick)
                         },
-                        onDeleteClick = {
-                            course.id?.let(onDeleteClick)
-                        },
+                        onDeleteClick = onDeleteClick,
+                        onLeaveClick = onLeaveClick,
                     )
                 }
                 Spacer(modifier = Modifier.weight(1f))
@@ -103,9 +106,11 @@ fun TeachingListItem(
 
 @Composable
 private fun TeachingMenuButton(
+    isOwner: Boolean,
     onShareClick: () -> Unit,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onDeleteClick: () -> Unit = {},
+    onLeaveClick: () -> Unit = {},
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -122,26 +127,44 @@ private fun TeachingMenuButton(
             onDismissRequest = { expanded = false },
         ) {
             DropdownMenuItem(
-                text = { Text(stringResource(id = Strings.share_invitation_link)) },
+                text = {
+                    Text(stringResource(id = Strings.share_invite_link))
+                },
                 onClick = {
                     expanded = false
                     onShareClick()
                 },
             )
             DropdownMenuItem(
-                text = { Text(stringResource(id = Strings.edit)) },
+                text = {
+                    Text(stringResource(id = Strings.edit))
+                },
                 onClick = {
                     expanded = false
                     onEditClick()
                 },
             )
-            DropdownMenuItem(
-                text = { Text(stringResource(id = Strings.delete)) },
-                onClick = {
-                    expanded = false
-                    onDeleteClick()
-                },
-            )
+            if (isOwner) {
+                DropdownMenuItem(
+                    text = {
+                        Text(stringResource(id = Strings.delete))
+                    },
+                    onClick = {
+                        expanded = false
+                        onDeleteClick()
+                    },
+                )
+            } else {
+                DropdownMenuItem(
+                    text = {
+                        Text(stringResource(id = Strings.leave))
+                    },
+                    onClick = {
+                        expanded = false
+                        onLeaveClick()
+                    },
+                )
+            }
         }
     }
 }

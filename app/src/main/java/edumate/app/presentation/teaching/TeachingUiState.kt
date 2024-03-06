@@ -5,8 +5,9 @@ import edumate.app.core.UiText
 import edumate.app.domain.model.classroom.courses.Course
 
 data class TeachingUiState(
-    val deleteCourseId: String? = null,
+    val deleteCourse: Course? = null,
     val isRefreshing: Boolean = false,
+    val leaveCourse: Course? = null,
     val openProgressDialog: Boolean = false,
     val teachingCoursesResult: Result<List<Course>> = Result.Empty(),
     val userId: String? = null,

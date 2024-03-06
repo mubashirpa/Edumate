@@ -10,6 +10,7 @@ import edumate.app.core.Result
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.courses.DeleteCourseUseCase
 import edumate.app.domain.usecase.classroom.courses.ListCoursesUseCase
+import edumate.app.domain.usecase.classroom.teachers.DeleteTeacherUseCase
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -21,8 +22,9 @@ class TeachingViewModel
     @Inject
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val listCoursesUseCase: ListCoursesUseCase,
         private val deleteCourseUseCase: DeleteCourseUseCase,
+        private val deleteTeacherUseCase: DeleteTeacherUseCase,
+        private val listCoursesUseCase: ListCoursesUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(TeachingUiState())
             private set
@@ -41,14 +43,23 @@ class TeachingViewModel
         fun onEvent(event: TeachingUiEvent) {
             when (event) {
                 is TeachingUiEvent.DeleteCourse -> {
-                    val userId = uiState.userId
-                    if (userId != null) {
-                        deleteCourse(event.courseId, userId)
+                    event.courseId?.let {
+                        deleteCourse(event.courseId)
+                    }
+                }
+
+                is TeachingUiEvent.LeaveCourse -> {
+                    event.courseId?.let {
+                        leaveCourse(event.courseId, uiState.userId!!)
                     }
                 }
 
                 is TeachingUiEvent.OnOpenDeleteCourseDialogChange -> {
-                    uiState = uiState.copy(deleteCourseId = event.courseId)
+                    uiState = uiState.copy(deleteCourse = event.course)
+                }
+
+                is TeachingUiEvent.OnOpenLeaveCourseDialogChange -> {
+                    uiState = uiState.copy(leaveCourse = event.course)
                 }
 
                 TeachingUiEvent.Refresh -> {
@@ -62,6 +73,35 @@ class TeachingViewModel
                     uiState = uiState.copy(userMessage = null)
                 }
             }
+        }
+
+        private fun deleteCourse(courseId: String) {
+            deleteCourseUseCase(courseId).onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState =
+                            uiState.copy(
+                                deleteCourse = null,
+                                openProgressDialog = true,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getCourses(uiState.userId!!, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
         }
 
         private fun getCourses(
@@ -111,11 +151,11 @@ class TeachingViewModel
                 }.launchIn(viewModelScope)
         }
 
-        private fun deleteCourse(
+        private fun leaveCourse(
             courseId: String,
             userId: String,
         ) {
-            deleteCourseUseCase(courseId).onEach { result ->
+            deleteTeacherUseCase(courseId, userId).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
 
@@ -130,7 +170,7 @@ class TeachingViewModel
                     is Result.Loading -> {
                         uiState =
                             uiState.copy(
-                                deleteCourseId = null,
+                                leaveCourse = null,
                                 openProgressDialog = true,
                             )
                     }

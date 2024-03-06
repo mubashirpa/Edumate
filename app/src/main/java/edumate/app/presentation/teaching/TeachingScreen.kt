@@ -1,7 +1,5 @@
 package edumate.app.presentation.teaching
 
-import android.content.Context
-import android.content.Intent
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,9 +23,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.core.Result
+import edumate.app.core.utils.IntentUtils
 import edumate.app.presentation.components.ErrorScreen
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.teaching.components.DeleteCourseDialog
+import edumate.app.presentation.teaching.components.LeaveCourseDialog
 import edumate.app.presentation.teaching.components.TeachingListItem
 import edumate.app.R.string as Strings
 
@@ -128,12 +128,20 @@ fun TeachingScreen(
                                 TeachingListItem(
                                     course = course,
                                     modifier = Modifier.animateItemPlacement(),
+                                    userId = uiState.userId.orEmpty(),
                                     onShareClick = {
-                                        share(context, it)
+                                        IntentUtils.shareText(context, it)
                                     },
                                     onEditClick = navigateToCreateClass,
                                     onDeleteClick = {
-                                        onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(it))
+                                        onEvent(
+                                            TeachingUiEvent.OnOpenDeleteCourseDialogChange(
+                                                course,
+                                            ),
+                                        )
+                                    },
+                                    onLeaveClick = {
+                                        onEvent(TeachingUiEvent.OnOpenLeaveCourseDialogChange(course))
                                     },
                                     onClick = navigateToClassDetails,
                                 )
@@ -155,25 +163,22 @@ fun TeachingScreen(
         onDismissRequest = {
             onEvent(TeachingUiEvent.OnOpenDeleteCourseDialogChange(null))
         },
-        openDialog = uiState.deleteCourseId != null,
-        onConfirmClick = {
-            onEvent(TeachingUiEvent.DeleteCourse(uiState.deleteCourseId!!))
+        open = uiState.deleteCourse != null,
+        onConfirmButtonClick = {
+            onEvent(TeachingUiEvent.DeleteCourse(uiState.deleteCourse!!.id))
+        },
+    )
+
+    LeaveCourseDialog(
+        onDismissRequest = {
+            onEvent(TeachingUiEvent.OnOpenLeaveCourseDialogChange(null))
+        },
+        open = uiState.leaveCourse != null,
+        name = uiState.leaveCourse?.name.orEmpty(),
+        onConfirmButtonClick = {
+            onEvent(TeachingUiEvent.LeaveCourse(uiState.leaveCourse!!.id))
         },
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
-}
-
-private fun share(
-    context: Context,
-    text: String,
-) {
-    val sendIntent: Intent =
-        Intent().apply {
-            action = Intent.ACTION_SEND
-            putExtra(Intent.EXTRA_TEXT, text)
-            type = "text/plain"
-        }
-    val shareIntent = Intent.createChooser(sendIntent, null)
-    context.startActivity(shareIntent)
 }
