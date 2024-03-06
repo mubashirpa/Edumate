@@ -33,9 +33,9 @@ class EnrolledViewModel
 
         init {
             getCurrentUserUseCase().map { user ->
-                if (user != null) {
-                    uiState = uiState.copy(userId = user.uid)
-                    getCourses(user.uid, false)
+                user.id?.let { userId ->
+                    uiState = uiState.copy(userId = userId)
+                    getCourses(userId, false)
                 }
             }.launchIn(viewModelScope)
         }

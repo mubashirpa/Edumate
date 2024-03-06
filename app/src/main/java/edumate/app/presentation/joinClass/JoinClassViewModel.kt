@@ -10,8 +10,6 @@ import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.model.classroom.students.Student
 import edumate.app.domain.model.classroom.teachers.Teacher
-import edumate.app.domain.model.userProfiles.Name
-import edumate.app.domain.model.userProfiles.UserProfile
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.students.CreateStudentUseCase
 import edumate.app.domain.usecase.classroom.teachers.CreateTeacherUseCase
@@ -95,15 +93,8 @@ class JoinClassViewModel
             val student =
                 Student(
                     courseId = classCode,
-                    profile =
-                        UserProfile(
-                            emailAddress = uiState.currentUser?.email,
-                            id = uiState.currentUser?.uid,
-                            name = Name(fullName = uiState.currentUser?.displayName),
-                            photoUrl = uiState.currentUser?.photoUrl.toString(),
-                            verified = uiState.currentUser?.isEmailVerified,
-                        ),
-                    userId = uiState.currentUser?.uid,
+                    profile = uiState.currentUser,
+                    userId = uiState.currentUser?.id,
                 )
 
             createStudentUseCase(
@@ -150,15 +141,8 @@ class JoinClassViewModel
             val teacher =
                 Teacher(
                     courseId = classCode,
-                    profile =
-                        UserProfile(
-                            emailAddress = uiState.currentUser?.email,
-                            id = uiState.currentUser?.uid,
-                            name = Name(fullName = uiState.currentUser?.displayName),
-                            photoUrl = uiState.currentUser?.photoUrl.toString(),
-                            verified = uiState.currentUser?.isEmailVerified,
-                        ),
-                    userId = uiState.currentUser?.uid,
+                    profile = uiState.currentUser,
+                    userId = uiState.currentUser?.id,
                 )
 
             createTeacherUseCase(

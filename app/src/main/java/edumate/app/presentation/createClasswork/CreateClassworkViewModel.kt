@@ -73,8 +73,8 @@ class CreateClassworkViewModel
             uiState =
                 uiState.copy(workType = enumValueOf(workType))
             getCurrentUserUseCase().map { user ->
-                if (user != null) {
-                    uiState = uiState.copy(userId = user.uid)
+                user.id?.let { userId ->
+                    uiState = uiState.copy(userId = userId)
                 }
             }.launchIn(viewModelScope)
             if (courseWorkId != "null") {

@@ -2,11 +2,12 @@ package edumate.app.domain.usecase.authentication
 
 import com.google.firebase.FirebaseNetworkException
 import com.google.firebase.auth.FirebaseAuthException
-import com.google.firebase.auth.FirebaseUser
 import com.onesignal.OneSignal
 import edumate.app.core.Result
 import edumate.app.core.UiText
-import edumate.app.domain.repository.FirebaseAuthRepository
+import edumate.app.data.mapper.toUserProfileDomainModel
+import edumate.app.domain.model.userProfiles.UserProfile
+import edumate.app.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -15,25 +16,22 @@ import edumate.app.R.string as Strings
 class SignInUseCase
     @Inject
     constructor(
-        private val repository: FirebaseAuthRepository,
+        private val repository: AuthenticationRepository,
     ) {
         operator fun invoke(
             email: String,
             password: String,
-        ): Flow<Result<FirebaseUser?>> =
+        ): Flow<Result<UserProfile>> =
             flow {
                 try {
                     emit(Result.Loading())
-                    val user = repository.signInWithEmailAndPassword(email, password)
-                    if (user != null) {
-                        val userEmail = user.email
-                        val userPhoneNumber = user.phoneNumber
-                        OneSignal.login(user.uid)
-                        if (userEmail != null) {
-                            OneSignal.User.addEmail(userEmail)
-                        }
-                        if (userPhoneNumber != null) {
-                            OneSignal.User.addSms(userPhoneNumber)
+                    val user =
+                        repository.signInWithEmailAndPassword(email, password)
+                            .toUserProfileDomainModel()
+                    user.id?.let { userId ->
+                        OneSignal.login(userId)
+                        user.emailAddress?.let { email ->
+                            OneSignal.User.addEmail(email)
                         }
                     }
                     emit(Result.Success(user))

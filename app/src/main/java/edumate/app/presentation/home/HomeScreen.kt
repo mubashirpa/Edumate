@@ -1,7 +1,6 @@
 package edumate.app.presentation.home
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -96,7 +95,7 @@ fun HomeScreen(
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun HomeScreenContent(
     uiState: HomeUiState,
@@ -145,11 +144,11 @@ private fun HomeScreenContent(
                         contentAlignment = Alignment.Center,
                     ) {
                         UserAvatar(
-                            id = uiState.currentUser?.uid.orEmpty(),
+                            id = uiState.currentUser?.id.orEmpty(),
                             fullName =
-                                uiState.currentUser?.displayName
-                                    ?: uiState.currentUser?.email.orEmpty(),
-                            photoUri = uiState.currentUser?.photoUrl,
+                                uiState.currentUser?.name?.fullName
+                                    ?: uiState.currentUser?.emailAddress.orEmpty(),
+                            photoUrl = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = navigateToProfile),
                             size = 30.dp,
                             textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),

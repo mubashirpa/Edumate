@@ -8,13 +8,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
-import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.courseWork.DeleteCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.ListCourseWorksUseCase
 import edumate.app.navigation.Routes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
@@ -23,7 +21,6 @@ class ClassworkViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
-        getCurrentUserUseCase: GetCurrentUserUseCase,
         private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase,
         private val listCourseWorksUseCase: ListCourseWorksUseCase,
     ) : ViewModel() {
@@ -34,9 +31,6 @@ class ClassworkViewModel
         private var listCourseWorksJob: Job? = null
 
         init {
-            getCurrentUserUseCase().map { user ->
-                uiState = uiState.copy(currentUser = user)
-            }.launchIn(viewModelScope)
             listCourseWork(false)
         }
 

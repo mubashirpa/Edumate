@@ -1,6 +1,5 @@
 package edumate.app.presentation.components
 
-import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -29,39 +28,6 @@ import coil.compose.SubcomposeAsyncImage
 import coil.compose.SubcomposeAsyncImageContent
 import coil.request.ImageRequest
 import edumate.app.core.ext.toHslColor
-
-@Composable
-fun UserAvatar(
-    id: String,
-    fullName: String,
-    photoUri: Uri?,
-    modifier: Modifier = Modifier,
-    size: Dp = 40.dp,
-    shape: Shape = CircleShape,
-    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
-) {
-    if (photoUri != null) {
-        UserAvatar(
-            id = id,
-            fullName = fullName,
-            photoUrl = photoUri.toString(),
-            modifier = modifier,
-            size = size,
-            shape = shape,
-            textStyle = textStyle,
-        )
-    } else {
-        UserAvatar(
-            id = id,
-            fullName = fullName,
-            photoUrl = null,
-            modifier = modifier,
-            size = size,
-            shape = shape,
-            textStyle = textStyle,
-        )
-    }
-}
 
 @Composable
 fun UserAvatar(

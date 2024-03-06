@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.domain.repository.FirebaseAuthRepository
+import edumate.app.domain.repository.AuthenticationRepository
 import edumate.app.domain.repository.UserPreferencesRepository
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -16,14 +16,14 @@ import javax.inject.Inject
 class MainViewModel
     @Inject
     constructor(
-        firebaseAuthRepository: FirebaseAuthRepository,
+        authenticationRepository: AuthenticationRepository,
         private val userPreferencesRepository: UserPreferencesRepository,
     ) : ViewModel() {
         var uiState by mutableStateOf(MainUiState())
             private set
 
         init {
-            uiState = uiState.copy(isLoggedIn = firebaseAuthRepository.hasUser)
+            uiState = uiState.copy(isLoggedIn = authenticationRepository.hasUser)
             viewModelScope.launch {
                 userPreferencesRepository.userPreferencesFlow.collectLatest {
                     val appTheme = it.appTheme

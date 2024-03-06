@@ -127,11 +127,11 @@ fun JoinClassScreen(
                         contentAlignment = Alignment.Center,
                     ) {
                         UserAvatar(
-                            id = uiState.currentUser?.uid.orEmpty(),
+                            id = uiState.currentUser?.id.orEmpty(),
                             fullName =
-                                uiState.currentUser?.displayName
-                                    ?: uiState.currentUser?.email.orEmpty(),
-                            photoUri = uiState.currentUser?.photoUrl,
+                                uiState.currentUser?.name?.fullName
+                                    ?: uiState.currentUser?.emailAddress.orEmpty(),
+                            photoUrl = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = navigateToProfile),
                             size = 30.dp,
                             textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),

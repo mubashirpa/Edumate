@@ -64,9 +64,11 @@ fun ProfileScreen(
         ) {
             Spacer(modifier = Modifier.height(16.dp))
             UserAvatar(
-                id = uiState.currentUser?.uid.orEmpty(),
-                fullName = uiState.currentUser?.displayName ?: uiState.currentUser?.email.orEmpty(),
-                photoUri = uiState.currentUser?.photoUrl,
+                id = uiState.currentUser?.id.orEmpty(),
+                fullName =
+                    uiState.currentUser?.name?.fullName
+                        ?: uiState.currentUser?.emailAddress.orEmpty(),
+                photoUrl = uiState.currentUser?.photoUrl,
                 size = 96.dp,
                 shape = MaterialTheme.shapes.extraLarge,
                 textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),
@@ -74,7 +76,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(16.dp))
             ListItem(
                 headlineContent = {
-                    Text(text = uiState.currentUser?.displayName.orEmpty())
+                    Text(text = uiState.currentUser?.name?.fullName.orEmpty())
                 },
                 overlineContent = {
                     Text(text = stringResource(id = Strings.name))
@@ -86,7 +88,7 @@ fun ProfileScreen(
             HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
             ListItem(
                 headlineContent = {
-                    Text(text = uiState.currentUser?.email.orEmpty())
+                    Text(text = uiState.currentUser?.emailAddress.orEmpty())
                 },
                 overlineContent = {
                     Text(text = stringResource(id = Strings.email))

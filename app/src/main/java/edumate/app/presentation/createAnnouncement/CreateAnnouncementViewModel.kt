@@ -63,8 +63,8 @@ class CreateAnnouncementViewModel
 
         init {
             getCurrentUserUseCase().map { user ->
-                if (user != null) {
-                    uiState = uiState.copy(userId = user.uid)
+                user.id?.let { userId ->
+                    uiState = uiState.copy(userId = userId)
                 }
             }.launchIn(viewModelScope)
             if (announcementId != "null") {

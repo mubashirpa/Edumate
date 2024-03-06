@@ -1,7 +1,7 @@
 package edumate.app.presentation.profile
 
-import com.google.firebase.auth.FirebaseUser
+import edumate.app.domain.model.userProfiles.UserProfile
 
 data class ProfileUiState(
-    val currentUser: FirebaseUser? = null,
+    val currentUser: UserProfile? = null,
 )
