@@ -17,6 +17,7 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import edumate.app.core.ext.autofill
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -52,6 +53,71 @@ fun EmailField(
                 .autofill(
                     autofillTypes = autofillTypes,
                     onFill = { onValueChange(it) },
+                )
+                .semantics {
+                    if (isError) error(errorMessage)
+                },
+        readOnly = readOnly,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        supportingText = supportingText,
+        isError = isError,
+        keyboardOptions =
+            KeyboardOptions(
+                capitalization = KeyboardCapitalization.None,
+                keyboardType = KeyboardType.Email,
+                imeAction = imeAction,
+            ),
+        keyboardActions =
+            KeyboardActions(
+                onDone = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
+                onNext = {
+                    focusManager.moveFocus(FocusDirection.Down)
+                },
+            ),
+        singleLine = true,
+        shape = MaterialTheme.shapes.large,
+    )
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun EmailField(
+    value: TextFieldValue,
+    onValueChange: (TextFieldValue) -> Unit,
+    modifier: Modifier = Modifier,
+    readOnly: Boolean = false,
+    label: @Composable (() -> Unit)? = null,
+    placeholder: @Composable (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
+    isError: Boolean = false,
+    errorMessage: String = "",
+    imeAction: ImeAction = ImeAction.Done,
+    autofillTypes: List<AutofillType> = listOf(AutofillType.EmailAddress),
+) {
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val supportingText: @Composable (() -> Unit)? =
+        if (errorMessage.isNotEmpty()) {
+            { Text(text = errorMessage) }
+        } else {
+            null
+        }
+
+    OutlinedTextField(
+        value = value,
+        onValueChange = { onValueChange(it) },
+        modifier =
+            modifier
+                .autofill(
+                    autofillTypes = autofillTypes,
+                    onFill = { onValueChange(TextFieldValue(it)) },
                 )
                 .semantics {
                     if (isError) error(errorMessage)

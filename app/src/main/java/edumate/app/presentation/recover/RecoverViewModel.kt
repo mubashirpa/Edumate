@@ -1,9 +1,10 @@
 package edumate.app.presentation.recover
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,7 +31,16 @@ class RecoverViewModel
         private val email: String? = savedStateHandle[Routes.Args.RECOVER_EMAIL]
 
         init {
-            uiState = uiState.copy(email = email.orEmpty())
+            email?.let {
+                uiState =
+                    uiState.copy(
+                        email =
+                            TextFieldValue(
+                                text = it,
+                                selection = TextRange(it.length),
+                            ),
+                    )
+            }
         }
 
         fun onEvent(event: RecoverUiEvent) {
@@ -44,7 +54,7 @@ class RecoverViewModel
                 }
 
                 is RecoverUiEvent.Recover -> {
-                    sendPasswordResetEmail(uiState.email.trim())
+                    sendPasswordResetEmail(uiState.email.text.trim())
                 }
 
                 is RecoverUiEvent.UserMessageShown -> {
@@ -67,7 +77,6 @@ class RecoverViewModel
                         }
 
                         is Result.Error -> {
-                            Log.d("hello", result.message.toString())
                             uiState.copy(
                                 openProgressDialog = false,
                                 userMessage = result.message,
