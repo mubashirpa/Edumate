@@ -23,8 +23,8 @@ class EnrolledViewModel
     @Inject
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
-        private val listCoursesUseCase: ListCoursesUseCase,
         private val deleteStudentUseCase: DeleteStudentUseCase,
+        private val listCoursesUseCase: ListCoursesUseCase,
     ) : ViewModel() {
         var uiState by mutableStateOf(EnrolledUiState())
             private set
@@ -47,10 +47,7 @@ class EnrolledViewModel
                 }
 
                 is EnrolledUiEvent.UnEnroll -> {
-                    val userId = uiState.userId
-                    if (userId != null) {
-                        unEnroll(event.courseId, userId)
-                    }
+                    unEnroll(event.courseId, uiState.userId!!)
                 }
 
                 EnrolledUiEvent.Refresh -> {
@@ -125,7 +122,7 @@ class EnrolledViewModel
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,
-                                userMessage = UiText.StringResource(Strings.unable_to_leave_class),
+                                userMessage = UiText.StringResource(Strings.unable_to_unenroll_from_class),
                             )
                     }
 

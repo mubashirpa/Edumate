@@ -148,8 +148,8 @@ fun EnrolledScreen(
         onDismissRequest = {
             onEvent(EnrolledUiEvent.OnOpenUnEnrolDialogChange(null))
         },
-        openDialog = uiState.unEnrollCourseId != null,
-        onConfirmClick = {
+        open = uiState.unEnrollCourseId != null,
+        onConfirmButtonClick = {
             onEvent(EnrolledUiEvent.UnEnroll(uiState.unEnrollCourseId!!))
         },
     )

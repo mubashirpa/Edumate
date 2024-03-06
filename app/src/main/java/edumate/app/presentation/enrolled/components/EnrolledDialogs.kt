@@ -10,21 +10,21 @@ import edumate.app.R.string as Strings
 @Composable
 fun UnEnrollDialog(
     onDismissRequest: () -> Unit,
-    openDialog: Boolean,
-    onConfirmClick: () -> Unit,
+    open: Boolean,
+    onConfirmButtonClick: () -> Unit,
 ) {
-    if (openDialog) {
+    if (open) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
-                Text(text = stringResource(id = Strings.dialog_unenrol_title))
+                Text(text = stringResource(id = Strings.dialog_title_unenroll))
             },
             text = {
-                Text(text = stringResource(id = Strings.dialog_unenrol_text))
+                Text(text = stringResource(id = Strings.dialog_message_unenroll))
             },
             confirmButton = {
-                TextButton(onClick = onConfirmClick) {
-                    Text(stringResource(id = Strings.unenrol))
+                TextButton(onClick = onConfirmButtonClick) {
+                    Text(stringResource(id = Strings.unenroll))
                 }
             },
             dismissButton = {
