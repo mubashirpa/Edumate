@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
+import edumate.app.core.UiText
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.courses.DeleteCourseUseCase
 import edumate.app.domain.usecase.classroom.courses.ListCoursesUseCase
@@ -16,6 +17,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
+import edumate.app.R.string as Strings
 
 @HiltViewModel
 class TeachingViewModel
@@ -163,7 +165,7 @@ class TeachingViewModel
                         uiState =
                             uiState.copy(
                                 openProgressDialog = false,
-                                userMessage = result.message,
+                                userMessage = UiText.StringResource(Strings.unable_to_leave_class),
                             )
                     }
 
