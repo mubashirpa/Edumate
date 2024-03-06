@@ -1,10 +1,11 @@
 package edumate.app.presentation.createClass
 
+import androidx.compose.ui.text.input.TextFieldValue
 import edumate.app.core.UiText
 
 data class CreateClassUiState(
     val isLoading: Boolean = false,
-    val name: String = "",
+    val name: TextFieldValue = TextFieldValue(""),
     val nameError: UiText? = null,
     val openProgressDialog: Boolean = false,
     val room: String = "",

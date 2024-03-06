@@ -3,6 +3,8 @@ package edumate.app.presentation.createClass
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -69,9 +71,20 @@ class CreateClassViewModel
 
                 CreateClassUiEvent.CreateClass -> {
                     if (courseId == null) {
-                        createCourse()
+                        createCourse(
+                            name = uiState.name.text.trim(),
+                            room = uiState.room.trim().ifEmpty { null },
+                            section = uiState.section.trim().ifEmpty { null },
+                            subject = uiState.subject.trim().ifEmpty { null },
+                        )
                     } else {
-                        updateCourse(courseId)
+                        updateCourse(
+                            id = courseId,
+                            name = uiState.name.text.trim(),
+                            room = uiState.room.trim().ifEmpty { null },
+                            section = uiState.section.trim().ifEmpty { null },
+                            subject = uiState.subject.trim().ifEmpty { null },
+                        )
                     }
                 }
 
@@ -81,8 +94,12 @@ class CreateClassViewModel
             }
         }
 
-        private fun createCourse() {
-            val name = uiState.name
+        private fun createCourse(
+            name: String,
+            room: String?,
+            section: String?,
+            subject: String?,
+        ) {
             val nameResult = validateTextField.execute(name)
 
             if (!nameResult.successful) {
@@ -93,9 +110,9 @@ class CreateClassViewModel
             course.value =
                 course.value.copy(
                     name = name,
-                    room = uiState.room.ifEmpty { null },
-                    section = uiState.section.ifEmpty { null },
-                    subject = uiState.subject.ifEmpty { null },
+                    room = room,
+                    section = section,
+                    subject = subject,
                 )
 
             createCourseUseCase(course.value).onEach { result ->
@@ -151,11 +168,16 @@ class CreateClassViewModel
                     is Result.Success -> {
                         val courseResponse = result.data
                         if (courseResponse != null) {
+                            val name = courseResponse.name.orEmpty()
                             course.value = courseResponse
                             uiState =
                                 uiState.copy(
                                     isLoading = false,
-                                    name = courseResponse.name.orEmpty(),
+                                    name =
+                                        TextFieldValue(
+                                            text = name,
+                                            selection = TextRange(name.length),
+                                        ),
                                     room = courseResponse.room.orEmpty(),
                                     section = courseResponse.section.orEmpty(),
                                     subject = courseResponse.subject.orEmpty(),
@@ -172,8 +194,13 @@ class CreateClassViewModel
             }.launchIn(viewModelScope)
         }
 
-        private fun updateCourse(id: String) {
-            val name = uiState.name
+        private fun updateCourse(
+            id: String,
+            name: String,
+            room: String?,
+            section: String?,
+            subject: String?,
+        ) {
             val nameResult = validateTextField.execute(name)
 
             if (!nameResult.successful) {
@@ -184,9 +211,9 @@ class CreateClassViewModel
             course.value =
                 course.value.copy(
                     name = name,
-                    room = uiState.room.ifEmpty { null },
-                    section = uiState.section.ifEmpty { null },
-                    subject = uiState.subject.ifEmpty { null },
+                    room = room,
+                    section = section,
+                    subject = subject,
                 )
 
             updateCourseUseCase(id, course.value).onEach { result ->

@@ -9,12 +9,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.domain.model.classroom.students.Student
-import edumate.app.domain.model.classroom.teachers.Teacher
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.students.CreateStudentUseCase
-import edumate.app.domain.usecase.classroom.teachers.CreateTeacherUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
-import edumate.app.presentation.classDetails.UserType
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
@@ -29,7 +26,6 @@ class JoinClassViewModel
     constructor(
         getCurrentUserUseCase: GetCurrentUserUseCase,
         private val createStudentUseCase: CreateStudentUseCase,
-        private val createTeacherUseCase: CreateTeacherUseCase,
         private val validateTextField: ValidateTextField,
     ) : ViewModel() {
         var uiState by mutableStateOf(JoinClassUiState())
@@ -54,20 +50,14 @@ class JoinClassViewModel
                         )
                 }
 
-                is JoinClassUiEvent.OnShowUserTypeBottomSheetChange -> {
-                    uiState = uiState.copy(showUserTypeBottomSheet = event.showBottomSheet)
-                }
-
-                is JoinClassUiEvent.OnUserTypeChange -> {
-                    uiState = uiState.copy(userType = event.userType)
-                }
-
                 JoinClassUiEvent.JoinClass -> {
-                    if (uiState.userType == UserType.STUDENT) {
-                        joinClassAsStudent()
-                    } else {
-                        joinClassAsTeacher()
-                    }
+                    val classCode =
+                        if (uiState.classCode.startsWith("https://edumateapp.web.app/c/details?cid=")) {
+                            uiState.classCode.replace("https://edumateapp.web.app/c/details?cid=", "")
+                        } else {
+                            uiState.classCode
+                        }.trim()
+                    joinClass(classCode)
                 }
 
                 JoinClassUiEvent.UserMessageShown -> {
@@ -76,13 +66,7 @@ class JoinClassViewModel
             }
         }
 
-        private fun joinClassAsStudent() {
-            val classCode =
-                if (uiState.classCode.startsWith("https://edumateapp.web.app/c/details?cid=")) {
-                    uiState.classCode.replace("https://edumateapp.web.app/c/details?cid=", "")
-                } else {
-                    uiState.classCode
-                }
+        private fun joinClass(classCode: String) {
             val classCodeResult = validateTextField.execute(classCode)
 
             if (!classCodeResult.successful) {
@@ -90,64 +74,11 @@ class JoinClassViewModel
                 return
             }
 
-            val student =
-                Student(
-                    courseId = classCode,
-                    profile = uiState.currentUser,
-                    userId = uiState.currentUser?.id,
-                )
+            val student = Student(userId = uiState.currentUser?.id)
 
             createStudentUseCase(
                 courseId = classCode,
                 student = student,
-            ).onEach { result ->
-                when (result) {
-                    is Result.Empty -> {}
-
-                    is Result.Error -> {
-                        uiState =
-                            uiState.copy(
-                                openProgressDialog = false,
-                                userMessage = UiText.StringResource(Strings.unable_to_join_class),
-                            )
-                    }
-
-                    is Result.Loading -> {
-                        uiState = uiState.copy(openProgressDialog = true)
-                    }
-
-                    is Result.Success -> {
-                        uiState = uiState.copy(openProgressDialog = false)
-                        resultChannel.send(classCode)
-                    }
-                }
-            }.launchIn(viewModelScope)
-        }
-
-        private fun joinClassAsTeacher() {
-            val classCode =
-                if (uiState.classCode.startsWith("https://edumateapp.web.app/c/details?cid=")) {
-                    uiState.classCode.replace("https://edumateapp.web.app/c/details?cid=", "")
-                } else {
-                    uiState.classCode
-                }
-            val classCodeResult = validateTextField.execute(classCode)
-
-            if (!classCodeResult.successful) {
-                uiState = uiState.copy(classCodeError = classCodeResult.error)
-                return
-            }
-
-            val teacher =
-                Teacher(
-                    courseId = classCode,
-                    profile = uiState.currentUser,
-                    userId = uiState.currentUser?.id,
-                )
-
-            createTeacherUseCase(
-                courseId = classCode,
-                teacher = teacher,
             ).onEach { result ->
                 when (result) {
                     is Result.Empty -> {}

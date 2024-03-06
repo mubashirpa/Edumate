@@ -73,13 +73,9 @@ fun CreateClassScreen(
             Strings.save
         }
 
-    LaunchedEffect(context) {
+    LaunchedEffect(true) {
         createClassResults.collect {
             navigateToClassDetails(it)
-        }
-        try {
-            focusRequester.requestFocus()
-        } catch (_: IllegalStateException) {
         }
     }
 
@@ -256,6 +252,13 @@ fun CreateClassScreen(
     }
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
+
+    LaunchedEffect(uiState.isLoading) {
+        try {
+            focusRequester.requestFocus()
+        } catch (_: IllegalStateException) {
+        }
+    }
 }
 
 @Preview
