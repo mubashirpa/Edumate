@@ -15,17 +15,16 @@ import edumate.app.R.string as Strings
 class CreateCourseUseCase
     @Inject
     constructor(
-        authenticationRepository: AuthenticationRepository,
+        private val authenticationRepository: AuthenticationRepository,
         private val coursesRepository: CoursesRepository,
     ) {
-        val userId = authenticationRepository.currentUserId
-
         operator fun invoke(course: Course): Flow<Result<Course>> =
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val courseResponse =
-                        coursesRepository.create(userId, course.toCourse())?.toCourseDomainModel()
+                        coursesRepository.create(idToken, course.toCourse())?.toCourseDomainModel()
                     emit(Result.Success(courseResponse))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_create_course)))

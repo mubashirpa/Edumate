@@ -14,11 +14,9 @@ import edumate.app.R.string as Strings
 class UpdateCourseUseCase
     @Inject
     constructor(
-        authenticationRepository: AuthenticationRepository,
+        private val authenticationRepository: AuthenticationRepository,
         private val coursesRepository: CoursesRepository,
     ) {
-        val userId = authenticationRepository.currentUserId
-
         operator fun invoke(
             id: String,
             course: Course,
@@ -26,7 +24,8 @@ class UpdateCourseUseCase
             flow {
                 try {
                     emit(Result.Loading())
-                    coursesRepository.update(userId, id, course.toCourse())
+                    val idToken = authenticationRepository.getIdToken()
+                    coursesRepository.update(idToken, id, course.toCourse())
                     emit(Result.Success(id))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_update_course)))

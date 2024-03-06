@@ -15,11 +15,9 @@ import edumate.app.R.string as Strings
 class ListCoursesUseCase
     @Inject
     constructor(
-        authenticationRepository: AuthenticationRepository,
+        private val authenticationRepository: AuthenticationRepository,
         private val coursesRepository: CoursesRepository,
     ) {
-        val userId = authenticationRepository.currentUserId
-
         operator fun invoke(
             courseStates: List<CourseState> =
                 listOf(
@@ -36,9 +34,10 @@ class ListCoursesUseCase
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val courses =
                         coursesRepository.list(
-                            userId,
+                            idToken,
                             courseStates,
                             pageSize,
                             pageToken,

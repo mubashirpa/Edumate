@@ -12,16 +12,15 @@ import edumate.app.R.string as Strings
 class DeleteCourseUseCase
     @Inject
     constructor(
-        authenticationRepository: AuthenticationRepository,
+        private val authenticationRepository: AuthenticationRepository,
         private val coursesRepository: CoursesRepository,
     ) {
-        val userId = authenticationRepository.currentUserId
-
         operator fun invoke(id: String): Flow<Result<String>> =
             flow {
                 try {
                     emit(Result.Loading())
-                    coursesRepository.delete(userId, id)
+                    val idToken = authenticationRepository.getIdToken()
+                    coursesRepository.delete(idToken, id)
                     emit(Result.Success(id))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_delete_course)))

@@ -25,19 +25,19 @@ class CoursesRepositoryImpl
         private val httpClient: HttpClient,
     ) : CoursesRepository {
         override suspend fun create(
-            userId: String,
+            accessToken: String,
             course: Course,
         ): Course? {
             return httpClient.post(Server.API_BASE_URL) {
                 url { appendPathSegments(Server.ENDPOINT_COURSES) }
                 contentType(ContentType.Application.Json)
                 setBody(course)
-                header(HttpHeaders.Authorization, userId)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun delete(
-            userId: String,
+            accessToken: String,
             id: String,
         ) {
             httpClient.delete(Server.API_BASE_URL) {
@@ -45,12 +45,12 @@ class CoursesRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(id)
                 }
-                header(HttpHeaders.Authorization, userId)
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun get(
-            userId: String,
+            accessToken: String,
             id: String,
         ): Course? {
             return httpClient.get(Server.API_BASE_URL) {
@@ -58,12 +58,12 @@ class CoursesRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(id)
                 }
-                header(HttpHeaders.Authorization, userId)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun list(
-            userId: String,
+            accessToken: String,
             courseStates: List<CourseState>?,
             pageSize: Int?,
             pageToken: String?,
@@ -89,12 +89,12 @@ class CoursesRepositoryImpl
                         parameters.append(Server.Parameters.TEACHER_ID, teacherId)
                     }
                 }
-                header(HttpHeaders.Authorization, userId)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun update(
-            userId: String,
+            accessToken: String,
             id: String,
             course: Course,
         ) {
@@ -105,7 +105,7 @@ class CoursesRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(course)
-                header(HttpHeaders.Authorization, userId)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
     }
