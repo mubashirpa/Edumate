@@ -5,6 +5,7 @@ import edumate.app.core.UiText
 import edumate.app.data.mapper.toTeacher
 import edumate.app.data.mapper.toTeacherDomainModel
 import edumate.app.domain.model.classroom.teachers.Teacher
+import edumate.app.domain.repository.AuthenticationRepository
 import edumate.app.domain.repository.TeachersRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,6 +14,7 @@ import javax.inject.Inject
 class CreateTeacherUseCase
     @Inject
     constructor(
+        private val authenticationRepository: AuthenticationRepository,
         private val teachersRepository: TeachersRepository,
     ) {
         operator fun invoke(
@@ -22,8 +24,13 @@ class CreateTeacherUseCase
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val teacherResponse =
-                        teachersRepository.create(courseId, teacher.toTeacher()).toTeacherDomainModel()
+                        teachersRepository.create(
+                            idToken,
+                            courseId,
+                            teacher.toTeacher(),
+                        ).toTeacherDomainModel()
                     emit(Result.Success(teacherResponse))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.DynamicString(e.message!!)))

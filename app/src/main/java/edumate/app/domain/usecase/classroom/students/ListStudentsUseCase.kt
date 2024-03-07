@@ -4,6 +4,7 @@ import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.data.mapper.toStudentDomainModel
 import edumate.app.domain.model.classroom.students.Student
+import edumate.app.domain.repository.AuthenticationRepository
 import edumate.app.domain.repository.StudentsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -12,6 +13,7 @@ import javax.inject.Inject
 class ListStudentsUseCase
     @Inject
     constructor(
+        private val authenticationRepository: AuthenticationRepository,
         private val studentsRepository: StudentsRepository,
     ) {
         operator fun invoke(
@@ -22,8 +24,10 @@ class ListStudentsUseCase
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val students =
                         studentsRepository.list(
+                            idToken,
                             courseId,
                             pageSize,
                             pageToken,

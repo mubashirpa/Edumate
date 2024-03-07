@@ -8,9 +8,11 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import javax.inject.Inject
@@ -21,6 +23,7 @@ class StudentsRepositoryImpl
         private val httpClient: HttpClient,
     ) : StudentsRepository {
         override suspend fun create(
+            accessToken: String,
             courseId: String,
             enrollmentCode: String?,
             student: Student,
@@ -36,10 +39,12 @@ class StudentsRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(student)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun delete(
+            accessToken: String,
             courseId: String,
             userId: String,
         ) {
@@ -50,10 +55,12 @@ class StudentsRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENTS)
                     appendPathSegments(userId)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun get(
+            accessToken: String,
             courseId: String,
             userId: String,
         ): Student {
@@ -64,10 +71,12 @@ class StudentsRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENTS)
                     appendPathSegments(userId)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun list(
+            accessToken: String,
             courseId: String,
             pageSize: Int?,
             pageToken: String?,
@@ -84,6 +93,7 @@ class StudentsRepositoryImpl
                         parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
                     }
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
     }
