@@ -27,27 +27,19 @@ class ClassDetailsViewModel
             checkNotNull(savedStateHandle[Routes.Args.CLASS_DETAILS_COURSE_ID])
 
         init {
-            getCourse()
+            getCourse(courseId)
         }
 
         fun onEvent(event: ClassDetailsUiEvent) {
             when (event) {
-                is ClassDetailsUiEvent.OnNavigateToViewStudentWork -> {
-                    uiState =
-                        uiState.copy(
-                            courseWork = event.courseWork,
-                            courseWorkAssignedStudent = event.assignedStudent,
-                        )
-                }
-
-                ClassDetailsUiEvent.OnRetry -> {
-                    getCourse()
+                ClassDetailsUiEvent.Retry -> {
+                    getCourse(courseId)
                 }
             }
         }
 
-        private fun getCourse() {
-            getCourseUseCase(courseId).onEach { result ->
+        private fun getCourse(id: String) {
+            getCourseUseCase(id).onEach { result ->
                 uiState = uiState.copy(courseResult = result)
             }.launchIn(viewModelScope)
         }

@@ -17,19 +17,23 @@ fun ClassDetailsNavigationBar(navController: NavController) {
     val screens =
         listOf(
             ClassDetailsNavigationBarScreen.Stream,
-            ClassDetailsNavigationBarScreen.Meet,
             ClassDetailsNavigationBarScreen.Classwork,
             ClassDetailsNavigationBarScreen.People,
         )
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
-    val bottomBarDestination = screens.any { it.route == currentDestination?.route }
+    val bottomBarDestination =
+        screens.any {
+            it.route == currentDestination?.route
+        }
 
     if (bottomBarDestination) {
         NavigationBar {
             screens.forEach { screen ->
                 val selected =
-                    currentDestination?.hierarchy?.any { it.route == screen.route } == true
+                    currentDestination?.hierarchy?.any {
+                        it.route == screen.route
+                    } == true
 
                 NavigationBarItem(
                     selected = selected,
@@ -55,7 +59,9 @@ fun ClassDetailsNavigationBar(navController: NavController) {
                             contentDescription = stringResource(id = screen.title),
                         )
                     },
-                    label = { Text(stringResource(id = screen.title)) },
+                    label = {
+                        Text(stringResource(id = screen.title))
+                    },
                     alwaysShowLabel = false,
                 )
             }

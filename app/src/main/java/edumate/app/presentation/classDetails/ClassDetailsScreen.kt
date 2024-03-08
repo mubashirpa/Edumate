@@ -33,7 +33,9 @@ fun ClassDetailsScreen(
 
         is Result.Error -> {
             ErrorScreen(
-                onRetryClick = { onEvent(ClassDetailsUiEvent.OnRetry) },
+                onRetryClick = {
+                    onEvent(ClassDetailsUiEvent.Retry)
+                },
                 modifier =
                     Modifier
                         .fillMaxSize()
@@ -77,14 +79,18 @@ fun ClassDetailsScreen(
 
 @Composable
 private fun ClassDetailsScreenContent(
-    // Here we are using another NavHost so we need a separate NavHostController
+    // Separate NavHostController for nested navigation
     classDetailsNavController: NavHostController = rememberNavController(),
     uiState: ClassDetailsUiState,
     onEvent: (ClassDetailsUiEvent) -> Unit,
     onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
+    val snackbarHostState =
+        remember {
+            SnackbarHostState()
+        }
+
     Scaffold(
         bottomBar = {
             ClassDetailsNavigationBar(navController = classDetailsNavController)
@@ -94,21 +100,17 @@ private fun ClassDetailsScreenContent(
         },
         contentWindowInsets = WindowInsets(0),
     ) { innerPadding ->
-        Box(
+        ClassDetailsNavHost(
+            navController = classDetailsNavController,
             modifier =
                 Modifier
-                    .padding(innerPadding)
-                    .consumeWindowInsets(innerPadding),
-        ) {
-            ClassDetailsNavHost(
-                navController = classDetailsNavController,
-                modifier = Modifier.fillMaxSize(),
-                snackbarHostState = snackbarHostState,
-                uiState = uiState,
-                onEvent = onEvent,
-                onLeaveClass = onLeaveClass,
-                onBackPressed = onBackPressed,
-            )
-        }
+                    .fillMaxSize()
+                    .padding(innerPadding),
+            snackbarHostState = snackbarHostState,
+            uiState = uiState,
+            onEvent = onEvent,
+            onLeaveClass = onLeaveClass,
+            onBackPressed = onBackPressed,
+        )
     }
 }
