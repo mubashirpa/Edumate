@@ -2,6 +2,7 @@ package edumate.app.domain.usecase.classroom.courseWork
 
 import edumate.app.core.Result
 import edumate.app.core.UiText
+import edumate.app.domain.repository.AuthenticationRepository
 import edumate.app.domain.repository.CourseWorkRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -11,6 +12,7 @@ import edumate.app.R.string as Strings
 class DeleteCourseWorkUseCase
     @Inject
     constructor(
+        private val authenticationRepository: AuthenticationRepository,
         private val courseWorkRepository: CourseWorkRepository,
     ) {
         operator fun invoke(
@@ -20,7 +22,8 @@ class DeleteCourseWorkUseCase
             flow {
                 try {
                     emit(Result.Loading())
-                    courseWorkRepository.delete(courseId, id)
+                    val idToken = authenticationRepository.getIdToken()
+                    courseWorkRepository.delete(idToken, courseId, id)
                     emit(Result.Success(id))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_delete_course_work)))

@@ -9,10 +9,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import javax.inject.Inject
@@ -23,6 +25,7 @@ class CourseWorkRepositoryImpl
         private val httpClient: HttpClient,
     ) : CourseWorkRepository {
         override suspend fun create(
+            accessToken: String,
             courseId: String,
             courseWork: CourseWork,
         ): CourseWork {
@@ -34,10 +37,12 @@ class CourseWorkRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(courseWork)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun delete(
+            accessToken: String,
             courseId: String,
             id: String,
         ) {
@@ -48,10 +53,12 @@ class CourseWorkRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_COURSE_WORK)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun get(
+            accessToken: String,
             courseId: String,
             id: String,
         ): CourseWork {
@@ -62,10 +69,12 @@ class CourseWorkRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_COURSE_WORK)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun list(
+            accessToken: String,
             courseId: String,
             courseWorkStates: List<CourseWorkState>?,
             orderBy: String?,
@@ -90,10 +99,12 @@ class CourseWorkRepositoryImpl
                         parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
                     }
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun update(
+            accessToken: String,
             courseId: String,
             id: String,
             courseWork: CourseWork,
@@ -107,6 +118,7 @@ class CourseWorkRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(courseWork)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
     }

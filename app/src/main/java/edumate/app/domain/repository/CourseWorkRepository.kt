@@ -7,38 +7,45 @@ import edumate.app.data.remote.dto.classroom.courseWork.CourseWorkState
 interface CourseWorkRepository {
     /**
      * Creates course work.
+     * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param courseWork an Instance of [CourseWork].
      * @return If successful, the response body contains a newly created instance of [CourseWork].
      */
     suspend fun create(
+        accessToken: String,
         courseId: String,
         courseWork: CourseWork,
     ): CourseWork
 
     /**
      * Deletes a course work.
+     * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param id Identifier of the course work to delete.
      */
     suspend fun delete(
+        accessToken: String,
         courseId: String,
         id: String,
     )
 
     /**
      * Returns course work.
+     * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param id Identifier of the course work.
      * @return If successful, the response body contains an instance of [CourseWork].
      */
     suspend fun get(
+        accessToken: String,
         courseId: String,
         id: String,
     ): CourseWork
 
     /**
      * Returns a list of course work that the requester is permitted to view.
+     * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param courseWorkStates Restriction on the work status to return. Only courseWork that
      * matches is returned. If unspecified, items with a work status of PUBLISHED is returned.
@@ -52,6 +59,7 @@ interface CourseWorkRepository {
      * @return If successful, the response body contains an instance of [CourseWorkDto].
      */
     suspend fun list(
+        accessToken: String,
         courseId: String,
         courseWorkStates: List<CourseWorkState>? = listOf(CourseWorkState.PUBLISHED),
         orderBy: String? = "updateTime desc",
@@ -61,12 +69,14 @@ interface CourseWorkRepository {
 
     /**
      * Updates one or more fields of a course work.
+     * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param id Identifier of the course work.
      * @param courseWork An instance of [CourseWork].
      * @return If successful, the response body contains an instance of [CourseWork].
      */
     suspend fun update(
+        accessToken: String,
         courseId: String,
         id: String,
         courseWork: CourseWork,
