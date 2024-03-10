@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.google.ai.client.generativeai)
     implementation(libs.jsoup)
+    implementation(libs.kotlinx.datetime)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.lottie.compose)
     implementation(libs.onesignal)
