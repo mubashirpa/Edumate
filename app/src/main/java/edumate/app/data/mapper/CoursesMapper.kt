@@ -19,6 +19,7 @@ fun CourseDomainModel.toCourse(): Course {
         section = section,
         students = students?.map { it.toStudent() },
         subject = subject,
+        teachers = teachers?.map { it.toTeacher() },
         updateTime = updateTime,
     )
 }
@@ -38,6 +39,7 @@ fun Course.toCourseDomainModel(): CourseDomainModel {
         section = section,
         students = students?.map { it.toStudentDomainModel() },
         subject = subject,
+        teachers = teachers?.map { it.toTeacherDomainModel() },
         updateTime = updateTime,
     )
 }

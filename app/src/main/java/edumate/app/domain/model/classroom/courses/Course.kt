@@ -1,6 +1,7 @@
 package edumate.app.domain.model.classroom.courses
 
 import edumate.app.domain.model.classroom.students.Student
+import edumate.app.domain.model.classroom.teachers.Teacher
 import edumate.app.domain.model.userProfiles.UserProfile
 
 data class Course(
@@ -17,5 +18,6 @@ data class Course(
     val section: String? = null,
     val students: List<Student>? = null,
     val subject: String? = null,
+    val teachers: List<Teacher>? = null,
     val updateTime: String? = null,
 )
