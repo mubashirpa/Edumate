@@ -9,10 +9,12 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
+import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import javax.inject.Inject
@@ -23,6 +25,7 @@ class AnnouncementsRepositoryImpl
         private val httpClient: HttpClient,
     ) : AnnouncementsRepository {
         override suspend fun create(
+            accessToken: String,
             courseId: String,
             announcement: Announcement,
         ): Announcement {
@@ -34,10 +37,12 @@ class AnnouncementsRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(announcement)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun delete(
+            accessToken: String,
             courseId: String,
             id: String,
         ) {
@@ -48,10 +53,12 @@ class AnnouncementsRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun get(
+            accessToken: String,
             courseId: String,
             id: String,
         ): Announcement {
@@ -62,15 +69,17 @@ class AnnouncementsRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_ANNOUNCEMENTS)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun list(
+            accessToken: String,
             courseId: String,
             announcementStates: List<AnnouncementState>?,
             orderBy: String?,
             pageSize: Int?,
-            pageToken: String?,
+            page: Int?,
         ): AnnouncementsDto {
             return httpClient.get(Server.API_BASE_URL) {
                 url {
@@ -86,16 +95,19 @@ class AnnouncementsRepositoryImpl
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-                    if (pageToken != null) {
-                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    if (page != null) {
+                        parameters.append(Server.Parameters.PAGE, page.toString())
                     }
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
-        override suspend fun update(
+        override suspend fun patch(
+            accessToken: String,
             courseId: String,
             id: String,
+            updateMask: String,
             announcement: Announcement,
         ): Announcement {
             return httpClient.put(Server.API_BASE_URL) {
@@ -107,6 +119,7 @@ class AnnouncementsRepositoryImpl
                 }
                 contentType(ContentType.Application.Json)
                 setBody(announcement)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
     }

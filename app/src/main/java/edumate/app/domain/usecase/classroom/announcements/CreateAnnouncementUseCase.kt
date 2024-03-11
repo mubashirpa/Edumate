@@ -6,6 +6,7 @@ import edumate.app.data.mapper.toAnnouncement
 import edumate.app.data.mapper.toAnnouncementDomainModel
 import edumate.app.domain.model.classroom.announcements.Announcement
 import edumate.app.domain.repository.AnnouncementsRepository
+import edumate.app.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -14,6 +15,7 @@ import edumate.app.R.string as Strings
 class CreateAnnouncementUseCase
     @Inject
     constructor(
+        private val authenticationRepository: AuthenticationRepository,
         private val announcementsRepository: AnnouncementsRepository,
     ) {
         operator fun invoke(
@@ -23,8 +25,9 @@ class CreateAnnouncementUseCase
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val announcementResponse =
-                        announcementsRepository.create(courseId, announcement.toAnnouncement())
+                        announcementsRepository.create(idToken, courseId, announcement.toAnnouncement())
                             .toAnnouncementDomainModel()
                     emit(Result.Success(announcementResponse))
                 } catch (e: Exception) {

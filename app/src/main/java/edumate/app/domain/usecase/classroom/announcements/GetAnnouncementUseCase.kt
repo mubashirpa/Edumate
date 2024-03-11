@@ -5,6 +5,7 @@ import edumate.app.core.UiText
 import edumate.app.data.mapper.toAnnouncementDomainModel
 import edumate.app.domain.model.classroom.announcements.Announcement
 import edumate.app.domain.repository.AnnouncementsRepository
+import edumate.app.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
@@ -13,6 +14,7 @@ import edumate.app.R.string as Strings
 class GetAnnouncementUseCase
     @Inject
     constructor(
+        private val authenticationRepository: AuthenticationRepository,
         private val announcementsRepository: AnnouncementsRepository,
     ) {
         operator fun invoke(
@@ -22,8 +24,9 @@ class GetAnnouncementUseCase
             flow {
                 try {
                     emit(Result.Loading())
+                    val idToken = authenticationRepository.getIdToken()
                     val announcement =
-                        announcementsRepository.get(courseId, id).toAnnouncementDomainModel()
+                        announcementsRepository.get(idToken, courseId, id).toAnnouncementDomainModel()
                     emit(Result.Success(announcement))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.cannot_retrieve_announcement_at_this_time_please_try_again_later)))

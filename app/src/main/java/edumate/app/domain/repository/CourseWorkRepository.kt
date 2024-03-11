@@ -9,7 +9,7 @@ interface CourseWorkRepository {
      * Creates course work.
      * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
-     * @param courseWork an Instance of [CourseWork].
+     * @param courseWork An Instance of [CourseWork].
      * @return If successful, the response body contains a newly created instance of [CourseWork].
      */
     suspend fun create(

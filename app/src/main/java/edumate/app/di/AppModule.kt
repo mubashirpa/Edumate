@@ -33,18 +33,18 @@ object AppModule {
 
     @Singleton
     @Provides
+    fun provideAuthenticationRepository(
+        firebaseAuth: FirebaseAuth,
+        client: HttpClient,
+    ): AuthenticationRepository = AuthenticationRepositoryImpl(firebaseAuth, client)
+
+    @Singleton
+    @Provides
     fun provideCoursesRepository(httpClient: HttpClient): CoursesRepository = CoursesRepositoryImpl(httpClient)
 
     @Singleton
     @Provides
     fun provideCourseWorkRepository(httpClient: HttpClient): CourseWorkRepository = CourseWorkRepositoryImpl(httpClient)
-
-    @Singleton
-    @Provides
-    fun provideFirebaseAuthRepository(
-        firebaseAuth: FirebaseAuth,
-        client: HttpClient,
-    ): AuthenticationRepository = AuthenticationRepositoryImpl(firebaseAuth, client)
 
     @Singleton
     @Provides
@@ -54,10 +54,6 @@ object AppModule {
     @Singleton
     @Provides
     fun provideJsoupRepository(): JsoupRepository = JsoupRepositoryImpl()
-
-    @Singleton
-    @Provides
-    fun provideNotificationApiService(client: HttpClient): NotificationService = NotificationServiceImpl(client)
 
     @Singleton
     @Provides
