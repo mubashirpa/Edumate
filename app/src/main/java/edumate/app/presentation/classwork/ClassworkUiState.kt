@@ -11,5 +11,6 @@ data class ClassworkUiState(
     val openProgressDialog: Boolean = false,
     val refreshing: Boolean = false,
     val showCreateCourseWorkBottomSheet: Boolean = false,
+    val userId: String? = null,
     val userMessage: UiText? = null,
 )

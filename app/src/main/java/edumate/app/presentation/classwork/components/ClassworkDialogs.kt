@@ -14,48 +14,52 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
+import kotlinx.coroutines.launch
 import edumate.app.R.string as Strings
 
 @Composable
 fun DeleteCourseWorkDialog(
     onDismissRequest: () -> Unit,
-    openAlertDialog: Boolean,
+    open: Boolean,
     workType: CourseWorkType?,
-    onConfirmClick: () -> Unit,
+    onConfirmButtonClick: () -> Unit,
 ) {
-    if (openAlertDialog) {
+    if (open) {
         val title: String
         val message: String
 
         when (workType) {
             CourseWorkType.SHORT_ANSWER_QUESTION -> {
-                title = stringResource(id = Strings.delete_question)
-                message = stringResource(id = Strings.marks_and_comments_will_also_be_deleted)
+                title = stringResource(id = Strings.dialog_title_delete_question)
+                message = stringResource(id = Strings.dialog_message_delete_coursework)
             }
 
             CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-                title = stringResource(id = Strings.delete_question)
-                message = stringResource(id = Strings.marks_and_comments_will_also_be_deleted)
+                title = stringResource(id = Strings.dialog_title_delete_question)
+                message = stringResource(id = Strings.dialog_message_delete_coursework)
             }
 
             null -> {
                 // If workType is null, it indicates that the item is a Material.
-                title = stringResource(id = Strings.delete_material)
-                message = stringResource(id = Strings.comments_will_also_be_deleted)
+                title = stringResource(id = Strings.dialog_title_delete_material)
+                message = ""
             }
 
             else -> {
-                title = stringResource(id = Strings.delete_assignment)
-                message = stringResource(id = Strings.marks_and_comments_will_also_be_deleted)
+                title = stringResource(id = Strings.dialog_title_delete_assignment)
+                message = stringResource(id = Strings.dialog_message_delete_coursework)
             }
         }
 
@@ -68,7 +72,7 @@ fun DeleteCourseWorkDialog(
                 Text(text = message)
             },
             confirmButton = {
-                TextButton(onClick = onConfirmClick) {
+                TextButton(onClick = onConfirmButtonClick) {
                     Text(stringResource(id = Strings.delete))
                 }
             },
@@ -85,14 +89,16 @@ fun DeleteCourseWorkDialog(
 @Composable
 fun CreateCourseWorkBottomSheet(
     onDismissRequest: () -> Unit,
-    showBottomSheet: Boolean,
+    show: Boolean,
     onCreateCourseWork: (workType: CourseWorkType) -> Unit,
     onCreateMaterial: () -> Unit,
 ) {
-    if (showBottomSheet) {
+    if (show) {
         val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        val coroutineScope = rememberCoroutineScope()
         val bottomMargin =
             WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding() + 10.dp
+        val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
 
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
@@ -114,6 +120,7 @@ fun CreateCourseWorkBottomSheet(
                         contentDescription = null,
                     )
                 },
+                colors = colors,
             )
             ListItem(
                 headlineContent = {
@@ -121,8 +128,12 @@ fun CreateCourseWorkBottomSheet(
                 },
                 modifier =
                     Modifier.clickable {
-                        onDismissRequest()
-                        onCreateCourseWork(CourseWorkType.SHORT_ANSWER_QUESTION)
+                        coroutineScope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+                            if (!bottomSheetState.isVisible) {
+                                onDismissRequest()
+                                onCreateCourseWork(CourseWorkType.SHORT_ANSWER_QUESTION)
+                            }
+                        }
                     },
                 leadingContent = {
                     Icon(
@@ -130,6 +141,7 @@ fun CreateCourseWorkBottomSheet(
                         contentDescription = null,
                     )
                 },
+                colors = colors,
             )
             ListItem(
                 headlineContent = {
@@ -137,12 +149,17 @@ fun CreateCourseWorkBottomSheet(
                 },
                 modifier =
                     Modifier.clickable {
-                        onDismissRequest()
-                        onCreateMaterial()
+                        coroutineScope.launch { bottomSheetState.hide() }.invokeOnCompletion {
+                            if (!bottomSheetState.isVisible) {
+                                onDismissRequest()
+                                onCreateMaterial()
+                            }
+                        }
                     },
                 leadingContent = {
                     Icon(imageVector = Icons.Outlined.Book, contentDescription = null)
                 },
+                colors = colors,
             )
             Spacer(modifier = Modifier.height(bottomMargin))
         }

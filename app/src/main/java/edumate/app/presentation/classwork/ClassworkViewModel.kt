@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
+import edumate.app.domain.model.classroom.courseWork.CourseWorkState
+import edumate.app.domain.usecase.authentication.GetCurrentUserIdUseCase
 import edumate.app.domain.usecase.classroom.courseWork.DeleteCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.ListCourseWorksUseCase
 import edumate.app.navigation.Routes
@@ -21,6 +23,7 @@ class ClassworkViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
+        getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
         private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase,
         private val listCourseWorksUseCase: ListCourseWorksUseCase,
     ) : ViewModel() {
@@ -31,12 +34,13 @@ class ClassworkViewModel
         private var listCourseWorksJob: Job? = null
 
         init {
+            uiState = uiState.copy(userId = getCurrentUserIdUseCase())
             listCourseWork(false)
         }
 
         fun onEvent(event: ClassworkUiEvent) {
             when (event) {
-                is ClassworkUiEvent.OnAppBarMenuExpandedChange -> {
+                is ClassworkUiEvent.OnAppBarDropdownExpandedChange -> {
                     uiState = uiState.copy(appBarMenuExpanded = event.expanded)
                 }
 
@@ -70,7 +74,11 @@ class ClassworkViewModel
             // Cancel any ongoing listCourseWorksJob before making a new call.
             listCourseWorksJob?.cancel()
             listCourseWorksJob =
-                listCourseWorksUseCase(courseId).onEach { result ->
+                listCourseWorksUseCase(
+                    courseId = courseId,
+                    courseWorkStates = listOf(CourseWorkState.DRAFT),
+                    orderBy = "creationTime desc",
+                ).onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
 

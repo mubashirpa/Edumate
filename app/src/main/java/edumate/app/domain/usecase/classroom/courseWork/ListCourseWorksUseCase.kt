@@ -1,6 +1,5 @@
 package edumate.app.domain.usecase.classroom.courseWork
 
-import android.util.Log
 import edumate.app.core.Result
 import edumate.app.core.UiText
 import edumate.app.data.mapper.toCourseWorkDomainModel
@@ -41,7 +40,6 @@ class ListCourseWorksUseCase
                         ).courseWork?.map { it.toCourseWorkDomainModel() }
                     emit(Result.Success(courseWorks))
                 } catch (e: Exception) {
-                    Log.e("hello", e.message.toString(), e)
                     emit(Result.Error(UiText.StringResource(Strings.cannot_retrieve_course_works_at_this_time_please_try_again_later)))
                 }
             }

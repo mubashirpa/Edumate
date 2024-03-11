@@ -30,7 +30,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -65,12 +64,12 @@ fun ClassworkScreen(
     onEvent: (ClassworkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     course: Course,
-    navigateToCreateClasswork: (courseId: String, workType: CourseWorkType?, id: String?) -> Unit,
+    navigateToCreateClasswork: (courseId: String, workType: CourseWorkType, id: String?) -> Unit,
+    navigateToCreateMaterial: (courseId: String, id: String?) -> Unit,
     navigateToViewClasswork: (courseId: String, id: String, workType: CourseWorkType) -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val topBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(topBarState)
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     val courseId = course.id.orEmpty()
     val scrollState = rememberLazyListState()
@@ -81,7 +80,7 @@ fun ClassworkScreen(
                 onEvent(ClassworkUiEvent.OnRefresh)
             },
         )
-    val isTeacher = true // TODO
+    val isTeacher = course.teachers?.any { it.userId == uiState.userId } == true
     val expandedFab by remember {
         derivedStateOf {
             scrollState.firstVisibleItemIndex == 0
@@ -117,7 +116,7 @@ fun ClassworkScreen(
                 Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                     IconButton(
                         onClick = {
-                            onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(true))
+                            onEvent(ClassworkUiEvent.OnAppBarDropdownExpandedChange(true))
                         },
                     ) {
                         Icon(
@@ -128,7 +127,7 @@ fun ClassworkScreen(
                     DropdownMenu(
                         expanded = uiState.appBarMenuExpanded,
                         onDismissRequest = {
-                            onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(false))
+                            onEvent(ClassworkUiEvent.OnAppBarDropdownExpandedChange(false))
                         },
                     ) {
                         DropdownMenuItem(
@@ -136,7 +135,7 @@ fun ClassworkScreen(
                                 Text(stringResource(id = Strings.refresh))
                             },
                             onClick = {
-                                onEvent(ClassworkUiEvent.OnAppBarMenuExpandedChange(false))
+                                onEvent(ClassworkUiEvent.OnAppBarDropdownExpandedChange(false))
                                 onEvent(ClassworkUiEvent.OnRefresh)
                             },
                         )
@@ -159,7 +158,9 @@ fun ClassworkScreen(
 
                 is Result.Error -> {
                     ErrorScreen(
-                        onRetryClick = { onEvent(ClassworkUiEvent.OnRetry) },
+                        onRetryClick = {
+                            onEvent(ClassworkUiEvent.OnRetry)
+                        },
                         modifier =
                             Modifier
                                 .fillMaxSize()
@@ -203,8 +204,8 @@ fun ClassworkScreen(
                             onViewClick = { id, type ->
                                 navigateToViewClasswork(courseId, id, type)
                             },
-                            onEditClick = { id ->
-                                navigateToCreateClasswork(courseId, null, id)
+                            onEditClick = { id, type ->
+                                navigateToCreateClasswork(courseId, type, id)
                             },
                             onDeleteClick = { work ->
                                 onEvent(ClassworkUiEvent.OnOpenDeleteCourseWorkDialogChange(work))
@@ -248,20 +249,22 @@ fun ClassworkScreen(
         onDismissRequest = {
             onEvent(ClassworkUiEvent.OnShowCreateCourseWorkBottomSheetChange(false))
         },
-        showBottomSheet = uiState.showCreateCourseWorkBottomSheet,
+        show = uiState.showCreateCourseWorkBottomSheet,
         onCreateCourseWork = { type ->
             navigateToCreateClasswork(courseId, type, null)
         },
-        onCreateMaterial = { /*TODO*/ },
+        onCreateMaterial = {
+            navigateToCreateMaterial(courseId, null)
+        },
     )
 
     DeleteCourseWorkDialog(
         onDismissRequest = {
             onEvent(ClassworkUiEvent.OnOpenDeleteCourseWorkDialogChange(null))
         },
-        openAlertDialog = uiState.deleteCourseWork != null,
+        open = uiState.deleteCourseWork != null,
         workType = uiState.deleteCourseWork?.workType,
-        onConfirmClick = {
+        onConfirmButtonClick = {
             uiState.deleteCourseWork?.id?.also { id ->
                 onEvent(ClassworkUiEvent.OnDeleteCourseWork(id))
             }
@@ -278,10 +281,11 @@ private fun ClassworkScreenContent(
     scrollState: LazyListState,
     isTeacher: Boolean,
     onViewClick: (id: String, workType: CourseWorkType) -> Unit,
-    onEditClick: (id: String) -> Unit,
+    onEditClick: (id: String, workType: CourseWorkType) -> Unit,
     onDeleteClick: (courseWork: CourseWork) -> Unit,
 ) {
     val bottomMargin = if (isTeacher) 88.dp else 0.dp
+
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         state = scrollState,
@@ -305,7 +309,7 @@ private fun ClassworkScreenContent(
                     },
                     onEditClick = {
                         id?.also {
-                            onEditClick(it)
+                            onEditClick(it, type)
                         }
                     },
                     onDeleteClick = {
