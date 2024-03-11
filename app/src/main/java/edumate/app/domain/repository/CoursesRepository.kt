@@ -45,8 +45,8 @@ interface CoursesRepository {
      * @param courseStates Restricts returned courses to those in one of the specified states. The
      * default value is ACTIVE, ARCHIVED, PROVISIONED, DECLINED.
      * @param pageSize Maximum number of items to return.
-     * @param page nextPage value returned from a previous list call, indicating that the
-     * subsequent page of results should be returned.
+     * @param page nextPage value returned from a previous list call, indicating that the subsequent
+     * page of results should be returned.
      * @param studentId Restricts returned courses to those having a student with the specified
      * identifier.
      * @param teacherId Restricts returned courses to those having a teacher with the specified

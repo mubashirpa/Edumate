@@ -49,8 +49,8 @@ interface StudentsRepository {
      * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param pageSize Maximum number of items to return. The default is 30 if unspecified or 0.
-     * @param page nextPage value returned from a previous list call, indicating that the
-     * subsequent page of results should be returned.
+     * @param page nextPage value returned from a previous list call, indicating that the subsequent
+     * page of results should be returned.
      * @return If successful, the response body contains an instance of [StudentsDto].
      */
     suspend fun list(

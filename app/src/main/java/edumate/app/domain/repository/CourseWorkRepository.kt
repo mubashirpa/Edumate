@@ -54,8 +54,8 @@ interface CourseWorkRepository {
      * the default behavior. Examples: dueDate asc, updateTime desc, updateTime, dueDate desc.
      * @param pageSize Maximum number of items to return. Zero or unspecified indicates that the
      * server may assign a maximum.
-     * @param page nextPage value returned from a previous list call, indicating that the
-     * subsequent page of results should be returned.
+     * @param page nextPage value returned from a previous list call, indicating that the subsequent
+     * page of results should be returned.
      * @return If successful, the response body contains an instance of [CourseWorkDto].
      */
     suspend fun list(

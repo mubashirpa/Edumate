@@ -75,7 +75,7 @@ class TeachersRepositoryImpl
             accessToken: String,
             courseId: String,
             pageSize: Int?,
-            pageToken: String?,
+            page: Int?,
         ): TeachersDto {
             return httpClient.get(Server.API_BASE_URL) {
                 url {
@@ -85,8 +85,8 @@ class TeachersRepositoryImpl
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-                    if (pageToken != null) {
-                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    if (page != null) {
+                        parameters.append(Server.Parameters.PAGE, page.toString())
                     }
                 }
                 header(HttpHeaders.Authorization, accessToken)

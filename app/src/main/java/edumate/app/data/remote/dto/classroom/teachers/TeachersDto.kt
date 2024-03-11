@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TeachersDto(
-    val nextPageToken: String? = null,
+    val nextPage: Int? = null,
     val teachers: List<Teacher>? = null,
 )
