@@ -14,13 +14,14 @@ import edumate.app.presentation.classDetails.ClassDetailsScreen
 import edumate.app.presentation.classDetails.ClassDetailsViewModel
 import edumate.app.presentation.createClass.CreateClassScreen
 import edumate.app.presentation.createClass.CreateClassViewModel
-import edumate.app.presentation.gemini_summarize.screen.GeminiSummarizeScreen
 import edumate.app.presentation.home.HomeScreen
 import edumate.app.presentation.home.HomeViewModel
 import edumate.app.presentation.joinClass.JoinClassScreen
 import edumate.app.presentation.joinClass.JoinClassViewModel
 import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
+import edumate.app.presentation.settings.SettingsViewModel
+import edumate.app.presentation.settings.screen.SettingsScreen
 
 @Composable
 fun EdumateNavHost(
@@ -120,7 +121,6 @@ fun EdumateNavHost(
                 listOf(
                     navArgument(Routes.Args.CLASS_DETAILS_COURSE_ID) {
                         type = NavType.StringType
-                        defaultValue = Routes.Args.CLASS_DETAILS_DEFAULT_COURSE_ID
                     },
                 ),
         ) {
@@ -153,15 +153,14 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.SettingsScreen.route) {
-//            val viewModel: SettingsViewModel = hiltViewModel()
-//            SettingsScreen(
-//                uiState = viewModel.uiState,
-//                onEvent = viewModel::onEvent,
-//                onBackPressed = {
-//                    navController.navigateUp()
-//                },
-//            )
-            GeminiSummarizeScreen()
+            val viewModel: SettingsViewModel = hiltViewModel()
+            SettingsScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                onBackPressed = {
+                    navController.navigateUp()
+                },
+            )
         }
     }
 }
