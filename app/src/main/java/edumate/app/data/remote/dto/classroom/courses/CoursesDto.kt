@@ -5,5 +5,5 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CoursesDto(
     val courses: List<Course>? = null,
-    val nextPageToken: String? = null,
+    val nextPage: Int? = null,
 )

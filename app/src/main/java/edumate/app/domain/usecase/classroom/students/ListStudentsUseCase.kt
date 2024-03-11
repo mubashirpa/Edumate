@@ -19,7 +19,7 @@ class ListStudentsUseCase
         operator fun invoke(
             courseId: String,
             pageSize: Int? = 30,
-            pageToken: String? = null,
+            page: Int? = null,
         ): Flow<Result<List<Student>>> =
             flow {
                 try {
@@ -30,7 +30,7 @@ class ListStudentsUseCase
                             idToken,
                             courseId,
                             pageSize,
-                            pageToken,
+                            page,
                         ).students?.map { it.toStudentDomainModel() }
                     emit(Result.Success(students))
                 } catch (e: Exception) {

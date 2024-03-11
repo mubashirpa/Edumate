@@ -10,8 +10,8 @@ import io.ktor.client.call.body
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
-import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
@@ -79,7 +79,7 @@ class CourseWorkRepositoryImpl
             courseWorkStates: List<CourseWorkState>?,
             orderBy: String?,
             pageSize: Int?,
-            pageToken: String?,
+            page: Int?,
         ): CourseWorkDto {
             return httpClient.get(Server.API_BASE_URL) {
                 url {
@@ -95,26 +95,28 @@ class CourseWorkRepositoryImpl
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-                    if (pageToken != null) {
-                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    if (page != null) {
+                        parameters.append(Server.Parameters.PAGE, page.toString())
                     }
                 }
                 header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
-        override suspend fun update(
+        override suspend fun patch(
             accessToken: String,
             courseId: String,
             id: String,
+            updateMask: String,
             courseWork: CourseWork,
         ): CourseWork {
-            return httpClient.put(Server.API_BASE_URL) {
+            return httpClient.patch(Server.API_BASE_URL) {
                 url {
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(courseId)
                     appendPathSegments(Server.ENDPOINT_COURSE_WORK)
                     appendPathSegments(id)
+                    parameters.append(Server.Parameters.UPDATE_MASK, updateMask)
                 }
                 contentType(ContentType.Application.Json)
                 setBody(courseWork)

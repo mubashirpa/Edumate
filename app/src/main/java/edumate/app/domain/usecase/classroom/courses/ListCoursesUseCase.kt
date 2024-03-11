@@ -27,7 +27,7 @@ class ListCoursesUseCase
                     CourseState.DECLINED,
                 ),
             pageSize: Int? = null,
-            pageToken: String? = null,
+            page: Int? = null,
             studentId: String? = null,
             teacherId: String? = null,
         ): Flow<Result<List<Course>>> =
@@ -40,7 +40,7 @@ class ListCoursesUseCase
                             idToken,
                             courseStates,
                             pageSize,
-                            pageToken,
+                            page,
                             studentId,
                             teacherId,
                         ).courses?.map { it.toCourseDomainModel() }

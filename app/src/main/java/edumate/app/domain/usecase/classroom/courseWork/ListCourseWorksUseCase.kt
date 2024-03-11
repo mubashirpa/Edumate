@@ -24,7 +24,7 @@ class ListCourseWorksUseCase
             courseWorkStates: List<CourseWorkState>? = listOf(CourseWorkState.PUBLISHED),
             orderBy: String? = "updateTime desc",
             pageSize: Int? = null,
-            pageToken: String? = null,
+            page: Int? = null,
         ): Flow<Result<List<CourseWork>>> =
             flow {
                 try {
@@ -37,7 +37,7 @@ class ListCourseWorksUseCase
                             courseWorkStates?.map { enumValueOf(it.name) },
                             orderBy,
                             pageSize,
-                            pageToken,
+                            page,
                         ).courseWork?.map { it.toCourseWorkDomainModel() }
                     emit(Result.Success(courseWorks))
                 } catch (e: Exception) {

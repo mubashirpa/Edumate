@@ -66,7 +66,7 @@ class CoursesRepositoryImpl
             accessToken: String,
             courseStates: List<CourseState>?,
             pageSize: Int?,
-            pageToken: String?,
+            page: Int?,
             studentId: String?,
             teacherId: String?,
         ): CoursesDto {
@@ -79,8 +79,8 @@ class CoursesRepositoryImpl
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-                    if (pageToken != null) {
-                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    if (page != null) {
+                        parameters.append(Server.Parameters.PAGE, page.toString())
                     }
                     if (studentId != null) {
                         parameters.append(Server.Parameters.STUDENT_ID, studentId)

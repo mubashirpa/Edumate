@@ -49,7 +49,7 @@ interface StudentsRepository {
      * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param pageSize Maximum number of items to return. The default is 30 if unspecified or 0.
-     * @param pageToken nextPageToken value returned from a previous list call, indicating that the
+     * @param page nextPage value returned from a previous list call, indicating that the
      * subsequent page of results should be returned.
      * @return If successful, the response body contains an instance of [StudentsDto].
      */
@@ -57,6 +57,6 @@ interface StudentsRepository {
         accessToken: String,
         courseId: String,
         pageSize: Int? = 30,
-        pageToken: String? = null,
+        page: Int? = null,
     ): StudentsDto
 }

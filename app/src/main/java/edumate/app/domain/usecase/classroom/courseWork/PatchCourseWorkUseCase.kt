@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 import edumate.app.R.string as Strings
 
-class UpdateCourseWorkUseCase
+class PatchCourseWorkUseCase
     @Inject
     constructor(
         private val authenticationRepository: AuthenticationRepository,
@@ -21,6 +21,7 @@ class UpdateCourseWorkUseCase
         operator fun invoke(
             courseId: String,
             id: String,
+            updateMask: String,
             courseWork: CourseWork,
         ): Flow<Result<CourseWork>> =
             flow {
@@ -28,8 +29,13 @@ class UpdateCourseWorkUseCase
                     emit(Result.Loading())
                     val idToken = authenticationRepository.getIdToken()
                     val courseWorkResponse =
-                        courseWorkRepository.update(idToken, courseId, id, courseWork.toCourseWork())
-                            .toCourseWorkDomainModel()
+                        courseWorkRepository.patch(
+                            idToken,
+                            courseId,
+                            id,
+                            updateMask,
+                            courseWork.toCourseWork(),
+                        ).toCourseWorkDomainModel()
                     emit(Result.Success(courseWorkResponse))
                 } catch (e: Exception) {
                     emit(Result.Error(UiText.StringResource(Strings.unable_to_patch_course_work)))

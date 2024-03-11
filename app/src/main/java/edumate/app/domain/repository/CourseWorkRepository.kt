@@ -54,7 +54,7 @@ interface CourseWorkRepository {
      * the default behavior. Examples: dueDate asc, updateTime desc, updateTime, dueDate desc.
      * @param pageSize Maximum number of items to return. Zero or unspecified indicates that the
      * server may assign a maximum.
-     * @param pageToken nextPageToken value returned from a previous list call, indicating that the
+     * @param page nextPage value returned from a previous list call, indicating that the
      * subsequent page of results should be returned.
      * @return If successful, the response body contains an instance of [CourseWorkDto].
      */
@@ -64,7 +64,7 @@ interface CourseWorkRepository {
         courseWorkStates: List<CourseWorkState>? = listOf(CourseWorkState.PUBLISHED),
         orderBy: String? = "updateTime desc",
         pageSize: Int? = null,
-        pageToken: String? = null,
+        page: Int? = null,
     ): CourseWorkDto
 
     /**
@@ -72,13 +72,15 @@ interface CourseWorkRepository {
      * @param accessToken JWT (JSON Web Token) that contains claims about the user.
      * @param courseId Identifier of the course.
      * @param id Identifier of the course work.
+     * @param updateMask Mask that identifies which fields on the course work to update.
      * @param courseWork An instance of [CourseWork].
      * @return If successful, the response body contains an instance of [CourseWork].
      */
-    suspend fun update(
+    suspend fun patch(
         accessToken: String,
         courseId: String,
         id: String,
+        updateMask: String,
         courseWork: CourseWork,
     ): CourseWork
 }
