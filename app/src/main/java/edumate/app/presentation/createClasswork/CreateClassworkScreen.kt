@@ -46,6 +46,7 @@ fun CreateClassworkScreen(
     snackbarHostState: SnackbarHostState,
     createClassworkResults: Flow<String>,
     className: String,
+    classworkId: String?,
     onCreateClassworkSuccess: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -108,21 +109,23 @@ fun CreateClassworkScreen(
             }
         } else {
             when (uiState.workType) {
+                CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
+                    // Nothing is shown
+                }
+
                 CourseWorkType.ASSIGNMENT -> {
                     ContentAssignment(
-                        courseTitle = className,
+                        className = className,
+                        classworkId = classworkId,
                         uiState = uiState,
                         onEvent = onEvent,
                     )
                 }
 
-                CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
-                    // Nothing is shown
-                }
-
                 null -> {
                     ContentMaterial(
-                        courseTitle = className,
+                        className = className,
+                        classworkId = classworkId,
                         uiState = uiState,
                         onEvent = onEvent,
                     )
@@ -130,7 +133,8 @@ fun CreateClassworkScreen(
 
                 else -> {
                     ContentQuestion(
-                        courseTitle = className,
+                        className = className,
+                        classworkId = classworkId,
                         uiState = uiState,
                         onEvent = onEvent,
                     )
@@ -165,4 +169,4 @@ fun CreateClassworkScreen(
     ProgressDialog(openDialog = uiState.openProgressDialog)
 }
 
-class CourseTitle : LoremIpsum(1)
+class LoremIpsumSingleWord : LoremIpsum(1)

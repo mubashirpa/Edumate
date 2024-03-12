@@ -5,6 +5,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -47,6 +49,7 @@ import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -61,6 +64,8 @@ import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -70,27 +75,26 @@ import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.presentation.components.FieldListItem
 import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
 import edumate.app.presentation.createClasswork.CreateClassworkUiState
-import java.text.SimpleDateFormat
-import java.util.Locale
+import edumate.app.presentation.createClasswork.LoremIpsumSingleWord
+import edumate.app.presentation.ui.theme.EdumateTheme
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
 import edumate.app.R.array as Arrays
 import edumate.app.R.string as Strings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentQuestion(
-    courseTitle: String,
+    className: String,
+    classworkId: String?,
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
 ) {
     val context = LocalContext.current
-    val dateFormatter =
-        remember {
-            SimpleDateFormat("dd MMM, yyyy", Locale.getDefault())
-        }
-    val timeFormatter =
-        remember {
-            SimpleDateFormat("hh:mm a", Locale.getDefault())
-        }
     val fileUtils =
         remember {
             FileUtils(context)
@@ -106,7 +110,12 @@ fun ContentQuestion(
         onEvent(CreateClassworkUiEvent.OnQuestionTypeSelectionOptionValueChange(questionTypes[0]))
     }
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 12.dp),
+    ) {
         Column(
             modifier =
                 Modifier
@@ -165,7 +174,7 @@ fun ContentQuestion(
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = courseTitle)
+                                Text(text = className)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -412,6 +421,7 @@ fun ContentQuestion(
             )
             FieldListItem(
                 headlineContent = {
+                    val interactionSource = remember { MutableInteractionSource() }
                     Row(
                         modifier =
                             Modifier
@@ -423,8 +433,11 @@ fun ContentQuestion(
                                     shape = MaterialTheme.shapes.extraSmall,
                                 )
                                 .clip(MaterialTheme.shapes.extraSmall)
+                                .indication(interactionSource, ripple())
                                 .clickable(
-                                    enabled = uiState.dueDate == null,
+                                    interactionSource = interactionSource,
+                                    indication = null,
+                                    enabled = uiState.dueDateTime == null,
                                     onClick = {
                                         onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(true))
                                     },
@@ -432,44 +445,74 @@ fun ContentQuestion(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Text(
-                            text =
-                                if (uiState.dueDate != null) {
-                                    dateFormatter.format(uiState.dueDate)
-                                } else {
-                                    stringResource(id = Strings.due_date)
-                                },
-                            modifier =
-                                Modifier
-                                    .padding(start = 16.dp)
-                                    .clickable(
-                                        enabled = uiState.dueDate != null,
-                                        onClick = {
-                                            onEvent(
-                                                CreateClassworkUiEvent.OnOpenDatePickerDialogChange(
-                                                    true,
-                                                ),
+                        if (uiState.dueDateTime != null) {
+                            Text(
+                                text =
+                                    uiState.dueDateTime.format(
+                                        LocalDateTime.Format {
+                                            date(
+                                                LocalDate.Format {
+                                                    monthName(MonthNames.ENGLISH_ABBREVIATED)
+                                                    char(' ')
+                                                    dayOfMonth()
+                                                    chars(", ")
+                                                    year()
+                                                },
                                             )
                                         },
                                     ),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodyLarge,
-                        )
-                        if (uiState.dueDate != null) {
-                            Text(
-                                text = timeFormatter.format(uiState.dueDate),
                                 modifier =
                                     Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .clickable {
-                                            onEvent(
-                                                CreateClassworkUiEvent.OnOpenTimePickerDialogChange(
-                                                    true,
-                                                ),
+                                        .padding(start = 16.dp)
+                                        .clickable(
+                                            interactionSource = interactionSource,
+                                            indication = null,
+                                            onClick = {
+                                                onEvent(
+                                                    CreateClassworkUiEvent.OnOpenDatePickerDialogChange(
+                                                        true,
+                                                    ),
+                                                )
+                                            },
+                                        ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                            Text(
+                                text =
+                                    uiState.dueDateTime.format(
+                                        LocalDateTime.Format {
+                                            time(
+                                                LocalTime.Format {
+                                                    amPmHour()
+                                                    char(':')
+                                                    minute()
+                                                    char(' ')
+                                                    amPmMarker("AM", "PM")
+                                                },
                                             )
                                         },
+                                    ),
+                                modifier =
+                                    Modifier
+                                        .padding(horizontal = 16.dp).clickable(
+                                            interactionSource = interactionSource,
+                                            indication = null,
+                                            onClick = {
+                                                onEvent(
+                                                    CreateClassworkUiEvent.OnOpenTimePickerDialogChange(
+                                                        true,
+                                                    ),
+                                                )
+                                            },
+                                        ),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyLarge,
+                            )
+                        } else {
+                            Text(
+                                text = stringResource(id = Strings.due_date),
+                                modifier = Modifier.padding(horizontal = 16.dp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyLarge,
                             )
@@ -478,11 +521,11 @@ fun ContentQuestion(
                 },
                 leadingIcon = Icons.Default.CalendarToday,
                 trailingContent =
-                    if (uiState.dueDate != null) {
+                    if (uiState.dueDateTime != null) {
                         {
                             IconButton(
                                 onClick = {
-                                    onEvent(CreateClassworkUiEvent.OnDueDateValueChange(null))
+                                    onEvent(CreateClassworkUiEvent.OnDueDateTimeValueChange(null))
                                 },
                             ) {
                                 Icon(
@@ -496,7 +539,7 @@ fun ContentQuestion(
                     },
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
                 onEvent(CreateClassworkUiEvent.CreateCourseWork)
@@ -506,19 +549,25 @@ fun ContentQuestion(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
         ) {
-            Text(text = stringResource(id = Strings.ask))
+            Text(
+                text =
+                    if (classworkId != null) {
+                        stringResource(id = Strings.save)
+                    } else {
+                        stringResource(id = Strings.ask)
+                    },
+            )
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 
     DatePickerDialog(
         onDismissRequest = {
             onEvent(CreateClassworkUiEvent.OnOpenDatePickerDialogChange(false))
         },
-        calendar = uiState.dueDate,
-        openDialog = uiState.openDatePickerDialog,
-        onConfirmClick = {
-            onEvent(CreateClassworkUiEvent.OnDueDateValueChange(it))
+        open = uiState.openDatePickerDialog,
+        dateTime = uiState.dueDateTime,
+        onConfirmButtonClick = {
+            onEvent(CreateClassworkUiEvent.OnDueDateTimeValueChange(it))
         },
     )
 
@@ -526,9 +575,10 @@ fun ContentQuestion(
         onDismissRequest = {
             onEvent(CreateClassworkUiEvent.OnOpenTimePickerDialogChange(false))
         },
-        openDialog = uiState.openTimePickerDialog,
-        onConfirmClick = {
-            onEvent(CreateClassworkUiEvent.OnDueDateValueChange(it))
+        open = uiState.openTimePickerDialog,
+        dateTime = uiState.dueDateTime,
+        onConfirmButtonClick = {
+            onEvent(CreateClassworkUiEvent.OnDueDateTimeValueChange(it))
         },
     )
 
@@ -536,14 +586,29 @@ fun ContentQuestion(
         onDismissRequest = {
             onEvent(CreateClassworkUiEvent.OnOpenPointsDialogChange(false))
         },
-        openDialog = uiState.openPointsDialog,
+        open = uiState.openPointsDialog,
         currentPoint = uiState.points,
-        onConfirmClick = {
+        onConfirmButtonClick = {
             onEvent(CreateClassworkUiEvent.OnPointsValueChange(it))
         },
     )
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(true) {
         focusRequester.requestFocus()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContentQuestionPreview(
+    @PreviewParameter(LoremIpsumSingleWord::class) className: String,
+) {
+    EdumateTheme(dynamicColor = false) {
+        ContentQuestion(
+            className = className,
+            classworkId = null,
+            uiState = CreateClassworkUiState(),
+            onEvent = {},
+        )
     }
 }

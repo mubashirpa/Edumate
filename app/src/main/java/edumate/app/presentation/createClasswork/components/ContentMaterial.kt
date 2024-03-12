@@ -21,6 +21,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -29,11 +31,14 @@ import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.FieldListItem
 import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
 import edumate.app.presentation.createClasswork.CreateClassworkUiState
+import edumate.app.presentation.createClasswork.LoremIpsumSingleWord
+import edumate.app.presentation.ui.theme.EdumateTheme
 import edumate.app.R.string as Strings
 
 @Composable
 fun ContentMaterial(
-    courseTitle: String,
+    className: String,
+    classworkId: String?,
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
 ) {
@@ -48,7 +53,12 @@ fun ContentMaterial(
         }
     val isTitleError = uiState.titleError != null
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier =
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 12.dp),
+    ) {
         Column(
             modifier =
                 Modifier
@@ -108,7 +118,7 @@ fun ContentMaterial(
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = courseTitle)
+                                Text(text = className)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -248,7 +258,7 @@ fun ContentMaterial(
                 trailingContent = {},
             )
         }
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(24.dp))
         Button(
             onClick = {
                 onEvent(CreateClassworkUiEvent.CreateCourseWork)
@@ -258,12 +268,33 @@ fun ContentMaterial(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
         ) {
-            Text(text = stringResource(id = Strings.post))
+            Text(
+                text =
+                    if (classworkId != null) {
+                        stringResource(id = Strings.save)
+                    } else {
+                        stringResource(id = Strings.post)
+                    },
+            )
         }
-        Spacer(modifier = Modifier.height(20.dp))
     }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ContentMaterialPreview(
+    @PreviewParameter(LoremIpsumSingleWord::class) className: String,
+) {
+    EdumateTheme(dynamicColor = false) {
+        ContentMaterial(
+            className = className,
+            classworkId = null,
+            uiState = CreateClassworkUiState(),
+            onEvent = {},
+        )
     }
 }
