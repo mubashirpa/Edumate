@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Result
-import edumate.app.domain.model.classroom.courseWork.CourseWorkState
 import edumate.app.domain.usecase.authentication.GetCurrentUserIdUseCase
 import edumate.app.domain.usecase.classroom.courseWork.DeleteCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.ListCourseWorksUseCase
@@ -76,7 +75,6 @@ class ClassworkViewModel
             listCourseWorksJob =
                 listCourseWorksUseCase(
                     courseId = courseId,
-                    courseWorkStates = listOf(CourseWorkState.DRAFT),
                     orderBy = "creationTime desc",
                 ).onEach { result ->
                     when (result) {

@@ -183,10 +183,7 @@ fun JoinClassScreen(
     ProgressDialog(openDialog = uiState.openProgressDialog)
 
     LaunchedEffect(true) {
-        try {
-            focusRequester.requestFocus()
-        } catch (_: IllegalStateException) {
-        }
+        focusRequester.requestFocus()
     }
 }
 

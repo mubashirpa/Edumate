@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.presentation.components.AddAttachmentBottomSheet
@@ -115,7 +116,9 @@ fun CreateClassworkScreen(
                     )
                 }
 
-                CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {}
+                CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED -> {
+                    // Nothing is shown
+                }
 
                 null -> {
                     ContentMaterial(
@@ -161,3 +164,5 @@ fun CreateClassworkScreen(
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
 }
+
+class CourseTitle : LoremIpsum(1)

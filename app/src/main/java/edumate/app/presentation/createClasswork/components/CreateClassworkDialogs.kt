@@ -26,23 +26,39 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import java.util.Calendar
-import java.util.Date
+import kotlinx.datetime.Clock
+import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.minus
+import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import edumate.app.R.string as Strings
 
-@SuppressLint("UnrememberedMutableState")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DatePickerDialog(
     onDismissRequest: () -> Unit,
-    calendar: Calendar?,
-    openDialog: Boolean,
-    onConfirmClick: (calendar: Calendar) -> Unit,
+    open: Boolean,
+    dateTime: LocalDateTime?,
+    onConfirmButtonClick: (dateTime: LocalDateTime) -> Unit,
 ) {
-    if (openDialog) {
+    if (open) {
+        val systemTimeZone = TimeZone.currentSystemDefault()
+        val initialSelectedDateMillis =
+            if (dateTime != null) {
+                dateTime.toInstant(systemTimeZone).toEpochMilliseconds()
+            } else {
+                val currentDateTime = Clock.System.now()
+                val tomorrow = currentDateTime.plus(1, DateTimeUnit.DAY, systemTimeZone)
+                tomorrow.toEpochMilliseconds()
+            }
+
         val datePickerState =
             rememberDatePickerState(
-                initialSelectedDateMillis = calendar?.timeInMillis,
+                initialSelectedDateMillis = initialSelectedDateMillis,
                 selectableDates = TodayAndOnwardsSelectableDates,
             )
         val confirmEnabled =
@@ -64,10 +80,21 @@ fun DatePickerDialog(
                     onClick = {
                         onDismissRequest()
                         datePickerState.selectedDateMillis?.let { selectedDateMillis ->
-                            val cal = Calendar.getInstance()
-                            cal.time = Date(selectedDateMillis)
-                            cal.isLenient = false
-                            onConfirmClick(cal)
+                            val selectedDateTime =
+                                Instant.fromEpochMilliseconds(
+                                    selectedDateMillis,
+                                ).toLocalDateTime(systemTimeZone)
+                            val dueDateTime =
+                                LocalDateTime(
+                                    year = selectedDateTime.year,
+                                    month = selectedDateTime.month,
+                                    dayOfMonth = selectedDateTime.dayOfMonth,
+                                    hour = 23,
+                                    minute = 59,
+                                    second = 59,
+                                    nanosecond = 999,
+                                )
+                            onConfirmButtonClick(dueDateTime)
                         }
                     },
                     enabled = confirmEnabled.value,
@@ -94,11 +121,11 @@ fun DatePickerDialog(
 @Composable
 fun PointsDialog(
     onDismissRequest: () -> Unit,
-    openDialog: Boolean,
+    open: Boolean,
     currentPoint: String?,
-    onConfirmClick: (points: String?) -> Unit,
+    onConfirmButtonClick: (points: String?) -> Unit,
 ) {
-    if (openDialog) {
+    if (open) {
         var point by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue(currentPoint ?: "100"))
         }
@@ -223,7 +250,7 @@ fun PointsDialog(
                         TextButton(
                             onClick = {
                                 onDismissRequest()
-                                onConfirmClick(tempPoint.value?.trim())
+                                onConfirmButtonClick(tempPoint.value?.trim())
                             },
                             enabled = if (tempPoint.value != null) confirmEnabled.value else true,
                         ) {
@@ -240,25 +267,34 @@ fun PointsDialog(
 @Composable
 fun TimePickerDialog(
     onDismissRequest: () -> Unit,
-    openDialog: Boolean,
-    onConfirmClick: (calendar: Calendar) -> Unit,
+    open: Boolean,
+    dateTime: LocalDateTime?,
+    onConfirmButtonClick: (dateTime: LocalDateTime) -> Unit,
 ) {
-    val state = rememberTimePickerState()
-    val showingPicker = remember { mutableStateOf(true) }
-    val configuration = LocalConfiguration.current
+    if (open) {
+        val state =
+            rememberTimePickerState(
+                initialHour = dateTime!!.hour,
+                initialMinute = dateTime.minute,
+            )
+        val showingPicker = remember { mutableStateOf(true) }
+        val configuration = LocalConfiguration.current
 
-    if (openDialog) {
         TimePickerDialog(
             onDismissRequest = onDismissRequest,
             confirmButton = {
                 TextButton(
                     onClick = {
                         onDismissRequest()
-                        val cal = Calendar.getInstance()
-                        cal.set(Calendar.HOUR_OF_DAY, state.hour)
-                        cal.set(Calendar.MINUTE, state.minute)
-                        cal.isLenient = false
-                        onConfirmClick(cal)
+                        val selectedDateTime =
+                            LocalDateTime(
+                                year = dateTime.year,
+                                month = dateTime.month,
+                                dayOfMonth = dateTime.dayOfMonth,
+                                hour = state.hour,
+                                minute = state.minute,
+                            )
+                        onConfirmButtonClick(selectedDateTime)
                     },
                 ) {
                     Text(stringResource(id = Strings.ok))
@@ -312,9 +348,11 @@ fun TimePickerDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 private object TodayAndOnwardsSelectableDates : SelectableDates {
     override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-        // Get today's date in milliseconds
-        val now = System.currentTimeMillis()
+        val utcTimeZone = TimeZone.UTC
+        val yesterday = Clock.System.now().minus(1, DateTimeUnit.DAY, utcTimeZone)
+        val yesterdayTimeMillis = yesterday.toEpochMilliseconds()
+
         // Check if provided date is from today onwards
-        return utcTimeMillis >= now
+        return utcTimeMillis >= yesterdayTimeMillis
     }
 }
