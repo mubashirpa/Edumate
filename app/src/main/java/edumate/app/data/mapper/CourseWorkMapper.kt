@@ -31,6 +31,7 @@ fun CourseWork.toCourseWorkDomainModel(): CourseWorkDomainModel {
         state = enumValueOf(state?.name),
         submissionModificationMode = enumValueOf(submissionModificationMode?.name),
         title = title,
+        topicId = topicId,
         updateTime = updateTime,
         workType = enumValueOf(workType?.name),
     )
@@ -53,6 +54,7 @@ fun CourseWorkDomainModel.toCourseWork(): CourseWork {
         state = enumValueOf(state?.name),
         submissionModificationMode = enumValueOf(submissionModificationMode?.name),
         title = title,
+        topicId = topicId,
         updateTime = updateTime,
         workType = enumValueOf(workType?.name),
     )

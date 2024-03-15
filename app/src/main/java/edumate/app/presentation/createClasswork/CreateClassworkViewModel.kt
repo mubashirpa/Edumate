@@ -5,28 +5,30 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import edumate.app.core.FirebaseConstants
+import edumate.app.core.Firebase
 import edumate.app.core.Result
 import edumate.app.core.UiText
-import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.classroom.DriveFile
 import edumate.app.domain.model.classroom.Link
 import edumate.app.domain.model.classroom.Material
 import edumate.app.domain.model.classroom.courseWork.CourseWork
+import edumate.app.domain.model.classroom.courseWork.CourseWorkState
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.domain.model.classroom.courseWork.DueDate
 import edumate.app.domain.model.classroom.courseWork.DueTime
 import edumate.app.domain.model.classroom.courseWork.MultipleChoiceQuestion
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
-import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
+import edumate.app.domain.usecase.authentication.GetCurrentUserIdUseCase
 import edumate.app.domain.usecase.classroom.courseWork.CreateCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.GetCourseWorkUseCase
-import edumate.app.domain.usecase.classroom.courseWork.UpdateCourseWorkUseCase
+import edumate.app.domain.usecase.classroom.courseWork.PatchCourseWorkUseCase
 import edumate.app.domain.usecase.storage.DeleteFileUseCase
 import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
@@ -34,10 +36,12 @@ import edumate.app.navigation.Routes
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
-import java.util.Calendar
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import javax.inject.Inject
 import edumate.app.R.string as Strings
 
@@ -46,12 +50,12 @@ class CreateClassworkViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
-        getCurrentUserUseCase: GetCurrentUserUseCase,
+        getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
         private val createCourseWorkUseCase: CreateCourseWorkUseCase,
         private val deleteFileUseCase: DeleteFileUseCase,
         private val getCourseWorkUseCase: GetCourseWorkUseCase,
         private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
-        private val updateCourseWorkUseCaseUseCase: UpdateCourseWorkUseCase,
+        private val patchCourseWorkUseCaseUseCase: PatchCourseWorkUseCase,
         private val uploadFileUseCase: UploadFileUseCase,
         private val validateTextField: ValidateTextField,
     ) : ViewModel() {
@@ -63,21 +67,19 @@ class CreateClassworkViewModel
 
         private val courseId: String =
             checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_COURSE_ID])
-        private val courseWorkId: String =
-            checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID])
         private val workType: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
-        private val courseWork = mutableStateOf(CourseWork())
+        private val courseWorkId: String? = savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID]
+
+        private val courseWork = mutableStateOf(CourseWork(id = courseWorkId ?: generateId(12)))
         private var getUrlMetadataJob: Job? = null
 
         init {
             uiState =
-                uiState.copy(workType = enumValueOf(workType))
-            getCurrentUserUseCase().map { user ->
-                user.id?.let { userId ->
-                    uiState = uiState.copy(userId = userId)
-                }
-            }.launchIn(viewModelScope)
-            if (courseWorkId != "null") {
+                uiState.copy(
+                    userId = getCurrentUserIdUseCase(),
+                    workType = enumValueOf(workType),
+                )
+            if (courseWorkId != null) {
                 getCourseWork(courseWorkId)
             }
         }
@@ -98,28 +100,28 @@ class CreateClassworkViewModel
                     uiState = uiState.copy(description = event.description)
                 }
 
-                is CreateClassworkUiEvent.OnDueDateValueChange -> {
-                    uiState = uiState.copy(dueDate = event.dueDate)
+                is CreateClassworkUiEvent.OnDueDateTimeValueChange -> {
+                    uiState = uiState.copy(dueDateTime = event.dateTime)
                 }
 
                 is CreateClassworkUiEvent.OnFilePicked -> {
-                    uploadFile(event.uri, event.fileUtils)
+                    uploadFile(event.uri, event.title, courseWork.value.id!!)
                 }
 
                 is CreateClassworkUiEvent.OnOpenAddLinkDialogChange -> {
-                    uiState = uiState.copy(openAddLinkDialog = event.openDialog)
+                    uiState = uiState.copy(openAddLinkDialog = event.open)
                 }
 
                 is CreateClassworkUiEvent.OnOpenDatePickerDialogChange -> {
-                    uiState = uiState.copy(openDatePickerDialog = event.openDialog)
+                    uiState = uiState.copy(openDatePickerDialog = event.open)
                 }
 
                 is CreateClassworkUiEvent.OnOpenPointsDialogChange -> {
-                    uiState = uiState.copy(openPointsDialog = event.openDialog)
+                    uiState = uiState.copy(openPointsDialog = event.open)
                 }
 
                 is CreateClassworkUiEvent.OnOpenTimePickerDialogChange -> {
-                    uiState = uiState.copy(openTimePickerDialog = event.openDialog)
+                    uiState = uiState.copy(openTimePickerDialog = event.open)
                 }
 
                 is CreateClassworkUiEvent.OnPointsValueChange -> {
@@ -130,11 +132,20 @@ class CreateClassworkViewModel
                     uiState = uiState.copy(questionTypeDropdownExpanded = event.expanded)
                 }
 
-                is CreateClassworkUiEvent.OnQuestionTypeSelectionOptionValueChange -> {
+                is CreateClassworkUiEvent.OnQuestionTypeValueChange -> {
+                    val questionType =
+                        when (event.selectionOptionIndex) {
+                            0 -> CourseWorkType.SHORT_ANSWER_QUESTION
+                            else -> CourseWorkType.MULTIPLE_CHOICE_QUESTION
+                        }
+
+                    // Empty choices when change workType
                     uiState =
                         uiState.copy(
+                            choices = mutableStateListOf("Option 1"),
                             questionTypeDropdownExpanded = false,
-                            questionTypeSelectionOption = event.selectionOption,
+                            questionTypeSelectionOptionIndex = event.selectionOptionIndex,
+                            workType = questionType,
                         )
                 }
 
@@ -142,7 +153,7 @@ class CreateClassworkViewModel
                     val attachment = uiState.attachments[event.position]
                     when {
                         attachment.driveFile != null -> {
-                            deleteFile(event.position)
+                            deleteFile(event.position, courseWork.value.id!!)
                         }
 
                         attachment.link != null -> {
@@ -156,7 +167,7 @@ class CreateClassworkViewModel
                 }
 
                 is CreateClassworkUiEvent.OnShowAddAttachmentBottomSheetChange -> {
-                    uiState = uiState.copy(showAddAttachmentBottomSheet = event.showBottomSheet)
+                    uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
                 }
 
                 is CreateClassworkUiEvent.OnTitleValueChange -> {
@@ -167,18 +178,9 @@ class CreateClassworkViewModel
                         )
                 }
 
-                is CreateClassworkUiEvent.OnWorkTypeValueChange -> {
-                    // Empty choices when change workType
-                    uiState =
-                        uiState.copy(
-                            workType = event.workType,
-                            choices = mutableStateListOf("Option 1"),
-                        )
-                }
-
                 CreateClassworkUiEvent.CreateCourseWork -> {
-                    if (courseWorkId != "null") {
-                        updateCourseWork(courseWorkId)
+                    if (courseWorkId != null) {
+                        patchCourseWork(courseWorkId)
                     } else {
                         createCourseWork()
                     }
@@ -191,14 +193,28 @@ class CreateClassworkViewModel
         }
 
         private fun createCourseWork() {
-            val title = uiState.title
-            val titleResult = validateTextField.execute(title)
-
-            if (!titleResult.successful) {
-                uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
-                return
+            val title = uiState.title.text.trim()
+            val workType = uiState.workType
+            val description = uiState.description.ifBlank { null }
+            val dueDateTime = uiState.dueDateTime
+            var dueDate: DueDate? = null
+            var dueTime: DueTime? = null
+            if (dueDateTime != null) {
+                dueDate =
+                    DueDate(
+                        day = dueDateTime.dayOfMonth,
+                        month = dueDateTime.monthNumber,
+                        year = dueDateTime.year,
+                    )
+                dueTime =
+                    DueTime(
+                        hours = dueDateTime.hour,
+                        minutes = dueDateTime.minute,
+                        nanos = dueDateTime.nanosecond,
+                        seconds = dueDateTime.second,
+                    )
             }
-
+            val materials = uiState.attachments
             val maxPoints =
                 try {
                     uiState.points?.toInt()
@@ -206,39 +222,30 @@ class CreateClassworkViewModel
                     null
                 }
             val multipleChoiceQuestion =
-                if (uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
+                if (workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
                     MultipleChoiceQuestion(choices = uiState.choices)
                 } else {
                     null
                 }
-            val calendar = uiState.dueDate
-            var dueDate: DueDate? = null
-            var dueTime: DueTime? = null
-            if (calendar != null) {
-                dueTime =
-                    DueTime(
-                        hours = calendar.get(Calendar.HOUR_OF_DAY),
-                        minutes = calendar.get(Calendar.MINUTE),
-                        seconds = calendar.get(Calendar.SECOND),
-                    )
-                dueDate =
-                    DueDate(
-                        day = calendar.get(Calendar.DAY_OF_MONTH),
-                        month = calendar.get(Calendar.MONTH),
-                        year = calendar.get(Calendar.YEAR),
-                    )
+            val state = CourseWorkState.PUBLISHED
+
+            val titleResult = validateTextField.execute(title)
+            if (!titleResult.successful) {
+                uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
+                return
             }
 
             courseWork.value =
                 courseWork.value.copy(
-                    description = uiState.description.ifEmpty { null },
+                    description = description,
                     dueTime = dueTime,
                     dueDate = dueDate,
-                    materials = uiState.attachments,
+                    materials = materials,
                     maxPoints = maxPoints,
                     multipleChoiceQuestion = multipleChoiceQuestion,
+                    state = state,
                     title = title,
-                    workType = uiState.workType,
+                    workType = workType,
                 )
 
             createCourseWorkUseCase(courseId, courseWork.value).onEach { result ->
@@ -301,27 +308,44 @@ class CreateClassworkViewModel
                                 uiState.choices.addAll(choices)
                             }
                             uiState.attachments.addAll(courseWorkResponse.materials.orEmpty())
-                            val calendar = Calendar.getInstance()
                             val dueDate = courseWorkResponse.dueDate
                             val dueTime = courseWorkResponse.dueTime
-                            if (dueDate != null) {
-                                calendar.set(
-                                    dueDate.year ?: 0,
-                                    dueDate.month ?: 0,
-                                    dueDate.day ?: 0,
-                                    dueTime?.hours ?: 0,
-                                    dueTime?.minutes ?: 0,
-                                    dueTime?.seconds ?: 0,
-                                )
-                            }
+                            val dueDateTime =
+                                if (dueDate != null) {
+                                    val currentDateTime =
+                                        Clock.System.now()
+                                            .toLocalDateTime(TimeZone.currentSystemDefault())
+                                    LocalDateTime(
+                                        dueDate.year ?: currentDateTime.year,
+                                        dueDate.month ?: currentDateTime.monthNumber,
+                                        dueDate.day ?: currentDateTime.dayOfMonth,
+                                        dueTime!!.hours ?: currentDateTime.hour,
+                                        dueTime.minutes ?: currentDateTime.minute,
+                                        dueTime.seconds ?: currentDateTime.second,
+                                        dueTime.nanos ?: currentDateTime.nanosecond,
+                                    )
+                                } else {
+                                    null
+                                }
+                            val title = courseWorkResponse.title.orEmpty()
+                            val questionTypeSelectionOptionIndex =
+                                when (courseWorkResponse.workType) {
+                                    CourseWorkType.SHORT_ANSWER_QUESTION -> 0
+                                    else -> 1
+                                }
 
                             uiState =
                                 uiState.copy(
                                     description = courseWorkResponse.description.orEmpty(),
-                                    dueDate = calendar,
+                                    dueDateTime = dueDateTime,
                                     isLoading = false,
                                     points = courseWorkResponse.maxPoints?.toString(),
-                                    title = courseWorkResponse.title.orEmpty(),
+                                    questionTypeSelectionOptionIndex = questionTypeSelectionOptionIndex,
+                                    title =
+                                        TextFieldValue(
+                                            text = title,
+                                            selection = TextRange(title.length),
+                                        ),
                                     workType = courseWorkResponse.workType,
                                 )
                         } else {
@@ -336,60 +360,92 @@ class CreateClassworkViewModel
             }.launchIn(viewModelScope)
         }
 
-        private fun updateCourseWork(id: String) {
-            val title = uiState.title
-            val titleResult = validateTextField.execute(title)
-
-            if (!titleResult.successful) {
-                uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
-                return
+        private fun patchCourseWork(id: String) {
+            val title = uiState.title.text.trim()
+            val description = uiState.description.ifBlank { null }
+            val dueDateTime = uiState.dueDateTime
+            var dueDate: DueDate? = null
+            var dueTime: DueTime? = null
+            if (dueDateTime != null) {
+                dueTime =
+                    DueTime(
+                        hours = dueDateTime.hour,
+                        minutes = dueDateTime.minute,
+                        nanos = dueDateTime.nanosecond,
+                        seconds = dueDateTime.second,
+                    )
+                dueDate =
+                    DueDate(
+                        day = dueDateTime.dayOfMonth,
+                        month = dueDateTime.monthNumber,
+                        year = dueDateTime.year,
+                    )
             }
-
             val maxPoints =
                 try {
                     uiState.points?.toInt()
                 } catch (e: NumberFormatException) {
                     null
                 }
+            val scheduledTime = null // TODO("Not yet implemented")
+            val topicId = null // TODO("Not yet implemented")
+
+            val materials = uiState.attachments
             val multipleChoiceQuestion =
                 if (uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
                     MultipleChoiceQuestion(choices = uiState.choices)
                 } else {
                     null
                 }
-            val calendar = uiState.dueDate
-            var dueDate: DueDate? = null
-            var dueTime: DueTime? = null
-            if (calendar != null) {
-                dueTime =
-                    DueTime(
-                        hours = calendar.get(Calendar.HOUR_OF_DAY),
-                        minutes = calendar.get(Calendar.MINUTE),
-                        seconds = calendar.get(Calendar.SECOND),
-                    )
-                dueDate =
-                    DueDate(
-                        day = calendar.get(Calendar.DAY_OF_MONTH),
-                        month = calendar.get(Calendar.MONTH),
-                        year = calendar.get(Calendar.YEAR),
-                    )
+
+            val titleResult = validateTextField.execute(title)
+            if (!titleResult.successful) {
+                uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
+                return
             }
+
+            val updateMask =
+                StringBuilder("").apply {
+                    if (title != courseWork.value.title) {
+                        append("title,")
+                    }
+                    if (description != courseWork.value.description) {
+                        append("description,")
+                    }
+                    if (dueDate?.equals(courseWork.value.dueDate) == false) {
+                        append("dueDate,")
+                    }
+                    if (dueTime?.equals(courseWork.value.dueTime) == false) {
+                        append("dueTime,")
+                    }
+                    if (maxPoints != courseWork.value.maxPoints) {
+                        append("maxPoints,")
+                    }
+                    if (scheduledTime != courseWork.value.scheduledTime) {
+                        append("scheduledTime,")
+                    }
+                    if (topicId != courseWork.value.topicId) {
+                        append("topicId,")
+                    }
+                }
 
             courseWork.value =
                 courseWork.value.copy(
-                    description = uiState.description.ifEmpty { null },
+                    description = description,
                     dueTime = dueTime,
                     dueDate = dueDate,
-                    materials = uiState.attachments,
+                    materials = materials,
                     maxPoints = maxPoints,
                     multipleChoiceQuestion = multipleChoiceQuestion,
+                    scheduledTime = scheduledTime,
                     title = title,
-                    workType = uiState.workType,
+                    topicId = topicId,
                 )
 
-            updateCourseWorkUseCaseUseCase(
+            patchCourseWorkUseCaseUseCase(
                 courseId,
                 id,
+                updateMask.toString(),
                 courseWork.value,
             ).onEach { result ->
                 when (result) {
@@ -426,12 +482,14 @@ class CreateClassworkViewModel
 
         private fun uploadFile(
             uri: Uri,
-            fileUtils: FileUtils,
+            title: String,
+            courseWorkId: String,
         ) {
-            val fileExtension = fileUtils.getFileExtension(uri)
-            val fileName = fileUtils.getFileName(uri) ?: "${uri.lastPathSegment}.$fileExtension"
             val filePath =
-                "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/courseWork/${courseWork.value.id}/$fileName"
+                Firebase.Storage.COURSE_WORK_MATERIALS_PATH
+                    .replace("{courseId}", courseId)
+                    .replace("{id}", courseWorkId)
+                    .plus("/$title")
 
             uploadFileUseCase(uri, filePath).onEach { result ->
                 when (result) {
@@ -456,7 +514,7 @@ class CreateClassworkViewModel
                                 val driveFile =
                                     DriveFile(
                                         alternateLink = fileUrl.toString(),
-                                        title = fileName,
+                                        title = title,
                                     )
                                 uiState.attachments.add(Material(driveFile = driveFile))
                                 uiState.copy(openProgressDialog = false)
@@ -471,10 +529,16 @@ class CreateClassworkViewModel
             }.launchIn(viewModelScope)
         }
 
-        private fun deleteFile(position: Int) {
+        private fun deleteFile(
+            position: Int,
+            courseWorkId: String,
+        ) {
             val fileName = uiState.attachments[position].driveFile?.title
             val filePath =
-                "${FirebaseConstants.Storage.COURSE_STORAGE_PATH}/$courseId/courseWork/${courseWork.value.id}/$fileName"
+                Firebase.Storage.COURSE_WORK_MATERIALS_PATH
+                    .replace("{courseId}", courseId)
+                    .replace("{id}", courseWorkId)
+                    .plus("/$fileName")
 
             deleteFileUseCase(filePath).onEach { result ->
                 when (result) {
@@ -508,5 +572,13 @@ class CreateClassworkViewModel
                         uiState.attachments[position] = Material(link = result.data)
                     }
                 }.launchIn(viewModelScope)
+        }
+
+        private fun generateId(length: Int): String {
+            val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
+            return (1..length)
+                .map { kotlin.random.Random.nextInt(0, charPool.size) }
+                .map(charPool::get)
+                .joinToString("")
         }
     }

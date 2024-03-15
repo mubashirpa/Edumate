@@ -106,10 +106,6 @@ fun ContentQuestion(
         }
     val isTitleError = uiState.titleError != null
 
-    LaunchedEffect(questionTypes) {
-        onEvent(CreateClassworkUiEvent.OnQuestionTypeSelectionOptionValueChange(questionTypes[0]))
-    }
-
     Column(
         modifier =
             Modifier
@@ -214,11 +210,18 @@ fun ContentQuestion(
                     ExposedDropdownMenuBox(
                         expanded = uiState.questionTypeDropdownExpanded,
                         onExpandedChange = {
-                            onEvent(CreateClassworkUiEvent.OnQuestionTypeDropdownExpandedChange(it))
+                            // Expandable only when creating a question (when classworkId is null)
+                            if (classworkId == null) {
+                                onEvent(
+                                    CreateClassworkUiEvent.OnQuestionTypeDropdownExpandedChange(
+                                        it,
+                                    ),
+                                )
+                            }
                         },
                     ) {
                         OutlinedTextField(
-                            value = uiState.questionTypeSelectionOption,
+                            value = questionTypes[uiState.questionTypeSelectionOptionIndex],
                             onValueChange = {},
                             modifier =
                                 Modifier
@@ -226,7 +229,10 @@ fun ContentQuestion(
                                     .menuAnchor(),
                             readOnly = true,
                             trailingIcon = {
-                                ExposedDropdownMenuDefaults.TrailingIcon(expanded = uiState.questionTypeDropdownExpanded)
+                                // Show only when creating a question (when classworkId is null)
+                                if (classworkId == null) {
+                                    ExposedDropdownMenuDefaults.TrailingIcon(expanded = uiState.questionTypeDropdownExpanded)
+                                }
                             },
                         )
                         ExposedDropdownMenu(
@@ -246,18 +252,8 @@ fun ContentQuestion(
                                     },
                                     onClick = {
                                         onEvent(
-                                            CreateClassworkUiEvent.OnQuestionTypeSelectionOptionValueChange(
-                                                selectionOption,
-                                            ),
-                                        )
-                                        val questionType =
-                                            when (index) {
-                                                0 -> CourseWorkType.SHORT_ANSWER_QUESTION
-                                                else -> CourseWorkType.MULTIPLE_CHOICE_QUESTION
-                                            }
-                                        onEvent(
-                                            CreateClassworkUiEvent.OnWorkTypeValueChange(
-                                                questionType,
+                                            CreateClassworkUiEvent.OnQuestionTypeValueChange(
+                                                index,
                                             ),
                                         )
                                     },

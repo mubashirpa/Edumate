@@ -2,8 +2,6 @@ package edumate.app.presentation.createClasswork
 
 import android.net.Uri
 import androidx.compose.ui.text.input.TextFieldValue
-import edumate.app.core.utils.FileUtils
-import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import kotlinx.datetime.LocalDateTime
 
 sealed class CreateClassworkUiEvent {
@@ -13,7 +11,7 @@ sealed class CreateClassworkUiEvent {
 
     data class OnDueDateTimeValueChange(val dateTime: LocalDateTime?) : CreateClassworkUiEvent()
 
-    data class OnFilePicked(val uri: Uri, val fileUtils: FileUtils) : CreateClassworkUiEvent()
+    data class OnFilePicked(val uri: Uri, val title: String) : CreateClassworkUiEvent()
 
     data class OnOpenAddLinkDialogChange(val open: Boolean) : CreateClassworkUiEvent()
 
@@ -28,7 +26,7 @@ sealed class CreateClassworkUiEvent {
     data class OnQuestionTypeDropdownExpandedChange(val expanded: Boolean) :
         CreateClassworkUiEvent()
 
-    data class OnQuestionTypeSelectionOptionValueChange(val selectionOption: String) :
+    data class OnQuestionTypeValueChange(val selectionOptionIndex: Int) :
         CreateClassworkUiEvent()
 
     data class OnRemoveAttachment(val position: Int) : CreateClassworkUiEvent()
@@ -36,8 +34,6 @@ sealed class CreateClassworkUiEvent {
     data class OnShowAddAttachmentBottomSheetChange(val show: Boolean) : CreateClassworkUiEvent()
 
     data class OnTitleValueChange(val title: TextFieldValue) : CreateClassworkUiEvent()
-
-    data class OnWorkTypeValueChange(val workType: CourseWorkType) : CreateClassworkUiEvent()
 
     data object CreateCourseWork : CreateClassworkUiEvent()
 

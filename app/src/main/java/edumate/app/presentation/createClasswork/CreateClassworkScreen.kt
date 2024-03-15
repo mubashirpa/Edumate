@@ -60,7 +60,10 @@ fun CreateClassworkScreen(
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri ->
             if (uri != null) {
-                onEvent(CreateClassworkUiEvent.OnFilePicked(uri, fileUtils))
+                val title =
+                    fileUtils.getFileName(uri)
+                        ?: "${uri.lastPathSegment}.${fileUtils.getFileExtension(uri)}"
+                onEvent(CreateClassworkUiEvent.OnFilePicked(uri, title))
             }
         }
 

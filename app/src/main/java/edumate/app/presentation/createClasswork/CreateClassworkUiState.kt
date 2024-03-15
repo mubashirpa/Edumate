@@ -21,7 +21,7 @@ data class CreateClassworkUiState(
     val openTimePickerDialog: Boolean = false,
     val points: String? = "100",
     val questionTypeDropdownExpanded: Boolean = false,
-    val questionTypeSelectionOption: String = "",
+    val questionTypeSelectionOptionIndex: Int = 0,
     val showAddAttachmentBottomSheet: Boolean = false,
     val title: TextFieldValue = TextFieldValue(""),
     val titleError: UiText? = null,

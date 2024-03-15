@@ -16,6 +16,15 @@ object Constants {
         "397578092741-alqtcebud1r0tsddkm90gj3bfjebkdk0.apps.googleusercontent.com"
 }
 
+object Firebase {
+    object Storage {
+        private const val COURSE_WORK_PATH = "courses/{courseId}/courseWorks/{id}"
+        const val COURSE_WORK_MATERIALS_PATH = "${COURSE_WORK_PATH}/materials"
+        private const val ANNOUNCEMENTS_PATH = "courses/{courseId}/announcements/{id}"
+        const val ANNOUNCEMENTS_MATERIALS_PATH = "${ANNOUNCEMENTS_PATH}/materials"
+    }
+}
+
 object Server {
     const val API_BASE_URL = "http://192.168.2.121:8080/v1"
     const val ENDPOINT_ANNOUNCEMENTS = "announcements"

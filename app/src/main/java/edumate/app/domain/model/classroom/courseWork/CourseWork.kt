@@ -18,6 +18,7 @@ data class CourseWork(
     val state: CourseWorkState? = null,
     val submissionModificationMode: SubmissionModificationMode? = null,
     val title: String? = null,
+    val topicId: String? = null,
     val updateTime: String? = null,
     val workType: CourseWorkType? = null,
 )
