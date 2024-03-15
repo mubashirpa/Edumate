@@ -30,7 +30,6 @@ object Server {
     const val ENDPOINT_ANNOUNCEMENTS = "announcements"
     const val ENDPOINT_COURSES = "courses"
     const val ENDPOINT_COURSE_WORK = "courseWork"
-    const val ENDPOINT_NOTIFICATION = "notification"
     const val ENDPOINT_STUDENTS = "students"
     const val ENDPOINT_STUDENT_SUBMISSIONS = "studentSubmissions"
     const val ENDPOINT_TEACHERS = "teachers"
@@ -44,6 +43,7 @@ object Server {
         const val ORDER_BY = "orderBy"
         const val PAGE_SIZE = "pageSize"
         const val PAGE_TOKEN = "pageToken"
+        const val PAGE = "page"
         const val RECLAIM = "reclaim"
         const val RETURN = "return"
         const val STATES = "states"
@@ -51,5 +51,6 @@ object Server {
         const val TEACHER_ID = "teacherId"
         const val TURN_IN = "turnIn"
         const val USER_ID = "userId"
+        const val UPDATE_MASK = "updateMask"
     }
 }
