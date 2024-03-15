@@ -71,8 +71,6 @@ fun EdumateNavHost(
                 listOf(
                     navArgument(Routes.Args.CREATE_CLASS_COURSE_ID) {
                         type = NavType.StringType
-                        nullable = true
-                        defaultValue = null
                     },
                 ),
         ) { backStackEntry ->
