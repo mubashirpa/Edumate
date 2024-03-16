@@ -11,6 +11,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import edumate.app.presentation.classDetails.ClassDetailsUiEvent
 import edumate.app.presentation.classDetails.ClassDetailsUiState
+import edumate.app.presentation.classwork.ClassworkScreen
+import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.createAnnouncement.CreateAnnouncementScreen
 import edumate.app.presentation.createAnnouncement.CreateAnnouncementViewModel
 import edumate.app.presentation.createClasswork.CreateClassworkScreen
@@ -27,12 +29,15 @@ fun ClassDetailsNavHost(
     onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val course = uiState.course!!
+    val course = uiState.courseResult.data!!
+
     NavHost(
         navController = navController,
         startDestination = Screen.StreamScreen.route,
         modifier = modifier,
     ) {
+        // For the first three screens, arguments are passed through default values because we can't
+        // pass the course ID argument from the navigation bar as it navigates using a navigation bar.
         composable(
             route = Screen.StreamScreen.route,
             arguments =
@@ -54,6 +59,28 @@ fun ClassDetailsNavHost(
                     },
                 ),
         ) {
+            val viewModel: ClassworkViewModel = hiltViewModel()
+            ClassworkScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                snackbarHostState = snackbarHostState,
+                course = course,
+                navigateToCreateClasswork = { courseId, workType, id ->
+                    navController.navigate(
+                        Screen.CreateClassworkScreen.withArgs(
+                            courseId,
+                            workType.name,
+                        ).plus(if (id != null) "?${Routes.Args.CREATE_CLASSWORK_ID}=$id" else ""),
+                    )
+                },
+                navigateToCreateMaterial = { _, _ ->
+                    // TODO
+                },
+                navigateToViewClasswork = { _, _, _ ->
+                    // TODO
+                },
+                onBackPressed = onBackPressed,
+            )
         }
         composable(
             route = Screen.PeopleScreen.route,
@@ -63,13 +90,14 @@ fun ClassDetailsNavHost(
                         type = NavType.StringType
                         defaultValue = course.id
                     },
-                    navArgument(Routes.Args.PEOPLE_COURSE_OWNER_ID) {
-                        type = NavType.StringType
-                        defaultValue = course.ownerId
-                    },
                 ),
         ) {
-
+            PeopleScreen(
+                snackbarHostState = snackbarHostState,
+                course = course,
+                onLeaveClass = onLeaveClass,
+                onBackPressed = onBackPressed,
+            )
         }
         composable(
             route = "${Screen.CreateClassworkScreen.route}${Routes.Args.CREATE_CLASSWORK_SCREEN}",
@@ -77,19 +105,26 @@ fun ClassDetailsNavHost(
                 listOf(
                     navArgument(Routes.Args.CREATE_CLASSWORK_COURSE_ID) {
                         type = NavType.StringType
-                        defaultValue = course.id
                     },
-                    navArgument(Routes.Args.CREATE_CLASSWORK_ID) { type = NavType.StringType },
-                    navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) { type = NavType.StringType },
+                    navArgument(Routes.Args.CREATE_CLASSWORK_TYPE) {
+                        type = NavType.StringType
+                    },
+                    navArgument(Routes.Args.CREATE_CLASSWORK_ID) {
+                        nullable = true
+                        type = NavType.StringType
+                    },
                 ),
-        ) {
+        ) { backStackEntry ->
             val viewModel: CreateClassworkViewModel = hiltViewModel()
+            val classworkId = backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_ID)
+
             CreateClassworkScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 createClassworkResults = viewModel.createClassworkResults,
                 snackbarHostState = snackbarHostState,
                 className = course.name.orEmpty(),
+                classworkId = classworkId,
                 onCreateClassworkSuccess = { navController.navigateUp() },
                 onBackPressed = { navController.navigateUp() },
             )

@@ -25,9 +25,9 @@ import androidx.compose.ui.unit.dp
 import edumate.app.core.Result
 import edumate.app.core.utils.IntentUtils
 import edumate.app.presentation.components.ErrorScreen
+import edumate.app.presentation.components.LeaveCourseDialog
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.teaching.components.DeleteCourseDialog
-import edumate.app.presentation.teaching.components.LeaveCourseDialog
 import edumate.app.presentation.teaching.components.TeachingListItem
 import edumate.app.R.string as Strings
 

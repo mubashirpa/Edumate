@@ -29,7 +29,6 @@ object Routes {
     object Args {
         // ClassDetailsScreen
         const val CLASS_DETAILS_COURSE_ID = "course_id"
-        const val CLASS_DETAILS_DEFAULT_COURSE_ID = "-1"
         const val CLASS_DETAILS_SCREEN = "/{$CLASS_DETAILS_COURSE_ID}"
 
         // ClassworkScreen
@@ -47,17 +46,16 @@ object Routes {
 
         // CreateClassworkScreen
         const val CREATE_CLASSWORK_COURSE_ID = "course_id"
-        const val CREATE_CLASSWORK_ID = "course_work_id"
         const val CREATE_CLASSWORK_TYPE = "course_work_type"
+        const val CREATE_CLASSWORK_ID = "course_work_id"
         const val CREATE_CLASSWORK_SCREEN =
-            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_ID}/{$CREATE_CLASSWORK_TYPE}"
+            "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_TYPE}?$CREATE_CLASSWORK_ID={$CREATE_CLASSWORK_ID}"
 
         // MeetScreen
         const val MEET_SCREEN_COURSE_ID = "course_id"
 
         // PeopleScreen
         const val PEOPLE_COURSE_ID = "course_id"
-        const val PEOPLE_COURSE_OWNER_ID = "owner_id"
 
         // RecoverScreen
         const val RECOVER_EMAIL = "email"
