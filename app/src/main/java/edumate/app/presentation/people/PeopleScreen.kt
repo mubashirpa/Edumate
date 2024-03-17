@@ -327,7 +327,7 @@ private fun PeopleScreenContent(
                                     if (uiState.filter == PeopleFilterType.ALL || uiState.filter == PeopleFilterType.TEACHERS) {
                                         items(
                                             items = teachersResult.data.orEmpty(),
-                                            // key = { it.userId!! }, // TODO("Fix in server")
+                                            key = { it.userId!! },
                                         ) { teacher ->
                                             PeopleListItem(
                                                 profile = teacher.profile,
@@ -364,7 +364,7 @@ private fun PeopleScreenContent(
                                     if (uiState.filter == PeopleFilterType.ALL || uiState.filter == PeopleFilterType.STUDENTS) {
                                         items(
                                             items = students,
-                                            // key = { it.userId!! }, // TODO("Fix in server")
+                                            key = { it.userId!! },
                                         ) { student ->
                                             PeopleListItem(
                                                 profile = student.profile,
