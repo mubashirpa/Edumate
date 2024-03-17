@@ -41,8 +41,8 @@ fun ClassDetailsNavHost(
             arguments =
                 listOf(
                     navArgument(Routes.Args.STREAM_SCREEN_COURSE_ID) {
-                        type = NavType.StringType
                         defaultValue = course.id
+                        type = NavType.StringType
                     },
                 ),
         ) {
@@ -52,12 +52,13 @@ fun ClassDetailsNavHost(
             arguments =
                 listOf(
                     navArgument(Routes.Args.CLASSWORK_COURSE_ID) {
-                        type = NavType.StringType
                         defaultValue = course.id
+                        type = NavType.StringType
                     },
                 ),
         ) {
             val viewModel: ClassworkViewModel = hiltViewModel()
+
             ClassworkScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
@@ -85,8 +86,8 @@ fun ClassDetailsNavHost(
             arguments =
                 listOf(
                     navArgument(Routes.Args.PEOPLE_COURSE_ID) {
-                        type = NavType.StringType
                         defaultValue = course.id
+                        type = NavType.StringType
                     },
                 ),
         ) {
@@ -129,13 +130,18 @@ fun ClassDetailsNavHost(
                 listOf(
                     navArgument(Routes.Args.VIEW_CLASSWORK_COURSE_ID) {
                         type = NavType.StringType
-                        defaultValue = course.id
                     },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_ID) { type = NavType.StringType },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_TYPE) { type = NavType.StringType },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_USER_TYPE) { type = NavType.StringType },
+                    navArgument(Routes.Args.VIEW_CLASSWORK_ID) {
+                        type = NavType.StringType
+                    },
+                    navArgument(Routes.Args.VIEW_CLASSWORK_TYPE) {
+                        type = NavType.StringType
+                    },
+                    navArgument(Routes.Args.VIEW_CLASSWORK_USER_TYPE) {
+                        type = NavType.StringType
+                    },
                 ),
-        ) { backStackEntry ->
+        ) {
         }
         composable(
             route = "${Screen.ViewStudentWorkScreen.route}${Routes.Args.VIEW_STUDENT_WORK_SCREEN}",
@@ -177,17 +183,6 @@ fun ClassDetailsNavHost(
                 },
                 onBackPressed = onBackPressed,
             )
-        }
-        composable(
-            route = Screen.MeetScreen.route,
-            arguments =
-                listOf(
-                    navArgument(Routes.Args.MEET_SCREEN_COURSE_ID) {
-                        type = NavType.StringType
-                        defaultValue = course.id
-                    },
-                ),
-        ) {
         }
     }
 }
