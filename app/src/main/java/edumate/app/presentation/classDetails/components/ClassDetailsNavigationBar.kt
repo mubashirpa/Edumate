@@ -62,7 +62,6 @@ fun ClassDetailsNavigationBar(navController: NavController) {
                     label = {
                         Text(stringResource(id = screen.title))
                     },
-                    alwaysShowLabel = false,
                 )
             }
         }
