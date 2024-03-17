@@ -14,7 +14,6 @@ import edumate.app.presentation.classDetails.ClassDetailsUiState
 import edumate.app.presentation.classwork.ClassworkScreen
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.createAnnouncement.CreateAnnouncementScreen
-import edumate.app.presentation.createAnnouncement.CreateAnnouncementViewModel
 import edumate.app.presentation.createClasswork.CreateClassworkScreen
 import edumate.app.presentation.createClasswork.CreateClassworkViewModel
 import edumate.app.presentation.people.PeopleScreen
@@ -164,20 +163,24 @@ fun ClassDetailsNavHost(
                 listOf(
                     navArgument(Routes.Args.CREATE_ANNOUNCEMENT_COURSE_ID) {
                         type = NavType.StringType
-                        defaultValue = course.id
                     },
-                    navArgument(Routes.Args.CREATE_ANNOUNCEMENT_ID) { type = NavType.StringType },
+                    navArgument(Routes.Args.CREATE_ANNOUNCEMENT_ID) {
+                        nullable = true
+                        type = NavType.StringType
+                    },
                 ),
-        ) {
-            val viewModel: CreateAnnouncementViewModel = hiltViewModel()
+        ) { backStackEntry ->
+            val announcementId =
+                backStackEntry.arguments?.getString(Routes.Args.CREATE_ANNOUNCEMENT_ID)
+
             CreateAnnouncementScreen(
-                uiState = viewModel.uiState,
-                onEvent = viewModel::onEvent,
                 snackbarHostState = snackbarHostState,
-                createAnnouncementResults = viewModel.createAnnouncementResults,
-                className = course.name.orEmpty(),
-                onCreateAnnouncementSuccess = { navController.navigateUp() },
-                onBackPressed = { navController.navigateUp() },
+                courseName = course.name.orEmpty(),
+                announcementId = announcementId,
+                onCreateAnnouncementSuccess = {
+                    navController.navigateUp()
+                },
+                onBackPressed = onBackPressed,
             )
         }
         composable(

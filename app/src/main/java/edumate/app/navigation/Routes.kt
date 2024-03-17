@@ -38,7 +38,7 @@ object Routes {
         const val CREATE_ANNOUNCEMENT_COURSE_ID = "course_id"
         const val CREATE_ANNOUNCEMENT_ID = "announcement_id"
         const val CREATE_ANNOUNCEMENT_SCREEN =
-            "/{$CREATE_ANNOUNCEMENT_COURSE_ID}/{$CREATE_ANNOUNCEMENT_ID}"
+            "/{$CREATE_ANNOUNCEMENT_COURSE_ID}?$CREATE_ANNOUNCEMENT_ID={$CREATE_ANNOUNCEMENT_ID}"
 
         // CreateClassScreen
         const val CREATE_CLASS_COURSE_ID = "course_id"
