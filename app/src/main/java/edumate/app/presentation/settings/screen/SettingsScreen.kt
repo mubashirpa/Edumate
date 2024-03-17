@@ -39,6 +39,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -191,7 +192,7 @@ private fun ListPreference(
         } else {
             entries.indexOf(defaultValue)
         }
-    val (selectedOption, onOptionSelected) = remember { mutableStateOf(0) }
+    val (selectedOption, onOptionSelected) = remember { mutableIntStateOf(0) }
     val itemHeightPx = remember { 56.dpToPx }
 
     ListItem(
