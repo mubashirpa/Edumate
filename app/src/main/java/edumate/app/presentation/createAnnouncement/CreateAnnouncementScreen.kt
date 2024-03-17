@@ -99,8 +99,8 @@ fun CreateAnnouncementScreen(
     val context = LocalContext.current
 
     LaunchedEffect(viewModel, lifecycle) {
-        // Whenever the uiState changes, check if the announcement is created and
-        // call the `onCreateAnnouncementSuccess` event when `lifecycle` is at least STARTED
+        // Whenever the uiState changes, check if the announcement is created and call the
+        // `onCreateAnnouncementSuccess` event when `lifecycle` is at least STARTED
         snapshotFlow { viewModel.uiState }
             .filter { it.isCreateAnnouncementSuccess }
             .flowWithLifecycle(lifecycle)
@@ -387,6 +387,7 @@ private fun CreateAnnouncementScreenContent(
                         },
                 )
             }
+            Spacer(modifier = Modifier.height(12.dp))
 
             LaunchedEffect(true) {
                 focusRequester.requestFocus()

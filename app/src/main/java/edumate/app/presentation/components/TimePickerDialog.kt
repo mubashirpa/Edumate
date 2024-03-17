@@ -1,4 +1,4 @@
-package edumate.app.presentation.createClasswork.components
+package edumate.app.presentation.components
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

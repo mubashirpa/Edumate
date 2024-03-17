@@ -1,13 +1,44 @@
 package edumate.app.presentation.createClasswork.components
 
 import android.net.Uri
-import androidx.compose.foundation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
+import androidx.compose.material.icons.automirrored.outlined.Subject
+import androidx.compose.material.icons.filled.Attachment
+import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.VideoFile
+import androidx.compose.material.icons.outlined.Attachment
+import androidx.compose.material.icons.outlined.Book
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedSuggestionChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -29,15 +60,15 @@ import coil.request.ImageRequest
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.FieldListItem
+import edumate.app.presentation.createClasswork.CourseName
 import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
 import edumate.app.presentation.createClasswork.CreateClassworkUiState
-import edumate.app.presentation.createClasswork.LoremIpsumSingleWord
 import edumate.app.presentation.ui.theme.EdumateTheme
 import edumate.app.R.string as Strings
 
 @Composable
 fun ContentMaterial(
-    className: String,
+    courseName: String,
     classworkId: String?,
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
@@ -53,12 +84,7 @@ fun ContentMaterial(
         }
     val isTitleError = uiState.titleError != null
 
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = 12.dp),
-    ) {
+    Column {
         Column(
             modifier =
                 Modifier
@@ -96,7 +122,7 @@ fun ContentMaterial(
                             ),
                     )
                 },
-                leadingIcon = Icons.Default.Book,
+                leadingIcon = Icons.Outlined.Book,
                 trailingContent = {},
             )
             FieldListItem(
@@ -118,7 +144,7 @@ fun ContentMaterial(
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = className)
+                                Text(text = courseName)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -131,7 +157,7 @@ fun ContentMaterial(
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingIcon = Icons.Default.People,
+                leadingIcon = Icons.Outlined.People,
                 trailingContent = {},
             )
             FieldListItem(
@@ -152,7 +178,7 @@ fun ContentMaterial(
                             ),
                     )
                 },
-                leadingIcon = Icons.Default.Description,
+                leadingIcon = Icons.AutoMirrored.Outlined.Subject,
                 trailingContent = {},
             )
             FieldListItem(
@@ -254,7 +280,7 @@ fun ContentMaterial(
                         )
                     }
                 },
-                leadingIcon = Icons.Default.Attachment,
+                leadingIcon = Icons.Outlined.Attachment,
                 trailingContent = {},
             )
         }
@@ -277,21 +303,22 @@ fun ContentMaterial(
                     },
             )
         }
-    }
+        Spacer(modifier = Modifier.height(12.dp))
 
-    LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+        LaunchedEffect(true) {
+            focusRequester.requestFocus()
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ContentMaterialPreview(
-    @PreviewParameter(LoremIpsumSingleWord::class) className: String,
+    @PreviewParameter(CourseName::class) courseName: String,
 ) {
-    EdumateTheme(dynamicColor = false) {
+    EdumateTheme {
         ContentMaterial(
-            className = className,
+            courseName = courseName,
             classworkId = null,
             uiState = CreateClassworkUiState(),
             onEvent = {},

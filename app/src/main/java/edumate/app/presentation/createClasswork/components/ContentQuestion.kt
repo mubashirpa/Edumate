@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -23,19 +22,20 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.automirrored.filled.LiveHelp
-import androidx.compose.material.icons.automirrored.filled.PlaylistAddCheck
+import androidx.compose.material.icons.automirrored.outlined.LiveHelp
+import androidx.compose.material.icons.automirrored.outlined.Subject
 import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.Quiz
 import androidx.compose.material.icons.filled.VideoFile
+import androidx.compose.material.icons.outlined.Attachment
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.InsertChart
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material.icons.outlined.QuestionAnswer
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedSuggestionChip
@@ -73,9 +73,9 @@ import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.presentation.components.FieldListItem
+import edumate.app.presentation.createClasswork.CourseName
 import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
 import edumate.app.presentation.createClasswork.CreateClassworkUiState
-import edumate.app.presentation.createClasswork.LoremIpsumSingleWord
 import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -89,7 +89,7 @@ import edumate.app.R.string as Strings
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ContentQuestion(
-    className: String,
+    courseName: String,
     classworkId: String?,
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
@@ -106,12 +106,7 @@ fun ContentQuestion(
         }
     val isTitleError = uiState.titleError != null
 
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = 12.dp),
-    ) {
+    Column {
         Column(
             modifier =
                 Modifier
@@ -149,7 +144,7 @@ fun ContentQuestion(
                             ),
                     )
                 },
-                leadingIcon = Icons.AutoMirrored.Filled.LiveHelp,
+                leadingIcon = Icons.AutoMirrored.Outlined.LiveHelp,
             )
             FieldListItem(
                 headlineContent = {
@@ -170,7 +165,7 @@ fun ContentQuestion(
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = className)
+                                Text(text = courseName)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -183,7 +178,7 @@ fun ContentQuestion(
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingIcon = Icons.Default.People,
+                leadingIcon = Icons.Outlined.People,
             )
             FieldListItem(
                 headlineContent = {
@@ -203,7 +198,7 @@ fun ContentQuestion(
                             ),
                     )
                 },
-                leadingIcon = Icons.Default.Description,
+                leadingIcon = Icons.AutoMirrored.Outlined.Subject,
             )
             FieldListItem(
                 headlineContent = {
@@ -221,7 +216,12 @@ fun ContentQuestion(
                         },
                     ) {
                         OutlinedTextField(
-                            value = questionTypes[uiState.questionTypeSelectionOptionIndex],
+                            value =
+                                if (uiState.questionTypeSelectionOptionIndex != null) {
+                                    questionTypes[uiState.questionTypeSelectionOptionIndex]
+                                } else {
+                                    stringResource(id = Strings.select_question_type)
+                                },
                             onValueChange = {},
                             modifier =
                                 Modifier
@@ -263,7 +263,7 @@ fun ContentQuestion(
                         }
                     }
                 },
-                leadingIcon = Icons.Default.Quiz,
+                leadingIcon = Icons.Outlined.QuestionAnswer,
             )
             AnimatedVisibility(
                 visible = uiState.workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION,
@@ -387,16 +387,16 @@ fun ContentQuestion(
                         )
                     }
                 },
-                leadingIcon = Icons.Default.Attachment,
+                leadingIcon = Icons.Outlined.Attachment,
             )
             FieldListItem(
                 title =
                     if (uiState.points != null && uiState.points != "0") {
                         stringResource(id = Strings._points, uiState.points)
                     } else {
-                        stringResource(id = Strings.unmarked)
+                        stringResource(id = Strings.set_total_points)
                     },
-                leadingIcon = Icons.AutoMirrored.Filled.PlaylistAddCheck,
+                leadingIcon = Icons.Outlined.InsertChart,
                 trailingContent =
                     if (uiState.points != null && uiState.points != "0") {
                         {
@@ -507,7 +507,7 @@ fun ContentQuestion(
                             )
                         } else {
                             Text(
-                                text = stringResource(id = Strings.due_date),
+                                text = stringResource(id = Strings.set_due_date),
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -515,7 +515,7 @@ fun ContentQuestion(
                         }
                     }
                 },
-                leadingIcon = Icons.Default.CalendarToday,
+                leadingIcon = Icons.Outlined.CalendarToday,
                 trailingContent =
                     if (uiState.dueDateTime != null) {
                         {
@@ -554,6 +554,11 @@ fun ContentQuestion(
                     },
             )
         }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        LaunchedEffect(true) {
+            focusRequester.requestFocus()
+        }
     }
 
     DatePickerDialog(
@@ -588,20 +593,16 @@ fun ContentQuestion(
             onEvent(CreateClassworkUiEvent.OnPointsValueChange(it))
         },
     )
-
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ContentQuestionPreview(
-    @PreviewParameter(LoremIpsumSingleWord::class) className: String,
+    @PreviewParameter(CourseName::class) courseName: String,
 ) {
-    EdumateTheme(dynamicColor = false) {
+    EdumateTheme {
         ContentQuestion(
-            className = className,
+            courseName = courseName,
             classworkId = null,
             uiState = CreateClassworkUiState(),
             onEvent = {},

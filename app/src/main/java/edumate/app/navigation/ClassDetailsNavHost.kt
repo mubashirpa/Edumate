@@ -15,7 +15,6 @@ import edumate.app.presentation.classwork.ClassworkScreen
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.createAnnouncement.CreateAnnouncementScreen
 import edumate.app.presentation.createClasswork.CreateClassworkScreen
-import edumate.app.presentation.createClasswork.CreateClassworkViewModel
 import edumate.app.presentation.people.PeopleScreen
 
 @Composable
@@ -114,15 +113,11 @@ fun ClassDetailsNavHost(
                     },
                 ),
         ) { backStackEntry ->
-            val viewModel: CreateClassworkViewModel = hiltViewModel()
             val classworkId = backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASSWORK_ID)
 
             CreateClassworkScreen(
-                uiState = viewModel.uiState,
-                onEvent = viewModel::onEvent,
-                createClassworkResults = viewModel.createClassworkResults,
                 snackbarHostState = snackbarHostState,
-                className = course.name.orEmpty(),
+                courseName = course.name.orEmpty(),
                 classworkId = classworkId,
                 onCreateClassworkSuccess = { navController.navigateUp() },
                 onBackPressed = { navController.navigateUp() },

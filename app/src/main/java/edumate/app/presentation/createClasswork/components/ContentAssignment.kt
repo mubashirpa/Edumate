@@ -1,17 +1,52 @@
 package edumate.app.presentation.createClasswork.components
 
 import android.net.Uri
-import androidx.compose.foundation.*
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.Assignment
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.automirrored.filled.PlaylistAddCheck
-import androidx.compose.material.icons.filled.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material.icons.automirrored.outlined.Assignment
+import androidx.compose.material.icons.automirrored.outlined.Subject
+import androidx.compose.material.icons.filled.Attachment
+import androidx.compose.material.icons.filled.AudioFile
+import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.VideoFile
+import androidx.compose.material.icons.outlined.Attachment
+import androidx.compose.material.icons.outlined.CalendarToday
+import androidx.compose.material.icons.outlined.InsertChart
+import androidx.compose.material.icons.outlined.People
+import androidx.compose.material3.Button
+import androidx.compose.material3.ElevatedSuggestionChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -27,12 +62,13 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import edumate.app.R
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.FieldListItem
+import edumate.app.presentation.createClasswork.CourseName
 import edumate.app.presentation.createClasswork.CreateClassworkUiEvent
 import edumate.app.presentation.createClasswork.CreateClassworkUiState
-import edumate.app.presentation.createClasswork.LoremIpsumSingleWord
 import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -40,11 +76,10 @@ import kotlinx.datetime.LocalTime
 import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
-import edumate.app.R.string as Strings
 
 @Composable
 fun ContentAssignment(
-    className: String,
+    courseName: String,
     classworkId: String?,
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
@@ -60,12 +95,7 @@ fun ContentAssignment(
         }
     val isTitleError = uiState.titleError != null
 
-    Column(
-        modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(bottom = 12.dp),
-    ) {
+    Column {
         Column(
             modifier =
                 Modifier
@@ -85,7 +115,7 @@ fun ContentAssignment(
                                 .fillMaxWidth()
                                 .focusRequester(focusRequester),
                         label = {
-                            Text(text = stringResource(id = Strings.assignment_title))
+                            Text(text = stringResource(id = R.string.assignment_title))
                         },
                         supportingText =
                             if (isTitleError) {
@@ -103,7 +133,7 @@ fun ContentAssignment(
                             ),
                     )
                 },
-                leadingIcon = Icons.AutoMirrored.Filled.Assignment,
+                leadingIcon = Icons.AutoMirrored.Outlined.Assignment,
             )
             FieldListItem(
                 headlineContent = {
@@ -124,20 +154,20 @@ fun ContentAssignment(
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = className)
+                                Text(text = courseName)
                             },
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         ElevatedSuggestionChip(
                             onClick = {},
                             label = {
-                                Text(text = stringResource(id = Strings.all_students))
+                                Text(text = stringResource(id = R.string.all_students))
                             },
                         )
                         Spacer(modifier = Modifier.width(16.dp))
                     }
                 },
-                leadingIcon = Icons.Default.People,
+                leadingIcon = Icons.Outlined.People,
             )
             FieldListItem(
                 headlineContent = {
@@ -148,7 +178,7 @@ fun ContentAssignment(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         label = {
-                            Text(text = stringResource(id = Strings.description))
+                            Text(text = stringResource(id = R.string.description))
                         },
                         keyboardOptions =
                             KeyboardOptions(
@@ -157,7 +187,7 @@ fun ContentAssignment(
                             ),
                     )
                 },
-                leadingIcon = Icons.Default.Description,
+                leadingIcon = Icons.AutoMirrored.Outlined.Subject,
             )
             FieldListItem(
                 headlineContent = {
@@ -242,7 +272,7 @@ fun ContentAssignment(
                         ListItem(
                             headlineContent = {
                                 Text(
-                                    text = stringResource(id = Strings.add_attachment),
+                                    text = stringResource(id = R.string.add_attachment),
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     style = MaterialTheme.typography.bodyLarge,
                                 )
@@ -258,16 +288,16 @@ fun ContentAssignment(
                         )
                     }
                 },
-                leadingIcon = Icons.Default.Attachment,
+                leadingIcon = Icons.Outlined.Attachment,
             )
             FieldListItem(
                 title =
                     if (uiState.points != null && uiState.points != "0") {
-                        stringResource(id = Strings._points, uiState.points)
+                        stringResource(id = R.string._points, uiState.points)
                     } else {
-                        stringResource(id = Strings.unmarked)
+                        stringResource(id = R.string.set_total_points)
                     },
-                leadingIcon = Icons.AutoMirrored.Filled.PlaylistAddCheck,
+                leadingIcon = Icons.Outlined.InsertChart,
                 trailingContent =
                     if (uiState.points != null && uiState.points != "0") {
                         {
@@ -381,7 +411,7 @@ fun ContentAssignment(
                             )
                         } else {
                             Text(
-                                text = stringResource(id = Strings.due_date),
+                                text = stringResource(id = R.string.set_due_date),
                                 modifier = Modifier.padding(horizontal = 16.dp),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyLarge,
@@ -389,7 +419,7 @@ fun ContentAssignment(
                         }
                     }
                 },
-                leadingIcon = Icons.Default.CalendarToday,
+                leadingIcon = Icons.Outlined.CalendarToday,
                 trailingContent =
                     if (uiState.dueDateTime != null) {
                         {
@@ -422,11 +452,16 @@ fun ContentAssignment(
             Text(
                 text =
                     if (classworkId != null) {
-                        stringResource(id = Strings.save)
+                        stringResource(id = R.string.save)
                     } else {
-                        stringResource(id = Strings.assign)
+                        stringResource(id = R.string.assign)
                     },
             )
+        }
+        Spacer(modifier = Modifier.height(12.dp))
+
+        LaunchedEffect(true) {
+            focusRequester.requestFocus()
         }
     }
 
@@ -462,20 +497,16 @@ fun ContentAssignment(
             onEvent(CreateClassworkUiEvent.OnPointsValueChange(it))
         },
     )
-
-    LaunchedEffect(true) {
-        focusRequester.requestFocus()
-    }
 }
 
 @Preview(showBackground = true)
 @Composable
 private fun ContentAssignmentPreview(
-    @PreviewParameter(LoremIpsumSingleWord::class) className: String,
+    @PreviewParameter(CourseName::class) courseName: String,
 ) {
-    EdumateTheme(dynamicColor = false) {
+    EdumateTheme {
         ContentAssignment(
-            className = className,
+            courseName = courseName,
             classworkId = null,
             uiState = CreateClassworkUiState(),
             onEvent = {},

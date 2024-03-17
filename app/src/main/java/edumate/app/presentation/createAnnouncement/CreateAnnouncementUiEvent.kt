@@ -1,6 +1,7 @@
 package edumate.app.presentation.createAnnouncement
 
 import android.net.Uri
+import androidx.compose.ui.text.input.TextFieldValue
 
 sealed class CreateAnnouncementUiEvent {
     data class OnAddLinkAttachment(val link: String) : CreateAnnouncementUiEvent()
@@ -13,7 +14,7 @@ sealed class CreateAnnouncementUiEvent {
 
     data class OnShowAddAttachmentBottomSheetChange(val show: Boolean) : CreateAnnouncementUiEvent()
 
-    data class OnTextValueChange(val text: String) : CreateAnnouncementUiEvent()
+    data class OnTextValueChange(val text: TextFieldValue) : CreateAnnouncementUiEvent()
 
     data object PostAnnouncement : CreateAnnouncementUiEvent()
 

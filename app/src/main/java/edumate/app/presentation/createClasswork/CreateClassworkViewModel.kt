@@ -14,6 +14,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import edumate.app.core.Firebase
 import edumate.app.core.Result
 import edumate.app.core.UiText
+import edumate.app.core.utils.DatabaseUtils
 import edumate.app.core.utils.enumValueOf
 import edumate.app.domain.model.classroom.DriveFile
 import edumate.app.domain.model.classroom.Link
@@ -25,7 +26,6 @@ import edumate.app.domain.model.classroom.courseWork.DueDate
 import edumate.app.domain.model.classroom.courseWork.DueTime
 import edumate.app.domain.model.classroom.courseWork.MultipleChoiceQuestion
 import edumate.app.domain.usecase.GetUrlMetadataUseCase
-import edumate.app.domain.usecase.authentication.GetCurrentUserIdUseCase
 import edumate.app.domain.usecase.classroom.courseWork.CreateCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.GetCourseWorkUseCase
 import edumate.app.domain.usecase.classroom.courseWork.PatchCourseWorkUseCase
@@ -34,10 +34,8 @@ import edumate.app.domain.usecase.storage.UploadFileUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
 import edumate.app.navigation.Routes
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.datetime.Clock
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
@@ -50,7 +48,6 @@ class CreateClassworkViewModel
     @Inject
     constructor(
         savedStateHandle: SavedStateHandle,
-        getCurrentUserIdUseCase: GetCurrentUserIdUseCase,
         private val createCourseWorkUseCase: CreateCourseWorkUseCase,
         private val deleteFileUseCase: DeleteFileUseCase,
         private val getCourseWorkUseCase: GetCourseWorkUseCase,
@@ -62,23 +59,17 @@ class CreateClassworkViewModel
         var uiState by mutableStateOf(CreateClassworkUiState())
             private set
 
-        private val resultChannel = Channel<String>()
-        val createClassworkResults = resultChannel.receiveAsFlow()
-
         private val courseId: String =
             checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_COURSE_ID])
         private val workType: String = checkNotNull(savedStateHandle[Routes.Args.CREATE_CLASSWORK_TYPE])
         private val courseWorkId: String? = savedStateHandle[Routes.Args.CREATE_CLASSWORK_ID]
 
-        private val courseWork = mutableStateOf(CourseWork(id = courseWorkId ?: generateId(12)))
+        private val courseWork =
+            mutableStateOf(CourseWork(id = courseWorkId ?: DatabaseUtils.generateId(12)))
         private var getUrlMetadataJob: Job? = null
 
         init {
-            uiState =
-                uiState.copy(
-                    userId = getCurrentUserIdUseCase(),
-                    workType = enumValueOf(workType),
-                )
+            uiState = uiState.copy(workType = enumValueOf(workType))
             if (courseWorkId != null) {
                 getCourseWork(courseWorkId)
             }
@@ -195,7 +186,7 @@ class CreateClassworkViewModel
         private fun createCourseWork() {
             val title = uiState.title.text.trim()
             val workType = uiState.workType
-            val description = uiState.description.ifBlank { null }
+            val description = uiState.description.trim().ifEmpty { null }
             val dueDateTime = uiState.dueDateTime
             var dueDate: DueDate? = null
             var dueTime: DueTime? = null
@@ -234,6 +225,13 @@ class CreateClassworkViewModel
                 uiState = uiState.copy(titleError = UiText.StringResource(Strings.missing_title))
                 return
             }
+            val isQuestion =
+                workType == CourseWorkType.SHORT_ANSWER_QUESTION || workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION
+            if (isQuestion && uiState.questionTypeSelectionOptionIndex == null) {
+                uiState =
+                    uiState.copy(userMessage = UiText.StringResource(Strings.missing_question_type))
+                return
+            }
 
             courseWork.value =
                 courseWork.value.copy(
@@ -266,16 +264,18 @@ class CreateClassworkViewModel
 
                     is Result.Success -> {
                         val courseWorkResponse = result.data
-                        if (courseWorkResponse != null) {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(courseWorkResponse.id.orEmpty())
-                        } else {
-                            uiState =
+                        uiState =
+                            if (courseWorkResponse != null) {
+                                uiState.copy(
+                                    isCreateClassworkSuccess = true,
+                                    openProgressDialog = false,
+                                )
+                            } else {
                                 uiState.copy(
                                     openProgressDialog = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
-                        }
+                            }
                     }
                 }
             }.launchIn(viewModelScope)
@@ -362,7 +362,7 @@ class CreateClassworkViewModel
 
         private fun patchCourseWork(id: String) {
             val title = uiState.title.text.trim()
-            val description = uiState.description.ifBlank { null }
+            val description = uiState.description.trim().ifEmpty { null }
             val dueDateTime = uiState.dueDateTime
             var dueDate: DueDate? = null
             var dueTime: DueTime? = null
@@ -465,16 +465,18 @@ class CreateClassworkViewModel
 
                     is Result.Success -> {
                         val courseWorkResponse = result.data
-                        if (courseWorkResponse != null) {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(courseWorkResponse.id.orEmpty())
-                        } else {
-                            uiState =
+                        uiState =
+                            if (courseWorkResponse != null) {
+                                uiState.copy(
+                                    isCreateClassworkSuccess = true,
+                                    openProgressDialog = false,
+                                )
+                            } else {
                                 uiState.copy(
                                     openProgressDialog = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
-                        }
+                            }
                     }
                 }
             }.launchIn(viewModelScope)
@@ -572,13 +574,5 @@ class CreateClassworkViewModel
                         uiState.attachments[position] = Material(link = result.data)
                     }
                 }.launchIn(viewModelScope)
-        }
-
-        private fun generateId(length: Int): String {
-            val charPool: List<Char> = ('a'..'z') + ('A'..'Z') + ('0'..'9')
-            return (1..length)
-                .map { kotlin.random.Random.nextInt(0, charPool.size) }
-                .map(charPool::get)
-                .joinToString("")
         }
     }

@@ -4,6 +4,8 @@ import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.TextRange
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -125,7 +127,7 @@ class CreateAnnouncementViewModel
         }
 
         private fun createAnnouncement() {
-            val text = uiState.text
+            val text = uiState.text.text.trim()
             val materials = uiState.attachments
             val state = AnnouncementState.PUBLISHED
 
@@ -203,7 +205,11 @@ class CreateAnnouncementViewModel
                             uiState =
                                 uiState.copy(
                                     isLoading = false,
-                                    text = text,
+                                    text =
+                                        TextFieldValue(
+                                            text = text,
+                                            selection = TextRange(text.length),
+                                        ),
                                 )
                         } else {
                             uiState =
@@ -218,7 +224,7 @@ class CreateAnnouncementViewModel
         }
 
         private fun patchAnnouncement(id: String) {
-            val text = uiState.text
+            val text = uiState.text.text.trim()
             val textResult = validateTextField.execute(text)
 
             val materials = uiState.attachments

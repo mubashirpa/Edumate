@@ -280,7 +280,7 @@ fun TimePickerDialog(
         val showingPicker = remember { mutableStateOf(true) }
         val configuration = LocalConfiguration.current
 
-        TimePickerDialog(
+        edumate.app.presentation.components.TimePickerDialog(
             onDismissRequest = onDismissRequest,
             confirmButton = {
                 TextButton(
