@@ -28,7 +28,10 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -36,51 +39,82 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.flowWithLifecycle
 import edumate.app.presentation.components.EdumateSnackbarHost
 import edumate.app.presentation.components.ProgressDialog
 import edumate.app.presentation.components.UserAvatar
 import edumate.app.presentation.ui.theme.EdumateTheme
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.filter
 import edumate.app.R.string as Strings
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinClassScreen(
-    uiState: JoinClassUiState,
-    onEvent: (JoinClassUiEvent) -> Unit,
-    joinClassResults: Flow<String>,
+    viewModel: JoinClassViewModel = hiltViewModel(),
     navigateToClassDetails: (courseId: String) -> Unit,
     navigateToProfile: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val snackbarHostState = remember { SnackbarHostState() }
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val currentNavigateToClassDetails by rememberUpdatedState(navigateToClassDetails)
     val context = LocalContext.current
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val isClassCodeError = uiState.classCodeError != null
-
-    LaunchedEffect(true) {
-        joinClassResults.collect { courseId ->
-            navigateToClassDetails(courseId)
+    val snackbarHostState =
+        remember {
+            SnackbarHostState()
         }
+
+    LaunchedEffect(viewModel, lifecycle) {
+        // Whenever the uiState changes, check if the user is joined class and call the
+        // `navigateToClassDetails` event when `lifecycle` is at least STARTED
+        snapshotFlow { viewModel.uiState }
+            .filter { it.joinClassId != null }
+            .flowWithLifecycle(lifecycle)
+            .collect {
+                currentNavigateToClassDetails(it.joinClassId!!)
+            }
     }
 
-    uiState.userMessage?.let { userMessage ->
+    viewModel.uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
             snackbarHostState.showSnackbar(userMessage.asString(context))
             // Once the message is displayed and dismissed, notify the ViewModel.
-            onEvent(JoinClassUiEvent.UserMessageShown)
+            viewModel.onEvent(JoinClassUiEvent.UserMessageShown)
         }
     }
+
+    JoinClassScreenContent(
+        uiState = viewModel.uiState,
+        onEvent = viewModel::onEvent,
+        snackbarHostState = snackbarHostState,
+        navigateToProfile = navigateToProfile,
+        onBackPressed = onBackPressed,
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun JoinClassScreenContent(
+    uiState: JoinClassUiState,
+    onEvent: (JoinClassUiEvent) -> Unit,
+    snackbarHostState: SnackbarHostState,
+    navigateToProfile: () -> Unit,
+    onBackPressed: () -> Unit,
+) {
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val isClassCodeError = uiState.classCodeError != null
+    val focusRequester =
+        remember {
+            FocusRequester()
+        }
 
     Scaffold(
         modifier =
@@ -190,12 +224,11 @@ fun JoinClassScreen(
 @Preview
 @Composable
 private fun JoinClassScreenPreview() {
-    EdumateTheme(dynamicColor = false) {
-        JoinClassScreen(
+    EdumateTheme {
+        JoinClassScreenContent(
             uiState = JoinClassUiState(),
             onEvent = {},
-            joinClassResults = flow {},
-            navigateToClassDetails = {},
+            snackbarHostState = SnackbarHostState(),
             navigateToProfile = {},
             onBackPressed = {},
         )

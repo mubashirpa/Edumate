@@ -12,11 +12,9 @@ import edumate.app.domain.model.classroom.students.Student
 import edumate.app.domain.usecase.authentication.GetCurrentUserUseCase
 import edumate.app.domain.usecase.classroom.students.CreateStudentUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import edumate.app.R.string as Strings
 
@@ -30,9 +28,6 @@ class JoinClassViewModel
     ) : ViewModel() {
         var uiState by mutableStateOf(JoinClassUiState())
             private set
-
-        private val resultChannel = Channel<String>()
-        val joinClassResults = resultChannel.receiveAsFlow()
 
         init {
             getCurrentUserUseCase().map { user ->
@@ -68,7 +63,6 @@ class JoinClassViewModel
 
         private fun joinClass(classCode: String) {
             val classCodeResult = validateTextField.execute(classCode)
-
             if (!classCodeResult.successful) {
                 uiState = uiState.copy(classCodeError = classCodeResult.error)
                 return
@@ -96,8 +90,19 @@ class JoinClassViewModel
                     }
 
                     is Result.Success -> {
-                        uiState = uiState.copy(openProgressDialog = false)
-                        resultChannel.send(classCode)
+                        val studentResponse = result.data
+                        uiState =
+                            if (studentResponse != null) {
+                                uiState.copy(
+                                    joinClassId = student.courseId.orEmpty(),
+                                    openProgressDialog = false,
+                                )
+                            } else {
+                                uiState.copy(
+                                    openProgressDialog = false,
+                                    userMessage = UiText.StringResource(Strings.error_unexpected),
+                                )
+                            }
                     }
                 }
             }.launchIn(viewModelScope)

@@ -13,11 +13,9 @@ import androidx.navigation.navArgument
 import edumate.app.presentation.classDetails.ClassDetailsScreen
 import edumate.app.presentation.classDetails.ClassDetailsViewModel
 import edumate.app.presentation.createClass.CreateClassScreen
-import edumate.app.presentation.createClass.CreateClassViewModel
 import edumate.app.presentation.home.HomeScreen
 import edumate.app.presentation.home.HomeViewModel
 import edumate.app.presentation.joinClass.JoinClassScreen
-import edumate.app.presentation.joinClass.JoinClassViewModel
 import edumate.app.presentation.profile.ProfileViewModel
 import edumate.app.presentation.profile.screen.ProfileScreen
 import edumate.app.presentation.settings.SettingsViewModel
@@ -40,6 +38,7 @@ fun EdumateNavHost(
         authentication(navController, snackbarHostState, scope)
         composable(route = Screen.HomeScreen.route) {
             val viewModel: HomeViewModel = hiltViewModel()
+
             HomeScreen(
                 navController = navController,
                 uiState = viewModel.uiState,
@@ -70,18 +69,14 @@ fun EdumateNavHost(
             arguments =
                 listOf(
                     navArgument(Routes.Args.CREATE_CLASS_COURSE_ID) {
-                        type = NavType.StringType
                         nullable = true
+                        type = NavType.StringType
                     },
                 ),
         ) { backStackEntry ->
-            val viewModel: CreateClassViewModel = hiltViewModel()
             val courseId = backStackEntry.arguments?.getString(Routes.Args.CREATE_CLASS_COURSE_ID)
 
             CreateClassScreen(
-                uiState = viewModel.uiState,
-                onEvent = viewModel::onEvent,
-                createClassResults = viewModel.createClassResults,
                 courseId = courseId,
                 navigateToClassDetails = {
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(it)) {
@@ -95,11 +90,7 @@ fun EdumateNavHost(
             )
         }
         composable(route = Screen.JoinClassScreen.route) {
-            val viewModel: JoinClassViewModel = hiltViewModel()
             JoinClassScreen(
-                uiState = viewModel.uiState,
-                onEvent = viewModel::onEvent,
-                joinClassResults = viewModel.joinClassResults,
                 navigateToClassDetails = { courseId ->
                     navController.navigate(Screen.ClassDetailsScreen.withArgs(courseId)) {
                         popUpTo(Screen.HomeScreen.route)
@@ -124,6 +115,7 @@ fun EdumateNavHost(
                 ),
         ) {
             val viewModel: ClassDetailsViewModel = hiltViewModel()
+
             ClassDetailsScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
@@ -137,6 +129,7 @@ fun EdumateNavHost(
         }
         composable(route = Screen.ProfileScreen.route) {
             val viewModel: ProfileViewModel = hiltViewModel()
+
             ProfileScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
@@ -153,6 +146,7 @@ fun EdumateNavHost(
         }
         composable(route = Screen.SettingsScreen.route) {
             val viewModel: SettingsViewModel = hiltViewModel()
+
             SettingsScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,

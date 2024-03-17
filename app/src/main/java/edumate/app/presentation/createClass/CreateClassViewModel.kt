@@ -17,10 +17,8 @@ import edumate.app.domain.usecase.classroom.courses.GetCourseUseCase
 import edumate.app.domain.usecase.classroom.courses.UpdateCourseUseCase
 import edumate.app.domain.usecase.validation.ValidateTextField
 import edumate.app.navigation.Routes
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
 import javax.inject.Inject
 import edumate.app.R.string as Strings
 
@@ -36,9 +34,6 @@ class CreateClassViewModel
     ) : ViewModel() {
         var uiState by mutableStateOf(CreateClassUiState())
             private set
-
-        private val resultChannel = Channel<String>()
-        val createClassResults = resultChannel.receiveAsFlow()
 
         private val courseId: String? = savedStateHandle[Routes.Args.CREATE_CLASS_COURSE_ID]
         val course = mutableStateOf(Course())
@@ -101,7 +96,6 @@ class CreateClassViewModel
             subject: String?,
         ) {
             val nameResult = validateTextField.execute(name)
-
             if (!nameResult.successful) {
                 uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_a_class_name))
                 return
@@ -132,17 +126,19 @@ class CreateClassViewModel
                     }
 
                     is Result.Success -> {
-                        val updatedCourse = result.data
-                        if (updatedCourse != null) {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(updatedCourse.id.orEmpty())
-                        } else {
-                            uiState =
+                        val courseResponse = result.data
+                        uiState =
+                            if (courseResponse != null) {
+                                uiState.copy(
+                                    createClassId = courseResponse.id.orEmpty(),
+                                    openProgressDialog = false,
+                                )
+                            } else {
                                 uiState.copy(
                                     openProgressDialog = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
-                        }
+                            }
                     }
                 }
             }.launchIn(viewModelScope)
@@ -168,8 +164,8 @@ class CreateClassViewModel
                     is Result.Success -> {
                         val courseResponse = result.data
                         if (courseResponse != null) {
-                            val name = courseResponse.name.orEmpty()
                             course.value = courseResponse
+                            val name = courseResponse.name.orEmpty()
                             uiState =
                                 uiState.copy(
                                     isLoading = false,
@@ -202,7 +198,6 @@ class CreateClassViewModel
             subject: String?,
         ) {
             val nameResult = validateTextField.execute(name)
-
             if (!nameResult.successful) {
                 uiState = uiState.copy(nameError = UiText.StringResource(Strings.enter_a_class_name))
                 return
@@ -233,17 +228,19 @@ class CreateClassViewModel
                     }
 
                     is Result.Success -> {
-                        val courseId = result.data
-                        if (courseId != null) {
-                            uiState = uiState.copy(openProgressDialog = false)
-                            resultChannel.send(courseId)
-                        } else {
-                            uiState =
+                        val courseResponse = result.data
+                        uiState =
+                            if (courseResponse != null) {
+                                uiState.copy(
+                                    createClassId = courseResponse,
+                                    openProgressDialog = false,
+                                )
+                            } else {
                                 uiState.copy(
                                     openProgressDialog = false,
                                     userMessage = UiText.StringResource(Strings.error_unexpected),
                                 )
-                        }
+                            }
                     }
                 }
             }.launchIn(viewModelScope)

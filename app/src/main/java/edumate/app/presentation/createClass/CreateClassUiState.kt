@@ -4,6 +4,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import edumate.app.core.UiText
 
 data class CreateClassUiState(
+    val createClassId: String? = null,
     val isLoading: Boolean = false,
     val name: TextFieldValue = TextFieldValue(""),
     val nameError: UiText? = null,

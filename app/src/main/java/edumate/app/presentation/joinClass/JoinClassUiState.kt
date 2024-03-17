@@ -7,6 +7,7 @@ data class JoinClassUiState(
     val classCode: String = "",
     val classCodeError: UiText? = null,
     val currentUser: UserProfile? = null,
+    val joinClassId: String? = null,
     val openProgressDialog: Boolean = false,
     val userMessage: UiText? = null,
 )
