@@ -11,7 +11,6 @@ object Routes {
         const val HOME_SCREEN = "home_screen"
         const val JOIN_CLASS_SCREEN = "join_class_screen"
         const val LOGIN_SCREEN = "login_screen"
-        const val MEET_SCREEN = "meet_screen"
         const val PEOPLE_SCREEN = "people_screen"
         const val PROFILE_SCREEN = "profile_screen"
         const val RECOVER_SCREEN = "recover_screen"
@@ -50,9 +49,6 @@ object Routes {
         const val CREATE_CLASSWORK_ID = "course_work_id"
         const val CREATE_CLASSWORK_SCREEN =
             "/{$CREATE_CLASSWORK_COURSE_ID}/{$CREATE_CLASSWORK_TYPE}?$CREATE_CLASSWORK_ID={$CREATE_CLASSWORK_ID}"
-
-        // MeetScreen
-        const val MEET_SCREEN_COURSE_ID = "course_id"
 
         // PeopleScreen
         const val PEOPLE_COURSE_ID = "course_id"

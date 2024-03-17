@@ -65,9 +65,8 @@ fun NavGraphBuilder.authentication(
             arguments =
                 listOf(
                     navArgument(Routes.Args.RECOVER_EMAIL) {
-                        type = NavType.StringType
                         nullable = true
-                        defaultValue = null
+                        type = NavType.StringType
                     },
                 ),
         ) {
