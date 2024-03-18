@@ -9,8 +9,7 @@ sealed class ClassworkUiEvent {
 
     data class OnOpenDeleteCourseWorkDialogChange(val courseWork: CourseWork?) : ClassworkUiEvent()
 
-    data class OnShowCreateCourseWorkBottomSheetChange(val showBottomSheet: Boolean) :
-        ClassworkUiEvent()
+    data class OnShowCreateCourseWorkBottomSheetChange(val show: Boolean) : ClassworkUiEvent()
 
     data object OnRefresh : ClassworkUiEvent()
 

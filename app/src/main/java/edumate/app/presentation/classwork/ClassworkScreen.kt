@@ -75,7 +75,7 @@ fun ClassworkScreen(
     val scrollState = rememberLazyListState()
     val refreshState =
         rememberPullRefreshState(
-            refreshing = uiState.refreshing,
+            refreshing = uiState.isRefreshing,
             onRefresh = {
                 onEvent(ClassworkUiEvent.OnRefresh)
             },
@@ -125,7 +125,7 @@ fun ClassworkScreen(
                         )
                     }
                     DropdownMenu(
-                        expanded = uiState.appBarMenuExpanded,
+                        expanded = uiState.appBarDropdownExpanded,
                         onDismissRequest = {
                             onEvent(ClassworkUiEvent.OnAppBarDropdownExpandedChange(false))
                         },
@@ -238,7 +238,7 @@ fun ClassworkScreen(
             }
 
             PullRefreshIndicator(
-                refreshing = uiState.refreshing,
+                refreshing = uiState.isRefreshing,
                 state = refreshState,
                 modifier = Modifier.align(Alignment.TopCenter),
             )

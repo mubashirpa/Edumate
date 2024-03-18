@@ -231,6 +231,7 @@ private fun MenuButton(
     onDeleteClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
         IconButton(onClick = { expanded = true }) {
             Icon(

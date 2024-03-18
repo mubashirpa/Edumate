@@ -40,7 +40,7 @@ class ClassworkViewModel
         fun onEvent(event: ClassworkUiEvent) {
             when (event) {
                 is ClassworkUiEvent.OnAppBarDropdownExpandedChange -> {
-                    uiState = uiState.copy(appBarMenuExpanded = event.expanded)
+                    uiState = uiState.copy(appBarDropdownExpanded = event.expanded)
                 }
 
                 is ClassworkUiEvent.OnDeleteCourseWork -> {
@@ -52,7 +52,7 @@ class ClassworkViewModel
                 }
 
                 is ClassworkUiEvent.OnShowCreateCourseWorkBottomSheetChange -> {
-                    uiState = uiState.copy(showCreateCourseWorkBottomSheet = event.showBottomSheet)
+                    uiState = uiState.copy(showCreateCourseWorkBottomSheet = event.show)
                 }
 
                 ClassworkUiEvent.OnRefresh -> {
@@ -69,7 +69,7 @@ class ClassworkViewModel
             }
         }
 
-        private fun listCourseWork(refreshing: Boolean) {
+        private fun listCourseWork(isRefreshing: Boolean) {
             // Cancel any ongoing listCourseWorksJob before making a new call.
             listCourseWorksJob?.cancel()
             listCourseWorksJob =
@@ -84,9 +84,9 @@ class ClassworkViewModel
                             // The Result.Error state is only used during initial loading and retry attempts.
                             // Otherwise, a snackbar is displayed using the userMessage property.
                             uiState =
-                                if (refreshing) {
+                                if (isRefreshing) {
                                     uiState.copy(
-                                        refreshing = false,
+                                        isRefreshing = false,
                                         userMessage = result.message,
                                     )
                                 } else {
@@ -96,10 +96,10 @@ class ClassworkViewModel
 
                         is Result.Loading -> {
                             // The Result.Loading state is only used during initial loading and retry attempts.
-                            // In other cases, the PullRefreshIndicator is shown with refreshing = true.
+                            // In other cases, the PullRefreshIndicator is shown with isRefreshing = true.
                             uiState =
-                                if (refreshing) {
-                                    uiState.copy(refreshing = true)
+                                if (isRefreshing) {
+                                    uiState.copy(isRefreshing = true)
                                 } else {
                                     uiState.copy(courseWorkResult = result)
                                 }
@@ -109,7 +109,7 @@ class ClassworkViewModel
                             uiState =
                                 uiState.copy(
                                     courseWorkResult = result,
-                                    refreshing = false,
+                                    isRefreshing = false,
                                 )
                         }
                     }
