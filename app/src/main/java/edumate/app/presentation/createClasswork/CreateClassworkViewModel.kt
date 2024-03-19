@@ -429,6 +429,11 @@ class CreateClassworkViewModel
                     }
                 }
 
+            if (updateMask.isEmpty()) {
+                uiState = uiState.copy(isCreateClassworkSuccess = true)
+                return
+            }
+
             courseWork.value =
                 courseWork.value.copy(
                     description = description,

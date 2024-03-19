@@ -235,11 +235,16 @@ class CreateAnnouncementViewModel
             }
 
             val updateMask =
-                StringBuilder().apply {
+                StringBuilder("").apply {
                     if (text != announcement.value.text) {
                         append("text,")
                     }
                 }
+
+            if (updateMask.isEmpty()) {
+                uiState = uiState.copy(isCreateAnnouncementSuccess = true)
+                return
+            }
 
             announcement.value =
                 announcement.value.copy(
