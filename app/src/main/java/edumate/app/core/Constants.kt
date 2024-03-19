@@ -26,7 +26,7 @@ object Firebase {
 }
 
 object Server {
-    const val API_BASE_URL = "http://192.168.2.121:8080/v1"
+    const val API_BASE_URL = "http://192.168.2.122:8080/v1"
     const val ENDPOINT_ANNOUNCEMENTS = "announcements"
     const val ENDPOINT_COURSES = "courses"
     const val ENDPOINT_COURSE_WORK = "courseWork"
