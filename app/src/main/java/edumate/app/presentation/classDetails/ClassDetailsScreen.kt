@@ -60,7 +60,6 @@ fun ClassDetailsScreen(
             if (course != null) {
                 ClassDetailsScreenContent(
                     uiState = uiState,
-                    onEvent = onEvent,
                     onLeaveClass = onLeaveClass,
                     onBackPressed = onBackPressed,
                 )
@@ -82,7 +81,6 @@ private fun ClassDetailsScreenContent(
     // Separate NavHostController for nested navigation
     classDetailsNavController: NavHostController = rememberNavController(),
     uiState: ClassDetailsUiState,
-    onEvent: (ClassDetailsUiEvent) -> Unit,
     onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
@@ -107,8 +105,7 @@ private fun ClassDetailsScreenContent(
                     .fillMaxSize()
                     .padding(innerPadding),
             snackbarHostState = snackbarHostState,
-            uiState = uiState,
-            onEvent = onEvent,
+            course = uiState.courseResult.data!!,
             onLeaveClass = onLeaveClass,
             onBackPressed = onBackPressed,
         )

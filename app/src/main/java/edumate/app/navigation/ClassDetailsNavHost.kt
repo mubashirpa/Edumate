@@ -9,26 +9,24 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import edumate.app.presentation.classDetails.ClassDetailsUiEvent
-import edumate.app.presentation.classDetails.ClassDetailsUiState
+import edumate.app.domain.model.classroom.courses.Course
 import edumate.app.presentation.classwork.ClassworkScreen
 import edumate.app.presentation.classwork.ClassworkViewModel
 import edumate.app.presentation.createAnnouncement.CreateAnnouncementScreen
 import edumate.app.presentation.createClasswork.CreateClassworkScreen
 import edumate.app.presentation.people.PeopleScreen
+import edumate.app.presentation.stream.StreamScreen
+import edumate.app.presentation.stream.StreamViewModel
 
 @Composable
 fun ClassDetailsNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier,
     snackbarHostState: SnackbarHostState,
-    uiState: ClassDetailsUiState,
-    onEvent: (ClassDetailsUiEvent) -> Unit,
+    course: Course,
     onLeaveClass: () -> Unit,
     onBackPressed: () -> Unit,
 ) {
-    val course = uiState.courseResult.data!!
-
     NavHost(
         navController = navController,
         startDestination = Screen.StreamScreen.route,
@@ -46,6 +44,27 @@ fun ClassDetailsNavHost(
                     },
                 ),
         ) {
+            val viewModel: StreamViewModel = hiltViewModel()
+
+            StreamScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                snackbarHostState = snackbarHostState,
+                course = course,
+                navigateToCreateAnnouncement = { courseId ->
+                    navController.navigate(Screen.CreateAnnouncementScreen.withArgs(courseId))
+                },
+                navigateToEditAnnouncement = { courseId, id ->
+                    navController.navigate(
+                        Screen.CreateAnnouncementScreen.withArgs(courseId)
+                            .plus(if (id != null) "?${Routes.Args.CREATE_ANNOUNCEMENT_ID}=$id" else ""),
+                    )
+                },
+                navigateToViewAnnouncement = { _, _ ->
+                    // TODO
+                },
+                onBackPressed = onBackPressed,
+            )
         }
         composable(
             route = Screen.ClassworkScreen.route,
@@ -120,43 +139,13 @@ fun ClassDetailsNavHost(
                 snackbarHostState = snackbarHostState,
                 courseName = course.name.orEmpty(),
                 classworkId = classworkId,
-                onCreateClassworkSuccess = { navController.navigateUp() },
-                onBackPressed = { navController.navigateUp() },
+                onCreateClassworkSuccess = {
+                    navController.navigateUp()
+                },
+                onBackPressed = {
+                    navController.navigateUp()
+                },
             )
-        }
-        composable(
-            route = "${Screen.ViewClassworkScreen.route}${Routes.Args.VIEW_CLASSWORK_SCREEN}",
-            arguments =
-                listOf(
-                    navArgument(Routes.Args.VIEW_CLASSWORK_COURSE_ID) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_ID) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_TYPE) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Routes.Args.VIEW_CLASSWORK_USER_TYPE) {
-                        type = NavType.StringType
-                    },
-                ),
-        ) {
-        }
-        composable(
-            route = "${Screen.ViewStudentWorkScreen.route}${Routes.Args.VIEW_STUDENT_WORK_SCREEN}",
-            arguments =
-                listOf(
-                    navArgument(Routes.Args.VIEW_STUDENT_WORK_COURSE_ID) {
-                        type = NavType.StringType
-                        defaultValue = course.id
-                    },
-                    navArgument(Routes.Args.VIEW_STUDENT_WORK_COURSE_WORK_ID) {
-                        type = NavType.StringType
-                    },
-                    navArgument(Routes.Args.VIEW_STUDENT_WORK_ID) { type = NavType.StringType },
-                ),
-        ) {
         }
         composable(
             route = "${Screen.CreateAnnouncementScreen.route}${Routes.Args.CREATE_ANNOUNCEMENT_SCREEN}",
@@ -181,7 +170,9 @@ fun ClassDetailsNavHost(
                 onCreateAnnouncementSuccess = {
                     navController.navigateUp()
                 },
-                onBackPressed = onBackPressed,
+                onBackPressed = {
+                    navController.navigateUp()
+                },
             )
         }
     }
