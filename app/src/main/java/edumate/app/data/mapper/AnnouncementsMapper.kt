@@ -6,7 +6,9 @@ import edumate.app.domain.model.classroom.announcements.Announcement as Announce
 
 fun Announcement.toAnnouncementDomainModel(): AnnouncementDomainModel {
     return AnnouncementDomainModel(
+        alternateLink = alternateLink,
         creationTime = creationTime,
+        creator = creator?.toUserProfileDomainModel(),
         creatorUserId = creatorUserId,
         id = id,
         materials = materials?.map { it.toMaterialDomainModel() },
@@ -18,7 +20,9 @@ fun Announcement.toAnnouncementDomainModel(): AnnouncementDomainModel {
 
 fun AnnouncementDomainModel.toAnnouncement(): Announcement {
     return Announcement(
+        alternateLink = alternateLink,
         creationTime = creationTime,
+        creator = creator?.toUserProfile(),
         creatorUserId = creatorUserId,
         id = id,
         materials = materials?.map { it.toMaterial() },
