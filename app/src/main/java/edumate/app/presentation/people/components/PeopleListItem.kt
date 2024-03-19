@@ -29,9 +29,9 @@ import edumate.app.R.string as Strings
 @Composable
 fun PeopleListItem(
     profile: UserProfile?,
+    modifier: Modifier = Modifier,
     course: Course,
     userId: String,
-    modifier: Modifier = Modifier,
     onEmailClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onMakeClassOwnerClick: (profile: UserProfile) -> Unit,
@@ -136,6 +136,7 @@ private fun MenuButton(
     onRemoveClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
         IconButton(onClick = { expanded = true }) {
             Icon(

@@ -1,10 +1,5 @@
 package edumate.app.presentation.people
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
-import android.os.Build
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -43,7 +38,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
@@ -64,6 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
 import edumate.app.core.Constants
 import edumate.app.core.Result
+import edumate.app.core.utils.ClipboardUtils
 import edumate.app.core.utils.IntentUtils
 import edumate.app.domain.model.classroom.courses.Course
 import edumate.app.presentation.components.AnimatedErrorScreen
@@ -121,12 +116,12 @@ private fun PeopleScreenContent(
     course: Course,
     onBackPressed: () -> Unit,
 ) {
-    val topBarState = rememberTopAppBarState()
-    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(topBarState)
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val context = LocalContext.current
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val isRefreshing = uiState.isStudentsRefreshing || uiState.isTeachersRefreshing
+    val isTeacher = course.teachers?.any { it.userId == uiState.userId } == true
     val refreshState =
         rememberPullRefreshState(
             refreshing = isRefreshing,
@@ -134,7 +129,6 @@ private fun PeopleScreenContent(
                 onEvent(PeopleUiEvent.OnRefresh)
             },
         )
-    val isTeacher = course.teachers?.any { it.userId == uiState.userId } == true
     val expandedFab by remember {
         derivedStateOf {
             scrollState.firstVisibleItemIndex == 0
@@ -331,9 +325,9 @@ private fun PeopleScreenContent(
                                         ) { teacher ->
                                             PeopleListItem(
                                                 profile = teacher.profile,
+                                                modifier = Modifier.animateItemPlacement(),
                                                 course = course,
                                                 userId = uiState.userId.orEmpty(),
-                                                modifier = Modifier.animateItemPlacement(),
                                                 onEmailClick = {
                                                     val email = teacher.profile?.emailAddress
                                                     email?.let {
@@ -368,9 +362,9 @@ private fun PeopleScreenContent(
                                         ) { student ->
                                             PeopleListItem(
                                                 profile = student.profile,
+                                                modifier = Modifier.animateItemPlacement(),
                                                 course = course,
                                                 userId = uiState.userId.orEmpty(),
-                                                modifier = Modifier.animateItemPlacement(),
                                                 onEmailClick = {
                                                     val email = student.profile?.emailAddress
                                                     email?.let {
@@ -458,9 +452,9 @@ private fun PeopleScreenContent(
         },
         onCopyClick = {
             course.alternateLink?.let {
-                copy(context, it) {
+                ClipboardUtils.copyTextToClipboard(context, it) {
                     coroutineScope.launch {
-                        snackbarHostState.showSnackbar(context.getString(Strings.copied_invitation_link))
+                        snackbarHostState.showSnackbar(context.getString(Strings.invite_link_copied))
                     }
                 }
             }
@@ -497,16 +491,4 @@ private fun PeopleScreenContent(
     )
 
     ProgressDialog(openDialog = uiState.openProgressDialog)
-}
-
-private fun copy(
-    context: Context,
-    textCopied: String,
-    onSuccess: () -> Unit,
-) {
-    val clipboardManager = context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-    clipboardManager.setPrimaryClip(ClipData.newPlainText(textCopied, textCopied))
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.S_V2) {
-        onSuccess()
-    }
 }
