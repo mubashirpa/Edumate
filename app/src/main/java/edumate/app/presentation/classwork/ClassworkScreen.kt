@@ -47,7 +47,7 @@ import edumate.app.core.Result
 import edumate.app.domain.model.classroom.courseWork.CourseWork
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.domain.model.classroom.courses.Course
-import edumate.app.presentation.classwork.components.CourseWorkListItem
+import edumate.app.presentation.classwork.components.ClassworkListItem
 import edumate.app.presentation.classwork.components.CreateCourseWorkBottomSheet
 import edumate.app.presentation.classwork.components.DeleteCourseWorkDialog
 import edumate.app.presentation.components.AnimatedErrorScreen
@@ -181,8 +181,8 @@ fun ClassworkScreen(
                 }
 
                 is Result.Success -> {
-                    val courseWork = courseWorkResult.data
-                    if (courseWork.isNullOrEmpty()) {
+                    val courseWorks = courseWorkResult.data
+                    if (courseWorks.isNullOrEmpty()) {
                         AnimatedErrorScreen(
                             url = Constants.ANIM_CLASSWORK_SCREEN_EMPTY,
                             modifier =
@@ -198,7 +198,7 @@ fun ClassworkScreen(
                         )
                     } else {
                         ClassworkScreenContent(
-                            courseWork = courseWork,
+                            courseWorks = courseWorks,
                             scrollState = scrollState,
                             isTeacher = isTeacher,
                             onViewClick = { id, type ->
@@ -277,7 +277,7 @@ fun ClassworkScreen(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ClassworkScreenContent(
-    courseWork: List<CourseWork>,
+    courseWorks: List<CourseWork>,
     scrollState: LazyListState,
     isTeacher: Boolean,
     onViewClick: (id: String, workType: CourseWorkType) -> Unit,
@@ -292,28 +292,22 @@ private fun ClassworkScreenContent(
         contentPadding = PaddingValues(bottom = bottomMargin),
         content = {
             items(
-                items = courseWork,
+                items = courseWorks,
                 key = { it.id!! },
-            ) { work ->
-                val id = work.id
-                val type = work.workType ?: CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED
-                CourseWorkListItem(
-                    courseWork = work,
+            ) { courseWork ->
+                ClassworkListItem(
+                    courseWork = courseWork,
                     modifier = Modifier.animateItemPlacement(),
                     isTeacher = isTeacher,
-                    workType = type,
-                    onClick = {
-                        id?.also {
-                            onViewClick(it, type)
-                        }
+                    workType = courseWork.workType ?: CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
+                    onClick = { id, workType ->
+                        onViewClick(id, workType)
                     },
-                    onEditClick = {
-                        id?.also {
-                            onEditClick(it, type)
-                        }
+                    onEditClick = { id, workType ->
+                        onEditClick(id, workType)
                     },
                     onDeleteClick = {
-                        onDeleteClick(work)
+                        onDeleteClick(it)
                     },
                 )
             }

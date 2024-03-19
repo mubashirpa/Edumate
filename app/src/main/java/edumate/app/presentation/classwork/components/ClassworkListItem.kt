@@ -45,18 +45,25 @@ import kotlinx.datetime.todayIn
 import edumate.app.R.string as Strings
 
 @Composable
-fun CourseWorkListItem(
+fun ClassworkListItem(
     courseWork: CourseWork,
     modifier: Modifier = Modifier,
     isTeacher: Boolean,
     workType: CourseWorkType,
-    onClick: () -> Unit,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit,
+    onClick: (id: String, workType: CourseWorkType) -> Unit,
+    onEditClick: (id: String, workType: CourseWorkType) -> Unit,
+    onDeleteClick: (courseWork: CourseWork) -> Unit,
 ) {
+    val id = courseWork.id
+
     ClassworkListItemContent(
         title = courseWork.title.orEmpty(),
-        modifier = modifier.clickable(onClick = onClick),
+        modifier =
+            modifier.clickable {
+                id?.let {
+                    onClick(it, workType)
+                }
+            },
         leadingIcon =
             when (workType) {
                 CourseWorkType.MULTIPLE_CHOICE_QUESTION -> Icons.AutoMirrored.Outlined.LiveHelp
@@ -68,8 +75,14 @@ fun CourseWorkListItem(
         creationTime = courseWork.creationTime.orEmpty(),
         dueDate = courseWork.dueDate,
         dueTime = courseWork.dueTime,
-        onEditClick = onEditClick,
-        onDeleteClick = onDeleteClick,
+        onEditClick = {
+            id?.let {
+                onEditClick(it, workType)
+            }
+        },
+        onDeleteClick = {
+            onDeleteClick(courseWork)
+        },
     )
 }
 

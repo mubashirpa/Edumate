@@ -54,7 +54,7 @@ fun DeleteCourseWorkDialog(
             null -> {
                 // If workType is null, it indicates that the item is a Material.
                 title = stringResource(id = Strings.dialog_title_delete_material)
-                message = ""
+                message = stringResource(id = Strings.dialog_message_delete_material)
             }
 
             else -> {
