@@ -300,14 +300,14 @@ private fun ClassworkScreenContent(
                     modifier = Modifier.animateItemPlacement(),
                     isTeacher = isTeacher,
                     workType = courseWork.workType ?: CourseWorkType.COURSE_WORK_TYPE_UNSPECIFIED,
-                    onClick = { id, workType ->
-                        onViewClick(id, workType)
-                    },
                     onEditClick = { id, workType ->
                         onEditClick(id, workType)
                     },
                     onDeleteClick = {
                         onDeleteClick(it)
+                    },
+                    onClick = { id, workType ->
+                        onViewClick(id, workType)
                     },
                 )
             }

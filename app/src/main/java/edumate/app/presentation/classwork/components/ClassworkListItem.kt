@@ -26,12 +26,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
+import edumate.app.core.utils.DateTimeUtils
+import edumate.app.core.utils.RelativeDate
 import edumate.app.domain.model.classroom.courseWork.CourseWork
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.domain.model.classroom.courseWork.DueDate
 import edumate.app.domain.model.classroom.courseWork.DueTime
 import edumate.app.presentation.components.FilledTonalIcon
-import kotlinx.datetime.Clock
+import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -41,7 +43,6 @@ import kotlinx.datetime.format
 import kotlinx.datetime.format.MonthNames
 import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
-import kotlinx.datetime.todayIn
 import edumate.app.R.string as Strings
 
 @Composable
@@ -50,9 +51,9 @@ fun ClassworkListItem(
     modifier: Modifier = Modifier,
     isTeacher: Boolean,
     workType: CourseWorkType,
-    onClick: (id: String, workType: CourseWorkType) -> Unit,
     onEditClick: (id: String, workType: CourseWorkType) -> Unit,
     onDeleteClick: (courseWork: CourseWork) -> Unit,
+    onClick: (id: String, workType: CourseWorkType) -> Unit,
 ) {
     val id = courseWork.id
 
@@ -104,39 +105,7 @@ private fun ClassworkListItemContent(
             try {
                 Instant.parse(creationTime).toLocalDateTime(TimeZone.currentSystemDefault())
             } catch (e: Exception) {
-                LocalDateTime(0, 1, 1, 0, 0, 0, 0)
-            }
-        }
-    val posted =
-        remember {
-            if (isToday(creationDateTime.date)) {
-                creationDateTime.format(
-                    LocalDateTime.Format {
-                        time(
-                            LocalTime.Format {
-                                amPmHour()
-                                char(':')
-                                minute()
-                                char(' ')
-                                amPmMarker("AM", "PM")
-                            },
-                        )
-                    },
-                )
-            } else {
-                creationDateTime.format(
-                    LocalDateTime.Format {
-                        date(
-                            LocalDate.Format {
-                                monthName(MonthNames.ENGLISH_ABBREVIATED)
-                                char(' ')
-                                dayOfMonth()
-                                chars(", ")
-                                year()
-                            },
-                        )
-                    },
-                )
+                null
             }
         }
     val trailingContent: @Composable (() -> Unit)? =
@@ -161,74 +130,17 @@ private fun ClassworkListItemContent(
         },
         modifier = modifier,
         supportingContent = {
-            if (isTeacher || isMaterial) {
-                Text(text = stringResource(id = Strings.posted_, posted))
-            } else {
-                if (dueDate != null) {
-                    val dueDateTime =
-                        remember {
-                            LocalDateTime(
-                                dueDate.year ?: 0,
-                                dueDate.month ?: 1,
-                                dueDate.day ?: 1,
-                                dueTime?.hours ?: 0,
-                                dueTime?.minutes ?: 0,
-                                dueTime?.seconds ?: 0,
-                                dueTime?.nanos ?: 0,
-                            )
-                        }
-                    val due =
-                        if (isToday(dueDateTime.date)) {
-                            val formattedDue =
-                                dueDateTime.format(
-                                    LocalDateTime.Format {
-                                        time(
-                                            LocalTime.Format {
-                                                hour()
-                                                char(':')
-                                                minute()
-                                                char(' ')
-                                                amPmMarker("AM", "PM")
-                                            },
-                                        )
-                                    },
-                                )
-                            stringResource(id = Strings.due_today_, formattedDue)
-                        } else {
-                            val isThisYear = isThisYear(dueDateTime.date)
-                            val formattedDue =
-                                dueDateTime.format(
-                                    LocalDateTime.Format {
-                                        date(
-                                            LocalDate.Format {
-                                                monthName(MonthNames.ENGLISH_ABBREVIATED)
-                                                char(' ')
-                                                dayOfMonth()
-                                                chars(", ")
-                                                if (!isThisYear) {
-                                                    year()
-                                                }
-                                            },
-                                        )
-                                        if (isThisYear) {
-                                            time(
-                                                LocalTime.Format {
-                                                    amPmHour()
-                                                    char(':')
-                                                    minute()
-                                                    char(' ')
-                                                    amPmMarker("AM", "PM")
-                                                },
-                                            )
-                                        }
-                                    },
-                                )
-                            stringResource(id = Strings.due_, formattedDue)
-                        }
-                    Text(text = due)
-                } else {
-                    Text(text = stringResource(id = Strings.no_due_date))
-                }
+            if (creationDateTime != null) {
+                val formattedDateTime =
+                    formatDate(
+                        creationDateTime = creationDateTime,
+                        dueDate = dueDate,
+                        dueTime = dueTime,
+                        isMaterial = isMaterial,
+                        isTeacher = isTeacher,
+                    )
+
+                Text(text = formattedDateTime)
             }
         },
         leadingContent = {
@@ -278,30 +190,177 @@ private fun MenuButton(
     }
 }
 
+@Composable
+private fun formatDate(
+    creationDateTime: LocalDateTime,
+    dueDate: DueDate?,
+    dueTime: DueTime?,
+    isMaterial: Boolean,
+    isTeacher: Boolean,
+): String {
+    val postedRelativeDate = DateTimeUtils.getRelativeDateStatus(creationDateTime.date)
+    val posted =
+        when (postedRelativeDate) {
+            RelativeDate.TODAY -> {
+                val postedTime =
+                    creationDateTime.format(
+                        LocalDateTime.Format {
+                            time(
+                                LocalTime.Format {
+                                    amPmHour()
+                                    char(':')
+                                    minute()
+                                    char(' ')
+                                    amPmMarker("AM", "PM")
+                                },
+                            )
+                        },
+                    )
+
+                stringResource(id = Strings.posted_, postedTime)
+            }
+
+            RelativeDate.YESTERDAY -> {
+                stringResource(id = Strings.posted_yesterday)
+            }
+
+            else -> {
+                val postedDate =
+                    creationDateTime.format(
+                        LocalDateTime.Format {
+                            date(
+                                LocalDate.Format {
+                                    monthName(MonthNames.ENGLISH_ABBREVIATED)
+                                    char(' ')
+                                    dayOfMonth()
+                                    if (!DateTimeUtils.isThisYear(creationDateTime.date)) {
+                                        chars(", ")
+                                        year()
+                                    }
+                                },
+                            )
+                        },
+                    )
+
+                stringResource(id = Strings.posted_, postedDate)
+            }
+        }
+    val due =
+        if (dueDate != null && dueTime != null) {
+            val dueDateTime =
+                LocalDateTime(
+                    dueDate.year ?: 0,
+                    dueDate.month ?: 1,
+                    dueDate.day ?: 1,
+                    dueTime.hours ?: 0,
+                    dueTime.minutes ?: 0,
+                    dueTime.seconds ?: 0,
+                    dueTime.nanos ?: 0,
+                )
+            val dueRelativeDate =
+                DateTimeUtils.getRelativeDateStatus(dueDateTime.date)
+            val formattedDueTime =
+                dueDateTime.format(
+                    LocalDateTime.Format {
+                        time(
+                            LocalTime.Format {
+                                hour()
+                                char(':')
+                                minute()
+                                char(' ')
+                                amPmMarker("AM", "PM")
+                            },
+                        )
+                    },
+                )
+
+            when (dueRelativeDate) {
+                RelativeDate.TODAY -> {
+                    if (isTeacher) {
+                        stringResource(id = Strings.due_today)
+                    } else {
+                        stringResource(id = Strings.due_today_, formattedDueTime)
+                    }
+                }
+
+                RelativeDate.TOMORROW -> {
+                    if (isTeacher) {
+                        stringResource(id = Strings.due_tomorrow)
+                    } else {
+                        stringResource(id = Strings.due_tomorrow_, formattedDueTime)
+                    }
+                }
+
+                RelativeDate.YESTERDAY -> {
+                    if (isTeacher) {
+                        stringResource(id = Strings.due_yesterday)
+                    } else {
+                        stringResource(
+                            id = Strings.due_yesterday_,
+                            formattedDueTime,
+                        )
+                    }
+                }
+
+                RelativeDate.OTHER -> {
+                    val isThisYear = DateTimeUtils.isThisYear(dueDateTime.date)
+                    val formattedDueDate =
+                        dueDateTime.format(
+                            LocalDateTime.Format {
+                                date(
+                                    LocalDate.Format {
+                                        monthName(MonthNames.ENGLISH_ABBREVIATED)
+                                        char(' ')
+                                        dayOfMonth()
+                                        chars(", ")
+                                        if (!isThisYear) {
+                                            year()
+                                        }
+                                    },
+                                )
+                                if (isThisYear) {
+                                    time(
+                                        LocalTime.Format {
+                                            amPmHour()
+                                            char(':')
+                                            minute()
+                                            char(' ')
+                                            amPmMarker("AM", "PM")
+                                        },
+                                    )
+                                }
+                            },
+                        )
+
+                    stringResource(id = Strings.due_, formattedDueDate)
+                }
+            }
+        } else {
+            if (isTeacher) {
+                posted
+            } else {
+                stringResource(id = Strings.no_due_date)
+            }
+        }
+    return if (isMaterial) posted else due
+}
+
 @Preview
 @Composable
 private fun ClassworkListItemPreview(
     @PreviewParameter(LoremIpsum::class) title: String,
 ) {
-    ClassworkListItemContent(
-        title = title,
-        leadingIcon = Icons.AutoMirrored.Outlined.Assignment,
-        isMaterial = false,
-        isTeacher = true,
-        creationTime = "2024-03-05T16:29:37Z",
-        dueDate = DueDate(8, 2, 2024),
-        dueTime = DueTime(),
-        onEditClick = {},
-        onDeleteClick = {},
-    )
-}
-
-private fun isToday(date: LocalDate): Boolean {
-    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    return date == today
-}
-
-private fun isThisYear(date: LocalDate): Boolean {
-    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
-    return date.year == today.year
+    EdumateTheme {
+        ClassworkListItemContent(
+            title = title,
+            leadingIcon = Icons.AutoMirrored.Outlined.Assignment,
+            isMaterial = false,
+            isTeacher = false,
+            creationTime = "2024-01-01T00:00:00Z",
+            dueDate = DueDate(1, 1, 2024),
+            dueTime = DueTime(),
+            onEditClick = {},
+            onDeleteClick = {},
+        )
+    }
 }

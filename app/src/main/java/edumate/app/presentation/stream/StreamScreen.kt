@@ -317,9 +317,6 @@ fun StreamScreen(
                                         modifier = Modifier.animateItemPlacement(),
                                         course = course,
                                         userId = uiState.user?.id.orEmpty(),
-                                        onClick = { id ->
-                                            navigateToViewAnnouncement(courseId, id)
-                                        },
                                         onEditClick = { id ->
                                             navigateToEditAnnouncement(courseId, id)
                                         },
@@ -340,6 +337,9 @@ fun StreamScreen(
                                                     )
                                                 }
                                             }
+                                        },
+                                        onClick = { id ->
+                                            navigateToViewAnnouncement(courseId, id)
                                         },
                                     )
                                 }

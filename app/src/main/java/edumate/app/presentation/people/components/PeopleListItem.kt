@@ -19,11 +19,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameter
-import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import edumate.app.domain.model.classroom.courses.Course
 import edumate.app.domain.model.userProfiles.UserProfile
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.presentation.ui.theme.EdumateTheme
 import edumate.app.R.string as Strings
 
 @Composable
@@ -57,21 +56,17 @@ fun PeopleListItem(
         userId = profileId.orEmpty(),
         name = profile?.name?.fullName.orEmpty(),
         photoUrl = profile?.photoUrl,
+        modifier = modifier,
+        isMe = isMe,
         userRole = userRole,
         targetUserRole = targetUserRole,
-        isMe = isMe,
-        modifier = modifier,
         onEmailClick = onEmailClick,
         onLeaveClassClick = onLeaveClassClick,
         onMakeClassOwnerClick = {
-            if (profile != null) {
-                onMakeClassOwnerClick(profile)
-            }
+            profile?.let(onMakeClassOwnerClick)
         },
         onRemoveClick = {
-            if (profile != null) {
-                onRemoveClick(profile)
-            }
+            profile?.let(onRemoveClick)
         },
     )
 }
@@ -81,10 +76,10 @@ private fun PeopleListItemContent(
     userId: String,
     name: String,
     photoUrl: String?,
+    modifier: Modifier = Modifier,
+    isMe: Boolean,
     userRole: UserRole,
     targetUserRole: TargetUserRole,
-    isMe: Boolean,
-    modifier: Modifier = Modifier,
     onEmailClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onMakeClassOwnerClick: () -> Unit,
@@ -341,21 +336,21 @@ private fun MenuButton(
 
 @Preview
 @Composable
-private fun PeopleListItemPreview(
-    @PreviewParameter(PersonName::class) name: String,
-) {
-    PeopleListItemContent(
-        userId = name,
-        name = name,
-        photoUrl = null,
-        userRole = UserRole.OWNER,
-        targetUserRole = TargetUserRole.TEACHER,
-        isMe = false,
-        onEmailClick = {},
-        onLeaveClassClick = {},
-        onMakeClassOwnerClick = {},
-        onRemoveClick = {},
-    )
+private fun PeopleListItemPreview() {
+    EdumateTheme {
+        PeopleListItemContent(
+            userId = "",
+            name = "User",
+            photoUrl = null,
+            userRole = UserRole.OWNER,
+            targetUserRole = TargetUserRole.TEACHER,
+            isMe = false,
+            onEmailClick = {},
+            onLeaveClassClick = {},
+            onMakeClassOwnerClick = {},
+            onRemoveClick = {},
+        )
+    }
 }
 
 private enum class UserRole {
@@ -370,5 +365,3 @@ private enum class TargetUserRole {
     STUDENT,
     INVITED,
 }
-
-private class PersonName : LoremIpsum(2)

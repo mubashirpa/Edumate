@@ -2,7 +2,6 @@ package edumate.app.presentation.stream.components
 
 import android.content.Intent
 import android.net.Uri
-import android.text.format.DateUtils
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -41,14 +40,31 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import edumate.app.core.utils.DateTimeUtils
 import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
+import edumate.app.core.utils.RelativeDate
+import edumate.app.domain.model.classroom.Material
 import edumate.app.domain.model.classroom.announcements.Announcement
 import edumate.app.domain.model.classroom.courses.Course
+import edumate.app.domain.model.userProfiles.Name
+import edumate.app.domain.model.userProfiles.UserProfile
 import edumate.app.presentation.components.UserAvatar
+import edumate.app.presentation.ui.theme.EdumateTheme
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format
+import kotlinx.datetime.format.MonthNames
+import kotlinx.datetime.format.char
+import kotlinx.datetime.toLocalDateTime
 import edumate.app.R.string as Strings
 
 @Composable
@@ -57,18 +73,12 @@ fun AnnouncementListItem(
     modifier: Modifier = Modifier,
     course: Course,
     userId: String,
-    onClick: (id: String) -> Unit,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
     onCopyLinkClick: (link: String) -> Unit,
+    onClick: (id: String) -> Unit,
 ) {
-    val context = LocalContext.current
-    val isCreator = announcement.creatorUserId == userId
     val id = announcement.id
-    val fileUtils =
-        remember {
-            FileUtils(context)
-        }
     val userRole =
         when {
             course.teachers?.any { it.userId == userId } == true -> UserRole.TEACHER
@@ -80,10 +90,70 @@ fun AnnouncementListItem(
             else -> UserRole.STUDENT
         }
 
-    OutlinedCard(
+    AnnouncementListItemContent(
+        text = announcement.text.orEmpty(),
+        modifier = modifier,
+        materials = announcement.materials.orEmpty(),
+        isCreator = announcement.creatorUserId == userId,
+        creator = announcement.creator,
+        creationTime = announcement.creationTime.orEmpty(),
+        updateTime = announcement.updateTime.orEmpty(),
+        userRole = userRole,
+        targetUserRole = targetUserRole,
+        onEditClick = {
+            id?.let(onEditClick)
+        },
+        onDeleteClick = {
+            id?.let(onDeleteClick)
+        },
+        onCopyLinkClick = {
+            announcement.alternateLink?.let(onCopyLinkClick)
+        },
         onClick = {
             id?.let(onClick)
         },
+    )
+}
+
+@Composable
+private fun AnnouncementListItemContent(
+    text: String,
+    modifier: Modifier = Modifier,
+    materials: List<Material>,
+    isCreator: Boolean,
+    creator: UserProfile?,
+    creationTime: String,
+    updateTime: String,
+    userRole: UserRole,
+    targetUserRole: UserRole,
+    onEditClick: () -> Unit,
+    onDeleteClick: () -> Unit,
+    onCopyLinkClick: () -> Unit,
+    onClick: () -> Unit,
+) {
+    val context = LocalContext.current
+    val fileUtils =
+        remember {
+            FileUtils(context)
+        }
+    val systemTimeZone = TimeZone.currentSystemDefault()
+    val creationDateTime =
+        remember {
+            try {
+                Instant.parse(creationTime).toLocalDateTime(systemTimeZone)
+            } catch (e: Exception) {
+                null
+            }
+        }
+    val updateDateTime =
+        try {
+            Instant.parse(updateTime).toLocalDateTime(systemTimeZone)
+        } catch (e: Exception) {
+            null
+        }
+
+    OutlinedCard(
+        onClick = onClick,
         modifier = modifier,
         border =
             BorderStroke(
@@ -94,45 +164,22 @@ fun AnnouncementListItem(
         ListItem(
             headlineContent = {
                 Text(
-                    text = announcement.creator?.name?.fullName.orEmpty(),
+                    text = creator?.name?.fullName.orEmpty(),
                     color = MaterialTheme.colorScheme.onSurface,
                     overflow = TextOverflow.Ellipsis,
                     maxLines = 1,
                 )
             },
             supportingContent = {
-                val creationDateTime =
-                    remember {
-                        try {
-                            Instant.parse(announcement.creationTime.orEmpty())
-                        } catch (e: Exception) {
-                            null
-                        }
-                    }
-                val updateDateTime =
-                    remember {
-                        try {
-                            Instant.parse(announcement.updateTime.orEmpty())
-                        } catch (e: Exception) {
-                            null
-                        }
-                    }
-
                 if (creationDateTime != null) {
-                    val posted =
-                        DateUtils.getRelativeTimeSpanString(creationDateTime.toEpochMilliseconds())
-                    val text =
-                        if (updateDateTime != null && updateDateTime != creationDateTime) {
-                            val edited =
-                                DateUtils.getRelativeTimeSpanString(updateDateTime.toEpochMilliseconds())
-
-                            stringResource(id = Strings._edited_, posted, edited)
-                        } else {
-                            "$posted"
-                        }
+                    val formattedDateTime =
+                        formatDate(
+                            creationDateTime = creationDateTime,
+                            updateDateTime = updateDateTime,
+                        )
 
                     Text(
-                        text = text,
+                        text = formattedDateTime,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
@@ -141,9 +188,9 @@ fun AnnouncementListItem(
             },
             leadingContent = {
                 UserAvatar(
-                    id = announcement.creator?.id.orEmpty(),
-                    fullName = announcement.creator?.name?.fullName.orEmpty(),
-                    photoUrl = announcement.creator?.photoUrl,
+                    id = creator?.id.orEmpty(),
+                    fullName = creator?.name?.fullName.orEmpty(),
+                    photoUrl = creator?.photoUrl,
                 )
             },
             trailingContent = {
@@ -151,15 +198,9 @@ fun AnnouncementListItem(
                     userRole = userRole,
                     targetUserRole = targetUserRole,
                     isCreator = isCreator,
-                    onEditClick = {
-                        id?.let(onEditClick)
-                    },
-                    onDeleteClick = {
-                        id?.let(onDeleteClick)
-                    },
-                    onCopyLinkClick = {
-                        announcement.alternateLink?.let(onCopyLinkClick)
-                    },
+                    onEditClick = onEditClick,
+                    onDeleteClick = onDeleteClick,
+                    onCopyLinkClick = onCopyLinkClick,
                 )
             },
         )
@@ -170,10 +211,10 @@ fun AnnouncementListItem(
                     .padding(top = 8.dp, bottom = 16.dp),
         ) {
             Text(
-                text = announcement.text.orEmpty(),
+                text = text,
                 modifier = Modifier.padding(horizontal = 16.dp),
             )
-            if (!announcement.materials.isNullOrEmpty()) {
+            if (materials.isNotEmpty()) {
                 Row(
                     modifier =
                         Modifier
@@ -183,7 +224,7 @@ fun AnnouncementListItem(
                             .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    announcement.materials.forEach { material ->
+                    materials.forEach { material ->
                         when {
                             material.driveFile != null -> {
                                 val uri =
@@ -338,6 +379,93 @@ private fun MenuButton(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun formatDate(
+    creationDateTime: LocalDateTime,
+    updateDateTime: LocalDateTime?,
+): String {
+    val posted = formatDate(dateTime = creationDateTime)
+    val edited = updateDateTime?.let { formatDate(dateTime = it) }
+
+    return if (updateDateTime != null && creationDateTime.compareTo(updateDateTime) == 0) {
+        posted
+    } else {
+        stringResource(
+            id = Strings.posted_edited_,
+            posted,
+            edited.toString(),
+        )
+    }
+}
+
+@Composable
+private fun formatDate(dateTime: LocalDateTime): String {
+    val relativeDate = DateTimeUtils.getRelativeDateStatus(dateTime.date)
+
+    return when (relativeDate) {
+        RelativeDate.TODAY -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    time(
+                        LocalTime.Format {
+                            amPmHour()
+                            char(':')
+                            minute()
+                            char(' ')
+                            amPmMarker("AM", "PM")
+                        },
+                    )
+                },
+            )
+        }
+
+        RelativeDate.YESTERDAY -> {
+            stringResource(id = Strings.yesterday)
+        }
+
+        else -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    date(
+                        LocalDate.Format {
+                            monthName(MonthNames.ENGLISH_ABBREVIATED)
+                            char(' ')
+                            dayOfMonth()
+                            if (!DateTimeUtils.isThisYear(dateTime.date)) {
+                                chars(", ")
+                                year()
+                            }
+                        },
+                    )
+                },
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AnnouncementListItemPreview(
+    @PreviewParameter(LoremIpsum::class) text: String,
+) {
+    EdumateTheme {
+        AnnouncementListItemContent(
+            text = text.take(100),
+            materials = emptyList(),
+            isCreator = true,
+            creator = UserProfile(name = Name(fullName = "User")),
+            creationTime = "2024-01-01T00:00:00Z",
+            updateTime = "2024-01-01T01:00:00Z",
+            userRole = UserRole.TEACHER,
+            targetUserRole = UserRole.TEACHER,
+            onEditClick = {},
+            onDeleteClick = {},
+            onCopyLinkClick = {},
+            onClick = {},
+        )
     }
 }
 
