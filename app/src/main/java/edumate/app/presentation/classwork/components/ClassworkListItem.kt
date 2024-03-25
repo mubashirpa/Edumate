@@ -264,7 +264,7 @@ private fun formatDate(
                     LocalDateTime.Format {
                         time(
                             LocalTime.Format {
-                                hour()
+                                amPmHour()
                                 char(':')
                                 minute()
                                 char(' ')
