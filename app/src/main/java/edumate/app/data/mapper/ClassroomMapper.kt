@@ -55,7 +55,7 @@ fun LinkDomainModel.toLink(): Link {
     )
 }
 
-private fun DriveFile.toDriveFileDomainModel(): DriveFileDomainModel {
+fun DriveFile.toDriveFileDomainModel(): DriveFileDomainModel {
     return DriveFileDomainModel(
         alternateLink = alternateLink,
         thumbnailUrl = thumbnailUrl,
@@ -63,7 +63,7 @@ private fun DriveFile.toDriveFileDomainModel(): DriveFileDomainModel {
     )
 }
 
-private fun DriveFileDomainModel.toDriveFile(): DriveFile {
+fun DriveFileDomainModel.toDriveFile(): DriveFile {
     return DriveFile(
         alternateLink = alternateLink,
         thumbnailUrl = thumbnailUrl,

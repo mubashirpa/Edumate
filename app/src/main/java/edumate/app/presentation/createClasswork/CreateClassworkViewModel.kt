@@ -495,7 +495,7 @@ class CreateClassworkViewModel
             val filePath =
                 Firebase.Storage.COURSE_WORK_MATERIALS_PATH
                     .replace("{courseId}", courseId)
-                    .replace("{id}", courseWorkId)
+                    .replace("{courseWorkId}", courseWorkId)
                     .plus("/$title")
 
             uploadFileUseCase(uri, filePath).onEach { result ->
@@ -540,12 +540,12 @@ class CreateClassworkViewModel
             position: Int,
             courseWorkId: String,
         ) {
-            val fileName = uiState.attachments[position].driveFile?.title
+            val title = uiState.attachments[position].driveFile?.title
             val filePath =
                 Firebase.Storage.COURSE_WORK_MATERIALS_PATH
                     .replace("{courseId}", courseId)
-                    .replace("{id}", courseWorkId)
-                    .plus("/$fileName")
+                    .replace("{courseWorkId}", courseWorkId)
+                    .plus("/$title")
 
             deleteFileUseCase(filePath).onEach { result ->
                 when (result) {

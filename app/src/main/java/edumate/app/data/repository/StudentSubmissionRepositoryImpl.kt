@@ -1,6 +1,7 @@
 package edumate.app.data.repository
 
 import edumate.app.core.Server
+import edumate.app.data.remote.dto.classroom.studentSubmissions.ModifyAttachments
 import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmission
 import edumate.app.data.remote.dto.classroom.studentSubmissions.StudentSubmissionsDto
 import edumate.app.data.remote.dto.classroom.studentSubmissions.SubmissionState
@@ -9,10 +10,12 @@ import edumate.app.domain.repository.StudentSubmissionRepository
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
+import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
-import io.ktor.client.request.put
 import io.ktor.client.request.setBody
 import io.ktor.http.ContentType
+import io.ktor.http.HttpHeaders
 import io.ktor.http.appendPathSegments
 import io.ktor.http.contentType
 import javax.inject.Inject
@@ -23,6 +26,7 @@ class StudentSubmissionRepositoryImpl
         private val httpClient: HttpClient,
     ) : StudentSubmissionRepository {
         override suspend fun get(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
             id: String,
@@ -36,17 +40,19 @@ class StudentSubmissionRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
                     appendPathSegments(id)
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun list(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
-            userId: String?,
-            states: List<SubmissionState>?,
             late: LateValues?,
             pageSize: Int?,
-            pageToken: String?,
+            page: Int?,
+            states: List<SubmissionState>?,
+            userId: String?,
         ): StudentSubmissionsDto {
             return httpClient.get(Server.API_BASE_URL) {
                 url {
@@ -61,8 +67,8 @@ class StudentSubmissionRepositoryImpl
                     if (pageSize != null) {
                         parameters.append(Server.Parameters.PAGE_SIZE, pageSize.toString())
                     }
-                    if (pageToken != null) {
-                        parameters.append(Server.Parameters.PAGE_TOKEN, pageToken)
+                    if (page != null) {
+                        parameters.append(Server.Parameters.PAGE, page.toString())
                     }
                     states?.forEach { state ->
                         parameters.append(Server.Parameters.STATES, state.name)
@@ -71,16 +77,41 @@ class StudentSubmissionRepositoryImpl
                         parameters.append(Server.Parameters.USER_ID, userId)
                     }
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
-        override suspend fun update(
+        override suspend fun modifyAttachments(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
             id: String,
+            modifyAttachments: ModifyAttachments,
+        ): StudentSubmission {
+            return httpClient.post(Server.API_BASE_URL) {
+                url {
+                    appendPathSegments(Server.ENDPOINT_COURSES)
+                    appendPathSegments(courseId)
+                    appendPathSegments(Server.ENDPOINT_COURSE_WORK)
+                    appendPathSegments(courseWorkId)
+                    appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
+                    appendPathSegments("$id:${Server.Parameters.MODIFY_ATTACHMENTS}")
+                }
+                contentType(ContentType.Application.Json)
+                setBody(modifyAttachments)
+                header(HttpHeaders.Authorization, accessToken)
+            }.body()
+        }
+
+        override suspend fun patch(
+            accessToken: String,
+            courseId: String,
+            courseWorkId: String,
+            id: String,
+            updateMask: String,
             studentSubmission: StudentSubmission,
         ): StudentSubmission {
-            return httpClient.put(Server.API_BASE_URL) {
+            return httpClient.patch(Server.API_BASE_URL) {
                 url {
                     appendPathSegments(Server.ENDPOINT_COURSES)
                     appendPathSegments(courseId)
@@ -88,13 +119,16 @@ class StudentSubmissionRepositoryImpl
                     appendPathSegments(courseWorkId)
                     appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
                     appendPathSegments(id)
+                    parameters.append(Server.Parameters.UPDATE_MASK, updateMask)
                 }
                 contentType(ContentType.Application.Json)
                 setBody(studentSubmission)
+                header(HttpHeaders.Authorization, accessToken)
             }.body()
         }
 
         override suspend fun reclaim(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
             id: String,
@@ -108,10 +142,12 @@ class StudentSubmissionRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
                     appendPathSegments("$id:${Server.Parameters.RECLAIM}")
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun `return`(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
             id: String,
@@ -125,10 +161,12 @@ class StudentSubmissionRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
                     appendPathSegments("$id:${Server.Parameters.RETURN}")
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
 
         override suspend fun turnIn(
+            accessToken: String,
             courseId: String,
             courseWorkId: String,
             id: String,
@@ -142,6 +180,7 @@ class StudentSubmissionRepositoryImpl
                     appendPathSegments(Server.ENDPOINT_STUDENT_SUBMISSIONS)
                     appendPathSegments("$id:${Server.Parameters.TURN_IN}")
                 }
+                header(HttpHeaders.Authorization, accessToken)
             }
         }
     }
