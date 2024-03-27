@@ -1,6 +1,5 @@
 package edumate.app.presentation.createClasswork.components
 
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,12 +24,8 @@ import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.outlined.LiveHelp
 import androidx.compose.material.icons.automirrored.outlined.Subject
 import androidx.compose.material.icons.filled.Attachment
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.InsertChart
@@ -69,8 +64,6 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edumate.app.core.utils.FileType
-import edumate.app.core.utils.FileUtils
 import edumate.app.domain.model.classroom.courseWork.CourseWorkType
 import edumate.app.presentation.components.FieldListItem
 import edumate.app.presentation.createClasswork.CourseName
@@ -94,11 +87,6 @@ fun ContentQuestion(
     uiState: CreateClassworkUiState,
     onEvent: (CreateClassworkUiEvent) -> Unit,
 ) {
-    val context = LocalContext.current
-    val fileUtils =
-        remember {
-            FileUtils(context)
-        }
     val questionTypes = stringArrayResource(id = Arrays.question_type)
     val focusRequester =
         remember {
@@ -322,15 +310,7 @@ fun ContentQuestion(
                                     if (material.link?.thumbnailUrl.isNullOrEmpty()) {
                                         val icon =
                                             if (material.driveFile != null) {
-                                                val mimeType =
-                                                    fileUtils.getMimeType(Uri.parse(material.driveFile.alternateLink.orEmpty()))
-                                                when (fileUtils.getFileType(mimeType)) {
-                                                    FileType.IMAGE -> Icons.Default.Image
-                                                    FileType.VIDEO -> Icons.Default.VideoFile
-                                                    FileType.AUDIO -> Icons.Default.AudioFile
-                                                    FileType.PDF -> Icons.Default.PictureAsPdf
-                                                    FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
-                                                }
+                                                Icons.AutoMirrored.Filled.InsertDriveFile // TODO("Add icons based on file type")
                                             } else if (material.link != null) {
                                                 Icons.Default.Link
                                             } else {

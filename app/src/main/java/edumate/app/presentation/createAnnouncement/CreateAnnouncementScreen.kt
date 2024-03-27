@@ -1,6 +1,5 @@
 package edumate.app.presentation.createAnnouncement
 
-import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.border
@@ -28,12 +27,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.filled.Subject
 import androidx.compose.material.icons.filled.Attachment
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -75,7 +70,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.flowWithLifecycle
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
-import edumate.app.core.utils.FileType
 import edumate.app.core.utils.FileUtils
 import edumate.app.presentation.components.AddAttachmentBottomSheet
 import edumate.app.presentation.components.AddLinkDialog
@@ -295,15 +289,7 @@ private fun CreateAnnouncementScreenContent(
                                         if (material.link?.thumbnailUrl.isNullOrEmpty()) {
                                             val icon =
                                                 if (material.driveFile != null) {
-                                                    val mimeType =
-                                                        fileUtils.getMimeType(Uri.parse(material.driveFile.alternateLink.orEmpty()))
-                                                    when (fileUtils.getFileType(mimeType)) {
-                                                        FileType.IMAGE -> Icons.Default.Image
-                                                        FileType.VIDEO -> Icons.Default.VideoFile
-                                                        FileType.AUDIO -> Icons.Default.AudioFile
-                                                        FileType.PDF -> Icons.Default.PictureAsPdf
-                                                        FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
-                                                    }
+                                                    Icons.AutoMirrored.Filled.InsertDriveFile // TODO("Add icons based on file type")
                                                 } else if (material.link != null) {
                                                     Icons.Default.Link
                                                 } else {

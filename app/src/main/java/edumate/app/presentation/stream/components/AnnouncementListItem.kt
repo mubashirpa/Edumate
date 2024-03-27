@@ -15,12 +15,8 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -46,8 +42,6 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import edumate.app.core.utils.DateTimeUtils
-import edumate.app.core.utils.FileType
-import edumate.app.core.utils.FileUtils
 import edumate.app.core.utils.RelativeDate
 import edumate.app.domain.model.classroom.Material
 import edumate.app.domain.model.classroom.announcements.Announcement
@@ -132,10 +126,6 @@ private fun AnnouncementListItemContent(
     onClick: () -> Unit,
 ) {
     val context = LocalContext.current
-    val fileUtils =
-        remember {
-            FileUtils(context)
-        }
     val systemTimeZone = TimeZone.currentSystemDefault()
     val creationDateTime =
         remember {
@@ -227,28 +217,13 @@ private fun AnnouncementListItemContent(
                     materials.forEach { material ->
                         when {
                             material.driveFile != null -> {
-                                val uri =
-                                    remember {
-                                        Uri.parse(material.driveFile.alternateLink)
-                                    }
-                                val mimeType =
-                                    remember {
-                                        fileUtils.getMimeType(uri)
-                                    }
-                                val icon =
-                                    remember {
-                                        when (fileUtils.getFileType(mimeType)) {
-                                            FileType.IMAGE -> Icons.Default.Image
-                                            FileType.VIDEO -> Icons.Default.VideoFile
-                                            FileType.AUDIO -> Icons.Default.AudioFile
-                                            FileType.PDF -> Icons.Default.PictureAsPdf
-                                            FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
-                                        }
-                                    }
-
                                 AssistChip(
                                     onClick = {
-                                        val browserIntent = Intent(Intent.ACTION_VIEW, uri)
+                                        val browserIntent =
+                                            Intent(
+                                                Intent.ACTION_VIEW,
+                                                Uri.parse(material.driveFile.alternateLink),
+                                            )
                                         context.startActivity(browserIntent)
                                     },
                                     label = {
@@ -261,7 +236,7 @@ private fun AnnouncementListItemContent(
                                     modifier = Modifier.widthIn(max = 180.dp),
                                     leadingIcon = {
                                         Icon(
-                                            imageVector = icon,
+                                            imageVector = Icons.AutoMirrored.Filled.InsertDriveFile, // TODO("Add icons based on file type")
                                             contentDescription = null,
                                         )
                                     },
@@ -366,16 +341,16 @@ private fun MenuButton(
                                 onDeleteClick()
                             },
                         )
-                        DropdownMenuItem(
-                            text = {
-                                Text(text = stringResource(id = Strings.copy_link))
-                            },
-                            onClick = {
-                                expanded = false
-                                onCopyLinkClick()
-                            },
-                        )
                     }
+                    DropdownMenuItem(
+                        text = {
+                            Text(text = stringResource(id = Strings.copy_link))
+                        },
+                        onClick = {
+                            expanded = false
+                            onCopyLinkClick()
+                        },
+                    )
                 }
             }
         }
