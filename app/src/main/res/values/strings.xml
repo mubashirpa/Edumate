@@ -24,9 +24,13 @@
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised.</string>
     <string name="reset_password_description">Enter your email address and we\'ll send  you a link to recover your password.</string>
     <string name="reset_password">Reset password</string>
+    <string name="sending_email">Sending email</string>
+    <string name="signing_in">Signing in</string>
+    <string name="creating_account">Creating account</string>
 
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
+    <string name="success_sign_up_with_email">Sign-up successful! Please confirm your email address using the link sent to your inbox before signing in.</string>
 
     <!-- Authentication errors -->
     <string name="auth_timeout_exception">The operation timed out. Please try again.</string>
@@ -52,7 +56,4 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
-    <string name="sending_email">Sending email</string>
-    <string name="signing_in">Signing in</string>
-    <string name="creating_account">Creating account</string>
 </resources>

@@ -43,6 +43,8 @@ fun NavGraphBuilder.authentication(
         }
         composable<Screen.SignUp> {
             SignUpScreen(
+                snackbarHostState = snackbarHostState,
+                coroutineScope = coroutineScope,
                 onNavigateToSignIn = {
                     navController.navigate(Screen.SignIn) {
                         popUpTo(Screen.SignUp) { inclusive = true }
@@ -50,8 +52,10 @@ fun NavGraphBuilder.authentication(
                     }
                 },
                 onSignUpComplete = {
-                    navController.popBackStack(Graph.Authentication, true)
-                    navController.navigate(Screen.Home)
+                    navController.navigate(Screen.SignIn) {
+                        popUpTo(Screen.SignUp) { inclusive = true }
+                        launchSingleTop = true
+                    }
                 },
             )
         }

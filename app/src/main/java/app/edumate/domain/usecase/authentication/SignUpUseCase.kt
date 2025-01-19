@@ -24,6 +24,7 @@ class SignUpUseCase(
             try {
                 emit(Result.Loading())
                 val user = authenticationRepository.signUpWithEmail(name, email, password)
+                authenticationRepository.saveSignInInfo(email, password)
                 emit(Result.Success(user!!))
             } catch (e: AuthRestException) {
                 when (e.errorCode) {

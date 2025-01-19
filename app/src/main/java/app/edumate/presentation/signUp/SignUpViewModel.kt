@@ -75,6 +75,7 @@ class SignUpViewModel(
                 nameResult,
                 emailResult,
                 passwordResult,
+                repeatedPasswordResult,
             ).any { !it.successful }
 
         if (hasError) return

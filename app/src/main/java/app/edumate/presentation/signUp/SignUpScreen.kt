@@ -46,6 +46,7 @@ import app.edumate.presentation.components.NameField
 import app.edumate.presentation.components.PasswordField
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.theme.EdumateTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -53,6 +54,8 @@ import org.koin.androidx.compose.koinViewModel
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SignUpScreen(
+    snackbarHostState: SnackbarHostState,
+    coroutineScope: CoroutineScope,
     onNavigateToSignIn: () -> Unit,
     onSignUpComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -60,12 +63,16 @@ fun SignUpScreen(
 ) {
     val currentOnSignUpComplete by rememberUpdatedState(onSignUpComplete)
     val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val context = LocalContext.current
 
     LaunchedEffect(viewModel, lifecycle) {
         snapshotFlow { viewModel.uiState }
             .filter { it.isUserLoggedIn }
             .flowWithLifecycle(lifecycle)
             .collect {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(context.getString(R.string.success_sign_up_with_email))
+                }
                 currentOnSignUpComplete()
             }
     }
