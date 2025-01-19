@@ -1,5 +1,6 @@
 package app.edumate.di
 
+import app.edumate.presentation.MainViewModel
 import app.edumate.presentation.resetPassword.ResetPasswordViewModel
 import app.edumate.presentation.signIn.SignInViewModel
 import app.edumate.presentation.signUp.SignUpViewModel
@@ -11,4 +12,5 @@ val viewModelModule =
         viewModelOf(::SignUpViewModel)
         viewModelOf(::SignInViewModel)
         viewModelOf(::ResetPasswordViewModel)
+        viewModelOf(::MainViewModel)
     }
