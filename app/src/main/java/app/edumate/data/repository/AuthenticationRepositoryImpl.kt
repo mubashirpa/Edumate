@@ -3,6 +3,7 @@ package app.edumate.data.repository
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import app.edumate.core.Authentication
 import app.edumate.core.PreferencesKeys
 import app.edumate.data.local.dataStore
 import app.edumate.domain.model.LoginPreferences
@@ -62,7 +63,7 @@ class AuthenticationRepositoryImpl(
             this.password = password
             data =
                 buildJsonObject {
-                    put("full_name", fullName)
+                    put(Authentication.Metadata.NAME, fullName)
                 }
         }
 

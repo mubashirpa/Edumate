@@ -14,3 +14,11 @@ object PreferencesKeys {
     val USER_EMAIL = stringPreferencesKey("user_email")
     val USER_PASSWORD = stringPreferencesKey("user_password")
 }
+
+object Authentication {
+    object Metadata {
+        const val NAME = "name"
+        const val AVATAR_URL = "avatar_url"
+        const val EMAIL_VERIFIED = "email_verified"
+    }
+}

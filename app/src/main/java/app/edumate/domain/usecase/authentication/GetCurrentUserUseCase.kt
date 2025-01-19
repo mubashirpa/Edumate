@@ -1,6 +1,7 @@
 package app.edumate.domain.usecase.authentication
 
 import app.edumate.R
+import app.edumate.core.Authentication
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.User
@@ -19,11 +20,19 @@ class GetCurrentUserUseCase(
                     User(
                         id = it.id,
                         emailAddress = it.email,
-                        displayName = it.userMetadata?.get("full_name")?.toString(),
-                        photoUrl = it.userMetadata?.get("avatar_url")?.toString(),
+                        displayName =
+                            it.userMetadata
+                                ?.get(Authentication.Metadata.NAME)
+                                ?.toString()
+                                ?.replace("\"", ""),
+                        photoUrl =
+                            it.userMetadata
+                                ?.get(Authentication.Metadata.AVATAR_URL)
+                                ?.toString()
+                                ?.replace("\"", ""),
                         isVerified =
                             it.userMetadata
-                                ?.get("email_verified")
+                                ?.get(Authentication.Metadata.EMAIL_VERIFIED)
                                 ?.toString()
                                 ?.toBoolean(),
                     )
