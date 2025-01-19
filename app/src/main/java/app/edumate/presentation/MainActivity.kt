@@ -12,7 +12,10 @@ import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -26,14 +29,19 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             val navController = rememberNavController()
+            val snackbarHostState = remember { SnackbarHostState() }
 
             EdumateTheme {
                 Scaffold(
                     modifier = Modifier.fillMaxSize(),
+                    snackbarHost = {
+                        SnackbarHost(hostState = snackbarHostState)
+                    },
                     contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal),
                 ) { innerPadding ->
                     EdumateApp(
                         navController = navController,
+                        snackbarHostState = snackbarHostState,
                         modifier =
                             Modifier
                                 .fillMaxSize()
@@ -49,11 +57,13 @@ class MainActivity : ComponentActivity() {
 @Composable
 private fun EdumateApp(
     navController: NavHostController,
+    snackbarHostState: SnackbarHostState,
     modifier: Modifier = Modifier,
 ) {
     KoinContext {
         EdumateNavHost(
             navController = navController,
+            snackbarHostState = snackbarHostState,
             modifier = modifier,
         )
     }
