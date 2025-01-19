@@ -16,13 +16,11 @@ class MainViewModel(
 
     init {
         viewModelScope.launch {
-            isUserLoggedInUseCase().collect { isUserLoggedIn ->
-                uiState =
-                    uiState.copy(
-                        isUserLoggedIn = isUserLoggedIn,
-                        isLoading = false,
-                    )
-            }
+            uiState =
+                uiState.copy(
+                    isUserLoggedIn = isUserLoggedInUseCase(),
+                    isLoading = false,
+                )
         }
     }
 }

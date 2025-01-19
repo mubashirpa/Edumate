@@ -6,10 +6,13 @@ import io.github.jan.supabase.auth.user.UserSession
 import kotlinx.coroutines.flow.Flow
 
 interface AuthenticationRepository {
-    val currentSession: UserSession?
-    val currentUser: UserInfo?
-    val isLoggedIn: Flow<Boolean>
     val signInInfo: Flow<LoginPreferences>
+
+    suspend fun currentSession(): UserSession?
+
+    suspend fun currentUser(): UserInfo?
+
+    suspend fun isUserLoggedIn(): Boolean
 
     suspend fun signUpWithEmail(
         fullName: String,
