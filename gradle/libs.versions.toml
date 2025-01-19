@@ -13,7 +13,11 @@ ktor = "3.0.3"
 kotlinxSerializationJson = "1.8.0"
 supabaseBom = "3.0.3"
 navigationCompose = "2.8.5"
-material3 = "1.3.1"
+material3 = "1.4.0-alpha06"
+credentials = "1.5.0-rc01"
+googleid = "1.1.1"
+coil3 = "3.0.4"
+datastore = "1.1.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -30,16 +34,24 @@ androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-toolin
 androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 koin-bom = { group = "io.insert-koin", name = "koin-bom", version.ref = "koinBom" }
 koin-androidx-compose = { group = "io.insert-koin", name = "koin-androidx-compose" }
 koin-androidx-compose-navigation = { group = "io.insert-koin", name = "koin-androidx-compose-navigation" }
 ktor-client-core = { group = "io.ktor", name = "ktor-client-core", version.ref = "ktor" }
+ktor-client-android = { group = "io.ktor", name = "ktor-client-android", version.ref = "ktor" }
 kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
 supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version.ref = "supabaseBom" }
 supabase-postgrest-kt = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt" }
 supabase-auth-kt = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
 supabase-realtime-kt = { group = "io.github.jan-tennert.supabase", name = "realtime-kt" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
+googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
+credentials-play-services-auth = { group = "androidx.credentials", name = "credentials-play-services-auth", version.ref = "credentials" }
+coil-compose = { group = "io.coil-kt.coil3", name = "coil-compose", version.ref = "coil3" }
+coil-network-ktor = { group = "io.coil-kt.coil3", name = "coil-network-ktor3", version.ref = "coil3" }
+datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -50,10 +62,23 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 [bundles]
 koin = [
     "koin-androidx-compose",
-    "koin-androidx-compose-navigation"
+    "koin-androidx-compose-navigation",
+]
+ktor = [
+    "ktor-client-core",
+    "ktor-client-android",
 ]
 supabase = [
     "supabase-postgrest-kt",
     "supabase-auth-kt",
-    "supabase-realtime-kt"
+    "supabase-realtime-kt",
+]
+credentials = [
+    "androidx-credentials",
+    "googleid",
+    "credentials-play-services-auth",
+]
+coil = [
+    "coil-compose",
+    "coil-network-ktor",
 ]

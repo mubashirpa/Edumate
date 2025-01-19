@@ -79,9 +79,13 @@ dependencies {
 
     implementation(platform(libs.koin.bom))
     implementation(libs.bundles.koin)
-    implementation(libs.ktor.client.core)
+    implementation(libs.bundles.ktor)
     implementation(libs.kotlinx.serialization.json)
     implementation(platform(libs.supabase.bom))
     implementation(libs.bundles.supabase)
     implementation(libs.navigation.compose)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.bundles.credentials)
+    implementation(libs.bundles.coil)
+    implementation(libs.datastore.preferences)
 }
