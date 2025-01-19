@@ -88,4 +88,5 @@ dependencies {
     implementation(libs.bundles.credentials)
     implementation(libs.bundles.coil)
     implementation(libs.datastore.preferences)
+    implementation(libs.androidx.core.splashscreen)
 }
