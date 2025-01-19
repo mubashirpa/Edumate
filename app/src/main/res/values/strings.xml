@@ -30,6 +30,7 @@
     <string name="logout">Logout</string>
     <string name="name">Name</string>
     <string name="logging_out">Logging out</string>
+    <string name="retry">Retry</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
@@ -37,6 +38,10 @@
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
     <string name="success_sign_up_with_email">Sign-up successful! Please confirm your email address using the link sent to your inbox before signing in.</string>
+
+    <!-- Errors -->
+    <string name="error_unexpected">An unexpected error occurred.</string>
+    <string name="error_unknown">Something wrong happened. Please try again.</string>
 
     <!-- Authentication errors -->
     <string name="auth_timeout_exception">The operation timed out. Please try again.</string>

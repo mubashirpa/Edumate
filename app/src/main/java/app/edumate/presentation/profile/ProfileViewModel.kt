@@ -21,9 +21,7 @@ class ProfileViewModel(
     init {
         getCurrentUserUseCase()
             .onEach { result ->
-                if (result is Result.Success) {
-                    uiState = uiState.copy(currentUser = result.data)
-                }
+                uiState = uiState.copy(currentUserResult = result)
             }.launchIn(viewModelScope)
     }
 

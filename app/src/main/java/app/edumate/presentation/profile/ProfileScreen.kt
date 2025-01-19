@@ -37,6 +37,9 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import app.edumate.R
+import app.edumate.core.Result
+import app.edumate.presentation.components.ErrorScreen
+import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.theme.EdumateTheme
@@ -100,55 +103,73 @@ private fun ProfileContent(
             },
             scrollBehavior = scrollBehavior,
         )
-        Column(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
-                    .padding(top = 16.dp, bottom = 24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            UserAvatar(
-                id = uiState.currentUser?.id.orEmpty(),
-                fullName =
-                    uiState.currentUser?.displayName
-                        ?: uiState.currentUser?.emailAddress.orEmpty(),
-                photoUrl = uiState.currentUser?.photoUrl,
-                size = 96.dp,
-                shape = MaterialTheme.shapes.extraLarge,
-                textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            ListItem(
-                headlineContent = {
-                    Text(text = uiState.currentUser?.displayName.orEmpty())
-                },
-                overlineContent = {
-                    Text(text = stringResource(R.string.name))
-                },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Person, contentDescription = null)
-                },
-            )
-            HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
-            ListItem(
-                headlineContent = {
-                    Text(text = uiState.currentUser?.emailAddress.orEmpty())
-                },
-                overlineContent = {
-                    Text(text = stringResource(id = R.string.email))
-                },
-                leadingContent = {
-                    Icon(imageVector = Icons.Default.Email, contentDescription = null)
-                },
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(
-                onClick = {
-                    onEvent(ProfileUiEvent.SignOut)
-                },
-            ) {
-                Text(text = stringResource(R.string.logout))
+        when (val result = uiState.currentUserResult) {
+            is Result.Empty -> {}
+
+            is Result.Error -> {
+                ErrorScreen(
+                    modifier = Modifier.fillMaxSize(),
+                    errorMessage = result.message!!.asString(),
+                )
+            }
+
+            is Result.Loading -> {
+                LoadingScreen()
+            }
+
+            is Result.Success -> {
+                val currentUser = result.data
+                Column(
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .verticalScroll(rememberScrollState())
+                            .padding(top = 16.dp, bottom = 24.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    UserAvatar(
+                        id = currentUser?.id.orEmpty(),
+                        fullName =
+                            currentUser?.displayName
+                                ?: currentUser?.emailAddress.orEmpty(),
+                        photoUrl = currentUser?.photoUrl,
+                        size = 96.dp,
+                        shape = MaterialTheme.shapes.extraLarge,
+                        textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    ListItem(
+                        headlineContent = {
+                            Text(text = currentUser?.displayName.orEmpty())
+                        },
+                        overlineContent = {
+                            Text(text = stringResource(R.string.name))
+                        },
+                        leadingContent = {
+                            Icon(imageVector = Icons.Default.Person, contentDescription = null)
+                        },
+                    )
+                    HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
+                    ListItem(
+                        headlineContent = {
+                            Text(text = currentUser?.emailAddress.orEmpty())
+                        },
+                        overlineContent = {
+                            Text(text = stringResource(id = R.string.email))
+                        },
+                        leadingContent = {
+                            Icon(imageVector = Icons.Default.Email, contentDescription = null)
+                        },
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = {
+                            onEvent(ProfileUiEvent.SignOut)
+                        },
+                    ) {
+                        Text(text = stringResource(R.string.logout))
+                    }
+                }
             }
         }
     }
