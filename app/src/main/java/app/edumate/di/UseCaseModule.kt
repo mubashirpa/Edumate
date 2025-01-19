@@ -3,6 +3,7 @@ package app.edumate.di
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
+import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
 import app.edumate.domain.usecase.authentication.ResetPasswordUseCase
 import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
@@ -22,6 +23,7 @@ val useCaseModule =
         singleOf(::SignInWithGoogleUseCase)
         singleOf(::ResetPasswordUseCase)
         singleOf(::GetSignInInfoUseCase)
+        singleOf(::IsUserLoggedInUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)
         singleOf(::ValidatePassword)

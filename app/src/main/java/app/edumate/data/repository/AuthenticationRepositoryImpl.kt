@@ -11,10 +11,12 @@ import io.github.jan.supabase.auth.Auth
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.IDToken
+import io.github.jan.supabase.auth.status.SessionStatus
 import io.github.jan.supabase.auth.user.UserInfo
 import io.github.jan.supabase.auth.user.UserSession
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.io.IOException
 import kotlinx.serialization.json.buildJsonObject
@@ -30,8 +32,16 @@ class AuthenticationRepositoryImpl(
     override val currentUser: UserInfo?
         get() = auth.currentUserOrNull()
 
-    override val isLoggedIn: Boolean
-        get() = currentSession != null
+    override val isLoggedIn: Flow<Boolean> =
+        flow {
+            auth.sessionStatus.collect {
+                when (it) {
+                    is SessionStatus.Authenticated -> emit(true)
+                    is SessionStatus.NotAuthenticated -> emit(false)
+                    else -> {}
+                }
+            }
+        }
 
     override val signInInfo: Flow<LoginPreferences>
         get() =
