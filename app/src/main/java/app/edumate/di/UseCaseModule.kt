@@ -2,11 +2,13 @@ package app.edumate.di
 
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.domain.MailMatcher
+import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
 import app.edumate.domain.usecase.authentication.ResetPasswordUseCase
 import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
+import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
@@ -18,12 +20,14 @@ import org.koin.dsl.module
 
 val useCaseModule =
     module {
-        singleOf(::SignUpUseCase)
-        singleOf(::SignInUseCase)
-        singleOf(::SignInWithGoogleUseCase)
-        singleOf(::ResetPasswordUseCase)
+        singleOf(::GetCurrentUserUseCase)
         singleOf(::GetSignInInfoUseCase)
         singleOf(::IsUserLoggedInUseCase)
+        singleOf(::ResetPasswordUseCase)
+        singleOf(::SignInUseCase)
+        singleOf(::SignInWithGoogleUseCase)
+        singleOf(::SignOutUseCase)
+        singleOf(::SignUpUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)
         singleOf(::ValidatePassword)
