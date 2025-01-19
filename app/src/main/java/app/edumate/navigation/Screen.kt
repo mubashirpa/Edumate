@@ -19,6 +19,9 @@ sealed class Screen {
     ) : Screen()
 
     @Serializable
+    data object Profile : Screen()
+
+    @Serializable
     data object Home : Screen()
 }
 
