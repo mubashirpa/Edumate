@@ -1,6 +1,9 @@
-package app.edumate.domain.model
+package app.edumate.data.remote.dto.users
 
-data class User(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class UserDto(
     val displayName: String? = null,
     val emailAddress: String? = null,
     val id: String? = null,
