@@ -27,17 +27,14 @@ object Supabase {
     object Table {
         const val COURSES = "courses"
         const val MEMBERS = "members"
-        const val USERS = "users"
     }
 
     object Column {
-        const val USER_ID = "userId"
+        const val USER_ID = "user_id"
         const val ID = "id"
         const val NAME = "name"
         const val SECTION = "section"
         const val ROOM = "room"
         const val SUBJECT = "subject"
-        const val DISPLAY_NAME = "displayName"
-        const val PHOTO_URL = "photoUrl"
     }
 }

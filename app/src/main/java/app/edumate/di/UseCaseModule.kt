@@ -10,16 +10,19 @@ import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
 import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
+import app.edumate.domain.usecase.courses.GetCoursesUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
 import app.edumate.domain.usecase.validation.ValidateRepeatedPassword
 import app.edumate.domain.usecase.validation.ValidateTextField
+import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val useCaseModule =
     module {
+        singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
         singleOf(::GetSignInInfoUseCase)
         singleOf(::IsUserLoggedInUseCase)
@@ -34,4 +37,5 @@ val useCaseModule =
         singleOf(::ValidateRepeatedPassword)
         singleOf(::ValidateTextField)
         single<MailMatcher> { AndroidMailMatcher() }
+        single { Dispatchers.IO }
     }
