@@ -34,7 +34,7 @@ class GetCoursesUseCase(
                             }.orEmpty()
                     emit(Result.Success(courses))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
-            } catch (e: RestException) {
+            } catch (_: RestException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))
