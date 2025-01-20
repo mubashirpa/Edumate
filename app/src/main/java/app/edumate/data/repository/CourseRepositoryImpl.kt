@@ -1,6 +1,6 @@
 package app.edumate.data.repository
 
-import app.edumate.core.Constants
+import app.edumate.core.Supabase
 import app.edumate.data.mapper.toCourseDto
 import app.edumate.data.remote.dto.courses.CourseDto
 import app.edumate.domain.model.Course
@@ -14,7 +14,7 @@ class CourseRepositoryImpl(
     override suspend fun createCourse(course: Course): CourseDto {
         val courseDto = course.toCourseDto()
         return postgrest
-            .from(Constants.Table.COURSES)
+            .from(Supabase.Table.COURSES)
             .insert(courseDto) {
                 select()
             }.decodeSingle()
@@ -22,18 +22,18 @@ class CourseRepositoryImpl(
 
     override suspend fun getCourses(userId: String): List<CourseDto> =
         postgrest
-            .from(Constants.Table.MEMBERS)
+            .from(Supabase.Table.MEMBERS)
             .select(Columns.raw("*, course:courses(*), users(*)")) {
                 filter {
-                    eq(Constants.Column.USER_ID, userId)
+                    eq(Supabase.Column.USER_ID, userId)
                 }
             }.decodeList()
 
     override suspend fun getCourse(id: String): CourseDto? =
-        postgrest[Constants.Table.COURSES]
+        postgrest[Supabase.Table.COURSES]
             .select(Columns.raw("*, owner:users!ownerId(*)")) {
                 filter {
-                    eq(Constants.Column.ID, id)
+                    eq(Supabase.Column.ID, id)
                 }
             }.decodeSingleOrNull()
 
@@ -44,29 +44,29 @@ class CourseRepositoryImpl(
         section: String?,
         subject: String?,
     ): CourseDto? =
-        postgrest[Constants.Table.COURSES]
+        postgrest[Supabase.Table.COURSES]
             .update(
                 {
                     name?.let {
-                        set(Constants.Column.NAME, name)
+                        set(Supabase.Column.NAME, name)
                     }
-                    set(Constants.Column.ROOM, room)
-                    set(Constants.Column.SECTION, section)
-                    set(Constants.Column.SUBJECT, subject)
+                    set(Supabase.Column.ROOM, room)
+                    set(Supabase.Column.SECTION, section)
+                    set(Supabase.Column.SUBJECT, subject)
                 },
             ) {
                 select()
                 filter {
-                    eq(Constants.Column.ID, id)
+                    eq(Supabase.Column.ID, id)
                 }
             }.decodeSingleOrNull()
 
     override suspend fun deleteCourse(id: String): CourseDto? =
-        postgrest[Constants.Table.COURSES]
+        postgrest[Supabase.Table.COURSES]
             .delete {
                 select()
                 filter {
-                    eq(Constants.Column.ID, id)
+                    eq(Supabase.Column.ID, id)
                 }
             }.decodeSingleOrNull()
 }
