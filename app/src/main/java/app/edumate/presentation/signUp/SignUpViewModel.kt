@@ -104,7 +104,7 @@ class SignUpViewModel(
 
                     is Result.Success -> {
                         uiState.copy(
-                            isUserLoggedIn = true,
+                            userLoginStatus = Pair(true, false),
                             openProgressDialog = false,
                         )
                     }
@@ -139,7 +139,7 @@ class SignUpViewModel(
 
                     is Result.Success -> {
                         uiState.copy(
-                            isUserLoggedIn = true,
+                            userLoginStatus = Pair(true, true),
                             openProgressDialog = false,
                         )
                     }

@@ -16,6 +16,17 @@ fun NavGraphBuilder.authentication(
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
 ) {
+    val navigateToSignIn: () -> Unit = {
+        navController.navigate(Screen.SignIn) {
+            popUpTo(Screen.SignUp) { inclusive = true }
+            launchSingleTop = true
+        }
+    }
+    val navigateToHome: () -> Unit = {
+        navController.popBackStack(Graph.Authentication, true)
+        navController.navigate(Screen.Home)
+    }
+
     navigation<Graph.Authentication>(startDestination = Screen.Onboarding) {
         composable<Screen.Onboarding> {
             OnboardingScreen(
@@ -36,8 +47,7 @@ fun NavGraphBuilder.authentication(
                     navController.navigate(Screen.ResetPassword(email = email))
                 },
                 onSignInComplete = {
-                    navController.popBackStack(Graph.Authentication, true)
-                    navController.navigate(Screen.Home)
+                    navigateToHome()
                 },
             )
         }
@@ -45,16 +55,12 @@ fun NavGraphBuilder.authentication(
             SignUpScreen(
                 snackbarHostState = snackbarHostState,
                 coroutineScope = coroutineScope,
-                onNavigateToSignIn = {
-                    navController.navigate(Screen.SignIn) {
-                        popUpTo(Screen.SignUp) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                },
-                onSignUpComplete = {
-                    navController.navigate(Screen.SignIn) {
-                        popUpTo(Screen.SignUp) { inclusive = true }
-                        launchSingleTop = true
+                onNavigateToSignIn = navigateToSignIn,
+                onSignUpComplete = { isVerified ->
+                    if (isVerified) {
+                        navigateToHome()
+                    } else {
+                        navigateToSignIn()
                     }
                 },
             )
@@ -63,9 +69,7 @@ fun NavGraphBuilder.authentication(
             ResetPasswordScreen(
                 snackbarHostState = snackbarHostState,
                 coroutineScope = coroutineScope,
-                onResetPasswordComplete = {
-                    navController.navigateUp()
-                },
+                onResetPasswordComplete = navController::navigateUp,
             )
         }
     }

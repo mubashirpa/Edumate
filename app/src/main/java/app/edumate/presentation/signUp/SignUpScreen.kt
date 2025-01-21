@@ -57,7 +57,7 @@ fun SignUpScreen(
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
     onNavigateToSignIn: () -> Unit,
-    onSignUpComplete: () -> Unit,
+    onSignUpComplete: (isVerified: Boolean) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: SignUpViewModel = koinViewModel(),
 ) {
@@ -67,13 +67,13 @@ fun SignUpScreen(
 
     LaunchedEffect(viewModel, lifecycle) {
         snapshotFlow { viewModel.uiState }
-            .filter { it.isUserLoggedIn }
+            .filter { it.userLoginStatus.first }
             .flowWithLifecycle(lifecycle)
             .collect {
                 coroutineScope.launch {
                     snackbarHostState.showSnackbar(context.getString(R.string.success_sign_up_with_email))
                 }
-                currentOnSignUpComplete()
+                currentOnSignUpComplete(it.userLoginStatus.second)
             }
     }
 
