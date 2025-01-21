@@ -1,18 +1,14 @@
 package app.edumate.navigation
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Button
 import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.profile.ProfileScreen
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -36,14 +32,13 @@ fun EdumateNavHost(
             coroutineScope = coroutineScope,
         )
         composable<Screen.Home> {
-            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = "Hello World!")
-                Button(onClick = {
+            HomeScreen(
+                navController = navController,
+                onNavigateToClassDetails = { /*TODO*/ },
+                onNavigateToProfile = {
                     navController.navigate(Screen.Profile)
-                }) {
-                    Text(text = "Go to Profile")
-                }
-            }
+                },
+            )
         }
         composable<Screen.Profile> {
             ProfileScreen(
