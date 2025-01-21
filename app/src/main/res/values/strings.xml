@@ -31,6 +31,26 @@
     <string name="name">Name</string>
     <string name="logging_out">Logging out</string>
     <string name="retry">Retry</string>
+    <string name="enrolled">Enrolled</string>
+    <string name="teaching">Teaching</string>
+    <string name="refresh">Refresh</string>
+    <string name="join_class">Join class</string>
+    <string name="create_class">Create class</string>
+    <string name="ask_gemini">Ask Gemini</string>
+    <string name="profile">Profile</string>
+    <string name="settings">Settings</string>
+    <string name="unenroll">Unenroll</string>
+    <string name="join_a_class_to_get_started">Join a class to get started</string>
+    <string name="class_code">Class code</string>
+    <string name="clear_text">Clear text</string>
+    <string name="join_class_description">Ask your teacher for the class code, then enter it here</string>
+    <string name="join">Join</string>
+    <string name="create">Create</string>
+    <string name="room">Room</string>
+    <string name="subject">Subject</string>
+    <string name="section">Section</string>
+    <string name="class_name">Class name</string>
+    <string name="create_class_description">Enter the details of the class you want to create</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
@@ -42,6 +62,8 @@
     <!-- Errors -->
     <string name="error_unexpected">An unexpected error occurred.</string>
     <string name="error_unknown">Something wrong happened. Please try again.</string>
+    <string name="error_network_exception">A network error occurred. Please check your connection and try again.</string>
+    <string name="error_timeout_exception">The operation timed out. Please try again.</string>
 
     <!-- Authentication errors -->
     <string name="auth_timeout_exception">The operation timed out. Please try again.</string>
