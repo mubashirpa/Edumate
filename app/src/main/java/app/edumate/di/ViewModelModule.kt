@@ -1,6 +1,7 @@
 package app.edumate.di
 
 import app.edumate.presentation.MainViewModel
+import app.edumate.presentation.home.HomeViewModel
 import app.edumate.presentation.profile.ProfileViewModel
 import app.edumate.presentation.resetPassword.ResetPasswordViewModel
 import app.edumate.presentation.signIn.SignInViewModel
@@ -10,6 +11,7 @@ import org.koin.dsl.module
 
 val viewModelModule =
     module {
+        viewModelOf(::HomeViewModel)
         viewModelOf(::MainViewModel)
         viewModelOf(::ProfileViewModel)
         viewModelOf(::ResetPasswordViewModel)
