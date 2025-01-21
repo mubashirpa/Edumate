@@ -26,6 +26,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -33,9 +35,12 @@ import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,7 +55,6 @@ import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.enrolled.EnrolledScreen
 import app.edumate.presentation.home.components.AddCourseBottomSheet
-import app.edumate.presentation.home.components.CreateCourseBottomSheet
 import app.edumate.presentation.home.components.HomeNavigationDrawer
 import app.edumate.presentation.home.components.JoinCourseBottomSheet
 import app.edumate.presentation.theme.EdumateTheme
@@ -60,7 +64,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     navController: NavHostController,
-    onNavigateToClassDetails: (courseId: String) -> Unit,
+    onNavigateToCreateCourse: (courseId: String?) -> Unit,
+    onNavigateToCourseDetails: (courseId: String) -> Unit,
     onNavigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
@@ -86,7 +91,8 @@ fun HomeScreen(
                     drawerState.open()
                 }
             },
-            onNavigateToClassDetails = onNavigateToClassDetails,
+            onNavigateToCreateCourse = onNavigateToCreateCourse,
+            onNavigateToClassDetails = onNavigateToCourseDetails,
             onNavigateToProfile = onNavigateToProfile,
             modifier = modifier,
         )
@@ -99,6 +105,7 @@ private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
     onNavigationIconClick: () -> Unit,
+    onNavigateToCreateCourse: (courseId: String?) -> Unit,
     onNavigateToClassDetails: (courseId: String) -> Unit,
     onNavigateToProfile: () -> Unit,
     modifier: Modifier = Modifier,
@@ -111,9 +118,19 @@ private fun HomeContent(
     val layoutDirection = LocalLayoutDirection.current
     val coroutineScope = rememberCoroutineScope()
     val pagerState = rememberPagerState { tabs.size }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
 
     BackHandler(enabled = uiState.showAddCourseBottomSheet) {
         onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
+    }
+
+    uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            onEvent(HomeUiEvent.UserMessageShown)
+        }
     }
 
     Scaffold(
@@ -170,12 +187,16 @@ private fun HomeContent(
                                 },
                                 onClick = {
                                     onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
+                                    onEvent(HomeUiEvent.OnRefresh)
                                 },
                             )
                         }
                     }
                 },
             )
+        },
+        snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
         },
         floatingActionButton = {
             FloatingActionButton(
@@ -203,7 +224,7 @@ private fun HomeContent(
             is Result.Error -> {
                 ErrorScreen(
                     onRetryClick = {
-                        onEvent(HomeUiEvent.OnRefresh)
+                        onEvent(HomeUiEvent.OnRetry)
                     },
                     modifier =
                         Modifier
@@ -278,7 +299,7 @@ private fun HomeContent(
             onEvent(HomeUiEvent.OnShowAddCourseBottomSheetChange(false))
         },
         onCreateClass = {
-            onEvent(HomeUiEvent.OnShowCreateCourseBottomSheetChange(true))
+            onNavigateToCreateCourse(null)
         },
         onJoinClass = {
             onEvent(HomeUiEvent.OnShowJoinCourseBottomSheetChange(true))
@@ -286,20 +307,14 @@ private fun HomeContent(
     )
 
     JoinCourseBottomSheet(
-        show = uiState.showJoinCourseBottomSheet,
+        uiState = uiState.joinCourseUiState,
         user = uiState.currentUser,
         onDismissRequest = {
             onEvent(HomeUiEvent.OnShowJoinCourseBottomSheetChange(false))
         },
-        onJoinClass = { /*TODO*/ },
-    )
-
-    CreateCourseBottomSheet(
-        show = uiState.showCreateCourseBottomSheet,
-        onDismissRequest = {
-            onEvent(HomeUiEvent.OnShowCreateCourseBottomSheetChange(false))
+        onJoinCourse = { courseId ->
+            onEvent(HomeUiEvent.JoinCourse(courseId))
         },
-        onCreateClass = { /*TODO*/ },
     )
 }
 
@@ -311,6 +326,7 @@ private fun HomeScreenPreview() {
             uiState = HomeUiState(),
             onEvent = {},
             onNavigationIconClick = {},
+            onNavigateToCreateCourse = {},
             onNavigateToClassDetails = {},
             onNavigateToProfile = {},
         )

@@ -36,7 +36,10 @@ fun EdumateNavHost(
         composable<Screen.Home> {
             HomeScreen(
                 navController = navController,
-                onNavigateToClassDetails = { /*TODO*/ },
+                onNavigateToCreateCourse = { courseId ->
+                    navController.navigate(Screen.CreateCourse(courseId))
+                },
+                onNavigateToCourseDetails = { /*TODO*/ },
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile)
                 },

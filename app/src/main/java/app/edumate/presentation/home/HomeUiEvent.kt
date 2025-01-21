@@ -1,6 +1,10 @@
 package app.edumate.presentation.home
 
 sealed class HomeUiEvent {
+    data class JoinCourse(
+        val courseId: String,
+    ) : HomeUiEvent()
+
     data class OnAppBarDropdownExpandedChange(
         val expanded: Boolean,
     ) : HomeUiEvent()
@@ -9,13 +13,13 @@ sealed class HomeUiEvent {
         val show: Boolean,
     ) : HomeUiEvent()
 
-    data class OnShowCreateCourseBottomSheetChange(
-        val show: Boolean,
-    ) : HomeUiEvent()
-
     data class OnShowJoinCourseBottomSheetChange(
         val show: Boolean,
     ) : HomeUiEvent()
 
-    object OnRefresh : HomeUiEvent()
+    data object OnRefresh : HomeUiEvent()
+
+    data object OnRetry : HomeUiEvent()
+
+    data object UserMessageShown : HomeUiEvent()
 }

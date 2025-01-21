@@ -22,45 +22,40 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
+import app.edumate.core.UiText
 import app.edumate.domain.model.User
 import app.edumate.presentation.components.UserAvatar
+import app.edumate.presentation.home.JoinCourseBottomSheetUiState
 import app.edumate.presentation.theme.EdumateTheme
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun JoinCourseBottomSheet(
-    show: Boolean,
+    uiState: JoinCourseBottomSheetUiState,
     user: User?,
     onDismissRequest: () -> Unit,
-    onJoinClass: () -> Unit,
+    onJoinCourse: (courseId: String) -> Unit,
 ) {
-    if (show) {
-        val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-        val coroutineScope = rememberCoroutineScope()
-        val textFieldState = rememberTextFieldState()
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
+    if (uiState.showBottomSheet) {
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
-            sheetState = bottomSheetState,
+            sheetState = sheetState,
         ) {
             JoinCourseBottomSheetContent(
+                courseId = uiState.courseId,
                 user = user,
-                textFieldState = textFieldState,
-                onJoinClass = {
-                    coroutineScope.launch { bottomSheetState.hide() }.invokeOnCompletion {
-                        if (!bottomSheetState.isVisible) {
-                            onDismissRequest()
-                            onJoinClass()
-                        }
-                    }
+                courseIdError = uiState.courseIdError,
+                onJoinCourse = { courseId ->
+                    onJoinCourse(courseId)
                 },
             )
         }
@@ -70,9 +65,10 @@ fun JoinCourseBottomSheet(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun JoinCourseBottomSheetContent(
+    courseId: TextFieldState,
     user: User?,
-    textFieldState: TextFieldState,
-    onJoinClass: () -> Unit,
+    courseIdError: UiText?,
+    onJoinCourse: (courseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
@@ -99,14 +95,14 @@ private fun JoinCourseBottomSheetContent(
             Text(text = stringResource(R.string.join_class_description))
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
-                state = textFieldState,
+                state = courseId,
                 modifier = maxWidthModifier,
                 label = {
                     Text(text = stringResource(R.string.class_code))
                 },
                 trailingIcon = {
-                    if (textFieldState.text.isNotEmpty()) {
-                        IconButton(onClick = { textFieldState.clearText() }) {
+                    if (courseId.text.isNotEmpty()) {
+                        IconButton(onClick = { courseId.clearText() }) {
                             Icon(
                                 imageVector = Icons.Filled.Clear,
                                 contentDescription = stringResource(R.string.clear_text),
@@ -114,11 +110,18 @@ private fun JoinCourseBottomSheetContent(
                         }
                     }
                 },
+                supportingText =
+                    courseIdError?.let {
+                        { Text(text = it.asString(), modifier = Modifier.clearAndSetSemantics {}) }
+                    },
+                isError = courseIdError != null,
                 lineLimits = TextFieldLineLimits.SingleLine,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
-                onClick = onJoinClass,
+                onClick = {
+                    onJoinCourse(courseId.text.toString())
+                },
                 modifier = maxWidthModifier,
             ) {
                 Text(text = stringResource(R.string.join))
@@ -132,13 +135,14 @@ private fun JoinCourseBottomSheetContent(
 private fun JoinCourseBottomSheetPreview() {
     EdumateTheme {
         JoinCourseBottomSheetContent(
+            courseId = rememberTextFieldState(initialText = "NzMzOTI4MzUzOdg1"),
             user =
                 User(
                     email = "admin@edumate.app",
                     name = "Admin",
                 ),
-            textFieldState = rememberTextFieldState(initialText = "NzMzOTI4MzUzOdg1"),
-            onJoinClass = {},
+            courseIdError = null,
+            onJoinCourse = {},
         )
     }
 }
