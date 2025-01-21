@@ -5,18 +5,16 @@ import app.edumate.domain.model.User
 
 fun UserDto.toUserDomainModel(): User =
     User(
-        displayName = displayName,
-        emailAddress = emailAddress,
+        avatarUrl = avatarUrl,
+        email = email,
         id = id,
-        isVerified = isVerified,
-        photoUrl = photoUrl,
+        name = name,
     )
 
 fun User.toUserDto(): UserDto =
     UserDto(
-        displayName = displayName,
-        emailAddress = emailAddress,
+        avatarUrl = avatarUrl,
+        email = email,
         id = id,
-        isVerified = isVerified,
-        photoUrl = photoUrl,
+        name = name,
     )
