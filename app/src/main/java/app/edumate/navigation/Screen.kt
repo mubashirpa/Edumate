@@ -23,6 +23,11 @@ sealed class Screen {
 
     @Serializable
     data object Home : Screen()
+
+    @Serializable
+    data class CreateCourse(
+        val courseId: String?,
+    ) : Screen()
 }
 
 @Serializable

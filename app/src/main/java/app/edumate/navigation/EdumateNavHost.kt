@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
+import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.profile.ProfileScreen
 
@@ -51,6 +53,14 @@ fun EdumateNavHost(
                         launchSingleTop = true
                     }
                 },
+            )
+        }
+        composable<Screen.CreateCourse> { backStackEntry ->
+            val courseId = backStackEntry.toRoute<Screen.CreateCourse>().courseId
+            CreateCourseScreen(
+                onNavigateToCourseDetails = { /*TODO*/ },
+                onNavigateUp = navController::navigateUp,
+                courseId = courseId,
             )
         }
     }
