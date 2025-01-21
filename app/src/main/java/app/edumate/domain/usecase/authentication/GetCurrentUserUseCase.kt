@@ -18,23 +18,18 @@ class GetCurrentUserUseCase(
             authenticationRepository.currentUser()?.let {
                 val currentUser =
                     User(
-                        id = it.id,
-                        emailAddress = it.email,
-                        displayName =
-                            it.userMetadata
-                                ?.get(Authentication.Metadata.NAME)
-                                ?.toString()
-                                ?.replace("\"", ""),
-                        photoUrl =
+                        avatarUrl =
                             it.userMetadata
                                 ?.get(Authentication.Metadata.AVATAR_URL)
                                 ?.toString()
                                 ?.replace("\"", ""),
-                        isVerified =
+                        email = it.email,
+                        id = it.id,
+                        name =
                             it.userMetadata
-                                ?.get(Authentication.Metadata.EMAIL_VERIFIED)
+                                ?.get(Authentication.Metadata.NAME)
                                 ?.toString()
-                                ?.toBoolean(),
+                                ?.replace("\"", ""),
                     )
                 emit(Result.Success(currentUser))
             } ?: emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))

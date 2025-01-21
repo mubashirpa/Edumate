@@ -130,9 +130,9 @@ private fun ProfileContent(
                     UserAvatar(
                         id = currentUser?.id.orEmpty(),
                         fullName =
-                            currentUser?.displayName
-                                ?: currentUser?.emailAddress.orEmpty(),
-                        photoUrl = currentUser?.photoUrl,
+                            currentUser?.name
+                                ?: currentUser?.email.orEmpty(),
+                        photoUrl = currentUser?.avatarUrl,
                         size = 96.dp,
                         shape = MaterialTheme.shapes.extraLarge,
                         textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),
@@ -140,7 +140,7 @@ private fun ProfileContent(
                     Spacer(modifier = Modifier.height(16.dp))
                     ListItem(
                         headlineContent = {
-                            Text(text = currentUser?.displayName.orEmpty())
+                            Text(text = currentUser?.name.orEmpty())
                         },
                         overlineContent = {
                             Text(text = stringResource(R.string.name))
@@ -152,7 +152,7 @@ private fun ProfileContent(
                     HorizontalDivider(modifier = Modifier.padding(start = 56.dp))
                     ListItem(
                         headlineContent = {
-                            Text(text = currentUser?.emailAddress.orEmpty())
+                            Text(text = currentUser?.email.orEmpty())
                         },
                         overlineContent = {
                             Text(text = stringResource(id = R.string.email))
