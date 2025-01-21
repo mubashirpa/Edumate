@@ -1,10 +1,10 @@
 package app.edumate.data.repository
 
-import android.util.Log
 import app.edumate.core.Supabase
 import app.edumate.data.mapper.toCourseDto
 import app.edumate.data.remote.dto.courses.CourseDto
-import app.edumate.domain.model.Course
+import app.edumate.data.remote.dto.courses.CoursesDto
+import app.edumate.domain.model.courses.Course
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -21,22 +21,18 @@ class CourseRepositoryImpl(
             }.decodeSingle()
     }
 
-    override suspend fun getCourses(userId: String): List<CourseDto>? {
-        val c =
-            postgrest
-                .from(Supabase.Table.MEMBERS)
-                .select(Columns.raw("course:courses(*), users(*)")) {
-                    filter {
-                        eq(Supabase.Column.USER_ID, userId)
-                    }
+    override suspend fun getCourses(userId: String): List<CoursesDto>? =
+        postgrest
+            .from(Supabase.Table.MEMBERS)
+            .select(Columns.raw("role, course:courses(*, owner:users!owner_id(*))")) {
+                filter {
+                    eq(Supabase.Column.USER_ID, userId)
                 }
-        Log.d("hello", c.data)
-        return c.decodeList()
-    }
+            }.decodeList()
 
     override suspend fun getCourse(id: String): CourseDto? =
         postgrest[Supabase.Table.COURSES]
-            .select(Columns.raw("*, owner:users!ownerId(*)")) {
+            .select(Columns.raw("*, owner:users!owner_id(*)")) {
                 filter {
                     eq(Supabase.Column.ID, id)
                 }
