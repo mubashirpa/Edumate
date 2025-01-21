@@ -1,7 +1,10 @@
 package app.edumate.data.mapper
 
 import app.edumate.data.remote.dto.courses.CourseDto
-import app.edumate.domain.model.Course
+import app.edumate.data.remote.dto.courses.CoursesDto
+import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.courses.Courses
+import app.edumate.domain.model.courses.UserRole
 
 fun CourseDto.toCourseDomainModel(): Course =
     Course(
@@ -33,4 +36,10 @@ fun Course.toCourseDto(): CourseDto =
         section = section,
         subject = subject,
         updateTime = updateTime,
+    )
+
+fun CoursesDto.toCoursesDomainModel(): Courses =
+    Courses(
+        course = course?.toCourseDomainModel(),
+        role = role?.let { enumValueOf<UserRole>(it.name) },
     )

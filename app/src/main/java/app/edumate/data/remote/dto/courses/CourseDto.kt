@@ -9,7 +9,7 @@ data class CourseDto(
     @SerialName("alternate_link")
     val alternateLink: String? = null,
     @SerialName("creation_time")
-    val creationTime: Long? = null,
+    val creationTime: String? = null,
     val description: String? = null,
     @SerialName("enrollment_code")
     val enrollmentCode: String? = null,
@@ -22,5 +22,5 @@ data class CourseDto(
     val section: String? = null,
     val subject: String? = null,
     @SerialName("update_time")
-    val updateTime: Long? = null,
+    val updateTime: String? = null,
 )
