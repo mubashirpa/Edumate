@@ -102,9 +102,10 @@ dependencies {
     implementation(platform(libs.supabase.bom))
     implementation(libs.bundles.supabase)
     implementation(libs.navigation.compose)
-    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.material.icons.extended)
     implementation(libs.bundles.credentials)
     implementation(libs.bundles.coil)
     implementation(libs.datastore.preferences)
     implementation(libs.androidx.core.splashscreen)
+    implementation(libs.androidx.runtime.livedata)
 }
