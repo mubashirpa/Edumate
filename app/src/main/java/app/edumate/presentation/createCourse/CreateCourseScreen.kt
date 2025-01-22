@@ -34,6 +34,7 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
@@ -95,6 +96,15 @@ private fun CreateCourseContent(
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val maxWidthModifier = Modifier.fillMaxWidth()
+    val context = LocalContext.current
+
+    uiState.userMessage?.let { userMessage ->
+        LaunchedEffect(userMessage) {
+            snackbarHostState.showSnackbar(userMessage.asString(context))
+            // Once the message is displayed and dismissed, notify the ViewModel.
+            onEvent(CreateCourseUiEvent.UserMessageShown)
+        }
+    }
 
     Scaffold(
         modifier =

@@ -5,14 +5,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.edumate.R
+import app.edumate.core.Result
 import app.edumate.core.UiText
+import app.edumate.domain.usecase.courses.CreateCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class CreateCourseViewModel(
     savedStateHandle: SavedStateHandle,
+    private val createCourseUseCase: CreateCourseUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(CreateCourseUiState())
@@ -80,7 +86,44 @@ class CreateCourseViewModel(
         }
         uiState = uiState.copy(nameError = null)
 
-        // TODO: Create course
+        createCourseUseCase(
+            name = name,
+            room = room,
+            section = section,
+            subject = subject,
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    val courseResponse = result.data
+                    uiState =
+                        if (courseResponse != null) {
+                            uiState.copy(
+                                newCourseId = courseResponse.id,
+                                openProgressDialog = false,
+                            )
+                        } else {
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = UiText.StringResource(R.string.error_unexpected),
+                            )
+                        }
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun updateCourse(
