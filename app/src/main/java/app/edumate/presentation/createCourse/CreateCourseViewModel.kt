@@ -1,5 +1,6 @@
 package app.edumate.presentation.createCourse
 
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -11,6 +12,8 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.usecase.courses.CreateCourseUseCase
+import app.edumate.domain.usecase.courses.GetCourseUseCase
+import app.edumate.domain.usecase.courses.UpdateCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
@@ -19,12 +22,18 @@ import kotlinx.coroutines.flow.onEach
 class CreateCourseViewModel(
     savedStateHandle: SavedStateHandle,
     private val createCourseUseCase: CreateCourseUseCase,
+    private val getCourseUseCase: GetCourseUseCase,
+    private val updateCourseUseCase: UpdateCourseUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(CreateCourseUiState())
         private set
 
     private val createCourse = savedStateHandle.toRoute<Screen.CreateCourse>()
+
+    init {
+        createCourse.courseId?.let(::getCourse)
+    }
 
     fun onEvent(event: CreateCourseUiEvent) {
         when (event) {
@@ -58,7 +67,7 @@ class CreateCourseViewModel(
                     )
                 } else {
                     updateCourse(
-                        courseId = createCourse.courseId,
+                        id = createCourse.courseId,
                         name = name,
                         room = room,
                         section = section,
@@ -126,8 +135,47 @@ class CreateCourseViewModel(
         }.launchIn(viewModelScope)
     }
 
+    private fun getCourse(id: String) {
+        getCourseUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        val courseResponse = result.data
+                        if (courseResponse != null) {
+                            uiState.name.setTextAndPlaceCursorAtEnd(courseResponse.name.orEmpty())
+                            uiState.room.setTextAndPlaceCursorAtEnd(courseResponse.room.orEmpty())
+                            uiState.section.setTextAndPlaceCursorAtEnd(courseResponse.section.orEmpty())
+                            uiState.subject.setTextAndPlaceCursorAtEnd(courseResponse.subject.orEmpty())
+
+                            uiState = uiState.copy(isLoading = false)
+                        } else {
+                            uiState =
+                                uiState.copy(
+                                    isLoading = false,
+                                    userMessage = UiText.StringResource(R.string.error_unexpected),
+                                )
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
     private fun updateCourse(
-        courseId: String,
+        id: String,
         name: String,
         room: String?,
         section: String?,
@@ -140,6 +188,39 @@ class CreateCourseViewModel(
         }
         uiState = uiState.copy(nameError = null)
 
-        // TODO: Update course
+        updateCourseUseCase(id, name, room, section, subject)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        val courseResponse = result.data
+                        uiState =
+                            if (courseResponse != null) {
+                                uiState.copy(
+                                    newCourseId = courseResponse.id,
+                                    openProgressDialog = false,
+                                )
+                            } else {
+                                uiState.copy(
+                                    openProgressDialog = false,
+                                    userMessage = UiText.StringResource(R.string.error_unexpected),
+                                )
+                            }
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 }
