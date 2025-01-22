@@ -1,6 +1,7 @@
 package app.edumate.domain.usecase.courses
 
 import app.edumate.R
+import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.data.mapper.toCourseDomainModel
@@ -15,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import java.util.UUID
 
 class CreateCourseUseCase(
     private val authenticationRepository: AuthenticationRepository,
@@ -31,10 +33,12 @@ class CreateCourseUseCase(
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
+                    val id = UUID.randomUUID().toString()
                     val course =
                         Course(
-                            alternateLink = "",
-                            enrollmentCode = "",
+                            alternateLink = "${Constants.EDUMATE_BASE_URL}course/$id",
+                            enrollmentCode = id,
+                            id = id,
                             name = name,
                             ownerId = userId,
                             room = room,
