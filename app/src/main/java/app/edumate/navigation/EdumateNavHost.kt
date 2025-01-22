@@ -9,6 +9,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import app.edumate.core.Navigation
 import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.profile.ProfileScreen
@@ -61,7 +62,12 @@ fun EdumateNavHost(
         composable<Screen.CreateCourse> { backStackEntry ->
             val courseId = backStackEntry.toRoute<Screen.CreateCourse>().courseId
             CreateCourseScreen(
-                onNavigateToCourseDetails = { /*TODO*/ },
+                onNavigateToCourseDetails = { id ->
+                    navController.previousBackStackEntry?.savedStateHandle[Navigation.Args.HOME_NEW_TEACHING_COURSE_ID] =
+                        id
+                    // TODO: Navigate to course details screen
+                    navController.navigateUp()
+                },
                 onNavigateUp = navController::navigateUp,
                 courseId = courseId,
             )

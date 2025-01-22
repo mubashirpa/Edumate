@@ -49,7 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.edumate.R
+import app.edumate.core.Navigation
 import app.edumate.core.Result
+import app.edumate.core.ext.GetOnceResult
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.UserAvatar
@@ -77,6 +79,10 @@ fun HomeScreen(
         coroutineScope.launch {
             drawerState.close()
         }
+    }
+
+    navController.GetOnceResult<String>(Navigation.Args.HOME_NEW_TEACHING_COURSE_ID) { courseId ->
+        viewModel.onEvent(HomeUiEvent.OnRefresh)
     }
 
     HomeNavigationDrawer(

@@ -17,9 +17,8 @@ object PreferencesKeys {
 
 object Authentication {
     object Metadata {
-        const val NAME = "name"
         const val AVATAR_URL = "avatar_url"
-        const val EMAIL_VERIFIED = "email_verified"
+        const val NAME = "name"
     }
 }
 
@@ -30,11 +29,17 @@ object Supabase {
     }
 
     object Column {
-        const val USER_ID = "user_id"
         const val ID = "id"
         const val NAME = "name"
-        const val SECTION = "section"
         const val ROOM = "room"
+        const val SECTION = "section"
         const val SUBJECT = "subject"
+        const val USER_ID = "user_id"
+    }
+}
+
+object Navigation {
+    object Args {
+        const val HOME_NEW_TEACHING_COURSE_ID = "home_new_teaching_course_id"
     }
 }
