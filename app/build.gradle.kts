@@ -108,4 +108,5 @@ dependencies {
     implementation(libs.datastore.preferences)
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.kotlinx.datetime)
 }
