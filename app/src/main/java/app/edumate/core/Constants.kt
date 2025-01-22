@@ -34,6 +34,7 @@ object Supabase {
         const val ROOM = "room"
         const val SECTION = "section"
         const val SUBJECT = "subject"
+        const val UPDATE_TIME = "update_time"
         const val USER_ID = "user_id"
     }
 }

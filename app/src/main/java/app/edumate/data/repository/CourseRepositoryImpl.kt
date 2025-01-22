@@ -8,6 +8,10 @@ import app.edumate.domain.model.courses.Course
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import kotlinx.datetime.Clock
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 class CourseRepositoryImpl(
     private val postgrest: Postgrest,
@@ -48,12 +52,14 @@ class CourseRepositoryImpl(
         postgrest[Supabase.Table.COURSES]
             .update(
                 {
-                    name?.let {
-                        set(Supabase.Column.NAME, name)
-                    }
+                    name?.let { set(Supabase.Column.NAME, it) }
                     set(Supabase.Column.ROOM, room)
                     set(Supabase.Column.SECTION, section)
                     set(Supabase.Column.SUBJECT, subject)
+
+                    val now: Instant = Clock.System.now()
+                    val updateTime = now.toLocalDateTime(TimeZone.UTC)
+                    set(Supabase.Column.UPDATE_TIME, updateTime)
                 },
             ) {
                 select()
