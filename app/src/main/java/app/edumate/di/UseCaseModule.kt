@@ -11,7 +11,9 @@ import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
 import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
 import app.edumate.domain.usecase.courses.CreateCourseUseCase
+import app.edumate.domain.usecase.courses.GetCourseUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
+import app.edumate.domain.usecase.courses.UpdateCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
@@ -24,6 +26,7 @@ import org.koin.dsl.module
 val useCaseModule =
     module {
         singleOf(::CreateCourseUseCase)
+        singleOf(::GetCourseUseCase)
         singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
         singleOf(::GetSignInInfoUseCase)
@@ -33,6 +36,7 @@ val useCaseModule =
         singleOf(::SignInWithGoogleUseCase)
         singleOf(::SignOutUseCase)
         singleOf(::SignUpUseCase)
+        singleOf(::UpdateCourseUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)
         singleOf(::ValidatePassword)
