@@ -47,7 +47,7 @@ fun EnrolledScreen(
                 ) { courses ->
                     EnrolledListItem(
                         onClick = { id ->
-                            id?.let(onNavigateToClassDetails)
+                            onNavigateToClassDetails(id)
                         },
                         enrolledCourse = courses.course!!,
                         onCourseUnenroll = { /*TODO*/ },

@@ -11,13 +11,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,17 +34,18 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.domain.model.User
 import app.edumate.domain.model.courses.Course
+import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.theme.EdumateTheme
 
 @Composable
 fun EnrolledListItem(
-    onClick: (id: String?) -> Unit,
+    onClick: (id: String) -> Unit,
     enrolledCourse: Course,
     onCourseUnenroll: (id: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
-        onClick = { onClick(enrolledCourse.id) },
+        onClick = { enrolledCourse.id?.let(onClick) },
         modifier = modifier.aspectRatio(8f / 3f),
     ) {
         Column(
@@ -77,16 +78,21 @@ fun EnrolledListItem(
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
-            AssistChip(
+            InputChip(
+                selected = false,
                 onClick = {},
                 label = {
                     Text(text = enrolledCourse.owner?.name.orEmpty())
                 },
                 modifier = Modifier.align(Alignment.End),
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Person,
-                        contentDescription = null,
+                avatar = {
+                    UserAvatar(
+                        id = enrolledCourse.owner?.id.orEmpty(),
+                        fullName = enrolledCourse.owner?.name.orEmpty(),
+                        photoUrl = enrolledCourse.owner?.avatarUrl,
+                        size = InputChipDefaults.AvatarSize,
+                        shape = MaterialTheme.shapes.medium,
+                        textStyle = MaterialTheme.typography.labelSmall,
                     )
                 },
             )
