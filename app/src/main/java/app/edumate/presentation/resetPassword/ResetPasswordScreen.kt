@@ -79,7 +79,7 @@ fun ResetPasswordScreen(
 }
 
 @Composable
-fun ResetPasswordContent(
+private fun ResetPasswordContent(
     uiState: ResetPasswordUiState,
     onEvent: (ResetPasswordUiEvent) -> Unit,
     modifier: Modifier = Modifier,
@@ -152,7 +152,7 @@ fun ResetPasswordContent(
                     shape = MaterialTheme.shapes.large,
                 ) {
                     Text(
-                        text = stringResource(id = R.string.reset_password),
+                        text = stringResource(R.string.send_email),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 }
