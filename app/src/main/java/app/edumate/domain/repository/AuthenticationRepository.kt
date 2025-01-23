@@ -32,6 +32,8 @@ interface AuthenticationRepository {
 
     suspend fun resetPasswordForEmail(email: String)
 
+    suspend fun updatePassword(newPassword: String): UserInfo
+
     suspend fun signOut()
 
     suspend fun saveSignInInfo(

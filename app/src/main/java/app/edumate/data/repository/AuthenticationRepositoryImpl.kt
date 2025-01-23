@@ -94,6 +94,11 @@ class AuthenticationRepositoryImpl(
         auth.resetPasswordForEmail(email = email)
     }
 
+    override suspend fun updatePassword(newPassword: String): UserInfo =
+        auth.updateUser {
+            password = newPassword
+        }
+
     override suspend fun signOut() {
         auth.signOut()
     }
