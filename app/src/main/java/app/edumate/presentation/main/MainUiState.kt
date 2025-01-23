@@ -1,4 +1,4 @@
-package app.edumate.presentation
+package app.edumate.presentation.main
 
 data class MainUiState(
     val isLoading: Boolean = true,

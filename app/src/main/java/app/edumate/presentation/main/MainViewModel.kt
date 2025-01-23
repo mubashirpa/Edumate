@@ -1,4 +1,4 @@
-package app.edumate.presentation
+package app.edumate.presentation.main
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

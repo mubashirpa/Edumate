@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".presentation.MainActivity"
+            android:name=".presentation.main.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.Edumate"
             android:windowSoftInputMode="adjustResize">

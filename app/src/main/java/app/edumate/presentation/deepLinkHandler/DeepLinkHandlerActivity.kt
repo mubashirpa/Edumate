@@ -16,9 +16,9 @@ import androidx.compose.ui.res.stringResource
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.presentation.MainActivity
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
+import app.edumate.presentation.main.MainActivity
 import app.edumate.presentation.newPassword.NewPasswordScreen
 import app.edumate.presentation.theme.EdumateTheme
 import io.github.jan.supabase.SupabaseClient

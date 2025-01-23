@@ -1,8 +1,8 @@
 package app.edumate.di
 
-import app.edumate.presentation.MainViewModel
 import app.edumate.presentation.createCourse.CreateCourseViewModel
 import app.edumate.presentation.home.HomeViewModel
+import app.edumate.presentation.main.MainViewModel
 import app.edumate.presentation.newPassword.NewPasswordViewModel
 import app.edumate.presentation.profile.ProfileViewModel
 import app.edumate.presentation.resetPassword.ResetPasswordViewModel

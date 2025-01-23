@@ -1,4 +1,4 @@
-package app.edumate.presentation
+package app.edumate.presentation.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
