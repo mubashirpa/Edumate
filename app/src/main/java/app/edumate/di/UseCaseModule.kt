@@ -10,6 +10,7 @@ import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
 import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
+import app.edumate.domain.usecase.authentication.UpdatePasswordUseCase
 import app.edumate.domain.usecase.courses.CreateCourseUseCase
 import app.edumate.domain.usecase.courses.GetCourseUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
@@ -37,6 +38,7 @@ val useCaseModule =
         singleOf(::SignOutUseCase)
         singleOf(::SignUpUseCase)
         singleOf(::UpdateCourseUseCase)
+        singleOf(::UpdatePasswordUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)
         singleOf(::ValidatePassword)
