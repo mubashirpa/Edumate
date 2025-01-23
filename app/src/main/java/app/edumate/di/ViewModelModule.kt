@@ -3,6 +3,7 @@ package app.edumate.di
 import app.edumate.presentation.MainViewModel
 import app.edumate.presentation.createCourse.CreateCourseViewModel
 import app.edumate.presentation.home.HomeViewModel
+import app.edumate.presentation.newPassword.NewPasswordViewModel
 import app.edumate.presentation.profile.ProfileViewModel
 import app.edumate.presentation.resetPassword.ResetPasswordViewModel
 import app.edumate.presentation.signIn.SignInViewModel
@@ -15,6 +16,7 @@ val viewModelModule =
         viewModelOf(::CreateCourseViewModel)
         viewModelOf(::HomeViewModel)
         viewModelOf(::MainViewModel)
+        viewModelOf(::NewPasswordViewModel)
         viewModelOf(::ProfileViewModel)
         viewModelOf(::ResetPasswordViewModel)
         viewModelOf(::SignInViewModel)
