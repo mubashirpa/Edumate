@@ -27,7 +27,7 @@ class ResetPasswordUseCase(
                     }
 
                     else -> {
-                        emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))
+                        emit(Result.Error(UiText.DynamicString(e.message.toString())))
                     }
                 }
             } catch (_: HttpRequestTimeoutException) {

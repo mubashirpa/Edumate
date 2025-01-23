@@ -31,6 +31,7 @@ class SignInUseCase(
                 val user = authenticationRepository.signInWithEmail(email, password)
                 emit(Result.Success(user!!))
             } catch (e: AuthRestException) {
+                e.printStackTrace()
                 when (e.errorCode) {
                     AuthErrorCode.UserNotFound -> {
                         emit(Result.Error(UiText.StringResource(R.string.auth_error_user_not_found)))
@@ -49,7 +50,7 @@ class SignInUseCase(
                     }
 
                     else -> {
-                        emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))
+                        emit(Result.Error(UiText.DynamicString(e.message.toString())))
                     }
                 }
             } catch (_: HttpRequestTimeoutException) {

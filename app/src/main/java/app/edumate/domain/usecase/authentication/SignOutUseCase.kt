@@ -19,8 +19,8 @@ class SignOutUseCase(
                 emit(Result.Loading())
                 authenticationRepository.signOut()
                 emit(Result.Success(true))
-            } catch (_: AuthRestException) {
-                emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))
+            } catch (e: AuthRestException) {
+                emit(Result.Error(UiText.DynamicString(e.message.toString())))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.auth_timeout_exception)))
             } catch (_: HttpRequestException) {

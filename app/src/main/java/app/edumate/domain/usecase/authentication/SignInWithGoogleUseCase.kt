@@ -25,13 +25,14 @@ class SignInWithGoogleUseCase(
                 val user = authenticationRepository.signInWithGoogle(token, nonce)
                 emit(Result.Success(user!!))
             } catch (e: AuthRestException) {
+                e.printStackTrace()
                 when (e.errorCode) {
                     AuthErrorCode.UserBanned -> {
                         emit(Result.Error(UiText.StringResource(R.string.auth_error_user_disabled)))
                     }
 
                     else -> {
-                        emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))
+                        emit(Result.Error(UiText.DynamicString(e.message.toString())))
                     }
                 }
             } catch (_: HttpRequestTimeoutException) {
