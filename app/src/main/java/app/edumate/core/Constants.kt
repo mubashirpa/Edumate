@@ -9,6 +9,11 @@ object Constants {
     const val EDUMATE_BASE_URL = "https://edumate-learning.web.app/"
     const val WEB_GOOGLE_CLIENT_ID =
         "242656945367-ipk4n5tmvqgt9p8kqb9bk0dckgc8lefn.apps.googleusercontent.com"
+
+    object Lottie {
+        const val ANIM_VERIFY_EMAIL =
+            "https://lottie.host/2c4c5083-70c9-4f92-b0e0-0836850114b4/m3BgaHNxoy.lottie"
+    }
 }
 
 object PreferencesKeys {

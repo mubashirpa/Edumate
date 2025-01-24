@@ -5,11 +5,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PersonOutline
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
@@ -22,7 +20,12 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
+import app.edumate.core.Constants
 import app.edumate.presentation.theme.EdumateTheme
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -59,11 +62,18 @@ private fun VerifyEmailBottomSheetContent(
     onResendVerifyEmail: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val composition =
+        rememberLottieComposition(LottieCompositionSpec.Url(Constants.Lottie.ANIM_VERIFY_EMAIL))
+
     Column(
         modifier = modifier.padding(horizontal = 16.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Icon(imageVector = Icons.Default.PersonOutline, contentDescription = null)
+        LottieAnimation(
+            composition = composition.value,
+            modifier = Modifier.size(96.dp),
+            iterations = LottieConstants.IterateForever,
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = stringResource(R.string.verify_your_account),
