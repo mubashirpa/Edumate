@@ -8,8 +8,10 @@ import androidx.lifecycle.viewModelScope
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
+import app.edumate.domain.model.courses.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
+import app.edumate.domain.usecase.courses.JoinCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -18,6 +20,7 @@ import kotlinx.coroutines.flow.onEach
 class HomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCoursesUseCase: GetCoursesUseCase,
+    private val joinCourseUseCase: JoinCourseUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
@@ -111,10 +114,14 @@ class HomeViewModel(
                         }
 
                         is Result.Success -> {
+                            val courses = result.data.orEmpty()
+
                             uiState =
                                 uiState.copy(
                                     coursesResult = result,
+                                    enrolledCourses = courses.filter { it.role == UserRole.STUDENT },
                                     isRefreshing = false,
+                                    teachingCourses = courses.filter { it.role == UserRole.TEACHER },
                                 )
                         }
                     }
@@ -133,15 +140,41 @@ class HomeViewModel(
                 )
             return
         }
-        uiState =
-            uiState.copy(
-                joinCourseUiState =
-                    uiState.joinCourseUiState.copy(
-                        courseIdError = null,
-                        showBottomSheet = false,
-                    ),
-            )
 
-        // TODO: Join course
+        joinCourseUseCase(courseId)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                joinCourseUiState = uiState.joinCourseUiState.copy(error = result.message),
+                                openProgressDialog = false,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState =
+                            uiState.copy(
+                                joinCourseUiState =
+                                    uiState.joinCourseUiState.copy(
+                                        courseIdError = null,
+                                        error = null,
+                                    ),
+                                openProgressDialog = true,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        uiState =
+                            uiState.copy(
+                                joinCourseUiState = uiState.joinCourseUiState.copy(showBottomSheet = false),
+                                openProgressDialog = false,
+                            )
+                        getCourses(true)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 }

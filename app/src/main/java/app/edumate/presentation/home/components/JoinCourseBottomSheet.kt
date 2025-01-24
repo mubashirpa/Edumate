@@ -1,10 +1,13 @@
 package app.edumate.presentation.home.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.clearText
@@ -17,15 +20,20 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
@@ -53,6 +61,7 @@ fun JoinCourseBottomSheet(
             JoinCourseBottomSheetContent(
                 courseId = uiState.courseId,
                 user = user,
+                error = uiState.error,
                 courseIdError = uiState.courseIdError,
                 onJoinCourse = { courseId ->
                     onJoinCourse(courseId)
@@ -67,12 +76,15 @@ fun JoinCourseBottomSheet(
 private fun JoinCourseBottomSheetContent(
     courseId: TextFieldState,
     user: User?,
+    error: UiText?,
     courseIdError: UiText?,
     onJoinCourse: (courseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
     val maxWidthModifier = Modifier.fillMaxWidth()
+    val focusManager = LocalFocusManager.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(modifier = modifier) {
         ListItem(
@@ -115,6 +127,11 @@ private fun JoinCourseBottomSheetContent(
                         { Text(text = it.asString(), modifier = Modifier.clearAndSetSemantics {}) }
                     },
                 isError = courseIdError != null,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
+                onKeyboardAction = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                },
                 lineLimits = TextFieldLineLimits.SingleLine,
             )
             Spacer(modifier = Modifier.height(16.dp))
@@ -125,6 +142,24 @@ private fun JoinCourseBottomSheetContent(
                 modifier = maxWidthModifier,
             ) {
                 Text(text = stringResource(R.string.join))
+            }
+            AnimatedVisibility(visible = error != null) {
+                error?.let {
+                    Column {
+                        Spacer(modifier = Modifier.height(12.dp))
+                        Text(
+                            text = it.asString(),
+                            modifier =
+                                Modifier
+                                    .fillMaxWidth()
+                                    .clip(MaterialTheme.shapes.medium)
+                                    .background(MaterialTheme.colorScheme.errorContainer)
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                            color = MaterialTheme.colorScheme.onErrorContainer,
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
             }
         }
     }
@@ -141,6 +176,7 @@ private fun JoinCourseBottomSheetPreview() {
                     email = "admin@edumate.app",
                     name = "Admin",
                 ),
+            error = UiText.StringResource(R.string.error_unexpected),
             courseIdError = null,
             onJoinCourse = {},
         )

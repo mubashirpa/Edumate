@@ -54,11 +54,13 @@ import app.edumate.core.Result
 import app.edumate.core.ext.GetOnceResult
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
+import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.enrolled.EnrolledScreen
 import app.edumate.presentation.home.components.AddCourseBottomSheet
 import app.edumate.presentation.home.components.HomeNavigationDrawer
 import app.edumate.presentation.home.components.JoinCourseBottomSheet
+import app.edumate.presentation.teaching.TeachingScreen
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -281,7 +283,7 @@ private fun HomeContent(
                             when (page) {
                                 0 -> {
                                     EnrolledScreen(
-                                        enrolled = coursesResult.data.orEmpty(),
+                                        enrolled = uiState.enrolledCourses,
                                         innerPadding = innerPadding,
                                         onNavigateToClassDetails = onNavigateToClassDetails,
                                         modifier = Modifier.fillMaxSize(),
@@ -289,7 +291,12 @@ private fun HomeContent(
                                 }
 
                                 1 -> {
-                                    // TODO
+                                    TeachingScreen(
+                                        teaching = uiState.teachingCourses,
+                                        innerPadding = innerPadding,
+                                        onNavigateToClassDetails = onNavigateToClassDetails,
+                                        modifier = Modifier.fillMaxSize(),
+                                    )
                                 }
                             }
                         }
@@ -321,6 +328,11 @@ private fun HomeContent(
         onJoinCourse = { courseId ->
             onEvent(HomeUiEvent.JoinCourse(courseId))
         },
+    )
+
+    ProgressDialog(
+        openDialog = uiState.openProgressDialog,
+        onDismissRequest = {},
     )
 }
 
