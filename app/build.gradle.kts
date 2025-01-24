@@ -109,4 +109,5 @@ dependencies {
     implementation(libs.androidx.core.splashscreen)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.kotlinx.datetime)
+    implementation(libs.lottie.compose)
 }
