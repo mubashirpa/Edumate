@@ -71,7 +71,7 @@ fun SignUpScreen(
             .flowWithLifecycle(lifecycle)
             .collect {
                 coroutineScope.launch {
-                    snackbarHostState.showSnackbar(context.getString(R.string.success_sign_up_with_email))
+                    snackbarHostState.showSnackbar(context.getString(R.string.success_signup_with_email))
                 }
                 currentOnSignUpComplete(it.userLoginStatus.second)
             }
