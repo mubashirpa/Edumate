@@ -12,6 +12,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class CourseRepositoryImpl(
     private val postgrest: Postgrest,
@@ -76,4 +78,18 @@ class CourseRepositoryImpl(
                     eq(Supabase.Column.ID, id)
                 }
             }.decodeSingleOrNull()
+
+    override suspend fun joinCourse(
+        courseId: String,
+        userId: String,
+    ): CourseDto? =
+        postgrest
+            .rpc(
+                function = Supabase.Function.INSERT_MEMBER,
+                parameters =
+                    buildJsonObject {
+                        put(Supabase.Column.COURSE_ID, courseId)
+                        put(Supabase.Column.USER_ID, userId)
+                    },
+            ).decodeSingleOrNull()
 }

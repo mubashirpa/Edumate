@@ -24,12 +24,8 @@ object Authentication {
 }
 
 object Supabase {
-    object Table {
-        const val COURSES = "courses"
-        const val MEMBERS = "members"
-    }
-
     object Column {
+        const val COURSE_ID = "course_id"
         const val ID = "id"
         const val NAME = "name"
         const val ROOM = "room"
@@ -37,6 +33,15 @@ object Supabase {
         const val SUBJECT = "subject"
         const val UPDATE_TIME = "update_time"
         const val USER_ID = "user_id"
+    }
+
+    object Function {
+        const val INSERT_MEMBER = "insert_member"
+    }
+
+    object Table {
+        const val COURSES = "courses"
+        const val MEMBERS = "members"
     }
 }
 
