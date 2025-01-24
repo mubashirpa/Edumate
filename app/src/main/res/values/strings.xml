@@ -74,6 +74,9 @@
     <string name="dialog_title_leave_course">Leave %1$s?</string>
     <string name="dialog_message_leave_course">You won\'t be able to open the class unless you\'re reinvited.\n\n<b>You can\'t undo this action.</b></string>
     <string name="leave_class">Leave class</string>
+    <string name="resend_verification_email">Resend verification email</string>
+    <string name="please_check_your_email_for_a_verification_link">Please check your email for a verification link</string>
+    <string name="verify_your_account">Verify your account</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
@@ -118,7 +121,4 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
-    <string name="resend_verification_email">Resend verification email</string>
-    <string name="please_check_your_email_for_a_verification_link">Please check your email for a verification link</string>
-    <string name="verify_your_account">Verify your account</string>
 </resources>
