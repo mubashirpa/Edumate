@@ -48,6 +48,7 @@ import app.edumate.presentation.components.EmailField
 import app.edumate.presentation.components.GoogleSignInButton
 import app.edumate.presentation.components.PasswordField
 import app.edumate.presentation.components.ProgressDialog
+import app.edumate.presentation.signIn.components.VerifyEmailBottomSheet
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
@@ -239,6 +240,16 @@ private fun SignInContent(
         text = stringResource(R.string.signing_in),
         openDialog = uiState.openProgressDialog,
         onDismissRequest = {},
+    )
+
+    VerifyEmailBottomSheet(
+        show = uiState.showVerifyEmailBottomSheet,
+        onDismissRequest = {
+            onEvent(SignInUiEvent.OnShowVerifyEmailBottomSheetChange(false))
+        },
+        onResendVerifyEmail = {
+            onEvent(SignInUiEvent.ResendVerifyEmail)
+        },
     )
 }
 

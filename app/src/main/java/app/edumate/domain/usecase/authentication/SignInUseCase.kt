@@ -19,6 +19,7 @@ class SignInUseCase(
         email: String,
         password: String,
         remember: Boolean,
+        onEmailNotConfirmed: () -> Unit,
     ): Flow<Result<UserInfo>> =
         flow {
             try {
@@ -43,6 +44,7 @@ class SignInUseCase(
 
                     AuthErrorCode.EmailNotConfirmed -> {
                         emit(Result.Error(UiText.StringResource(R.string.auth_error_email_not_confirmed)))
+                        onEmailNotConfirmed()
                     }
 
                     AuthErrorCode.InvalidCredentials -> {

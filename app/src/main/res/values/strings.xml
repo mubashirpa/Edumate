@@ -66,6 +66,14 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="leave">Leave</string>
+    <string name="dialog_message_unenroll">By doing this you won\'t be able to see or participate in the class anymore.</string>
+    <string name="dialog_title_unenroll">Unenroll</string>
+    <string name="cancel">Cancel</string>
+    <string name="dialog_message_delete_course">You will no longer have access to any posts or comments that have been added to this class.\n\n<b>Warning: There is no way to undo this action.</b></string>
+    <string name="dialog_title_delete_course">Delete class?</string>
+    <string name="dialog_title_leave_course">Leave %1$s?</string>
+    <string name="dialog_message_leave_course">You won\'t be able to open the class unless you\'re reinvited.\n\n<b>You can\'t undo this action.</b></string>
+    <string name="leave_class">Leave class</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
@@ -74,7 +82,8 @@
 
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
-    <string name="success_sign_up_with_email">Sign-up successful! Please confirm your email address using the link sent to your inbox before signing in.</string>
+    <string name="success_send_signup_confirmation_email">We sent an email to %1$s with a link to confirm your email address.</string>
+    <string name="success_signup_with_email">Signup successful! Please confirm your email address using the link sent to your inbox before signing in.</string>
 
     <!-- Errors -->
     <string name="error_unexpected">An unexpected error occurred.</string>
@@ -109,4 +118,7 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
+    <string name="resend_verification_email">Resend verification email</string>
+    <string name="please_check_your_email_for_a_verification_link">Please check your email for a verification link</string>
+    <string name="verify_your_account">Verify your account</string>
 </resources>

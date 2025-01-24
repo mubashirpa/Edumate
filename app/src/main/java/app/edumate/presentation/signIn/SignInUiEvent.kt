@@ -5,10 +5,16 @@ sealed class SignInUiEvent {
         val checked: Boolean,
     ) : SignInUiEvent()
 
+    data class OnShowVerifyEmailBottomSheetChange(
+        val show: Boolean,
+    ) : SignInUiEvent()
+
     data class SignInWithGoogle(
         val token: String,
         val nonce: String,
     ) : SignInUiEvent()
+
+    data object ResendVerifyEmail : SignInUiEvent()
 
     data object SignIn : SignInUiEvent()
 

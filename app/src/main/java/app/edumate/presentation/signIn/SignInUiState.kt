@@ -7,6 +7,7 @@ data class SignInUiState(
     val email: TextFieldState = TextFieldState(),
     val emailError: UiText? = null,
     val isUserLoggedIn: Boolean = false,
+    val showVerifyEmailBottomSheet: Boolean = false,
     val openProgressDialog: Boolean = false,
     val password: TextFieldState = TextFieldState(),
     val passwordError: UiText? = null,
