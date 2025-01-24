@@ -9,6 +9,7 @@ import app.edumate.data.local.dataStore
 import app.edumate.domain.model.LoginPreferences
 import app.edumate.domain.repository.AuthenticationRepository
 import io.github.jan.supabase.auth.Auth
+import io.github.jan.supabase.auth.OtpType
 import io.github.jan.supabase.auth.providers.Google
 import io.github.jan.supabase.auth.providers.builtin.Email
 import io.github.jan.supabase.auth.providers.builtin.IDToken
@@ -88,6 +89,10 @@ class AuthenticationRepositoryImpl(
             this.nonce = nonce
         }
         return currentUser()
+    }
+
+    override suspend fun resendSignUpConfirmationEmail(email: String) {
+        auth.resendEmail(OtpType.Email.SIGNUP, email)
     }
 
     override suspend fun resetPasswordForEmail(email: String) {

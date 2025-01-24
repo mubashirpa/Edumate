@@ -30,6 +30,8 @@ interface AuthenticationRepository {
         nonce: String,
     ): UserInfo?
 
+    suspend fun resendSignUpConfirmationEmail(email: String)
+
     suspend fun resetPasswordForEmail(email: String)
 
     suspend fun updatePassword(newPassword: String): UserInfo

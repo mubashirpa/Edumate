@@ -5,6 +5,7 @@ import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
+import app.edumate.domain.usecase.authentication.ResendSignUpConfirmationEmailUseCase
 import app.edumate.domain.usecase.authentication.ResetPasswordUseCase
 import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
@@ -34,6 +35,7 @@ val useCaseModule =
         singleOf(::GetSignInInfoUseCase)
         singleOf(::IsUserLoggedInUseCase)
         singleOf(::JoinCourseUseCase)
+        singleOf(::ResendSignUpConfirmationEmailUseCase)
         singleOf(::ResetPasswordUseCase)
         singleOf(::SignInUseCase)
         singleOf(::SignInWithGoogleUseCase)
