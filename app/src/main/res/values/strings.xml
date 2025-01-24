@@ -41,6 +41,7 @@
     <string name="settings">Settings</string>
     <string name="unenroll">Unenroll</string>
     <string name="join_a_class_to_get_started">Join a class to get started</string>
+    <string name="add_a_class_to_get_started">Add a class to get started</string>
     <string name="class_code">Class code</string>
     <string name="clear_text">Clear text</string>
     <string name="join_class_description">Ask your teacher for the class code, then enter it here</string>
@@ -61,6 +62,10 @@
     <string name="new_password">New password</string>
     <string name="send_email">Send email</string>
     <string name="choose_new_password">Choose new password</string>
+    <string name="share_invite_link">Share invite link</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="leave">Leave</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
@@ -76,6 +81,9 @@
     <string name="error_unknown">Something wrong happened. Please try again.</string>
     <string name="error_network_exception">A network error occurred. Please check your connection and try again.</string>
     <string name="error_timeout_exception">The operation timed out. Please try again.</string>
+    <string name="error_join_course_not_found">No course found with the given Course ID.</string>
+    <string name="error_join_course_already_joined">You have already joined this course.</string>
+    <string name="error_join_course_invalid_id">Invalid Course ID. Please verify and try again.</string>
 
     <!-- Authentication errors -->
     <string name="auth_timeout_exception">The operation timed out. Please try again.</string>
