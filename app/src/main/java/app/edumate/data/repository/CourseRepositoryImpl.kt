@@ -91,5 +91,5 @@ class CourseRepositoryImpl(
                         put(Supabase.Column.COURSE_ID, courseId)
                         put(Supabase.Column.USER_ID, userId)
                     },
-            ).decodeSingleOrNull()
+            ).decodeAsOrNull()
 }
