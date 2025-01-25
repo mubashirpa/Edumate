@@ -7,17 +7,24 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.edumate.R
-import app.edumate.domain.model.courses.Courses
+import app.edumate.core.utils.IntentUtils
 import app.edumate.presentation.components.ErrorScreen
+import app.edumate.presentation.components.LeaveCourseDialog
+import app.edumate.presentation.home.HomeUiEvent
+import app.edumate.presentation.home.HomeUiState
+import app.edumate.presentation.teaching.components.DeleteCourseDialog
 import app.edumate.presentation.teaching.components.TeachingListItem
 
 @Composable
 fun TeachingScreen(
-    teaching: List<Courses>,
+    uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     innerPadding: PaddingValues,
+    onNavigateToCreateCourse: (courseId: String?) -> Unit,
     onNavigateToClassDetails: (courseId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -29,6 +36,7 @@ fun TeachingScreen(
             end = 16.dp,
             bottom = bottomPadding + 100.dp,
         )
+    val teaching = uiState.teachingCourses
 
     if (teaching.isEmpty()) {
         ErrorScreen(
@@ -36,6 +44,7 @@ fun TeachingScreen(
             errorMessage = stringResource(id = R.string.add_a_class_to_get_started),
         )
     } else {
+        val context = LocalContext.current
         LazyColumn(
             modifier = modifier,
             contentPadding = contentPadding,
@@ -50,14 +59,45 @@ fun TeachingScreen(
                             onNavigateToClassDetails(id)
                         },
                         teachingCourse = courses.course!!,
-                        isOwner = true,
-                        onShareClick = { /*TODO*/ },
-                        onEditClick = { /*TODO*/ },
-                        onDeleteClick = { /*TODO*/ },
-                        onLeaveClick = { /*TODO*/ },
+                        isOwner = courses.course.ownerId == uiState.currentUser?.id,
+                        onShareClick = { url ->
+                            IntentUtils.shareText(context, url)
+                        },
+                        onEditClick = {
+                            onNavigateToCreateCourse(courses.course.id)
+                        },
+                        onDeleteClick = {
+                            onEvent(HomeUiEvent.OnOpenDeleteCourseDialogChange(courses.course.id))
+                        },
+                        onLeaveClick = {
+                            onEvent(HomeUiEvent.OnOpenLeaveCourseDialogChange(courses.course))
+                        },
                     )
                 }
             },
         )
     }
+
+    DeleteCourseDialog(
+        onDismissRequest = {
+            onEvent(HomeUiEvent.OnOpenDeleteCourseDialogChange(null))
+        },
+        open = uiState.deleteCourseId != null,
+        onConfirmButtonClick = {
+            onEvent(HomeUiEvent.DeleteCourse(uiState.deleteCourseId!!))
+        },
+    )
+
+    LeaveCourseDialog(
+        onDismissRequest = {
+            onEvent(HomeUiEvent.OnOpenLeaveCourseDialogChange(null))
+        },
+        open = uiState.leaveCourse != null,
+        name = uiState.leaveCourse?.name.orEmpty(),
+        onConfirmButtonClick = {
+            uiState.leaveCourse?.id?.let { id ->
+                onEvent(HomeUiEvent.LeaveCourse(id))
+            }
+        },
+    )
 }

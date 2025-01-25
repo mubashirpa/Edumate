@@ -293,8 +293,10 @@ private fun HomeContent(
 
                                 1 -> {
                                     TeachingScreen(
-                                        teaching = uiState.teachingCourses,
+                                        uiState = uiState,
+                                        onEvent = onEvent,
                                         innerPadding = innerPadding,
+                                        onNavigateToCreateCourse = onNavigateToCreateCourse,
                                         onNavigateToClassDetails = onNavigateToClassDetails,
                                         modifier = Modifier.fillMaxSize(),
                                     )

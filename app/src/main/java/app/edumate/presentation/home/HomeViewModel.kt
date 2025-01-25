@@ -10,6 +10,7 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.courses.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
+import app.edumate.domain.usecase.courses.DeleteCourseUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
 import app.edumate.domain.usecase.member.JoinCourseUseCase
 import app.edumate.domain.usecase.member.UnenrollCourseUseCase
@@ -23,6 +24,7 @@ class HomeViewModel(
     private val getCoursesUseCase: GetCoursesUseCase,
     private val joinCourseUseCase: JoinCourseUseCase,
     private val unenrollCourseUseCase: UnenrollCourseUseCase,
+    private val deleteCourseUseCase: DeleteCourseUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
@@ -37,12 +39,22 @@ class HomeViewModel(
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            is HomeUiEvent.JoinCourse -> {
-                joinCourse(event.courseId.trim())
-            }
+            is HomeUiEvent.DeleteCourse -> deleteCourse(event.courseId)
+
+            is HomeUiEvent.JoinCourse -> joinCourse(event.courseId.trim())
+
+            is HomeUiEvent.LeaveCourse -> unenrollCourse(event.courseId)
 
             is HomeUiEvent.OnAppBarDropdownExpandedChange -> {
                 uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
+            }
+
+            is HomeUiEvent.OnOpenDeleteCourseDialogChange -> {
+                uiState = uiState.copy(deleteCourseId = event.courseId)
+            }
+
+            is HomeUiEvent.OnOpenLeaveCourseDialogChange -> {
+                uiState = uiState.copy(leaveCourse = event.course)
             }
 
             is HomeUiEvent.OnOpenUnenrollDialogChange -> {
@@ -57,9 +69,7 @@ class HomeViewModel(
                 }
             }
 
-            HomeUiEvent.OnRetry -> {
-                getCourses(refreshing = false)
-            }
+            HomeUiEvent.OnRetry -> getCourses(refreshing = false)
 
             is HomeUiEvent.OnShowAddCourseBottomSheetChange -> {
                 uiState = uiState.copy(showAddCourseBottomSheet = event.show)
@@ -70,9 +80,7 @@ class HomeViewModel(
                     uiState.copy(joinCourseUiState = JoinCourseBottomSheetUiState(showBottomSheet = event.show))
             }
 
-            is HomeUiEvent.UnenrollCourse -> {
-                unenrollCourse(event.courseId)
-            }
+            is HomeUiEvent.UnenrollCourse -> unenrollCourse(event.courseId)
 
             HomeUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -205,8 +213,39 @@ class HomeViewModel(
                     is Result.Loading -> {
                         uiState =
                             uiState.copy(
+                                leaveCourse = null,
                                 openProgressDialog = true,
                                 unenrollCourseId = null,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getCourses(true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun deleteCourse(courseId: String) {
+        deleteCourseUseCase(courseId)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState =
+                            uiState.copy(
+                                deleteCourseId = null,
+                                openProgressDialog = true,
                             )
                     }
 

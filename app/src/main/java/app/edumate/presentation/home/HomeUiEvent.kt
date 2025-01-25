@@ -1,12 +1,30 @@
 package app.edumate.presentation.home
 
+import app.edumate.domain.model.courses.Course
+
 sealed class HomeUiEvent {
+    data class DeleteCourse(
+        val courseId: String,
+    ) : HomeUiEvent()
+
     data class JoinCourse(
+        val courseId: String,
+    ) : HomeUiEvent()
+
+    data class LeaveCourse(
         val courseId: String,
     ) : HomeUiEvent()
 
     data class OnAppBarDropdownExpandedChange(
         val expanded: Boolean,
+    ) : HomeUiEvent()
+
+    data class OnOpenDeleteCourseDialogChange(
+        val courseId: String?,
+    ) : HomeUiEvent()
+
+    data class OnOpenLeaveCourseDialogChange(
+        val course: Course?,
     ) : HomeUiEvent()
 
     data class OnOpenUnenrollDialogChange(
