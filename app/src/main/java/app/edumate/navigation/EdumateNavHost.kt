@@ -8,7 +8,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
+import app.edumate.core.Constants
 import app.edumate.core.Navigation
 import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
@@ -34,7 +36,12 @@ fun EdumateNavHost(
             snackbarHostState = snackbarHostState,
             coroutineScope = coroutineScope,
         )
-        composable<Screen.Home> {
+        composable<Screen.Home>(
+            deepLinks =
+                listOf(
+                    navDeepLink<Screen.Home>(basePath = "${Constants.EDUMATE_BASE_URL}course"),
+                ),
+        ) {
             HomeScreen(
                 navController = navController,
                 onNavigateToCreateCourse = { courseId ->

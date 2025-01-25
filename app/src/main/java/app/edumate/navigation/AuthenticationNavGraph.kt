@@ -24,7 +24,7 @@ fun NavGraphBuilder.authentication(
     }
     val navigateToHome: () -> Unit = {
         navController.popBackStack(Graph.Authentication, true)
-        navController.navigate(Screen.Home)
+        navController.navigate(Screen.Home(null))
     }
 
     navigation<Graph.Authentication>(startDestination = Screen.Onboarding) {

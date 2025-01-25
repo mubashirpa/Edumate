@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun determineStartDestination(): Any = if (viewModel.uiState.isUserLoggedIn) Screen.Home else Graph.Authentication
+    private fun determineStartDestination(): Any = if (viewModel.uiState.isUserLoggedIn) Screen.Home(null) else Graph.Authentication
 }
 
 @Composable

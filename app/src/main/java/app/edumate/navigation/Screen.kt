@@ -1,5 +1,6 @@
 package app.edumate.navigation
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,7 +23,11 @@ sealed class Screen {
     data object Profile : Screen()
 
     @Serializable
-    data object Home : Screen()
+    data class Home(
+        val courseId: String?,
+        @SerialName("code")
+        val enrollmentCode: String? = null,
+    ) : Screen()
 
     @Serializable
     data class CreateCourse(
