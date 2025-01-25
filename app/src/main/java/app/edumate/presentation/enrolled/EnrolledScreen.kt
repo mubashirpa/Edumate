@@ -10,13 +10,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import app.edumate.R
-import app.edumate.domain.model.courses.Courses
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.enrolled.components.EnrolledListItem
+import app.edumate.presentation.enrolled.components.UnEnrollDialog
+import app.edumate.presentation.home.HomeUiEvent
+import app.edumate.presentation.home.HomeUiState
 
 @Composable
 fun EnrolledScreen(
-    enrolled: List<Courses>,
+    uiState: HomeUiState,
+    onEvent: (HomeUiEvent) -> Unit,
     innerPadding: PaddingValues,
     onNavigateToClassDetails: (courseId: String) -> Unit,
     modifier: Modifier = Modifier,
@@ -29,6 +32,7 @@ fun EnrolledScreen(
             end = 16.dp,
             bottom = bottomPadding + 100.dp,
         )
+    val enrolled = uiState.enrolledCourses
 
     if (enrolled.isEmpty()) {
         ErrorScreen(
@@ -50,10 +54,22 @@ fun EnrolledScreen(
                             onNavigateToClassDetails(id)
                         },
                         enrolledCourse = courses.course!!,
-                        onCourseUnenroll = { /*TODO*/ },
+                        onCourseUnenroll = { id ->
+                            onEvent(HomeUiEvent.OnOpenUnenrollDialogChange(id))
+                        },
                     )
                 }
             },
         )
     }
+
+    UnEnrollDialog(
+        onDismissRequest = {
+            onEvent(HomeUiEvent.OnOpenUnenrollDialogChange(null))
+        },
+        open = uiState.unenrollCourseId != null,
+        onConfirmButtonClick = {
+            onEvent(HomeUiEvent.UnenrollCourse(uiState.unenrollCourseId!!))
+        },
+    )
 }

@@ -11,7 +11,8 @@ import app.edumate.core.UiText
 import app.edumate.domain.model.courses.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
-import app.edumate.domain.usecase.courses.JoinCourseUseCase
+import app.edumate.domain.usecase.member.JoinCourseUseCase
+import app.edumate.domain.usecase.member.UnenrollCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -21,6 +22,7 @@ class HomeViewModel(
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCoursesUseCase: GetCoursesUseCase,
     private val joinCourseUseCase: JoinCourseUseCase,
+    private val unenrollCourseUseCase: UnenrollCourseUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
@@ -43,6 +45,10 @@ class HomeViewModel(
                 uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
             }
 
+            is HomeUiEvent.OnOpenUnenrollDialogChange -> {
+                uiState = uiState.copy(unenrollCourseId = event.courseId)
+            }
+
             HomeUiEvent.OnRefresh -> {
                 if (uiState.coursesResult is Result.Success) {
                     getCourses(refreshing = true)
@@ -62,6 +68,10 @@ class HomeViewModel(
             is HomeUiEvent.OnShowJoinCourseBottomSheetChange -> {
                 uiState =
                     uiState.copy(joinCourseUiState = JoinCourseBottomSheetUiState(showBottomSheet = event.show))
+            }
+
+            is HomeUiEvent.UnenrollCourse -> {
+                unenrollCourse(event.courseId)
             }
 
             HomeUiEvent.UserMessageShown -> {
@@ -172,6 +182,36 @@ class HomeViewModel(
                                 joinCourseUiState = uiState.joinCourseUiState.copy(showBottomSheet = false),
                                 openProgressDialog = false,
                             )
+                        getCourses(true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun unenrollCourse(courseId: String) {
+        unenrollCourseUseCase(courseId)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = true,
+                                unenrollCourseId = null,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
                         getCourses(true)
                     }
                 }

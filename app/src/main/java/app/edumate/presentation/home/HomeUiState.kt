@@ -16,6 +16,7 @@ data class HomeUiState(
     val openProgressDialog: Boolean = false,
     val showAddCourseBottomSheet: Boolean = false,
     val teachingCourses: List<Courses> = emptyList(),
+    val unenrollCourseId: String? = null,
     val userMessage: UiText? = null,
 )
 

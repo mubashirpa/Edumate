@@ -283,7 +283,8 @@ private fun HomeContent(
                             when (page) {
                                 0 -> {
                                     EnrolledScreen(
-                                        enrolled = uiState.enrolledCourses,
+                                        uiState = uiState,
+                                        onEvent = onEvent,
                                         innerPadding = innerPadding,
                                         onNavigateToClassDetails = onNavigateToClassDetails,
                                         modifier = Modifier.fillMaxSize(),

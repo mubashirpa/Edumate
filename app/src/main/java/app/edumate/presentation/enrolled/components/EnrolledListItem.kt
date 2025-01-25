@@ -41,7 +41,7 @@ import app.edumate.presentation.theme.EdumateTheme
 fun EnrolledListItem(
     onClick: (id: String) -> Unit,
     enrolledCourse: Course,
-    onCourseUnenroll: (id: String?) -> Unit,
+    onCourseUnenroll: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ElevatedCard(
