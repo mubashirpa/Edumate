@@ -13,6 +13,7 @@ import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
 import app.edumate.domain.usecase.authentication.UpdatePasswordUseCase
 import app.edumate.domain.usecase.courses.CreateCourseUseCase
+import app.edumate.domain.usecase.courses.DeleteCourseUseCase
 import app.edumate.domain.usecase.courses.GetCourseUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
 import app.edumate.domain.usecase.courses.UpdateCourseUseCase
@@ -30,6 +31,7 @@ import org.koin.dsl.module
 val useCaseModule =
     module {
         singleOf(::CreateCourseUseCase)
+        singleOf(::DeleteCourseUseCase)
         singleOf(::GetCourseUseCase)
         singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
