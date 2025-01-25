@@ -7,7 +7,7 @@ import app.edumate.domain.model.User
 import app.edumate.domain.model.courses.Courses
 
 data class HomeUiState(
-    val coursesResult: Result<List<Courses>> = Result.Loading(),
+    val coursesResult: Result<List<Courses>> = Result.Empty(),
     val currentUser: User? = null,
     val enrolledCourses: List<Courses> = emptyList(),
     val expandedAppBarDropdown: Boolean = false,
