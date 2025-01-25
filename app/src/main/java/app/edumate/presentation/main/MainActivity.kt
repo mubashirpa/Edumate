@@ -1,17 +1,12 @@
 package app.edumate.presentation.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
-import androidx.compose.foundation.layout.only
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -44,6 +39,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     private fun setupContent() {
         setContent {
             val navController = rememberNavController()
@@ -59,18 +55,13 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = {
                         SnackbarHost(hostState = snackbarHostState)
                     },
-                    contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal),
-                ) { innerPadding ->
+                ) {
                     if (!viewModel.uiState.isLoading) {
                         EdumateApp(
                             navController = navController,
                             startDestination = startDestination,
                             snackbarHostState = snackbarHostState,
-                            modifier =
-                                Modifier
-                                    .fillMaxSize()
-                                    .padding(innerPadding)
-                                    .consumeWindowInsets(innerPadding),
+                            modifier = Modifier.fillMaxSize(),
                         )
                     }
                 }
