@@ -77,6 +77,8 @@
     <string name="resend_verification_email">Resend verification email</string>
     <string name="please_check_your_email_for_a_verification_link">Please check your email for a verification link</string>
     <string name="verify_your_account">Verify your account</string>
+    <string name="empty_screen_title">Screen under construction</string>
+    <string name="empty_screen_subtitle">This screen is still under construction</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
