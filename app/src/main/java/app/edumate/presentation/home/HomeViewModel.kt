@@ -1,10 +1,13 @@
 package app.edumate.presentation.home
 
+import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
@@ -15,11 +18,13 @@ import app.edumate.domain.usecase.courses.GetCoursesUseCase
 import app.edumate.domain.usecase.member.JoinCourseUseCase
 import app.edumate.domain.usecase.member.UnenrollCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
+import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class HomeViewModel(
+    savedStateHandle: SavedStateHandle,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCoursesUseCase: GetCoursesUseCase,
     private val joinCourseUseCase: JoinCourseUseCase,
@@ -30,11 +35,26 @@ class HomeViewModel(
     var uiState by mutableStateOf(HomeUiState())
         private set
 
+    private val args = savedStateHandle.toRoute<Screen.Home>()
     private var getCoursesJob: Job? = null
 
     init {
         getCurrentUser()
         getCourses(refreshing = false)
+
+        if (!args.courseId.isNullOrEmpty() && args.enrollmentCode != null) {
+            uiState =
+                uiState.copy(
+                    joinCourseUiState =
+                        uiState.joinCourseUiState.copy(
+                            courseId =
+                                TextFieldState(
+                                    args.courseId,
+                                ),
+                            showBottomSheet = true,
+                        ),
+                )
+        }
     }
 
     fun onEvent(event: HomeUiEvent) {
