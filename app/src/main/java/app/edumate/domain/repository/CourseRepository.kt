@@ -20,9 +20,4 @@ interface CourseRepository {
     ): CourseDto?
 
     suspend fun deleteCourse(id: String): CourseDto?
-
-    suspend fun joinCourse(
-        courseId: String,
-        userId: String,
-    ): CourseDto?
 }
