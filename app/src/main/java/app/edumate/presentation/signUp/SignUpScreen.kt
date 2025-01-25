@@ -70,8 +70,10 @@ fun SignUpScreen(
             .filter { it.userLoginStatus.first }
             .flowWithLifecycle(lifecycle)
             .collect {
-                coroutineScope.launch {
-                    snackbarHostState.showSnackbar(context.getString(R.string.success_signup_with_email))
+                if (!it.userLoginStatus.second) {
+                    coroutineScope.launch {
+                        snackbarHostState.showSnackbar(context.getString(R.string.success_signup_with_email))
+                    }
                 }
                 currentOnSignUpComplete(it.userLoginStatus.second)
             }
