@@ -1,12 +1,10 @@
-package app.edumate.domain.usecase.courses
+package app.edumate.domain.usecase.member
 
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.data.mapper.toCourseDomainModel
-import app.edumate.domain.model.courses.Course
 import app.edumate.domain.repository.AuthenticationRepository
-import app.edumate.domain.repository.CourseRepository
+import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.exceptions.RestException
 import io.ktor.client.plugins.HttpRequestTimeoutException
@@ -19,17 +17,16 @@ import kotlinx.coroutines.flow.flowOn
 
 class JoinCourseUseCase(
     private val authenticationRepository: AuthenticationRepository,
-    private val courseRepository: CourseRepository,
+    private val memberRepository: MemberRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    operator fun invoke(courseId: String): Flow<Result<Course>> =
+    operator fun invoke(courseId: String): Flow<Result<Boolean>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val result =
-                        courseRepository.joinCourse(courseId, userId)?.toCourseDomainModel()
-                    emit(Result.Success(result))
+                    memberRepository.insertMember(courseId, userId)
+                    emit(Result.Success(true))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (e: RestException) {
                 emit(handleRestException(e))
@@ -42,7 +39,7 @@ class JoinCourseUseCase(
             }
         }.flowOn(ioDispatcher)
 
-    private fun handleRestException(e: RestException): Result<Course> =
+    private fun handleRestException(e: RestException): Result<Boolean> =
         when (e.statusCode) {
             HttpStatusCode.BadRequest.value -> {
                 Result.Error(UiText.StringResource(R.string.error_join_course_invalid_id))
@@ -59,13 +56,13 @@ class JoinCourseUseCase(
                     }
 
                     else -> {
-                        Result.Error(UiText.StringResource(R.string.error_unexpected))
+                        Result.Error(UiText.DynamicString(e.message.toString()))
                     }
                 }
             }
 
             else -> {
-                Result.Error(UiText.StringResource(R.string.error_unexpected))
+                Result.Error(UiText.DynamicString(e.message.toString()))
             }
         }
 }
