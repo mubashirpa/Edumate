@@ -1,5 +1,6 @@
 package app.edumate.di
 
+import app.edumate.presentation.courseDetails.CourseDetailsViewModel
 import app.edumate.presentation.createCourse.CreateCourseViewModel
 import app.edumate.presentation.home.HomeViewModel
 import app.edumate.presentation.main.MainViewModel
@@ -13,6 +14,7 @@ import org.koin.dsl.module
 
 val viewModelModule =
     module {
+        viewModelOf(::CourseDetailsViewModel)
         viewModelOf(::CreateCourseViewModel)
         viewModelOf(::HomeViewModel)
         viewModelOf(::MainViewModel)
