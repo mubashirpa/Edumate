@@ -12,9 +12,12 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import app.edumate.core.Constants
 import app.edumate.core.Navigation
+import app.edumate.presentation.courseDetails.CourseDetailsScreen
+import app.edumate.presentation.courseDetails.CourseDetailsViewModel
 import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.profile.ProfileScreen
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -47,7 +50,9 @@ fun EdumateNavHost(
                 onNavigateToCreateCourse = { courseId ->
                     navController.navigate(Screen.CreateCourse(courseId))
                 },
-                onNavigateToCourseDetails = { /*TODO*/ },
+                onNavigateToCourseDetails = { courseId ->
+                    navController.navigate(Screen.CourseDetails(courseId))
+                },
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile)
                 },
@@ -67,16 +72,30 @@ fun EdumateNavHost(
             )
         }
         composable<Screen.CreateCourse> { backStackEntry ->
-            val courseId = backStackEntry.toRoute<Screen.CreateCourse>().courseId
+            val route = backStackEntry.toRoute<Screen.CreateCourse>()
             CreateCourseScreen(
-                onNavigateToCourseDetails = { id ->
-                    navController.previousBackStackEntry?.savedStateHandle[Navigation.Args.HOME_NEW_TEACHING_COURSE_ID] =
-                        id
-                    // TODO: Navigate to course details screen
-                    navController.navigateUp()
+                onNavigateToCourseDetails = { courseId ->
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle[Navigation.Args.HOME_NEW_TEACHING_COURSE_ID] = courseId
+                    navController.navigate(Screen.CourseDetails(courseId)) {
+                        popUpTo(route) { inclusive = true }
+                    }
                 },
                 onNavigateUp = navController::navigateUp,
-                courseId = courseId,
+                courseId = route.courseId,
+            )
+        }
+        composable<Screen.CourseDetails>(
+            deepLinks =
+                listOf(
+                    navDeepLink<Screen.CourseDetails>(basePath = "${Constants.EDUMATE_BASE_URL}course"),
+                ),
+        ) {
+            val viewModel: CourseDetailsViewModel = koinViewModel()
+            CourseDetailsScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                onNavigateUp = navController::navigateUp,
             )
         }
     }
