@@ -4,7 +4,7 @@ import app.edumate.data.remote.dto.courses.CourseDto
 import app.edumate.data.remote.dto.courses.CoursesDto
 import app.edumate.domain.model.courses.Course
 import app.edumate.domain.model.courses.Courses
-import app.edumate.domain.model.courses.UserRole
+import app.edumate.domain.model.users.UserRole
 
 fun CourseDto.toCourseDomainModel(): Course =
     Course(

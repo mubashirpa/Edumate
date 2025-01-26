@@ -1,6 +1,7 @@
 package app.edumate.domain.model.courses
 
-import app.edumate.domain.model.User
+import app.edumate.domain.model.users.User
+import app.edumate.domain.model.users.UserRole
 
 data class Course(
     val alternateLink: String? = null,

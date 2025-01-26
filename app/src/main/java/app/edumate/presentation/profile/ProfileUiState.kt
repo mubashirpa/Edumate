@@ -2,7 +2,7 @@ package app.edumate.presentation.profile
 
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.model.User
+import app.edumate.domain.model.users.User
 
 data class ProfileUiState(
     val currentUserResult: Result<User> = Result.Empty(),

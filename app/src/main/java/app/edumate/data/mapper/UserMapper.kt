@@ -1,7 +1,7 @@
 package app.edumate.data.mapper
 
 import app.edumate.data.remote.dto.users.UserDto
-import app.edumate.domain.model.User
+import app.edumate.domain.model.users.User
 
 fun UserDto.toUserDomainModel(): User =
     User(
