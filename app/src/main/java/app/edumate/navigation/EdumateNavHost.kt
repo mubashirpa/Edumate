@@ -28,6 +28,7 @@ fun EdumateNavHost(
     startDestination: Any = Graph.Authentication,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val isNotAuthenticated = startDestination == Graph.Authentication
 
     NavHost(
         navController = navController,
@@ -41,9 +42,15 @@ fun EdumateNavHost(
         )
         composable<Screen.Home>(
             deepLinks =
-                listOf(
-                    navDeepLink<Screen.Home>(basePath = "${Constants.EDUMATE_BASE_URL}course"),
-                ),
+                if (isNotAuthenticated) {
+                    emptyList()
+                } else {
+                    listOf(
+                        navDeepLink<Screen.Home>(
+                            basePath = "${Constants.EDUMATE_BASE_URL}course",
+                        ),
+                    )
+                },
         ) {
             HomeScreen(
                 navController = navController,
@@ -87,9 +94,15 @@ fun EdumateNavHost(
         }
         composable<Screen.CourseDetails>(
             deepLinks =
-                listOf(
-                    navDeepLink<Screen.CourseDetails>(basePath = "${Constants.EDUMATE_BASE_URL}course"),
-                ),
+                if (isNotAuthenticated) {
+                    emptyList()
+                } else {
+                    listOf(
+                        navDeepLink<Screen.CourseDetails>(
+                            basePath = "${Constants.EDUMATE_BASE_URL}course",
+                        ),
+                    )
+                },
         ) {
             val viewModel: CourseDetailsViewModel = koinViewModel()
             CourseDetailsScreen(
