@@ -27,16 +27,13 @@ class MainActivity : ComponentActivity() {
     private val viewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val splashScreen = installSplashScreen()
         super.onCreate(savedInstanceState)
-        initializeSplashScreen()
+
+        splashScreen.setKeepOnScreenCondition { viewModel.uiState.isLoading }
+
         enableEdgeToEdge()
         setupContent()
-    }
-
-    private fun initializeSplashScreen() {
-        installSplashScreen().setKeepOnScreenCondition {
-            viewModel.uiState.isLoading
-        }
     }
 
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -69,7 +66,12 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    private fun determineStartDestination(): Any = if (viewModel.uiState.isUserLoggedIn) Screen.Home(null) else Graph.Authentication
+    private fun determineStartDestination(): Any =
+        if (viewModel.uiState.isUserLoggedIn) {
+            Screen.Home(null)
+        } else {
+            Graph.Authentication
+        }
 }
 
 @Composable
