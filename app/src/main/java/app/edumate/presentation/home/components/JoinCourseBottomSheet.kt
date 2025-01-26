@@ -26,8 +26,12 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -85,6 +89,7 @@ private fun JoinCourseBottomSheetContent(
     val maxWidthModifier = Modifier.fillMaxWidth()
     val focusManager = LocalFocusManager.current
     val keyboardController = LocalSoftwareKeyboardController.current
+    val focusRequester = remember { FocusRequester() }
 
     Column(modifier = modifier) {
         ListItem(
@@ -108,7 +113,7 @@ private fun JoinCourseBottomSheetContent(
             Spacer(modifier = Modifier.height(16.dp))
             OutlinedTextField(
                 state = courseId,
-                modifier = maxWidthModifier,
+                modifier = maxWidthModifier.focusRequester(focusRequester),
                 label = {
                     Text(text = stringResource(R.string.class_code))
                 },
@@ -137,6 +142,8 @@ private fun JoinCourseBottomSheetContent(
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
+                    keyboardController?.hide()
+                    focusManager.clearFocus()
                     onJoinCourse(courseId.text.toString())
                 },
                 modifier = maxWidthModifier,
@@ -162,6 +169,10 @@ private fun JoinCourseBottomSheetContent(
                 }
             }
         }
+    }
+
+    LaunchedEffect(true) {
+        focusRequester.requestFocus()
     }
 }
 

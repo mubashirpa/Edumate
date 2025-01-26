@@ -224,6 +224,8 @@ private fun CreateCourseContent(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
                         onEvent(CreateCourseUiEvent.CreateCourse)
                     },
                     modifier = Modifier.fillMaxWidth(),

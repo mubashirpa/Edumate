@@ -189,6 +189,8 @@ private fun SignUpContent(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
                         onEvent(SignUpUiEvent.SignUp)
                     },
                     modifier =

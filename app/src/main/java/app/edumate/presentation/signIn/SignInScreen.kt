@@ -200,6 +200,8 @@ private fun SignInContent(
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
+                        keyboardController?.hide()
+                        focusManager.clearFocus()
                         onEvent(SignInUiEvent.SignIn)
                     },
                     modifier =
