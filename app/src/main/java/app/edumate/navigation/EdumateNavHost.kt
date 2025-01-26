@@ -58,7 +58,7 @@ fun EdumateNavHost(
                 onNavigateUp = navController::navigateUp,
                 onSignOutComplete = {
                     navController.navigate(Graph.Authentication) {
-                        popUpTo(Screen.Home) {
+                        popUpTo(Screen.Home.ROUTE) {
                             inclusive = true
                         }
                         launchSingleTop = true
