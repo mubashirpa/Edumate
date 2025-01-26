@@ -1,4 +1,4 @@
-package app.edumate.data.remote.dto.courses
+package app.edumate.data.remote.dto.users
 
 enum class UserRoleDto {
     STUDENT,

@@ -1,4 +1,4 @@
-package app.edumate.domain.model
+package app.edumate.domain.model.users
 
 data class User(
     val avatarUrl: String? = null,
