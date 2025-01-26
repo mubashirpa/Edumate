@@ -37,6 +37,20 @@ sealed class Screen {
     data class CreateCourse(
         val courseId: String?,
     ) : Screen()
+
+    @Serializable
+    data class CourseDetails(
+        val courseId: String,
+    ) : Screen()
+
+    @Serializable
+    data object Stream : Screen()
+
+    @Serializable
+    data object Coursework : Screen()
+
+    @Serializable
+    data object People : Screen()
 }
 
 @Serializable

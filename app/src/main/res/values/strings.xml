@@ -79,11 +79,17 @@
     <string name="verify_your_account">Verify your account</string>
     <string name="empty_screen_title">Screen under construction</string>
     <string name="empty_screen_subtitle">This screen is still under construction</string>
+    <string name="class_not_found">Class not found</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
     <string name="title_create_class_screen">Create class</string>
     <string name="title_edit_class_screen">Edit class</string>
+
+    <!-- Screen labels -->
+    <string name="label_coursework_screen">Classwork</string>
+    <string name="label_people_screen">People</string>
+    <string name="label_stream_screen">Stream</string>
 
     <!-- Success -->
     <string name="success_send_password_reset_email">We sent an email to %1$s with a link to get back into your account.</string>
