@@ -83,8 +83,10 @@ fun HomeScreen(
         }
     }
 
-    navController.GetOnceResult<String>(Navigation.Args.HOME_NEW_TEACHING_COURSE_ID) { courseId ->
-        viewModel.onEvent(HomeUiEvent.OnRefresh)
+    navController.GetOnceResult<Boolean>(Navigation.Args.HOME_REFRESH_COURSES) { refresh ->
+        if (refresh) {
+            viewModel.onEvent(HomeUiEvent.OnRefresh)
+        }
     }
 
     HomeNavigationDrawer(
