@@ -19,10 +19,6 @@ sealed class PeopleUiEvent {
         val userId: String,
     ) : PeopleUiEvent()
 
-    data class OnMakeClassOwner(
-        val userId: String,
-    ) : PeopleUiEvent()
-
     data class OnOpenDeleteUserDialogChange(
         val user: Users?,
     ) : PeopleUiEvent()

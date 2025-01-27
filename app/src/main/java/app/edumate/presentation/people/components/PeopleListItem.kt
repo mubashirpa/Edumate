@@ -35,7 +35,6 @@ fun PeopleListItem(
     currentUserRole: CurrentUserRole,
     onEmailUserClick: (email: String) -> Unit,
     onLeaveClassClick: () -> Unit,
-    onMakeClassOwnerClick: (userId: String) -> Unit,
     onRemoveUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -59,9 +58,6 @@ fun PeopleListItem(
             user?.email?.let(onEmailUserClick)
         },
         onLeaveClassClick = onLeaveClassClick,
-        onMakeClassOwnerClick = {
-            itemUserId?.let(onMakeClassOwnerClick)
-        },
         onRemoveUserClick = onRemoveUserClick,
         modifier = modifier,
     )
@@ -77,13 +73,12 @@ private fun PeopleListItemContent(
     isCurrentUser: Boolean,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
-    onMakeClassOwnerClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val hideTrailingContent =
         (currentUserRole == CurrentUserRole.OWNER && itemUserRole == ItemUserRole.OWNER) ||
-            (currentUserRole == CurrentUserRole.STUDENT && isCurrentUser)
+            (currentUserRole == CurrentUserRole.STUDENT)
     val trailingContent: @Composable (() -> Unit)? =
         if (hideTrailingContent) {
             null
@@ -95,7 +90,6 @@ private fun PeopleListItemContent(
                     isCurrentUser = isCurrentUser,
                     onEmailUserClick = onEmailUserClick,
                     onLeaveClassClick = onLeaveClassClick,
-                    onMakeClassOwnerClick = onMakeClassOwnerClick,
                     onRemoveUserClick = onRemoveUserClick,
                 )
             }
@@ -124,7 +118,6 @@ private fun PeopleMenuButton(
     isCurrentUser: Boolean,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
-    onMakeClassOwnerClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -160,15 +153,6 @@ private fun PeopleMenuButton(
                                 onClick = {
                                     expanded = false
                                     onRemoveUserClick()
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.make_class_owner))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onMakeClassOwnerClick()
                                 },
                             )
                         }
@@ -271,18 +255,7 @@ private fun PeopleMenuButton(
                 }
 
                 CurrentUserRole.STUDENT -> {
-                    if (!isCurrentUser) {
-                        DropdownMenuItem(
-                            text = {
-                                Text(text = stringResource(id = R.string.email))
-                            },
-                            onClick = {
-                                expanded = false
-                                onEmailUserClick()
-                            },
-                        )
-                    }
-                    // Else nothing shown
+                    // Nothing shown
                 }
             }
         }
@@ -302,7 +275,6 @@ private fun PeopleListItemPreview() {
             isCurrentUser = false,
             onEmailUserClick = {},
             onLeaveClassClick = {},
-            onMakeClassOwnerClick = {},
             onRemoveUserClick = {},
         )
     }

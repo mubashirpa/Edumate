@@ -55,10 +55,6 @@ class PeopleViewModel(
                 deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = true)
             }
 
-            is PeopleUiEvent.OnMakeClassOwner -> {
-                changeCourseOwner(args.courseId, event.userId)
-            }
-
             is PeopleUiEvent.OnOpenDeleteUserDialogChange -> {
                 uiState = uiState.copy(deletePerson = event.user)
             }
@@ -207,12 +203,5 @@ class PeopleViewModel(
                     }
                 }
             }.launchIn(viewModelScope)
-    }
-
-    private fun changeCourseOwner(
-        courseId: String,
-        userId: String,
-    ) {
-        // TODO: Implement changeCourseOwner use case.
     }
 }

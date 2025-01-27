@@ -352,9 +352,6 @@ fun PeopleContent(
                                                         ),
                                                     )
                                                 },
-                                                onMakeClassOwnerClick = { userId ->
-                                                    onEvent(PeopleUiEvent.OnMakeClassOwner(userId))
-                                                },
                                                 onRemoveUserClick = {
                                                     onEvent(
                                                         PeopleUiEvent.OnOpenDeleteUserDialogChange(
@@ -389,9 +386,6 @@ fun PeopleContent(
                                                             true,
                                                         ),
                                                     )
-                                                },
-                                                onMakeClassOwnerClick = { userId ->
-                                                    onEvent(PeopleUiEvent.OnMakeClassOwner(userId))
                                                 },
                                                 onRemoveUserClick = {
                                                     onEvent(
