@@ -1,6 +1,5 @@
 package app.edumate.presentation.profile
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -38,6 +37,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.flowWithLifecycle
 import app.edumate.R
 import app.edumate.core.Result
+import app.edumate.domain.model.users.User
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
@@ -181,15 +181,24 @@ private fun ProfileContent(
     )
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun ProfileScreenPreview() {
     EdumateTheme {
         ProfileContent(
-            uiState = ProfileUiState(),
+            uiState =
+                ProfileUiState(
+                    currentUserResult =
+                        Result.Success(
+                            User(
+                                email = "admin@edumate.app",
+                                id = "admin",
+                                name = "Admin",
+                            ),
+                        ),
+                ),
             onEvent = {},
             onNavigateUp = {},
-            modifier = Modifier.background(MaterialTheme.colorScheme.background),
         )
     }
 }
