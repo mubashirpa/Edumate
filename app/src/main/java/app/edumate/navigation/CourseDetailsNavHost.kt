@@ -19,7 +19,7 @@ fun CourseDetailsNavHost(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Stream,
+        startDestination = Screen.Stream(course.id.orEmpty()),
         modifier = modifier,
     ) {
         composable<Screen.Stream> {

@@ -44,13 +44,19 @@ sealed class Screen {
     ) : Screen()
 
     @Serializable
-    data object Stream : Screen()
+    data class Stream(
+        val courseId: String,
+    ) : Screen()
 
     @Serializable
-    data object Coursework : Screen()
+    data class Coursework(
+        val courseId: String,
+    ) : Screen()
 
     @Serializable
-    data object People : Screen()
+    data class People(
+        val courseId: String,
+    ) : Screen()
 }
 
 @Serializable

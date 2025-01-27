@@ -1,5 +1,6 @@
 package app.edumate.presentation.courseDetails
 
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -74,7 +75,10 @@ fun CourseDetailsContent(
     Scaffold(
         modifier = modifier,
         bottomBar = {
-            CourseDetailsNavigationBar(navController)
+            CourseDetailsNavigationBar(
+                navController = navController,
+                courseId = course.id.orEmpty(),
+            )
         },
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
@@ -88,7 +92,8 @@ fun CourseDetailsContent(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .consumeWindowInsets(innerPadding),
         )
     }
 }

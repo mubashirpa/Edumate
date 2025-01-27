@@ -18,23 +18,23 @@ data class TopLevelRoute<T : Screen>(
     val unselectedIcon: ImageVector,
 )
 
-val courseDetailsLevelRoutes =
+fun courseDetailsLevelRoutes(courseId: String) =
     listOf(
         TopLevelRoute(
             labelId = R.string.label_stream_screen,
-            route = Screen.Stream,
+            route = Screen.Stream(courseId),
             selectedIcon = Icons.Filled.QuestionAnswer,
             unselectedIcon = Icons.Outlined.QuestionAnswer,
         ),
         TopLevelRoute(
             labelId = R.string.label_coursework_screen,
-            route = Screen.Coursework,
+            route = Screen.Coursework(courseId),
             selectedIcon = Icons.AutoMirrored.Filled.Assignment,
             unselectedIcon = Icons.AutoMirrored.Outlined.Assignment,
         ),
         TopLevelRoute(
             labelId = R.string.label_people_screen,
-            route = Screen.People,
+            route = Screen.People(courseId),
             selectedIcon = Icons.Filled.People,
             unselectedIcon = Icons.Outlined.People,
         ),

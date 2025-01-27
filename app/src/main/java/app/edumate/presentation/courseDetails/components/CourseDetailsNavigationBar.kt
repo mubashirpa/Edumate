@@ -21,13 +21,14 @@ import app.edumate.presentation.theme.EdumateTheme
 @Composable
 fun CourseDetailsNavigationBar(
     navController: NavHostController,
+    courseId: String,
     modifier: Modifier = Modifier,
 ) {
     NavigationBar(modifier = modifier) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentDestination = navBackStackEntry?.destination
 
-        courseDetailsLevelRoutes.forEach { topLevelRoute ->
+        courseDetailsLevelRoutes(courseId).forEach { topLevelRoute ->
             val selected =
                 currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true
 
@@ -60,6 +61,9 @@ fun CourseDetailsNavigationBar(
 @Composable
 private fun CourseDetailsNavigationBarPreview() {
     EdumateTheme {
-        CourseDetailsNavigationBar(navController = rememberNavController())
+        CourseDetailsNavigationBar(
+            navController = rememberNavController(),
+            courseId = "",
+        )
     }
 }
