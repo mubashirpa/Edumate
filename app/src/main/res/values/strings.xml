@@ -5,12 +5,16 @@
     <string name="sign_in_with_google">Sign in with Google</string>
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="google">Google</string>
+    <string name="email_student">Email student</string>
+    <string name="remove_student">Remove student</string>
+    <string name="make_class_owner">Make class owner</string>
     <string name="sign_in">Sign in</string>
     <string name="have_an_account">Have an account?</string>
     <string name="create_new_account">Create new account</string>
     <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
     <string name="full_name">Full name</string>
     <string name="email">Email</string>
+    <string name="remove">Remove</string>
     <string name="password">Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="sign_up">Sign up</string>
@@ -34,6 +38,7 @@
     <string name="enrolled">Enrolled</string>
     <string name="teaching">Teaching</string>
     <string name="refresh">Refresh</string>
+    <string name="invite">Invite</string>
     <string name="join_class">Join class</string>
     <string name="create_class">Create class</string>
     <string name="ask_gemini">Ask Gemini</string>
@@ -80,6 +85,18 @@
     <string name="empty_screen_title">Screen under construction</string>
     <string name="empty_screen_subtitle">This screen is still under construction</string>
     <string name="class_not_found">Class not found</string>
+    <string name="all">All</string>
+    <string name="students">Students</string>
+    <string name="teachers">Teachers</string>
+    <string name="share">Share</string>
+    <string name="copy_link">Copy link</string>
+    <string name="invite_students_to_your_class">Invite students to your class.</string>
+    <string name="dialog_title_remove_student">Remove student?</string>
+    <string name="dialog_title_remove_teacher">Remove teacher?</string>
+    <string name="invite_link_copied">Invite link copied</string>
+    <string name="unable_to_leave_class">Unable to leave class.</string>
+    <string name="unable_to_remove_teacher">Unable to remove teacher.</string>
+    <string name="unable_to_remove_student">Unable to remove student.</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
