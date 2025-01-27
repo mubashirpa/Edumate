@@ -13,6 +13,12 @@ object Constants {
     object Lottie {
         const val ANIM_VERIFY_EMAIL =
             "https://lottie.host/2c4c5083-70c9-4f92-b0e0-0836850114b4/m3BgaHNxoy.lottie"
+        const val ANIM_CLASSWORK_SCREEN_EMPTY =
+            "https://assets4.lottiefiles.com/packages/lf20_ikvz7qhc.json"
+        const val ANIM_PEOPLE_SCREEN_EMPTY =
+            "https://assets5.lottiefiles.com/private_files/lf30_TBKozE.json"
+        const val ANIM_STREAM_SCREEN_EMPTY =
+            "https://assets4.lottiefiles.com/packages/lf20_hxart9lz.json"
     }
 }
 
