@@ -25,6 +25,7 @@ fun CourseDetailsScreen(
     uiState: CourseDetailsUiState,
     onEvent: (CourseDetailsUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
+    onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     when (val courseResult = uiState.courseResult) {
@@ -50,6 +51,7 @@ fun CourseDetailsScreen(
                 CourseDetailsContent(
                     course = course,
                     onNavigateUp = onNavigateUp,
+                    onLeaveCourse = onLeaveCourse,
                     modifier = modifier,
                 )
             } else {
@@ -66,6 +68,7 @@ fun CourseDetailsScreen(
 fun CourseDetailsContent(
     course: Course,
     onNavigateUp: () -> Unit,
+    onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
     // Separate NavHostController for nested navigation
     navController: NavHostController = rememberNavController(),
@@ -89,6 +92,7 @@ fun CourseDetailsContent(
             snackbarHostState = snackbarHostState,
             course = course,
             onNavigateUp = onNavigateUp,
+            onLeaveCourse = onLeaveCourse,
             modifier =
                 Modifier
                     .fillMaxSize()

@@ -58,6 +58,6 @@ object Supabase {
 
 object Navigation {
     object Args {
-        const val HOME_NEW_TEACHING_COURSE_ID = "home_new_teaching_course_id"
+        const val HOME_REFRESH_COURSES = "home_refresh_courses"
     }
 }

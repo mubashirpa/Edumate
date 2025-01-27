@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import app.edumate.domain.model.courses.Course
 import app.edumate.presentation.components.EmptyComingSoon
+import app.edumate.presentation.people.PeopleScreen
 
 @Composable
 fun CourseDetailsNavHost(
@@ -15,6 +16,7 @@ fun CourseDetailsNavHost(
     snackbarHostState: SnackbarHostState,
     course: Course,
     onNavigateUp: () -> Unit,
+    onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
@@ -29,7 +31,11 @@ fun CourseDetailsNavHost(
             EmptyComingSoon()
         }
         composable<Screen.People> {
-            EmptyComingSoon()
+            PeopleScreen(
+                course = course,
+                onNavigateUp = onNavigateUp,
+                onLeaveCourseComplete = onLeaveCourse,
+            )
         }
     }
 }
