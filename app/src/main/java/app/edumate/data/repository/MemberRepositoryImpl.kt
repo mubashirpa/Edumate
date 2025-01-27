@@ -1,14 +1,25 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
+import app.edumate.data.remote.dto.users.UsersDto
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.postgrest.Postgrest
+import io.github.jan.supabase.postgrest.query.Columns
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 class MemberRepositoryImpl(
     private val postgrest: Postgrest,
 ) : MemberRepository {
+    override suspend fun getMembers(courseId: String): List<UsersDto> =
+        postgrest
+            .from(Supabase.Table.MEMBERS)
+            .select(Columns.raw("role, user:users(*)")) {
+                filter {
+                    eq(Supabase.Column.COURSE_ID, courseId)
+                }
+            }.decodeList()
+
     override suspend fun insertMember(
         courseId: String,
         userId: String,
