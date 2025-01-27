@@ -56,13 +56,13 @@ class JoinCourseUseCase(
                     }
 
                     else -> {
-                        Result.Error(UiText.DynamicString(e.message.toString()))
+                        Result.Error(UiText.StringResource(R.string.error_unexpected))
                     }
                 }
             }
 
             else -> {
-                Result.Error(UiText.DynamicString(e.message.toString()))
+                Result.Error(UiText.StringResource(R.string.error_unexpected))
             }
         }
 }
