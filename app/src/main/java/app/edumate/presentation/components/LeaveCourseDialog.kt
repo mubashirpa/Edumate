@@ -11,14 +11,14 @@ import app.edumate.R
 fun LeaveCourseDialog(
     onDismissRequest: () -> Unit,
     open: Boolean,
-    name: String,
+    name: String?,
     onConfirmButtonClick: () -> Unit,
 ) {
     if (open) {
         AlertDialog(
             onDismissRequest = onDismissRequest,
             title = {
-                Text(text = stringResource(id = R.string.dialog_title_leave_course, name))
+                Text(text = stringResource(id = R.string.dialog_title_leave_course, "$name"))
             },
             text = {
                 Text(text = stringResource(id = R.string.dialog_message_leave_course))

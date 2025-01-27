@@ -93,7 +93,7 @@ fun TeachingScreen(
             onEvent(HomeUiEvent.OnOpenLeaveCourseDialogChange(null))
         },
         open = uiState.leaveCourse != null,
-        name = uiState.leaveCourse?.name.orEmpty(),
+        name = uiState.leaveCourse?.name,
         onConfirmButtonClick = {
             uiState.leaveCourse?.id?.let { id ->
                 onEvent(HomeUiEvent.LeaveCourse(id))
