@@ -20,10 +20,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import app.edumate.R
+import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.users.User
-import app.edumate.domain.model.users.UserRole
 import app.edumate.presentation.components.UserAvatar
-import app.edumate.presentation.people.CurrentUserRole
+import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.theme.EdumateTheme
 
 @Composable

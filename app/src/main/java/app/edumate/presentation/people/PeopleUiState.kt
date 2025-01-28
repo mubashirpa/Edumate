@@ -9,7 +9,6 @@ data class PeopleUiState(
     val expandedAppBarDropdown: Boolean = false,
     val deletePerson: Users? = null,
     val filter: PeopleFilterType = PeopleFilterType.ALL,
-    val isCurrentUserTeacher: Boolean = false,
     val isRefreshing: Boolean = false,
     val isUserLeftCourse: Boolean = false,
     val openLeaveClassDialog: Boolean = false,

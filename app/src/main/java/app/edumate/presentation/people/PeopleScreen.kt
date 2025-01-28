@@ -61,13 +61,14 @@ import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.core.utils.ClipboardUtils
 import app.edumate.core.utils.IntentUtils
-import app.edumate.domain.model.courses.Course
-import app.edumate.domain.model.users.UserRole
+import app.edumate.domain.model.courses.CourseWithMembers
+import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.AnimatedErrorScreen
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LeaveCourseDialog
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
+import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.people.components.DeletePersonDialog
 import app.edumate.presentation.people.components.InviteBottomSheet
 import app.edumate.presentation.people.components.PeopleListItem
@@ -77,7 +78,8 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PeopleScreen(
-    course: Course,
+    courseWithMembers: CourseWithMembers,
+    currentUserRole: CurrentUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourseComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -98,7 +100,8 @@ fun PeopleScreen(
     PeopleContent(
         uiState = viewModel.uiState,
         onEvent = viewModel::onEvent,
-        course = course,
+        courseWithMembers = courseWithMembers,
+        currentUserRole = currentUserRole,
         onNavigateUp = onNavigateUp,
         modifier = modifier,
     )
@@ -109,7 +112,8 @@ fun PeopleScreen(
 fun PeopleContent(
     uiState: PeopleUiState,
     onEvent: (PeopleUiEvent) -> Unit,
-    course: Course,
+    courseWithMembers: CourseWithMembers,
+    currentUserRole: CurrentUserRole,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -118,18 +122,14 @@ fun PeopleContent(
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val bottomMargin = if (uiState.isCurrentUserTeacher) 100.dp else 0.dp
+    val isCurrentUserTeacher =
+        currentUserRole == CurrentUserRole.TEACHER || currentUserRole == CurrentUserRole.OWNER
+    val bottomMargin = if (isCurrentUserTeacher) 100.dp else 0.dp
     val expandedFab by remember {
         derivedStateOf {
             scrollState.firstVisibleItemIndex == 0
         }
     }
-    val currentUserRole =
-        when {
-            course.ownerId == uiState.currentUserId -> CurrentUserRole.OWNER
-            uiState.isCurrentUserTeacher -> CurrentUserRole.TEACHER
-            else -> CurrentUserRole.STUDENT
-        }
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -145,7 +145,7 @@ fun PeopleContent(
             TopAppBar(
                 title = {
                     Text(
-                        text = course.name.orEmpty(),
+                        text = courseWithMembers.name.orEmpty(),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
@@ -195,7 +195,7 @@ fun PeopleContent(
             SnackbarHost(hostState = snackbarHostState)
         },
         floatingActionButton = {
-            if (uiState.isCurrentUserTeacher) {
+            if (isCurrentUserTeacher) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(text = stringResource(id = R.string.invite))
@@ -336,7 +336,7 @@ fun PeopleContent(
                                             PeopleListItem(
                                                 user = teacher.user,
                                                 role = teacher.role!!,
-                                                courseOwnerId = course.ownerId.orEmpty(),
+                                                courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                                 currentUserId = uiState.currentUserId.orEmpty(),
                                                 currentUserRole = currentUserRole,
                                                 onEmailUserClick = { email ->
@@ -371,7 +371,7 @@ fun PeopleContent(
                                             PeopleListItem(
                                                 user = student.user,
                                                 role = student.role!!,
-                                                courseOwnerId = course.ownerId.orEmpty(),
+                                                courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                                 currentUserId = uiState.currentUserId.orEmpty(),
                                                 currentUserRole = currentUserRole,
                                                 onEmailUserClick = { email ->
@@ -413,12 +413,12 @@ fun PeopleContent(
             onEvent(PeopleUiEvent.OnShowInviteBottomSheetChange(false))
         },
         onShareClick = {
-            course.alternateLink?.let {
+            courseWithMembers.alternateLink?.let {
                 IntentUtils.shareText(context, it)
             }
         },
         onCopyClick = {
-            course.alternateLink?.let {
+            courseWithMembers.alternateLink?.let {
                 ClipboardUtils.copyTextToClipboard(context, it) {
                     coroutineScope.launch {
                         snackbarHostState.showSnackbar(context.getString(R.string.invite_link_copied))
@@ -430,7 +430,7 @@ fun PeopleContent(
 
     LeaveCourseDialog(
         open = uiState.openLeaveClassDialog,
-        name = course.name,
+        name = courseWithMembers.name,
         onDismissRequest = {
             onEvent(PeopleUiEvent.OnOpenLeaveClassDialogChange(false))
         },

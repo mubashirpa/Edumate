@@ -10,7 +10,7 @@ import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.model.users.UserRole
+import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.users.Users
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
@@ -129,14 +129,10 @@ class PeopleViewModel(
 
                         is Result.Success -> {
                             val peoples = result.data.orEmpty()
-                            var isCurrentUserTeacher = false
                             val students = mutableListOf<Users>()
                             val teachers = mutableListOf<Users>()
 
                             peoples.forEach { person ->
-                                if (person.user?.id == uiState.currentUserId) {
-                                    isCurrentUserTeacher = person.role == UserRole.TEACHER
-                                }
                                 when (person.role!!) {
                                     UserRole.STUDENT -> students.add(person)
                                     UserRole.TEACHER -> teachers.add(person)
@@ -145,7 +141,6 @@ class PeopleViewModel(
 
                             uiState =
                                 uiState.copy(
-                                    isCurrentUserTeacher = isCurrentUserTeacher,
                                     isRefreshing = false,
                                     peopleResult = result,
                                     students = students,
