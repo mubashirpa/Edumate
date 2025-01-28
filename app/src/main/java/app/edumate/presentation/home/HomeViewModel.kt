@@ -11,7 +11,7 @@ import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.model.users.UserRole
+import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.courses.DeleteCourseUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
