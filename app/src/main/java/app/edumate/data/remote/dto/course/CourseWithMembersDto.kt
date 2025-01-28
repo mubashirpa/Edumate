@@ -1,7 +1,7 @@
 package app.edumate.data.remote.dto.course
 
 import app.edumate.data.remote.dto.member.MemberDto
-import app.edumate.data.remote.dto.users.UserDto
+import app.edumate.data.remote.dto.user.UserDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

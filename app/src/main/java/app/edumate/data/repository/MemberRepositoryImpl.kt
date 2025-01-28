@@ -1,7 +1,7 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
-import app.edumate.data.remote.dto.users.UsersDto
+import app.edumate.data.remote.dto.user.UsersDto
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns

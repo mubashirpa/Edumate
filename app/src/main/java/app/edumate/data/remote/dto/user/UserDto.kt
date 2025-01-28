@@ -1,4 +1,4 @@
-package app.edumate.data.remote.dto.users
+package app.edumate.data.remote.dto.user
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -1,6 +1,6 @@
 package app.edumate.domain.repository
 
-import app.edumate.data.remote.dto.users.UsersDto
+import app.edumate.data.remote.dto.user.UsersDto
 
 interface MemberRepository {
     suspend fun getMembers(courseId: String): List<UsersDto>
