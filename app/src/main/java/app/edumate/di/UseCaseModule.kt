@@ -21,6 +21,7 @@ import app.edumate.domain.usecase.member.DeleteMemberUseCase
 import app.edumate.domain.usecase.member.GetMembersUseCase
 import app.edumate.domain.usecase.member.JoinCourseUseCase
 import app.edumate.domain.usecase.member.UnenrollCourseUseCase
+import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
@@ -51,6 +52,7 @@ val useCaseModule =
         singleOf(::UnenrollCourseUseCase)
         singleOf(::UpdateCourseUseCase)
         singleOf(::UpdatePasswordUseCase)
+        singleOf(::UploadFileUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)
         singleOf(::ValidatePassword)
