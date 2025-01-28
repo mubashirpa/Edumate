@@ -1,5 +1,6 @@
 package app.edumate.data.remote.dto.users
 
+import app.edumate.data.remote.dto.member.UserRoleDto
 import kotlinx.serialization.Serializable
 
 @Serializable
