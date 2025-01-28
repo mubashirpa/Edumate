@@ -5,8 +5,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.courses.CourseWithMembers
 import app.edumate.presentation.components.EmptyComingSoon
+import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen
 import app.edumate.presentation.courseWork.CourseWorkViewModel
 import app.edumate.presentation.people.PeopleScreen
@@ -15,14 +16,15 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CourseDetailsNavHost(
     navController: NavHostController,
-    course: Course,
+    courseWithMembers: CourseWithMembers,
+    currentUserRole: CurrentUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screen.Stream(course.id.orEmpty()),
+        startDestination = Screen.Stream(courseWithMembers.id!!),
         modifier = modifier,
     ) {
         composable<Screen.Stream> {
@@ -33,19 +35,21 @@ fun CourseDetailsNavHost(
             CourseWorkScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
-                course = course,
+                courseWithMembers = courseWithMembers,
+                currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onNavigateToCreateClasswork = { _, _ ->
                     // TODO: Create classwork
                 },
-                onNavigateToViewClasswork = { _, _ ->
+                onNavigateToViewClasswork = {
                     // TODO: View classwork
                 },
             )
         }
         composable<Screen.People> {
             PeopleScreen(
-                course = course,
+                courseWithMembers = courseWithMembers,
+                currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onLeaveCourseComplete = onLeaveCourse,
             )
