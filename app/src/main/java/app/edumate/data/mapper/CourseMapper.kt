@@ -1,8 +1,8 @@
 package app.edumate.data.mapper
 
-import app.edumate.data.remote.dto.courses.CourseDto
-import app.edumate.data.remote.dto.courses.CourseWithMembersDto
-import app.edumate.data.remote.dto.courses.CoursesDto
+import app.edumate.data.remote.dto.course.CourseDto
+import app.edumate.data.remote.dto.course.CourseWithMembersDto
+import app.edumate.data.remote.dto.course.CoursesDto
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.model.course.Courses

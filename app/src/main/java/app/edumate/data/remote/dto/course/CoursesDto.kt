@@ -1,4 +1,4 @@
-package app.edumate.data.remote.dto.courses
+package app.edumate.data.remote.dto.course
 
 import app.edumate.data.remote.dto.member.UserRoleDto
 import kotlinx.serialization.Serializable

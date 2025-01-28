@@ -1,12 +1,11 @@
-package app.edumate.data.remote.dto.courses
+package app.edumate.data.remote.dto.course
 
-import app.edumate.data.remote.dto.member.MemberDto
 import app.edumate.data.remote.dto.users.UserDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CourseWithMembersDto(
+data class CourseDto(
     @SerialName("alternate_link")
     val alternateLink: String? = null,
     @SerialName("creation_time")
@@ -24,5 +23,4 @@ data class CourseWithMembersDto(
     val subject: String? = null,
     @SerialName("update_time")
     val updateTime: String? = null,
-    val members: List<MemberDto>? = null,
 )

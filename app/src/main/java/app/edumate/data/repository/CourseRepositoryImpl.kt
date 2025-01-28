@@ -2,9 +2,9 @@ package app.edumate.data.repository
 
 import app.edumate.core.Supabase
 import app.edumate.data.mapper.toCourseDto
-import app.edumate.data.remote.dto.courses.CourseDto
-import app.edumate.data.remote.dto.courses.CourseWithMembersDto
-import app.edumate.data.remote.dto.courses.CoursesDto
+import app.edumate.data.remote.dto.course.CourseDto
+import app.edumate.data.remote.dto.course.CourseWithMembersDto
+import app.edumate.data.remote.dto.course.CoursesDto
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.postgrest.Postgrest
