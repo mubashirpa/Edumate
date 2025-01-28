@@ -31,10 +31,10 @@ class UpdateCourseUseCase(
                 emit(Result.Loading())
                 courseRepository
                     .updateCourse(id, name, room, section, subject)
-                    ?.toCourseDomainModel()
-                    ?.let { course ->
+                    .toCourseDomainModel()
+                    .let { course ->
                         emit(Result.Success(course))
-                    } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
+                    }
             } catch (_: RestException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: HttpRequestTimeoutException) {

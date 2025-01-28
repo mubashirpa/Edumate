@@ -29,8 +29,7 @@ class GetCoursesUseCase(
                     val courses =
                         courseRepository
                             .getCourses(userId)
-                            ?.map { it.toCoursesDomainModel() }
-                            .orEmpty()
+                            .map { it.toCoursesDomainModel() }
                     emit(Result.Success(courses))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: RestException) {
