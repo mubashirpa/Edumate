@@ -1,10 +1,12 @@
 package app.edumate.data.mapper
 
 import app.edumate.data.remote.dto.courses.CourseDto
+import app.edumate.data.remote.dto.courses.CourseWithMembersDto
 import app.edumate.data.remote.dto.courses.CoursesDto
 import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.courses.CourseWithMembers
 import app.edumate.domain.model.courses.Courses
-import app.edumate.domain.model.users.UserRole
+import app.edumate.domain.model.member.UserRole
 
 fun CourseDto.toCourseDomainModel(): Course =
     Course(
@@ -42,4 +44,21 @@ fun CoursesDto.toCoursesDomainModel(): Courses =
     Courses(
         course = course?.toCourseDomainModel(),
         role = role?.let { enumValueOf<UserRole>(it.name) },
+    )
+
+fun CourseWithMembersDto.toCourseWithMembersDomainModel(): CourseWithMembers =
+    CourseWithMembers(
+        alternateLink = alternateLink,
+        creationTime = creationTime,
+        description = description,
+        enrollmentCode = enrollmentCode,
+        id = id,
+        name = name,
+        owner = owner?.toUserDomainModel(),
+        ownerId = ownerId,
+        room = room,
+        section = section,
+        subject = subject,
+        updateTime = updateTime,
+        members = members?.map { it.toMemberDomainModel() },
     )
