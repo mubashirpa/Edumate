@@ -3,12 +3,12 @@ package app.edumate.presentation.people
 import app.edumate.domain.model.users.Users
 
 sealed class PeopleUiEvent {
-    data class OnAppBarDropdownExpandedChange(
-        val expanded: Boolean,
-    ) : PeopleUiEvent()
-
     data class OnDeletePerson(
         val userId: String,
+    ) : PeopleUiEvent()
+
+    data class OnExpandedAppBarDropdownChange(
+        val expanded: Boolean,
     ) : PeopleUiEvent()
 
     data class OnFilterChange(

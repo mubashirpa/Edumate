@@ -162,7 +162,7 @@ fun PeopleContent(
                     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                         IconButton(
                             onClick = {
-                                onEvent(PeopleUiEvent.OnAppBarDropdownExpandedChange(true))
+                                onEvent(PeopleUiEvent.OnExpandedAppBarDropdownChange(true))
                             },
                         ) {
                             Icon(
@@ -173,7 +173,7 @@ fun PeopleContent(
                         DropdownMenu(
                             expanded = uiState.expandedAppBarDropdown,
                             onDismissRequest = {
-                                onEvent(PeopleUiEvent.OnAppBarDropdownExpandedChange(false))
+                                onEvent(PeopleUiEvent.OnExpandedAppBarDropdownChange(false))
                             },
                         ) {
                             DropdownMenuItem(
@@ -181,7 +181,7 @@ fun PeopleContent(
                                     Text(text = stringResource(id = R.string.refresh))
                                 },
                                 onClick = {
-                                    onEvent(PeopleUiEvent.OnAppBarDropdownExpandedChange(false))
+                                    onEvent(PeopleUiEvent.OnExpandedAppBarDropdownChange(false))
                                     onEvent(PeopleUiEvent.OnRefresh)
                                 },
                             )

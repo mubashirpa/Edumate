@@ -39,12 +39,12 @@ class PeopleViewModel(
 
     fun onEvent(event: PeopleUiEvent) {
         when (event) {
-            is PeopleUiEvent.OnAppBarDropdownExpandedChange -> {
-                uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
-            }
-
             is PeopleUiEvent.OnDeletePerson -> {
                 deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = false)
+            }
+
+            is PeopleUiEvent.OnExpandedAppBarDropdownChange -> {
+                uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
             }
 
             is PeopleUiEvent.OnFilterChange -> {
