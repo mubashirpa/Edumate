@@ -49,6 +49,7 @@ supabase-bom = { group = "io.github.jan-tennert.supabase", name = "bom", version
 supabase-postgrest-kt = { group = "io.github.jan-tennert.supabase", name = "postgrest-kt" }
 supabase-auth-kt = { group = "io.github.jan-tennert.supabase", name = "auth-kt" }
 supabase-realtime-kt = { group = "io.github.jan-tennert.supabase", name = "realtime-kt" }
+supabase-storage-kt = { group = "io.github.jan-tennert.supabase", name = "storage-kt" }
 navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 androidx-credentials = { group = "androidx.credentials", name = "credentials", version.ref = "credentials" }
 googleid = { group = "com.google.android.libraries.identity.googleid", name = "googleid", version.ref = "googleid" }
@@ -79,6 +80,7 @@ supabase = [
     "supabase-postgrest-kt",
     "supabase-auth-kt",
     "supabase-realtime-kt",
+    "supabase-storage-kt",
 ]
 credentials = [
     "androidx-credentials",
