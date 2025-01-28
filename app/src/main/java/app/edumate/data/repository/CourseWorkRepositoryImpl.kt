@@ -17,4 +17,13 @@ class CourseWorkRepositoryImpl(
                     eq(Supabase.Column.COURSE_ID, courseId)
                 }
             }.decodeList()
+
+    override suspend fun deleteCourseWork(id: String): CourseWorkDto =
+        postgrest[Supabase.Table.COURSE_WORKS]
+            .delete {
+                select()
+                filter {
+                    eq(Supabase.Column.ID, id)
+                }
+            }.decodeSingle()
 }
