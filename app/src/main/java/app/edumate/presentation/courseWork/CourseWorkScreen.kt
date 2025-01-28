@@ -44,11 +44,12 @@ import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.domain.model.courseWork.CourseWorkType
-import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.courses.CourseWithMembers
 import app.edumate.presentation.components.AnimatedErrorScreen
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
+import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.components.CourseWorkListItem
 import app.edumate.presentation.courseWork.components.CreateCourseWorkBottomSheet
 import app.edumate.presentation.courseWork.components.DeleteCourseWorkDialog
@@ -58,10 +59,11 @@ import app.edumate.presentation.courseWork.components.DeleteCourseWorkDialog
 fun CourseWorkScreen(
     uiState: CourseWorkUiState,
     onEvent: (CourseWorkUiEvent) -> Unit,
-    course: Course,
+    courseWithMembers: CourseWithMembers,
+    currentUserRole: CurrentUserRole,
     onNavigateUp: () -> Unit,
     onNavigateToCreateClasswork: (workType: CourseWorkType, id: String?) -> Unit,
-    onNavigateToViewClasswork: (id: String, isCurrentUserTeacher: Boolean) -> Unit,
+    onNavigateToViewClasswork: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -73,6 +75,8 @@ fun CourseWorkScreen(
             scrollState.firstVisibleItemIndex == 0
         }
     }
+    val isCurrentUserTeacher =
+        currentUserRole == CurrentUserRole.TEACHER || currentUserRole == CurrentUserRole.OWNER
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -88,7 +92,7 @@ fun CourseWorkScreen(
             TopAppBar(
                 title = {
                     Text(
-                        text = course.name.orEmpty(),
+                        text = courseWithMembers.name.orEmpty(),
                         overflow = TextOverflow.Ellipsis,
                         maxLines = 1,
                     )
@@ -135,7 +139,7 @@ fun CourseWorkScreen(
             )
         },
         floatingActionButton = {
-            if (uiState.isCurrentUserTeacher) {
+            if (isCurrentUserTeacher) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(text = stringResource(id = R.string.create))
@@ -184,14 +188,14 @@ fun CourseWorkScreen(
 
                 is Result.Success -> {
                     val courseWorks = courseWorkResult.data.orEmpty()
-                    val bottomMargin = if (uiState.isCurrentUserTeacher) 100.dp else 0.dp
+                    val bottomMargin = if (isCurrentUserTeacher) 100.dp else 0.dp
 
                     if (courseWorks.isEmpty()) {
                         AnimatedErrorScreen(
                             url = Constants.Lottie.ANIM_CLASSWORK_SCREEN_EMPTY,
                             modifier = Modifier.fillMaxSize(),
                             errorMessage =
-                                if (uiState.isCurrentUserTeacher) {
+                                if (isCurrentUserTeacher) {
                                     stringResource(id = R.string.add_assignments_and_other_works_for_class)
                                 } else {
                                     stringResource(R.string.your_teacher_hasn_t_assigned_any_classwork_yet)
@@ -208,15 +212,10 @@ fun CourseWorkScreen(
                                     key = { it.id!! },
                                 ) { courseWork ->
                                     CourseWorkListItem(
-                                        onClick = { id ->
-                                            onNavigateToViewClasswork(
-                                                id,
-                                                uiState.isCurrentUserTeacher,
-                                            )
-                                        },
+                                        onClick = onNavigateToViewClasswork,
                                         courseWork = courseWork,
                                         workType = courseWork.workType!!,
-                                        isCurrentUserTeacher = uiState.isCurrentUserTeacher,
+                                        isCurrentUserTeacher = isCurrentUserTeacher,
                                         onEditClick = { id, workType ->
                                             onNavigateToCreateClasswork(workType, id)
                                         },

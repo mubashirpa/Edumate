@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.edumate.core.Result
-import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.courseWork.DeleteCourseWorkUseCase
 import app.edumate.domain.usecase.courseWork.GetCourseWorksUseCase
 import app.edumate.navigation.Screen
@@ -18,7 +17,6 @@ import kotlinx.coroutines.flow.onEach
 
 class CourseWorkViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCourseWorksUseCase: GetCourseWorksUseCase,
     private val deleteCourseWorkUseCase: DeleteCourseWorkUseCase,
 ) : ViewModel() {
@@ -29,7 +27,6 @@ class CourseWorkViewModel(
     private var getCourseWorksJob: Job? = null
 
     init {
-        getCurrentUser()
         getCourseWorks(args.courseId, false)
     }
 
@@ -63,15 +60,6 @@ class CourseWorkViewModel(
                 uiState = uiState.copy(userMessage = null)
             }
         }
-    }
-
-    private fun getCurrentUser() {
-        getCurrentUserUseCase()
-            .onEach { result ->
-                if (result is Result.Success) {
-                    uiState = uiState.copy(currentUserId = result.data?.id)
-                }
-            }.launchIn(viewModelScope)
     }
 
     private fun getCourseWorks(
