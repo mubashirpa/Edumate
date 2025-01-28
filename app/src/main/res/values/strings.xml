@@ -97,6 +97,26 @@
     <string name="unable_to_leave_class">Unable to leave class.</string>
     <string name="unable_to_remove_teacher">Unable to remove teacher.</string>
     <string name="unable_to_remove_student">Unable to remove student.</string>
+    <string name="due_">Due %1$s</string>
+    <string name="due_today">Due today</string>
+    <string name="due_today_">Due today, %1$s</string>
+    <string name="due_tomorrow">Due tomorrow</string>
+    <string name="due_tomorrow_">Due tomorrow, %1$s</string>
+    <string name="due_yesterday">Due yesterday</string>
+    <string name="due_yesterday_">Due yesterday, %1$s</string>
+    <string name="no_due_date">No due date</string>
+    <string name="posted_">Posted %1$s</string>
+    <string name="posted_yesterday">Posted yesterday</string>
+    <string name="add_assignments_and_other_works_for_class">Add assignments and other works for the class.</string>
+    <string name="your_teacher_hasn_t_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
+    <string name="assignment">Assignment</string>
+    <string name="question">Question</string>
+    <string name="material">Material</string>
+    <string name="dialog_title_delete_material">Delete material?</string>
+    <string name="dialog_title_delete_question">Delete question?</string>
+    <string name="dialog_title_delete_assignment">Delete assignment?</string>
+    <string name="dialog_message_delete_coursework">Grades and comments will also be deleted.</string>
+    <string name="dialog_message_delete_material">Comments will also be deleted.</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
