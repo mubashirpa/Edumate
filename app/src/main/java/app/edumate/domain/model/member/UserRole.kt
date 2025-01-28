@@ -1,4 +1,4 @@
-package app.edumate.domain.model.users
+package app.edumate.domain.model.member
 
 enum class UserRole {
     STUDENT,
