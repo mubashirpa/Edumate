@@ -164,7 +164,7 @@ private fun ResetPasswordContent(
 
     ProgressDialog(
         text = stringResource(R.string.sending_email),
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 

@@ -22,11 +22,11 @@ import androidx.compose.ui.unit.dp
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProgressDialog(
-    openDialog: Boolean,
+    open: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (openDialog) {
+    if (open) {
         BasicAlertDialog(
             onDismissRequest = onDismissRequest,
             modifier = modifier,
@@ -54,11 +54,11 @@ fun ProgressDialog(
 @Composable
 fun ProgressDialog(
     text: String,
-    openDialog: Boolean,
+    open: Boolean,
     onDismissRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (openDialog) {
+    if (open) {
         BasicAlertDialog(
             onDismissRequest = onDismissRequest,
             modifier = modifier,

@@ -170,7 +170,7 @@ private fun NewPasswordContent(
 
     ProgressDialog(
         text = stringResource(R.string.updating_password),
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 

@@ -454,7 +454,7 @@ fun PeopleContent(
     )
 
     ProgressDialog(
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 }

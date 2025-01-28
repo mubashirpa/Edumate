@@ -248,7 +248,7 @@ private fun CreateCourseContent(
     }
 
     ProgressDialog(
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 }

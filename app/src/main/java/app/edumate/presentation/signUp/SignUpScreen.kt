@@ -229,7 +229,7 @@ private fun SignUpContent(
 
     ProgressDialog(
         text = stringResource(R.string.creating_account),
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 }

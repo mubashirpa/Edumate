@@ -240,7 +240,7 @@ private fun SignInContent(
 
     ProgressDialog(
         text = stringResource(R.string.signing_in),
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 

@@ -176,7 +176,7 @@ private fun ProfileContent(
 
     ProgressDialog(
         text = stringResource(R.string.logging_out),
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 }

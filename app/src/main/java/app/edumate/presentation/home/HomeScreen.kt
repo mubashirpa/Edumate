@@ -336,7 +336,7 @@ private fun HomeContent(
     )
 
     ProgressDialog(
-        openDialog = uiState.openProgressDialog,
+        open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
 }
