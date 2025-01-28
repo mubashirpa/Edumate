@@ -7,14 +7,16 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import app.edumate.domain.usecase.courses.GetCourseUseCase
+import app.edumate.core.Result
+import app.edumate.domain.model.member.UserRole
+import app.edumate.domain.usecase.courses.GetCourseWithCurrentUserUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class CourseDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getCourseUseCase: GetCourseUseCase,
+    private val getCourseWithCurrentUserUseCase: GetCourseWithCurrentUserUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(CourseDetailsUiState())
         private set
@@ -34,9 +36,30 @@ class CourseDetailsViewModel(
     }
 
     private fun getCourse(id: String) {
-        getCourseUseCase(id)
+        getCourseWithCurrentUserUseCase(id)
             .onEach { result ->
-                uiState = uiState.copy(courseResult = result)
+                uiState =
+                    when (result) {
+                        is Result.Success -> {
+                            val course = result.data
+                            val currentUser = course?.members?.firstOrNull()
+                            val currentUserRole =
+                                when (currentUser?.role) {
+                                    UserRole.TEACHER -> {
+                                        if (course.owner?.id == currentUser.userId) {
+                                            CurrentUserRole.OWNER
+                                        } else {
+                                            CurrentUserRole.TEACHER
+                                        }
+                                    }
+
+                                    else -> CurrentUserRole.STUDENT
+                                }
+                            uiState.copy(currentUserRole = currentUserRole, courseResult = result)
+                        }
+
+                        else -> uiState.copy(courseResult = result)
+                    }
             }.launchIn(viewModelScope)
     }
 }

@@ -1,4 +1,4 @@
-package app.edumate.presentation.people
+package app.edumate.presentation.courseDetails
 
 enum class CurrentUserRole {
     OWNER,

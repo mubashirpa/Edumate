@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import app.edumate.R
 import app.edumate.core.Result
-import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.courses.CourseWithMembers
 import app.edumate.navigation.CourseDetailsNavHost
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
@@ -43,10 +43,11 @@ fun CourseDetailsScreen(
         }
 
         is Result.Success -> {
-            val course = courseResult.data
-            if (course != null) {
+            val courseWithMembers = courseResult.data
+            if (courseWithMembers != null) {
                 CourseDetailsContent(
-                    course = course,
+                    courseWithMembers = courseWithMembers,
+                    currentUserRole = uiState.currentUserRole,
                     onNavigateUp = onNavigateUp,
                     onLeaveCourse = onLeaveCourse,
                     modifier = modifier,
@@ -63,7 +64,8 @@ fun CourseDetailsScreen(
 
 @Composable
 fun CourseDetailsContent(
-    course: Course,
+    courseWithMembers: CourseWithMembers,
+    currentUserRole: CurrentUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
@@ -75,13 +77,14 @@ fun CourseDetailsContent(
         bottomBar = {
             CourseDetailsNavigationBar(
                 navController = navController,
-                courseId = course.id.orEmpty(),
+                courseId = courseWithMembers.id!!,
             )
         },
     ) { innerPadding ->
         CourseDetailsNavHost(
             navController = navController,
-            course = course,
+            courseWithMembers = courseWithMembers,
+            currentUserRole = currentUserRole,
             onNavigateUp = onNavigateUp,
             onLeaveCourse = onLeaveCourse,
             modifier =
