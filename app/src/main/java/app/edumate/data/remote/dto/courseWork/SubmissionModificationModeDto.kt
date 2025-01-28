@@ -1,4 +1,4 @@
-package app.edumate.data.remote.dto.courseWorks
+package app.edumate.data.remote.dto.courseWork
 
 enum class SubmissionModificationModeDto {
     MODIFIABLE,

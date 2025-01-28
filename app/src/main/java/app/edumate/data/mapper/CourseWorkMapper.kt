@@ -1,7 +1,7 @@
 package app.edumate.data.mapper
 
-import app.edumate.data.remote.dto.courseWorks.CourseWorkDto
-import app.edumate.data.remote.dto.courseWorks.MultipleChoiceQuestionDto
+import app.edumate.data.remote.dto.courseWork.CourseWorkDto
+import app.edumate.data.remote.dto.courseWork.MultipleChoiceQuestionDto
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.courseWork.MultipleChoiceQuestion
