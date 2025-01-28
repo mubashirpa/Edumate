@@ -43,8 +43,8 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
+import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.model.courseWork.CourseWorkType
-import app.edumate.domain.model.courses.CourseWithMembers
 import app.edumate.presentation.components.AnimatedErrorScreen
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen

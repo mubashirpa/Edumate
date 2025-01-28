@@ -5,7 +5,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import app.edumate.domain.model.courses.CourseWithMembers
+import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.presentation.components.EmptyComingSoon
 import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen

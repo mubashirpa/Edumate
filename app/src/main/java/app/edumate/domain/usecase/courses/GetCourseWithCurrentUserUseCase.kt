@@ -4,7 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.data.mapper.toCourseWithMembersDomainModel
-import app.edumate.domain.model.courses.CourseWithMembers
+import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.exceptions.HttpRequestException

@@ -1,9 +1,10 @@
-package app.edumate.domain.model.courses
+package app.edumate.domain.model.course
 
+import app.edumate.domain.model.member.Member
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.users.User
 
-data class Course(
+data class CourseWithMembers(
     val alternateLink: String? = null,
     val creationTime: String? = null,
     val description: String? = null,
@@ -17,4 +18,5 @@ data class Course(
     val section: String? = null,
     val subject: String? = null,
     val updateTime: String? = null,
+    val members: List<Member>? = null,
 )

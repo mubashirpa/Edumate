@@ -11,7 +11,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import app.edumate.R
 import app.edumate.core.Result
-import app.edumate.domain.model.courses.CourseWithMembers
+import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.navigation.CourseDetailsNavHost
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen

@@ -1,6 +1,6 @@
 package app.edumate.presentation.home
 
-import app.edumate.domain.model.courses.Course
+import app.edumate.domain.model.course.Course
 
 sealed class HomeUiEvent {
     data class DeleteCourse(

@@ -61,7 +61,7 @@ import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.core.utils.ClipboardUtils
 import app.edumate.core.utils.IntentUtils
-import app.edumate.domain.model.courses.CourseWithMembers
+import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.AnimatedErrorScreen
 import app.edumate.presentation.components.ErrorScreen

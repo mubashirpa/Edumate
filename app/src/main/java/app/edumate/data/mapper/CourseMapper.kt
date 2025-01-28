@@ -3,9 +3,9 @@ package app.edumate.data.mapper
 import app.edumate.data.remote.dto.courses.CourseDto
 import app.edumate.data.remote.dto.courses.CourseWithMembersDto
 import app.edumate.data.remote.dto.courses.CoursesDto
-import app.edumate.domain.model.courses.Course
-import app.edumate.domain.model.courses.CourseWithMembers
-import app.edumate.domain.model.courses.Courses
+import app.edumate.domain.model.course.Course
+import app.edumate.domain.model.course.CourseWithMembers
+import app.edumate.domain.model.course.Courses
 import app.edumate.domain.model.member.UserRole
 
 fun CourseDto.toCourseDomainModel(): Course =
