@@ -17,6 +17,7 @@ import app.edumate.domain.usecase.courseWork.GetCourseWorksUseCase
 import app.edumate.domain.usecase.courses.CreateCourseUseCase
 import app.edumate.domain.usecase.courses.DeleteCourseUseCase
 import app.edumate.domain.usecase.courses.GetCourseUseCase
+import app.edumate.domain.usecase.courses.GetCourseWithCurrentUserUseCase
 import app.edumate.domain.usecase.courses.GetCoursesUseCase
 import app.edumate.domain.usecase.courses.UpdateCourseUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
@@ -40,6 +41,7 @@ val useCaseModule =
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteMemberUseCase)
         singleOf(::GetCourseUseCase)
+        singleOf(::GetCourseWithCurrentUserUseCase)
         singleOf(::GetCourseWorksUseCase)
         singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
