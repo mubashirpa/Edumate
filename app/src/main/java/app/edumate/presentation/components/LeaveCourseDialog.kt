@@ -9,9 +9,9 @@ import app.edumate.R
 
 @Composable
 fun LeaveCourseDialog(
-    onDismissRequest: () -> Unit,
     open: Boolean,
     name: String?,
+    onDismissRequest: () -> Unit,
     onConfirmButtonClick: () -> Unit,
 ) {
     if (open) {

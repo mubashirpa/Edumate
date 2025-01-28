@@ -408,10 +408,10 @@ fun PeopleContent(
     }
 
     InviteBottomSheet(
+        show = uiState.showInviteBottomSheet,
         onDismissRequest = {
             onEvent(PeopleUiEvent.OnShowInviteBottomSheetChange(false))
         },
-        show = uiState.showInviteBottomSheet,
         onShareClick = {
             course.alternateLink?.let {
                 IntentUtils.shareText(context, it)
@@ -429,11 +429,11 @@ fun PeopleContent(
     )
 
     LeaveCourseDialog(
+        open = uiState.openLeaveClassDialog,
+        name = course.name,
         onDismissRequest = {
             onEvent(PeopleUiEvent.OnOpenLeaveClassDialogChange(false))
         },
-        open = uiState.openLeaveClassDialog,
-        name = course.name,
         onConfirmButtonClick = {
             onEvent(PeopleUiEvent.OnOpenLeaveClassDialogChange(false))
             uiState.currentUserId?.let {
@@ -443,11 +443,11 @@ fun PeopleContent(
     )
 
     DeletePersonDialog(
+        user = uiState.deletePerson?.user,
+        isTeacher = uiState.deletePerson?.role == UserRole.TEACHER,
         onDismissRequest = {
             onEvent(PeopleUiEvent.OnOpenDeleteUserDialogChange(null))
         },
-        user = uiState.deletePerson?.user,
-        isTeacher = uiState.deletePerson?.role == UserRole.TEACHER,
         onConfirmButtonClick = { userId ->
             onEvent(PeopleUiEvent.OnDeletePerson(userId))
         },

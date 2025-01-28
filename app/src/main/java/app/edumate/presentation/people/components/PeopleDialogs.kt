@@ -28,9 +28,9 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun DeletePersonDialog(
-    onDismissRequest: () -> Unit,
     user: User?,
     isTeacher: Boolean,
+    onDismissRequest: () -> Unit,
     onConfirmButtonClick: (userId: String) -> Unit,
 ) {
     if (user != null) {
@@ -83,8 +83,8 @@ fun DeletePersonDialog(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun InviteBottomSheet(
-    onDismissRequest: () -> Unit,
     show: Boolean,
+    onDismissRequest: () -> Unit,
     onShareClick: () -> Unit,
     onCopyClick: () -> Unit,
 ) {
