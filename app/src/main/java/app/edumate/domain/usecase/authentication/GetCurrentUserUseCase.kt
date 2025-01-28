@@ -4,7 +4,7 @@ import app.edumate.R
 import app.edumate.core.Authentication
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.model.users.User
+import app.edumate.domain.model.user.User
 import app.edumate.domain.repository.AuthenticationRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

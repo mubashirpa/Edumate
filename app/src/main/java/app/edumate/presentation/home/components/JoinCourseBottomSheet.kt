@@ -42,7 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.UiText
-import app.edumate.domain.model.users.User
+import app.edumate.domain.model.user.User
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.home.JoinCourseBottomSheetUiState
 import app.edumate.presentation.theme.EdumateTheme

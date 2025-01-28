@@ -5,7 +5,7 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.model.course.Courses
-import app.edumate.domain.model.users.User
+import app.edumate.domain.model.user.User
 
 data class HomeUiState(
     val coursesResult: Result<List<Courses>> = Result.Empty(),

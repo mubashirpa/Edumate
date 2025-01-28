@@ -1,6 +1,6 @@
 package app.edumate.presentation.people
 
-import app.edumate.domain.model.users.Users
+import app.edumate.domain.model.user.Users
 
 sealed class PeopleUiEvent {
     data class OnDeletePerson(

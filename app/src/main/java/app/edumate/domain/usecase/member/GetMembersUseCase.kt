@@ -4,7 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.data.mapper.toUsersDomainModel
-import app.edumate.domain.model.users.Users
+import app.edumate.domain.model.user.Users
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.exceptions.RestException

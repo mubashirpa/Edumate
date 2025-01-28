@@ -1,4 +1,4 @@
-package app.edumate.domain.model.users
+package app.edumate.domain.model.user
 
 import app.edumate.domain.model.member.UserRole
 

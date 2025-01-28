@@ -11,7 +11,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.member.UserRole
-import app.edumate.domain.model.users.Users
+import app.edumate.domain.model.user.Users
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
 import app.edumate.domain.usecase.member.GetMembersUseCase

@@ -2,7 +2,7 @@ package app.edumate.presentation.people
 
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.model.users.Users
+import app.edumate.domain.model.user.Users
 
 data class PeopleUiState(
     val currentUserId: String? = null,
