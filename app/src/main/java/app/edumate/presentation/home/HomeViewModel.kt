@@ -13,8 +13,8 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
-import app.edumate.domain.usecase.courses.DeleteCourseUseCase
-import app.edumate.domain.usecase.courses.GetCoursesUseCase
+import app.edumate.domain.usecase.course.DeleteCourseUseCase
+import app.edumate.domain.usecase.course.GetCoursesUseCase
 import app.edumate.domain.usecase.member.JoinCourseUseCase
 import app.edumate.domain.usecase.member.UnenrollCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField

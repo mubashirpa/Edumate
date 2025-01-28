@@ -1,4 +1,4 @@
-package app.edumate.domain.usecase.courses
+package app.edumate.domain.usecase.course
 
 import app.edumate.R
 import app.edumate.core.Result
@@ -15,26 +15,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class UpdateCourseUseCase(
+class GetCourseUseCase(
     private val courseRepository: CourseRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    operator fun invoke(
-        id: String,
-        name: String?,
-        room: String?,
-        section: String?,
-        subject: String?,
-    ): Flow<Result<Course>> =
+    operator fun invoke(id: String): Flow<Result<Course>> =
         flow {
             try {
                 emit(Result.Loading())
-                courseRepository
-                    .updateCourse(id, name, room, section, subject)
-                    .toCourseDomainModel()
-                    .let { course ->
-                        emit(Result.Success(course))
-                    }
+                val course = courseRepository.getCourse(id)?.toCourseDomainModel()
+                emit(Result.Success(course))
             } catch (_: RestException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: HttpRequestTimeoutException) {

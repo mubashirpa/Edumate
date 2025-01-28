@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.edumate.core.Result
 import app.edumate.domain.model.member.UserRole
-import app.edumate.domain.usecase.courses.GetCourseWithCurrentUserUseCase
+import app.edumate.domain.usecase.course.GetCourseWithCurrentUserUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach

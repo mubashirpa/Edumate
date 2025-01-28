@@ -11,9 +11,9 @@ import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.usecase.courses.CreateCourseUseCase
-import app.edumate.domain.usecase.courses.GetCourseUseCase
-import app.edumate.domain.usecase.courses.UpdateCourseUseCase
+import app.edumate.domain.usecase.course.CreateCourseUseCase
+import app.edumate.domain.usecase.course.GetCourseUseCase
+import app.edumate.domain.usecase.course.UpdateCourseUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn

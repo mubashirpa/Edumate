@@ -1,4 +1,4 @@
-package app.edumate.domain.usecase.courses
+package app.edumate.domain.usecase.course
 
 import app.edumate.R
 import app.edumate.core.Result
