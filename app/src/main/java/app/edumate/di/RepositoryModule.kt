@@ -2,10 +2,12 @@ package app.edumate.di
 
 import app.edumate.data.repository.AuthenticationRepositoryImpl
 import app.edumate.data.repository.CourseRepositoryImpl
+import app.edumate.data.repository.CourseWorkRepositoryImpl
 import app.edumate.data.repository.MemberRepositoryImpl
 import app.edumate.data.repository.StorageRepositoryImpl
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.CourseRepository
+import app.edumate.domain.repository.CourseWorkRepository
 import app.edumate.domain.repository.MemberRepository
 import app.edumate.domain.repository.StorageRepository
 import org.koin.core.module.dsl.bind
@@ -16,6 +18,7 @@ val repositoryModule =
     module {
         singleOf(::AuthenticationRepositoryImpl) { bind<AuthenticationRepository>() }
         singleOf(::CourseRepositoryImpl) { bind<CourseRepository>() }
+        singleOf(::CourseWorkRepositoryImpl) { bind<CourseWorkRepository>() }
         singleOf(::MemberRepositoryImpl) { bind<MemberRepository>() }
         singleOf(::StorageRepositoryImpl) { bind<StorageRepository>() }
     }
