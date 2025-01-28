@@ -49,7 +49,7 @@ sealed class Screen {
     ) : Screen()
 
     @Serializable
-    data class Coursework(
+    data class CourseWork(
         val courseId: String,
     ) : Screen()
 

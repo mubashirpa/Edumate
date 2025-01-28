@@ -4,10 +4,7 @@ import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
@@ -73,8 +70,6 @@ fun CourseDetailsContent(
     // Separate NavHostController for nested navigation
     navController: NavHostController = rememberNavController(),
 ) {
-    val snackbarHostState = remember { SnackbarHostState() }
-
     Scaffold(
         modifier = modifier,
         bottomBar = {
@@ -83,13 +78,9 @@ fun CourseDetailsContent(
                 courseId = course.id.orEmpty(),
             )
         },
-        snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
-        },
     ) { innerPadding ->
         CourseDetailsNavHost(
             navController = navController,
-            snackbarHostState = snackbarHostState,
             course = course,
             onNavigateUp = onNavigateUp,
             onLeaveCourse = onLeaveCourse,

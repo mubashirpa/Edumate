@@ -28,7 +28,7 @@ fun courseDetailsLevelRoutes(courseId: String) =
         ),
         TopLevelRoute(
             labelId = R.string.label_coursework_screen,
-            route = Screen.Coursework(courseId),
+            route = Screen.CourseWork(courseId),
             selectedIcon = Icons.AutoMirrored.Filled.Assignment,
             unselectedIcon = Icons.AutoMirrored.Outlined.Assignment,
         ),
