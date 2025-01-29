@@ -110,4 +110,5 @@ dependencies {
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.kotlinx.datetime)
     implementation(libs.lottie.compose)
+    implementation(libs.jsoup)
 }
