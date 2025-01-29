@@ -107,10 +107,7 @@ private fun CreateCourseContent(
     }
 
     Scaffold(
-        modifier =
-            modifier
-                .fillMaxSize()
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+        modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -138,7 +135,7 @@ private fun CreateCourseContent(
         },
     ) { innerPadding ->
         if (uiState.isLoading) {
-            LoadingScreen()
+            LoadingScreen(modifier = Modifier.padding(innerPadding))
         } else {
             Column(
                 modifier =
