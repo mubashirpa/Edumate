@@ -5,11 +5,13 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.presentation.components.EmptyComingSoon
 import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen
 import app.edumate.presentation.courseWork.CourseWorkViewModel
+import app.edumate.presentation.createCourseWork.CreateCourseWorkScreen
 import app.edumate.presentation.people.PeopleScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -38,8 +40,8 @@ fun CourseDetailsNavHost(
                 courseWithMembers = courseWithMembers,
                 currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
-                onNavigateToCreateClasswork = { _, _ ->
-                    // TODO: Create classwork
+                onNavigateToCreateClasswork = { workType, id ->
+                    navController.navigate(Screen.CreateCourseWork(workType, id))
                 },
                 onNavigateToViewClasswork = {
                     // TODO: View classwork
@@ -52,6 +54,19 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onLeaveCourseComplete = onLeaveCourse,
+            )
+        }
+        composable<Screen.CreateCourseWork> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screen.CreateCourseWork>()
+            CreateCourseWorkScreen(
+                courseName = courseWithMembers.name.orEmpty(),
+                workType = route.workType,
+                onNavigateUp = navController::navigateUp,
+                onCreateCourseWorkComplete = {
+                    // TODO
+                    navController.navigateUp()
+                },
+                courseWorkId = route.id,
             )
         }
     }

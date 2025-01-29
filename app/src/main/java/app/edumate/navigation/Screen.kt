@@ -1,5 +1,6 @@
 package app.edumate.navigation
 
+import app.edumate.domain.model.courseWork.CourseWorkType
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -16,7 +17,7 @@ sealed class Screen {
 
     @Serializable
     data class ResetPassword(
-        val email: String?,
+        val email: String? = null,
     ) : Screen()
 
     @Serializable
@@ -35,7 +36,7 @@ sealed class Screen {
 
     @Serializable
     data class CreateCourse(
-        val courseId: String?,
+        val courseId: String? = null,
     ) : Screen()
 
     @Serializable
@@ -56,6 +57,12 @@ sealed class Screen {
     @Serializable
     data class People(
         val courseId: String,
+    ) : Screen()
+
+    @Serializable
+    data class CreateCourseWork(
+        val workType: CourseWorkType,
+        val id: String? = null,
     ) : Screen()
 }
 
