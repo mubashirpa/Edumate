@@ -46,7 +46,7 @@ class CourseDetailsViewModel(
                             val currentUserRole =
                                 when (currentUser?.role) {
                                     UserRole.TEACHER -> {
-                                        if (course.owner?.id == currentUser.userId) {
+                                        if (course.ownerId == currentUser.userId) {
                                             CurrentUserRole.OWNER
                                         } else {
                                             CurrentUserRole.TEACHER
