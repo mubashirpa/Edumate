@@ -117,6 +117,34 @@
     <string name="dialog_title_delete_assignment">Delete assignment?</string>
     <string name="dialog_message_delete_coursework">Grades and comments will also be deleted.</string>
     <string name="dialog_message_delete_material">Comments will also be deleted.</string>
+    <string name="material_title">Material title</string>
+    <string name="all_students">All students</string>
+    <string name="description">Description</string>
+    <string name="add_attachment">Add attachment</string>
+    <string name="post">Post</string>
+    <string name="assignment_title">Assignment title</string>
+    <string name="_points">%1$s points</string>
+    <string name="set_total_points">Set total points</string>
+    <string name="set_due_date">Set due date</string>
+    <string name="assign">Assign</string>
+    <string name="ok">OK</string>
+    <string name="change_point_value">Change point value</string>
+    <string name="unmarked">Unmarked</string>
+    <string name="select_time">Select Time</string>
+    <string name="enter_time">Enter Time</string>
+    <string name="switch_to_text_input">Switch to Text Input</string>
+    <string name="switch_to_touch_input">Switch to Touch Input</string>
+    <string name="question_title">Question title</string>
+    <string name="select_question_type">Select question type</string>
+    <string name="ask">Ask</string>
+    <string name="add_option">Add option</string>
+    <string name="option_">Option %1$s</string>
+    <string name="add_link">Add link</string>
+    <string name="link">Link</string>
+    <string name="add">Add</string>
+    <string name="insert_link">Insert link</string>
+    <string name="upload_file">Upload file</string>
+    <string name="pick_photo">Pick photo</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>
