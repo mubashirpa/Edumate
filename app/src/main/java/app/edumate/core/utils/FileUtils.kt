@@ -39,7 +39,7 @@ class FileUtils(
             val mimeType = connection.contentType
             connection.getInputStream().close()
             mimeType
-        } catch (e: Exception) {
+        } catch (_: Exception) {
             null
         }
 
