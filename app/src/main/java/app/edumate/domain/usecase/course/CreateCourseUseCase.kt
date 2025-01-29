@@ -4,6 +4,7 @@ import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.core.UiText
+import app.edumate.core.utils.CryptographyUtils
 import app.edumate.data.mapper.toCourseDomainModel
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.repository.AuthenticationRepository
@@ -34,10 +35,11 @@ class CreateCourseUseCase(
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
                     val id = UUID.randomUUID().toString()
+                    val enrollmentCode = CryptographyUtils.generateShortHash(name, id)
                     val course =
                         Course(
                             alternateLink = "${Constants.EDUMATE_BASE_URL}course/$id",
-                            enrollmentCode = id,
+                            enrollmentCode = enrollmentCode,
                             id = id,
                             name = name,
                             ownerId = userId,
