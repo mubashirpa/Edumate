@@ -45,11 +45,14 @@ class CourseWorkViewModel(
             }
 
             CourseWorkUiEvent.OnRefresh -> {
-                getCourseWorks(args.courseId, true)
+                getCourseWorks(
+                    courseId = args.courseId,
+                    isRefreshing = uiState.courseWorkResult is Result.Success,
+                )
             }
 
             CourseWorkUiEvent.OnRetry -> {
-                getCourseWorks(args.courseId, false)
+                getCourseWorks(courseId = args.courseId, isRefreshing = false)
             }
 
             is CourseWorkUiEvent.OnShowCreateCourseWorkBottomSheetChange -> {

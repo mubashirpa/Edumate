@@ -84,11 +84,7 @@ class HomeViewModel(
             }
 
             HomeUiEvent.OnRefresh -> {
-                if (uiState.coursesResult is Result.Success) {
-                    getCourses(refreshing = true)
-                } else {
-                    getCourses(refreshing = false)
-                }
+                getCourses(refreshing = uiState.coursesResult is Result.Success)
             }
 
             HomeUiEvent.OnRetry -> getCourses(refreshing = false)

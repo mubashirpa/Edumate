@@ -64,11 +64,14 @@ class PeopleViewModel(
             }
 
             PeopleUiEvent.OnRefresh -> {
-                getPeoples(args.courseId, true)
+                getPeoples(
+                    courseId = args.courseId,
+                    isRefreshing = uiState.peopleResult is Result.Success,
+                )
             }
 
             PeopleUiEvent.OnRetry -> {
-                getPeoples(args.courseId, false)
+                getPeoples(courseId = args.courseId, isRefreshing = false)
             }
 
             is PeopleUiEvent.OnShowInviteBottomSheetChange -> {
