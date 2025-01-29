@@ -413,16 +413,12 @@ fun PeopleContent(
             onEvent(PeopleUiEvent.OnShowInviteBottomSheetChange(false))
         },
         onShareClick = {
-            courseWithMembers.alternateLink?.let {
-                IntentUtils.shareText(context, it)
-            }
+            IntentUtils.shareText(context, courseWithMembers.joinLink)
         },
         onCopyClick = {
-            courseWithMembers.alternateLink?.let {
-                ClipboardUtils.copyTextToClipboard(context, it) {
-                    coroutineScope.launch {
-                        snackbarHostState.showSnackbar(context.getString(R.string.invite_link_copied))
-                    }
+            ClipboardUtils.copyTextToClipboard(context, courseWithMembers.joinLink) {
+                coroutineScope.launch {
+                    snackbarHostState.showSnackbar(context.getString(R.string.invite_link_copied))
                 }
             }
         },

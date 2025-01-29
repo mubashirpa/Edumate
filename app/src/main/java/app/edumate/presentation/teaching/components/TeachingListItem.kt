@@ -78,7 +78,7 @@ fun TeachingListItem(
                 TeachingMenuButton(
                     isOwner = isOwner,
                     onShareClick = {
-                        teachingCourse.alternateLink?.let(onShareClick)
+                        onShareClick(teachingCourse.joinLink)
                     },
                     onEditClick = {
                         teachingCourse.id?.let(onEditClick)
