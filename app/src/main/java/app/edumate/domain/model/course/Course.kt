@@ -17,4 +17,6 @@ data class Course(
     val section: String? = null,
     val subject: String? = null,
     val updateTime: String? = null,
-)
+) {
+    val joinLink = "$alternateLink?code=$enrollmentCode"
+}
