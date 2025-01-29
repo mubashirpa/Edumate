@@ -1,5 +1,7 @@
 package app.edumate.presentation.home
 
+import android.net.Uri
+import android.webkit.URLUtil
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -179,7 +181,15 @@ class HomeViewModel(
             return
         }
 
-        joinCourseUseCase(courseId)
+        val joinId =
+            if (URLUtil.isValidUrl(courseId)) {
+                val uri = Uri.parse(courseId)
+                uri.lastPathSegment ?: ""
+            } else {
+                courseId
+            }
+
+        joinCourseUseCase(joinId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
