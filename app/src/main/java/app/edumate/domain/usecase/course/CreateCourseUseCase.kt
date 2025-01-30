@@ -47,9 +47,9 @@ class CreateCourseUseCase(
                             room = room,
                             section = section,
                             subject = subject,
-                        )
+                        ).toCourseDto()
                     val result =
-                        courseRepository.createCourse(course.toCourseDto()).toCourseDomainModel()
+                        courseRepository.createCourse(course).toCourseDomainModel()
                     emit(Result.Success(result))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: RestException) {
