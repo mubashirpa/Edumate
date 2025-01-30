@@ -84,8 +84,12 @@ fun EdumateNavHost(
                 onNavigateToCourseDetails = { courseId ->
                     navController.previousBackStackEntry
                         ?.savedStateHandle[Navigation.Args.HOME_REFRESH_COURSES] = true
-                    navController.navigate(Screen.CourseDetails(courseId)) {
-                        popUpTo(route) { inclusive = true }
+                    if (route.courseId == null) {
+                        navController.navigate(Screen.CourseDetails(courseId)) {
+                            popUpTo(Screen.Home.ROUTE)
+                        }
+                    } else {
+                        navController.navigateUp()
                     }
                 },
                 onNavigateUp = navController::navigateUp,
