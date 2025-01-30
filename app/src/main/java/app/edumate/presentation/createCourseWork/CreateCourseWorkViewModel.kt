@@ -1,34 +1,82 @@
 package app.edumate.presentation.createCourseWork
 
-import android.util.Log
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import app.edumate.R
 import app.edumate.core.Result
+import app.edumate.core.Supabase
+import app.edumate.core.UiText
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
+import app.edumate.domain.usecase.courseWork.CreateAssignmentUseCase
+import app.edumate.domain.usecase.courseWork.CreateMaterialUseCase
+import app.edumate.domain.usecase.courseWork.CreateQuestionUseCase
+import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
+import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import java.io.File
 
 class CreateCourseWorkViewModel(
+    savedStateHandle: SavedStateHandle,
+    private val createAssignmentUseCase: CreateAssignmentUseCase,
+    private val createMaterialUseCase: CreateMaterialUseCase,
+    private val createQuestionUseCase: CreateQuestionUseCase,
+    private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(CreateCourseWorkUiState())
         private set
 
+    private val args = savedStateHandle.toRoute<Screen.CreateCourseWork>()
+
+    init {
+        uiState = uiState.copy(workType = args.workType)
+        args.id?.let(::getCourseWork)
+    }
+
     fun onEvent(event: CreateCourseWorkUiEvent) {
         when (event) {
-            CreateCourseWorkUiEvent.CreateCourseWork -> {}
+            CreateCourseWorkUiEvent.CreateCourseWork -> {
+                val maxPoints =
+                    try {
+                        uiState.points?.toInt()
+                    } catch (_: NumberFormatException) {
+                        null
+                    }
+                createCourseWork(
+                    courseId = args.courseId,
+                    title =
+                        uiState.title.text
+                            .toString()
+                            .trim(),
+                    description =
+                        uiState.description.text
+                            .toString()
+                            .trim(),
+                    choices = uiState.choices,
+                    materials = uiState.attachments,
+                    maxPoints = maxPoints,
+                    dueTime = uiState.dueTime.toString(),
+                    workType = uiState.workType!!,
+                )
+            }
 
             is CreateCourseWorkUiEvent.OnAddLinkAttachment -> {
                 getUrlMetadata(event.link)
@@ -111,7 +159,7 @@ class CreateCourseWorkViewModel(
         file: File,
     ) {
         viewModelScope.launch {
-            uploadFileUseCase("materials", "coursework/$title", file)
+            uploadFileUseCase(Supabase.Storage.MATERIALS_BUCKET_ID, "coursework/$title", file)
                 .collect { result ->
                     if (result.isDone) {
                         val driveFile =
@@ -147,11 +195,151 @@ class CreateCourseWorkViewModel(
 
                     is Result.Success -> {
                         val link = result.data!!
-                        Log.d("hello", link.toString())
                         uiState.attachments.add(Material(link = link))
                         uiState = uiState.copy(openProgressDialog = false)
                     }
                 }
             }.launchIn(viewModelScope)
+    }
+
+    private fun getCourseWork(id: String) {
+        getCourseWorkUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        val courseWorkResponse = result.data
+                        if (courseWorkResponse != null) {
+                            courseWorkResponse.materials?.let { attachments ->
+                                uiState.attachments.addAll(attachments)
+                            }
+                            val choices =
+                                courseWorkResponse.multipleChoiceQuestion?.choices
+                            if (!choices.isNullOrEmpty()) {
+                                uiState.choices.clear()
+                                uiState.choices.addAll(choices)
+                            }
+                            courseWorkResponse.description?.let { description ->
+                                uiState.description.setTextAndPlaceCursorAtEnd(description)
+                            }
+                            val dueTime =
+                                courseWorkResponse.dueTime?.let { input ->
+                                    Instant
+                                        .parse(input)
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                }
+                            courseWorkResponse.title?.let { title ->
+                                uiState.title.setTextAndPlaceCursorAtEnd(title)
+                            }
+                            val questionTypeSelectionOptionIndex =
+                                courseWorkResponse.workType?.let { workType ->
+                                    when (courseWorkResponse.workType) {
+                                        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> 1
+                                        CourseWorkType.SHORT_ANSWER_QUESTION -> 0
+                                        else -> null
+                                    }
+                                }
+
+                            uiState =
+                                uiState.copy(
+                                    dueTime = dueTime,
+                                    isLoading = false,
+                                    points = courseWorkResponse.maxPoints?.toString(),
+                                    questionTypeSelectionOptionIndex = questionTypeSelectionOptionIndex,
+                                    workType = courseWorkResponse.workType,
+                                )
+                        } else {
+                            uiState =
+                                uiState.copy(
+                                    isLoading = false,
+                                    userMessage = UiText.StringResource(R.string.error_unexpected),
+                                )
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun createCourseWork(
+        courseId: String,
+        title: String,
+        description: String?,
+        choices: List<String>?,
+        materials: List<Material>?,
+        maxPoints: Int?,
+        dueTime: String?,
+        workType: CourseWorkType,
+    ) {
+        when (workType) {
+            CourseWorkType.ASSIGNMENT -> {
+                createAssignmentUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    materials = materials,
+                    maxPoints = maxPoints,
+                    dueTime = dueTime,
+                )
+            }
+
+            CourseWorkType.MATERIAL -> {
+                createMaterialUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    materials = materials,
+                )
+            }
+
+            else -> {
+                createQuestionUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    choices = choices,
+                    materials = materials,
+                    maxPoints = maxPoints,
+                    dueTime = dueTime,
+                    workType = workType,
+                )
+            }
+        }.onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState =
+                        uiState.copy(
+                            isCreateCourseWorkSuccess = true,
+                            openProgressDialog = false,
+                        )
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 }
