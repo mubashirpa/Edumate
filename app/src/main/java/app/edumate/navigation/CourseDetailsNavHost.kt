@@ -76,7 +76,6 @@ fun CourseDetailsNavHost(
             val route = backStackEntry.toRoute<Screen.CreateCourseWork>()
             CreateCourseWorkScreen(
                 courseName = courseWithMembers.name.orEmpty(),
-                workType = route.workType,
                 onNavigateUp = navController::navigateUp,
                 onCreateCourseWorkComplete = {
                     navController.previousBackStackEntry

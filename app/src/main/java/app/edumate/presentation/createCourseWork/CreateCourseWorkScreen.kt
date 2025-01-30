@@ -43,7 +43,6 @@ import java.io.File
 @Composable
 fun CreateCourseWorkScreen(
     courseName: String,
-    workType: CourseWorkType,
     onNavigateUp: () -> Unit,
     onCreateCourseWorkComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -66,7 +65,6 @@ fun CreateCourseWorkScreen(
         uiState = viewModel.uiState,
         onEvent = viewModel::onEvent,
         courseName = courseName,
-        workType = workType,
         onNavigateUp = onNavigateUp,
         modifier = modifier,
         courseWorkId = courseWorkId,
@@ -79,7 +77,6 @@ private fun CreateCourseWorkContent(
     uiState: CreateCourseWorkUiState,
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
-    workType: CourseWorkType,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
     courseWorkId: String? = null,
@@ -145,7 +142,7 @@ private fun CreateCourseWorkContent(
         if (uiState.isLoading) {
             LoadingScreen(modifier = Modifier.padding(innerPadding))
         } else {
-            when (workType) {
+            when (uiState.workType) {
                 CourseWorkType.ASSIGNMENT -> {
                     ContentAssignment(
                         uiState = uiState,
