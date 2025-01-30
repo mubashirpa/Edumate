@@ -19,7 +19,11 @@ import app.edumate.domain.usecase.course.GetCourseUseCase
 import app.edumate.domain.usecase.course.GetCourseWithCurrentUserUseCase
 import app.edumate.domain.usecase.course.GetCoursesUseCase
 import app.edumate.domain.usecase.course.UpdateCourseUseCase
+import app.edumate.domain.usecase.courseWork.CreateAssignmentUseCase
+import app.edumate.domain.usecase.courseWork.CreateMaterialUseCase
+import app.edumate.domain.usecase.courseWork.CreateQuestionUseCase
 import app.edumate.domain.usecase.courseWork.DeleteCourseWorkUseCase
+import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.courseWork.GetCourseWorksUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
 import app.edumate.domain.usecase.member.GetMembersUseCase
@@ -38,11 +42,15 @@ import org.koin.dsl.module
 val useCaseModule =
     module {
         singleOf(::CreateCourseUseCase)
+        singleOf(::CreateAssignmentUseCase)
+        singleOf(::CreateMaterialUseCase)
+        singleOf(::CreateQuestionUseCase)
         singleOf(::DeleteCourseUseCase)
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteMemberUseCase)
         singleOf(::GetCourseUseCase)
         singleOf(::GetCourseWithCurrentUserUseCase)
+        singleOf(::GetCourseWorkUseCase)
         singleOf(::GetCourseWorksUseCase)
         singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
