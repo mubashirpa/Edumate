@@ -1,5 +1,10 @@
 package app.edumate.presentation.courseDetails.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -24,35 +29,47 @@ fun CourseDetailsNavigationBar(
     courseId: String,
     modifier: Modifier = Modifier,
 ) {
-    NavigationBar(modifier = modifier) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentDestination = navBackStackEntry?.destination
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentDestination = navBackStackEntry?.destination
+    val topLevelRoutes = courseDetailsLevelRoutes(courseId)
+    val bottomBarDestination =
+        topLevelRoutes.any {
+            currentDestination?.hasRoute(it.route::class) == true
+        }
 
-        courseDetailsLevelRoutes(courseId).forEach { topLevelRoute ->
-            val selected =
-                currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true
+    AnimatedVisibility(
+        visible = bottomBarDestination,
+        modifier = modifier,
+        enter = fadeIn() + expandVertically(),
+        exit = shrinkVertically() + fadeOut(),
+    ) {
+        NavigationBar {
+            topLevelRoutes.forEach { topLevelRoute ->
+                val selected =
+                    currentDestination?.hierarchy?.any { it.hasRoute(topLevelRoute.route::class) } == true
 
-            NavigationBarItem(
-                selected = selected,
-                onClick = {
-                    navController.navigate(topLevelRoute.route) {
-                        popUpTo(navController.graph.findStartDestination().id) {
-                            saveState = true
+                NavigationBarItem(
+                    selected = selected,
+                    onClick = {
+                        navController.navigate(topLevelRoute.route) {
+                            popUpTo(navController.graph.findStartDestination().id) {
+                                saveState = true
+                            }
+                            launchSingleTop = true
+                            restoreState = true
                         }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                },
-                icon = {
-                    Icon(
-                        imageVector = if (selected) topLevelRoute.selectedIcon else topLevelRoute.unselectedIcon,
-                        contentDescription = stringResource(id = topLevelRoute.labelId),
-                    )
-                },
-                label = {
-                    Text(text = stringResource(id = topLevelRoute.labelId))
-                },
-            )
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = if (selected) topLevelRoute.selectedIcon else topLevelRoute.unselectedIcon,
+                            contentDescription = stringResource(id = topLevelRoute.labelId),
+                        )
+                    },
+                    label = {
+                        Text(text = stringResource(id = topLevelRoute.labelId))
+                    },
+                )
+            }
         }
     }
 }
