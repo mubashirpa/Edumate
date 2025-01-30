@@ -9,6 +9,13 @@ import io.github.jan.supabase.postgrest.query.Columns
 class CourseWorkRepositoryImpl(
     private val postgrest: Postgrest,
 ) : CourseWorkRepository {
+    override suspend fun createCourseWork(courseWork: CourseWorkDto): CourseWorkDto =
+        postgrest
+            .from(Supabase.Table.COURSE_WORKS)
+            .insert(courseWork) {
+                select()
+            }.decodeSingle()
+
     override suspend fun getCourseWorks(courseId: String): List<CourseWorkDto> =
         postgrest
             .from(Supabase.Table.COURSE_WORKS)
