@@ -3,10 +3,9 @@ package app.edumate.domain.repository
 import app.edumate.data.remote.dto.course.CourseDto
 import app.edumate.data.remote.dto.course.CourseWithMembersDto
 import app.edumate.data.remote.dto.course.CoursesDto
-import app.edumate.domain.model.course.Course
 
 interface CourseRepository {
-    suspend fun createCourse(course: Course): CourseDto
+    suspend fun createCourse(course: CourseDto): CourseDto
 
     suspend fun getCourses(userId: String): List<CoursesDto>
 

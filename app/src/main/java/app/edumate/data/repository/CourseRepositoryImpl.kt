@@ -1,11 +1,9 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
-import app.edumate.data.mapper.toCourseDto
 import app.edumate.data.remote.dto.course.CourseDto
 import app.edumate.data.remote.dto.course.CourseWithMembersDto
 import app.edumate.data.remote.dto.course.CoursesDto
-import app.edumate.domain.model.course.Course
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
@@ -17,14 +15,12 @@ import kotlinx.datetime.toLocalDateTime
 class CourseRepositoryImpl(
     private val postgrest: Postgrest,
 ) : CourseRepository {
-    override suspend fun createCourse(course: Course): CourseDto {
-        val courseDto = course.toCourseDto()
-        return postgrest
+    override suspend fun createCourse(course: CourseDto): CourseDto =
+        postgrest
             .from(Supabase.Table.COURSES)
-            .insert(courseDto) {
+            .insert(course) {
                 select()
             }.decodeSingle()
-    }
 
     override suspend fun getCourses(userId: String): List<CoursesDto> =
         postgrest

@@ -6,6 +6,7 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.core.utils.CryptographyUtils
 import app.edumate.data.mapper.toCourseDomainModel
+import app.edumate.data.mapper.toCourseDto
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.CourseRepository
@@ -47,7 +48,8 @@ class CreateCourseUseCase(
                             section = section,
                             subject = subject,
                         )
-                    val result = courseRepository.createCourse(course).toCourseDomainModel()
+                    val result =
+                        courseRepository.createCourse(course.toCourseDto()).toCourseDomainModel()
                     emit(Result.Success(result))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: RestException) {
