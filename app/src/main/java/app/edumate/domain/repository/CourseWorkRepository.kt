@@ -7,5 +7,7 @@ interface CourseWorkRepository {
 
     suspend fun getCourseWorks(courseId: String): List<CourseWorkDto>
 
+    suspend fun getCourseWork(id: String): CourseWorkDto?
+
     suspend fun deleteCourseWork(id: String): CourseWorkDto
 }
