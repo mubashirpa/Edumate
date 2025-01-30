@@ -61,6 +61,7 @@ sealed class Screen {
 
     @Serializable
     data class CreateCourseWork(
+        val courseId: String,
         val workType: CourseWorkType,
         val id: String? = null,
     ) : Screen()

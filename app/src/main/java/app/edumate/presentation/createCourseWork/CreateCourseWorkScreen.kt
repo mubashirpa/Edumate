@@ -31,6 +31,7 @@ import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.presentation.components.AddAttachmentBottomSheet
 import app.edumate.presentation.components.AddLinkDialog
+import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.createCourseWork.components.ContentAssignment
 import app.edumate.presentation.createCourseWork.components.ContentMaterial
@@ -46,8 +47,8 @@ fun CreateCourseWorkScreen(
     onNavigateUp: () -> Unit,
     onCreateCourseWorkComplete: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: CreateCourseWorkViewModel = koinViewModel(),
     courseWorkId: String? = null,
+    viewModel: CreateCourseWorkViewModel = koinViewModel(),
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val currentOnCreateCourseWorkComplete by rememberUpdatedState(onCreateCourseWorkComplete)
@@ -141,35 +142,39 @@ private fun CreateCourseWorkContent(
             SnackbarHost(hostState = snackbarHostState)
         },
     ) { innerPadding ->
-        when (workType) {
-            CourseWorkType.ASSIGNMENT -> {
-                ContentAssignment(
-                    uiState = uiState,
-                    onEvent = onEvent,
-                    courseName = courseName,
-                    modifier = Modifier.padding(innerPadding),
-                    courseWorkId = courseWorkId,
-                )
-            }
+        if (uiState.isLoading) {
+            LoadingScreen(modifier = Modifier.padding(innerPadding))
+        } else {
+            when (workType) {
+                CourseWorkType.ASSIGNMENT -> {
+                    ContentAssignment(
+                        uiState = uiState,
+                        onEvent = onEvent,
+                        courseName = courseName,
+                        modifier = Modifier.padding(innerPadding),
+                        courseWorkId = courseWorkId,
+                    )
+                }
 
-            CourseWorkType.MATERIAL -> {
-                ContentMaterial(
-                    uiState = uiState,
-                    onEvent = onEvent,
-                    courseName = courseName,
-                    modifier = Modifier.padding(innerPadding),
-                    courseWorkId = courseWorkId,
-                )
-            }
+                CourseWorkType.MATERIAL -> {
+                    ContentMaterial(
+                        uiState = uiState,
+                        onEvent = onEvent,
+                        courseName = courseName,
+                        modifier = Modifier.padding(innerPadding),
+                        courseWorkId = courseWorkId,
+                    )
+                }
 
-            else -> {
-                ContentQuestion(
-                    uiState = uiState,
-                    onEvent = onEvent,
-                    courseName = courseName,
-                    modifier = Modifier.padding(innerPadding),
-                    courseWorkId = courseWorkId,
-                )
+                else -> {
+                    ContentQuestion(
+                        uiState = uiState,
+                        onEvent = onEvent,
+                        courseName = courseName,
+                        modifier = Modifier.padding(innerPadding),
+                        courseWorkId = courseWorkId,
+                    )
+                }
             }
         }
     }

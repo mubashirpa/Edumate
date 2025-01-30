@@ -14,6 +14,7 @@ data class CreateCourseWorkUiState(
     val description: TextFieldState = TextFieldState(),
     val dueTime: LocalDateTime? = null,
     val isCreateCourseWorkSuccess: Boolean = false,
+    val isLoading: Boolean = false,
     val openAddLinkDialog: Boolean = false,
     val openDatePickerDialog: Boolean = false,
     val openPointsDialog: Boolean = false,

@@ -6,10 +6,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
+import app.edumate.core.Navigation
+import app.edumate.core.ext.GetOnceResult
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.presentation.components.EmptyComingSoon
 import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen
+import app.edumate.presentation.courseWork.CourseWorkUiEvent
 import app.edumate.presentation.courseWork.CourseWorkViewModel
 import app.edumate.presentation.createCourseWork.CreateCourseWorkScreen
 import app.edumate.presentation.people.PeopleScreen
@@ -34,6 +37,13 @@ fun CourseDetailsNavHost(
         }
         composable<Screen.CourseWork> {
             val viewModel: CourseWorkViewModel = koinViewModel()
+
+            navController.GetOnceResult<Boolean>(Navigation.Args.CREATE_COURSE_WORK_SUCCESS) { refresh ->
+                if (refresh) {
+                    viewModel.onEvent(CourseWorkUiEvent.OnRefresh)
+                }
+            }
+
             CourseWorkScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
@@ -41,7 +51,13 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onNavigateToCreateClasswork = { workType, id ->
-                    navController.navigate(Screen.CreateCourseWork(workType, id))
+                    navController.navigate(
+                        Screen.CreateCourseWork(
+                            courseId = courseWithMembers.id,
+                            workType = workType,
+                            id = id,
+                        ),
+                    )
                 },
                 onNavigateToViewClasswork = {
                     // TODO: View classwork
@@ -63,7 +79,8 @@ fun CourseDetailsNavHost(
                 workType = route.workType,
                 onNavigateUp = navController::navigateUp,
                 onCreateCourseWorkComplete = {
-                    // TODO
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle[Navigation.Args.CREATE_COURSE_WORK_SUCCESS] = true
                     navController.navigateUp()
                 },
                 courseWorkId = route.id,
