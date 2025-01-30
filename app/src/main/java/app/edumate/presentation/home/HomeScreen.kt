@@ -49,9 +49,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import app.edumate.R
-import app.edumate.core.Navigation
 import app.edumate.core.Result
-import app.edumate.core.ext.GetOnceResult
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
@@ -80,12 +78,6 @@ fun HomeScreen(
     BackHandler(enabled = drawerState.isOpen) {
         coroutineScope.launch {
             drawerState.close()
-        }
-    }
-
-    navController.GetOnceResult<Boolean>(Navigation.Args.HOME_REFRESH_COURSES) { refresh ->
-        if (refresh) {
-            viewModel.onEvent(HomeUiEvent.OnRefresh)
         }
     }
 

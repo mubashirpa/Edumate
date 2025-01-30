@@ -12,10 +12,13 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import app.edumate.core.Constants
 import app.edumate.core.Navigation
+import app.edumate.core.ext.GetOnceResult
 import app.edumate.presentation.courseDetails.CourseDetailsScreen
 import app.edumate.presentation.courseDetails.CourseDetailsViewModel
 import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
+import app.edumate.presentation.home.HomeUiEvent
+import app.edumate.presentation.home.HomeViewModel
 import app.edumate.presentation.profile.ProfileScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -52,6 +55,14 @@ fun EdumateNavHost(
                     )
                 },
         ) {
+            val viewModel: HomeViewModel = koinViewModel()
+
+            navController.GetOnceResult<Boolean>(Navigation.Args.CREATE_COURSE_SUCCESS) { refresh ->
+                if (refresh) {
+                    viewModel.onEvent(HomeUiEvent.OnRefresh)
+                }
+            }
+
             HomeScreen(
                 navController = navController,
                 onNavigateToCreateCourse = { courseId ->
@@ -63,6 +74,7 @@ fun EdumateNavHost(
                 onNavigateToProfile = {
                     navController.navigate(Screen.Profile)
                 },
+                viewModel = viewModel,
             )
         }
         composable<Screen.Profile> {
@@ -83,7 +95,7 @@ fun EdumateNavHost(
             CreateCourseScreen(
                 onNavigateToCourseDetails = { courseId ->
                     navController.previousBackStackEntry
-                        ?.savedStateHandle[Navigation.Args.HOME_REFRESH_COURSES] = true
+                        ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
                     if (route.courseId == null) {
                         navController.navigate(Screen.CourseDetails(courseId)) {
                             popUpTo(Screen.Home.ROUTE)
@@ -115,7 +127,7 @@ fun EdumateNavHost(
                 onNavigateUp = navController::navigateUp,
                 onLeaveCourse = {
                     navController.previousBackStackEntry
-                        ?.savedStateHandle[Navigation.Args.HOME_REFRESH_COURSES] = true
+                        ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
                     navController.navigateUp()
                 },
             )

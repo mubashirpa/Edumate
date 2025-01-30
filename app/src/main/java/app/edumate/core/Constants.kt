@@ -50,6 +50,10 @@ object Supabase {
         const val INSERT_MEMBER = "insert_member"
     }
 
+    object Storage {
+        const val MATERIALS_BUCKET_ID = "materials"
+    }
+
     object Table {
         const val COURSES = "courses"
         const val COURSE_WORKS = "courseworks"
@@ -59,6 +63,7 @@ object Supabase {
 
 object Navigation {
     object Args {
-        const val HOME_REFRESH_COURSES = "home_refresh_courses"
+        const val CREATE_COURSE_SUCCESS = "create_course_success"
+        const val CREATE_COURSE_WORK_SUCCESS = "create_course_work_success"
     }
 }
