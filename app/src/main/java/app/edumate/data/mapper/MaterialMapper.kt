@@ -27,3 +27,24 @@ fun LinkDto.toLinkDomainModel(): Link =
         title = title,
         url = url,
     )
+
+fun Material.toMaterialDto(): MaterialDto =
+    MaterialDto(
+        driveFile = driveFile?.toDriveFileDto(),
+        link = link?.toLinkDto(),
+    )
+
+fun DriveFile.toDriveFileDto(): DriveFileDto =
+    DriveFileDto(
+        alternateLink = alternateLink,
+        id = id,
+        thumbnailUrl = thumbnailUrl,
+        title = title,
+    )
+
+fun Link.toLinkDto(): LinkDto =
+    LinkDto(
+        thumbnailUrl = thumbnailUrl,
+        title = title,
+        url = url,
+    )

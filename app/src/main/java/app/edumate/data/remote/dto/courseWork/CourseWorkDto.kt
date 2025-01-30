@@ -1,5 +1,6 @@
 package app.edumate.data.remote.dto.courseWork
 
+import app.edumate.data.remote.dto.material.MaterialDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -17,6 +18,7 @@ data class CourseWorkDto(
     val description: String? = null,
     @SerialName("due_time")
     val dueTime: String? = null,
+    val materials: List<MaterialDto>? = null,
     @SerialName("max_points")
     val maxPoints: Int? = null,
     @SerialName("multiple_choice_question")
