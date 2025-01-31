@@ -83,7 +83,7 @@ class CreateCourseWorkViewModel(
                         choices = uiState.choices,
                         materials = uiState.attachments,
                         maxPoints = maxPoints,
-                        dueTime = uiState.dueTime.toString(),
+                        dueTime = uiState.dueTime?.toString(),
                         workType = uiState.workType!!,
                     )
                 } else {
@@ -94,7 +94,7 @@ class CreateCourseWorkViewModel(
                         choices = uiState.choices,
                         materials = uiState.attachments,
                         maxPoints = maxPoints,
-                        dueTime = uiState.dueTime.toString(),
+                        dueTime = uiState.dueTime?.toString(),
                     )
                 }
             }
