@@ -22,15 +22,16 @@ import app.edumate.domain.usecase.courseWork.CreateAssignmentUseCase
 import app.edumate.domain.usecase.courseWork.CreateMaterialUseCase
 import app.edumate.domain.usecase.courseWork.CreateQuestionUseCase
 import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
+import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 import java.io.File
+import java.util.UUID
 
 class CreateCourseWorkViewModel(
     savedStateHandle: SavedStateHandle,
@@ -39,12 +40,14 @@ class CreateCourseWorkViewModel(
     private val createQuestionUseCase: CreateQuestionUseCase,
     private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
+    private val deleteFileUseCase: DeleteFileUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(CreateCourseWorkUiState())
         private set
 
     private val args = savedStateHandle.toRoute<Screen.CreateCourseWork>()
+    private val courseWorkId = args.id ?: UUID.randomUUID().toString()
 
     init {
         uiState = uiState.copy(workType = args.workType)
@@ -62,6 +65,7 @@ class CreateCourseWorkViewModel(
                     }
                 createCourseWork(
                     courseId = args.courseId,
+                    id = courseWorkId,
                     title =
                         uiState.title.text
                             .toString()
@@ -87,7 +91,12 @@ class CreateCourseWorkViewModel(
             }
 
             is CreateCourseWorkUiEvent.OnFilePicked -> {
-                uploadFile(event.title, event.file)
+                uploadFile(
+                    courseId = args.courseId,
+                    id = courseWorkId,
+                    title = event.title,
+                    file = event.file,
+                )
             }
 
             is CreateCourseWorkUiEvent.OnOpenAddLinkDialogChange -> {
@@ -135,7 +144,11 @@ class CreateCourseWorkViewModel(
                 val attachment = uiState.attachments[event.position]
                 when {
                     attachment.driveFile != null -> {
-                        // TODO: Delete file from drive
+                        deleteFile(
+                            courseId = args.courseId,
+                            id = courseWorkId,
+                            material = attachment,
+                        )
                     }
 
                     attachment.link != null -> {
@@ -155,22 +168,81 @@ class CreateCourseWorkViewModel(
     }
 
     private fun uploadFile(
+        courseId: String,
+        id: String,
         title: String,
         file: File,
     ) {
-        viewModelScope.launch {
-            uploadFileUseCase(Supabase.Storage.MATERIALS_BUCKET_ID, "coursework/$title", file)
-                .collect { result ->
-                    if (result.isDone) {
+        uploadFileUseCase(
+            bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
+            path = "$courseId/coursework/$id/$title",
+            file = file,
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            uploadProgress = null,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(uploadProgress = 0.0f)
+                }
+
+                is Result.Success -> {
+                    val state = result.data!!
+                    if (state.isDone) {
                         val driveFile =
                             DriveFile(
-                                alternateLink = result.url,
+                                alternateLink = state.url,
                                 title = title,
                             )
                         uiState.attachments.add(Material(driveFile = driveFile))
+                        uiState = uiState.copy(uploadProgress = null)
+                    } else {
+                        uiState = uiState.copy(uploadProgress = state.progress)
                     }
                 }
-        }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteFile(
+        courseId: String,
+        id: String,
+        material: Material,
+    ) {
+        val title = material.driveFile?.title ?: return
+
+        deleteFileUseCase(
+            bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
+            paths = listOf("$courseId/coursework/$id/$title"),
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState.attachments.remove(material)
+                    uiState = uiState.copy(openProgressDialog = false)
+                }
+            }
+        }.launchIn(viewModelScope)
     }
 
     private fun getUrlMetadata(url: String) {
@@ -275,6 +347,7 @@ class CreateCourseWorkViewModel(
 
     private fun createCourseWork(
         courseId: String,
+        id: String,
         title: String,
         description: String?,
         choices: List<String>?,
@@ -292,6 +365,7 @@ class CreateCourseWorkViewModel(
                     materials = materials,
                     maxPoints = maxPoints,
                     dueTime = dueTime,
+                    id = id,
                 )
             }
 
@@ -301,6 +375,7 @@ class CreateCourseWorkViewModel(
                     title = title,
                     description = description,
                     materials = materials,
+                    id = id,
                 )
             }
 
@@ -314,6 +389,7 @@ class CreateCourseWorkViewModel(
                     maxPoints = maxPoints,
                     dueTime = dueTime,
                     workType = workType,
+                    id = id,
                 )
             }
         }.onEach { result ->
