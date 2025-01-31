@@ -206,4 +206,10 @@ private fun CreateCourseWorkContent(
         open = uiState.openProgressDialog,
         onDismissRequest = {},
     )
+
+    ProgressDialog(
+        open = uiState.uploadProgress != null,
+        progress = { uiState.uploadProgress ?: 0.0f },
+        onDismissRequest = {},
+    )
 }

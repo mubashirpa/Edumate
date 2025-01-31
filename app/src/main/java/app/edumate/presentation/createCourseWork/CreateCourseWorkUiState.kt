@@ -26,6 +26,7 @@ data class CreateCourseWorkUiState(
     val showAddAttachmentBottomSheet: Boolean = false,
     val title: TextFieldState = TextFieldState(),
     val titleError: UiText? = null,
+    val uploadProgress: Float? = null,
     val userMessage: UiText? = null,
     val workType: CourseWorkType? = null,
 )
