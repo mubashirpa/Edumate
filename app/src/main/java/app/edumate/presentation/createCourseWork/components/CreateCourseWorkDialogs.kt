@@ -162,10 +162,7 @@ fun PointsDialog(
         var point by rememberSaveable(stateSaver = TextFieldValue.Saver) {
             mutableStateOf(TextFieldValue(currentPoint ?: "100"))
         }
-
-        val tempPoint: MutableState<String?> = remember { mutableStateOf("") }
-        tempPoint.value = point.text
-
+        val tempPoint: MutableState<String?> = remember { mutableStateOf(currentPoint) }
         val confirmEnabled by remember { derivedStateOf { point.text.isNotBlank() } }
 
         BasicAlertDialog(onDismissRequest = onDismissRequest) {

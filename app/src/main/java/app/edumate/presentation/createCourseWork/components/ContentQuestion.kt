@@ -382,14 +382,14 @@ fun ContentQuestion(
             )
             FieldListItem(
                 title =
-                    if (uiState.points != null && uiState.points != "0") {
+                    if (uiState.points != null && uiState.points > 0) {
                         stringResource(id = R.string._points, uiState.points)
                     } else {
                         stringResource(id = R.string.set_total_points)
                     },
                 leadingIcon = Icons.Outlined.InsertChart,
                 trailingContent =
-                    if (uiState.points != null && uiState.points != "0") {
+                    if (uiState.points != null && uiState.points > 0) {
                         {
                             IconButton(
                                 onClick = {
@@ -583,7 +583,7 @@ fun ContentQuestion(
             onEvent(CreateCourseWorkUiEvent.OnOpenPointsDialogChange(false))
         },
         open = uiState.openPointsDialog,
-        currentPoint = uiState.points,
+        currentPoint = uiState.points?.toString(),
         onConfirmButtonClick = {
             onEvent(CreateCourseWorkUiEvent.OnPointsValueChange(it))
         },

@@ -133,7 +133,14 @@ class CreateCourseWorkViewModel(
             }
 
             is CreateCourseWorkUiEvent.OnPointsValueChange -> {
-                uiState = uiState.copy(points = event.points)
+                val points =
+                    try {
+                        event.points?.toInt()
+                    } catch (_: NumberFormatException) {
+                        null
+                    }.takeIf { it != null && it > 0 }
+
+                uiState = uiState.copy(points = points)
             }
 
             is CreateCourseWorkUiEvent.OnQuestionTypeDropdownExpandedChange -> {
@@ -346,7 +353,7 @@ class CreateCourseWorkViewModel(
                                 uiState.copy(
                                     dueTime = dueTime,
                                     isLoading = false,
-                                    points = courseWorkResponse.maxPoints?.toString(),
+                                    points = courseWorkResponse.maxPoints,
                                     questionTypeSelectionOptionIndex = questionTypeSelectionOptionIndex,
                                     workType = courseWorkResponse.workType,
                                 )

@@ -20,7 +20,7 @@ data class CreateCourseWorkUiState(
     val openPointsDialog: Boolean = false,
     val openProgressDialog: Boolean = false,
     val openTimePickerDialog: Boolean = false,
-    val points: String? = "100",
+    val points: Int? = 100,
     val questionTypeDropdownExpanded: Boolean = false,
     val questionTypeSelectionOptionIndex: Int? = null,
     val showAddAttachmentBottomSheet: Boolean = false,
