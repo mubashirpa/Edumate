@@ -35,6 +35,13 @@ class StorageRepositoryImpl(
             }
     }
 
+    override suspend fun deleteFile(
+        bucketId: String,
+        paths: List<String>,
+    ) {
+        storage.from(bucketId.bucket()).delete(paths)
+    }
+
     private fun buildImageUrl(
         bucketId: String,
         path: String,

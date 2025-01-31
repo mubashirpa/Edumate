@@ -10,4 +10,9 @@ interface StorageRepository {
         path: String,
         file: File,
     ): Flow<FileUploadState>
+
+    suspend fun deleteFile(
+        bucketId: String,
+        paths: List<String>,
+    )
 }
