@@ -157,7 +157,12 @@ class CreateCourseWorkViewModel(
                 // Empty choices when change workType
                 uiState =
                     uiState.copy(
-                        choices = mutableStateListOf("Option 1"),
+                        choices =
+                            if (questionType == CourseWorkType.MULTIPLE_CHOICE_QUESTION) {
+                                mutableStateListOf("Option 1")
+                            } else {
+                                mutableStateListOf()
+                            },
                         questionTypeDropdownExpanded = false,
                         questionTypeSelectionOptionIndex = event.selectionOptionIndex,
                         workType = questionType,

@@ -10,7 +10,7 @@ import kotlinx.datetime.LocalDateTime
 
 data class CreateCourseWorkUiState(
     val attachments: SnapshotStateList<Material> = mutableStateListOf(),
-    val choices: SnapshotStateList<String> = mutableStateListOf("Option 1"),
+    val choices: SnapshotStateList<String> = mutableStateListOf(),
     val description: TextFieldState = TextFieldState(),
     val dueTime: LocalDateTime? = null,
     val isCreateCourseWorkSuccess: Boolean = false,
