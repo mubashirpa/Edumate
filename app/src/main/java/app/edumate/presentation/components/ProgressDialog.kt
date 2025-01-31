@@ -89,3 +89,36 @@ fun ProgressDialog(
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ProgressDialog(
+    open: Boolean,
+    progress: () -> Float,
+    onDismissRequest: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    if (open) {
+        BasicAlertDialog(
+            onDismissRequest = onDismissRequest,
+            modifier = modifier,
+        ) {
+            Surface(
+                modifier =
+                    Modifier
+                        .wrapContentWidth()
+                        .wrapContentHeight(),
+                shape = AlertDialogDefaults.shape,
+                color = AlertDialogDefaults.containerColor,
+                tonalElevation = AlertDialogDefaults.TonalElevation,
+            ) {
+                Column(modifier = Modifier.padding(24.dp)) {
+                    CircularProgressIndicator(
+                        progress = progress,
+                        modifier = Modifier.align(Alignment.CenterHorizontally),
+                    )
+                }
+            }
+        }
+    }
+}
