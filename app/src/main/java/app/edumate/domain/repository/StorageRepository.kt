@@ -6,7 +6,7 @@ import java.io.File
 
 interface StorageRepository {
     suspend fun uploadFile(
-        bucketName: String,
+        bucketId: String,
         path: String,
         file: File,
     ): Flow<FileUploadState>

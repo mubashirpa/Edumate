@@ -15,12 +15,12 @@ class StorageRepositoryImpl(
     private val storage: Storage,
 ) : StorageRepository {
     override suspend fun uploadFile(
-        bucketName: String,
+        bucketId: String,
         path: String,
         file: File,
     ): Flow<FileUploadState> {
         val upload: ResumableUpload =
-            storage.from(bucketName.bucket()).resumable.createOrContinueUpload(path, file)
+            storage.from(bucketId.bucket()).resumable.createOrContinueUpload(path, file)
 
         return upload.stateFlow
             .map { state ->
