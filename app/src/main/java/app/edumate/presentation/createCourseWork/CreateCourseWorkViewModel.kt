@@ -22,6 +22,7 @@ import app.edumate.domain.usecase.courseWork.CreateAssignmentUseCase
 import app.edumate.domain.usecase.courseWork.CreateMaterialUseCase
 import app.edumate.domain.usecase.courseWork.CreateQuestionUseCase
 import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
+import app.edumate.domain.usecase.courseWork.UpdateCourseWorkUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.navigation.Screen
@@ -39,6 +40,7 @@ class CreateCourseWorkViewModel(
     private val createMaterialUseCase: CreateMaterialUseCase,
     private val createQuestionUseCase: CreateQuestionUseCase,
     private val getCourseWorkUseCase: GetCourseWorkUseCase,
+    private val updateCourseWorkUseCase: UpdateCourseWorkUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
@@ -57,29 +59,44 @@ class CreateCourseWorkViewModel(
     fun onEvent(event: CreateCourseWorkUiEvent) {
         when (event) {
             CreateCourseWorkUiEvent.CreateCourseWork -> {
+                val title =
+                    uiState.title.text
+                        .toString()
+                        .trim()
+                val description =
+                    uiState.description.text
+                        .toString()
+                        .trim()
                 val maxPoints =
                     try {
                         uiState.points?.toInt()
                     } catch (_: NumberFormatException) {
                         null
                     }
-                createCourseWork(
-                    courseId = args.courseId,
-                    id = courseWorkId,
-                    title =
-                        uiState.title.text
-                            .toString()
-                            .trim(),
-                    description =
-                        uiState.description.text
-                            .toString()
-                            .trim(),
-                    choices = uiState.choices,
-                    materials = uiState.attachments,
-                    maxPoints = maxPoints,
-                    dueTime = uiState.dueTime.toString(),
-                    workType = uiState.workType!!,
-                )
+
+                if (args.id == null) {
+                    createCourseWork(
+                        courseId = args.courseId,
+                        id = courseWorkId,
+                        title = title,
+                        description = description,
+                        choices = uiState.choices,
+                        materials = uiState.attachments,
+                        maxPoints = maxPoints,
+                        dueTime = uiState.dueTime.toString(),
+                        workType = uiState.workType!!,
+                    )
+                } else {
+                    updateCourseWork(
+                        id = courseWorkId,
+                        title = title,
+                        description = description,
+                        choices = uiState.choices,
+                        materials = uiState.attachments,
+                        maxPoints = maxPoints,
+                        dueTime = uiState.dueTime.toString(),
+                    )
+                }
             }
 
             is CreateCourseWorkUiEvent.OnAddLinkAttachment -> {
@@ -393,6 +410,50 @@ class CreateCourseWorkViewModel(
                 )
             }
         }.onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState =
+                        uiState.copy(
+                            isCreateCourseWorkSuccess = true,
+                            openProgressDialog = false,
+                        )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun updateCourseWork(
+        id: String,
+        title: String,
+        description: String?,
+        choices: List<String>?,
+        materials: List<Material>?,
+        maxPoints: Int?,
+        dueTime: String?,
+    ) {
+        updateCourseWorkUseCase(
+            id = id,
+            title = title,
+            description = description,
+            choices = choices,
+            materials = materials,
+            maxPoints = maxPoints,
+            dueTime = dueTime,
+        ).onEach { result ->
             when (result) {
                 is Result.Empty -> {}
 
