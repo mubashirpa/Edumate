@@ -1,6 +1,7 @@
 package app.edumate.domain.repository
 
 import app.edumate.data.remote.dto.courseWork.CourseWorkDto
+import app.edumate.data.remote.dto.courseWork.MultipleChoiceQuestionDto
 import app.edumate.data.remote.dto.material.MaterialDto
 
 interface CourseWorkRepository {
@@ -14,7 +15,7 @@ interface CourseWorkRepository {
         id: String,
         title: String,
         description: String?,
-        choices: List<String>?,
+        multipleChoiceQuestion: MultipleChoiceQuestionDto?,
         materials: List<MaterialDto>?,
         maxPoints: Int?,
         dueTime: String?,

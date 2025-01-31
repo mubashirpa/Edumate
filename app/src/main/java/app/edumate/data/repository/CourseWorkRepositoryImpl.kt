@@ -2,6 +2,7 @@ package app.edumate.data.repository
 
 import app.edumate.core.Supabase
 import app.edumate.data.remote.dto.courseWork.CourseWorkDto
+import app.edumate.data.remote.dto.courseWork.MultipleChoiceQuestionDto
 import app.edumate.data.remote.dto.material.MaterialDto
 import app.edumate.domain.repository.CourseWorkRepository
 import io.github.jan.supabase.postgrest.Postgrest
@@ -42,7 +43,7 @@ class CourseWorkRepositoryImpl(
         id: String,
         title: String,
         description: String?,
-        choices: List<String>?,
+        multipleChoiceQuestion: MultipleChoiceQuestionDto?,
         materials: List<MaterialDto>?,
         maxPoints: Int?,
         dueTime: String?,
@@ -52,7 +53,7 @@ class CourseWorkRepositoryImpl(
                 {
                     set(Supabase.Column.TITLE, title)
                     set(Supabase.Column.DESCRIPTION, description)
-                    set(Supabase.Column.CHOICES, choices)
+                    set(Supabase.Column.MULTIPLE_CHOICE_QUESTION, multipleChoiceQuestion)
                     set(Supabase.Column.MATERIALS, materials)
                     set(Supabase.Column.MAX_POINTS, maxPoints)
                     set(Supabase.Column.DUE_TIME, dueTime)

@@ -5,6 +5,7 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.data.mapper.toCourseWorkDomainModel
 import app.edumate.data.mapper.toMaterialDto
+import app.edumate.data.remote.dto.courseWork.MultipleChoiceQuestionDto
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.material.Material
 import app.edumate.domain.repository.CourseWorkRepository
@@ -38,10 +39,17 @@ class UpdateCourseWorkUseCase(
                         .updateCourseWork(
                             id = id,
                             title = title,
-                            description = description,
-                            choices = choices,
-                            materials = materials?.map { it.toMaterialDto() },
-                            maxPoints = maxPoints,
+                            description = description.takeIf { !it.isNullOrEmpty() },
+                            multipleChoiceQuestion =
+                                when {
+                                    choices.isNullOrEmpty() -> null
+                                    else -> MultipleChoiceQuestionDto(choices)
+                                },
+                            materials =
+                                materials
+                                    ?.map { it.toMaterialDto() }
+                                    .takeIf { !it.isNullOrEmpty() },
+                            maxPoints = maxPoints?.takeIf { it > 0 },
                             dueTime = dueTime,
                         ).toCourseWorkDomainModel()
                 emit(Result.Success(result))
