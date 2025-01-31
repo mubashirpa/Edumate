@@ -31,12 +31,12 @@ class CreateMaterialUseCase(
         title: String,
         description: String?,
         materials: List<Material>?,
+        id: String = UUID.randomUUID().toString(),
     ): Flow<Result<CourseWork>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val id = UUID.randomUUID().toString()
                     val courseWork =
                         CourseWork(
                             id = id,

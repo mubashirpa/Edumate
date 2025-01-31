@@ -33,12 +33,12 @@ class CreateAssignmentUseCase(
         materials: List<Material>?,
         maxPoints: Int?,
         dueTime: String?,
+        id: String = UUID.randomUUID().toString(),
     ): Flow<Result<CourseWork>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val id = UUID.randomUUID().toString()
                     val courseWork =
                         CourseWork(
                             id = id,

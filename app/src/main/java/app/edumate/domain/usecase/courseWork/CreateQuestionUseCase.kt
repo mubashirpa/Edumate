@@ -36,12 +36,12 @@ class CreateQuestionUseCase(
         maxPoints: Int?,
         dueTime: String?,
         workType: CourseWorkType,
+        id: String = UUID.randomUUID().toString(),
     ): Flow<Result<CourseWork>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val id = UUID.randomUUID().toString()
                     val type =
                         when (workType) {
                             CourseWorkType.SHORT_ANSWER_QUESTION -> "sa"
