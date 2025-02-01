@@ -1,0 +1,17 @@
+package app.edumate.data.mapper
+
+import app.edumate.data.remote.dto.announcement.AnnouncementDto
+import app.edumate.domain.model.announcement.Announcement
+
+fun AnnouncementDto.toAnnouncementDomainModel(): Announcement =
+    Announcement(
+        alternateLink = alternateLink,
+        courseId = courseId,
+        creationTime = creationTime,
+        creator = creator?.toUserDomainModel(),
+        creatorUserId = creatorUserId,
+        id = id,
+        materials = materials?.map { it.toMaterialDomainModel() },
+        text = text,
+        updateTime = updateTime,
+    )

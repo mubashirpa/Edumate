@@ -3,6 +3,7 @@ package app.edumate.di
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
+import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
@@ -51,6 +52,7 @@ val useCaseModule =
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteFileUseCase)
         singleOf(::DeleteMemberUseCase)
+        singleOf(::GetAnnouncementsUseCase)
         singleOf(::GetCourseUseCase)
         singleOf(::GetCourseWithMembersUseCase)
         singleOf(::GetCourseWorkUseCase)

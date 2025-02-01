@@ -61,6 +61,7 @@ object Supabase {
     }
 
     object Table {
+        const val ANNOUNCEMENTS = "announcements"
         const val COURSES = "courses"
         const val COURSE_WORKS = "courseworks"
         const val MEMBERS = "members"
