@@ -22,7 +22,7 @@ import org.koin.androidx.compose.koinViewModel
 fun CourseDetailsNavHost(
     navController: NavHostController,
     courseWithMembers: CourseWithMembers,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
@@ -48,7 +48,17 @@ fun CourseDetailsNavHost(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 courseWithMembers = courseWithMembers,
-                currentUserRole = currentUserRole,
+                currentUserRole =
+                    when (currentUserRole) { // TODO: Fix this
+                        CourseUserRole.Student -> CurrentUserRole.STUDENT
+                        is CourseUserRole.Teacher -> {
+                            if (currentUserRole.isCourseOwner) {
+                                CurrentUserRole.OWNER
+                            } else {
+                                CurrentUserRole.TEACHER
+                            }
+                        }
+                    },
                 onNavigateUp = onNavigateUp,
                 onNavigateToCreateClasswork = { workType, id ->
                     navController.navigate(
@@ -67,7 +77,17 @@ fun CourseDetailsNavHost(
         composable<Screen.People> {
             PeopleScreen(
                 courseWithMembers = courseWithMembers,
-                currentUserRole = currentUserRole,
+                currentUserRole =
+                    when (currentUserRole) { // TODO: Fix this
+                        CourseUserRole.Student -> CurrentUserRole.STUDENT
+                        is CourseUserRole.Teacher -> {
+                            if (currentUserRole.isCourseOwner) {
+                                CurrentUserRole.OWNER
+                            } else {
+                                CurrentUserRole.TEACHER
+                            }
+                        }
+                    },
                 onNavigateUp = onNavigateUp,
                 onLeaveCourseComplete = onLeaveCourse,
             )
