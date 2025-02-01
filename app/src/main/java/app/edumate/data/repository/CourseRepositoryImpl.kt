@@ -39,17 +39,11 @@ class CourseRepositoryImpl(
                 }
             }.decodeSingleOrNull()
 
-    override suspend fun getCourseWithCurrentUser(
-        id: String,
-        userId: String,
-    ): CourseWithMembersDto? =
+    override suspend fun getCourseWithMembers(id: String): CourseWithMembersDto? =
         postgrest[Supabase.Table.COURSES]
             .select(Columns.raw("*, members:members(role, user_id)")) {
                 filter {
                     eq(Supabase.Column.ID, id)
-                }
-                filter {
-                    eq("members.user_id", userId)
                 }
             }.decodeSingle()
 
