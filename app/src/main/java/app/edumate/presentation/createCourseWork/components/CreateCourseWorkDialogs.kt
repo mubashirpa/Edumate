@@ -64,7 +64,9 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atDate
 import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 import kotlinx.datetime.toInstant
@@ -79,15 +81,14 @@ fun DatePickerDialog(
     onConfirmButtonClick: (LocalDateTime) -> Unit,
 ) {
     if (open) {
-        val systemTimeZone = TimeZone.currentSystemDefault()
+        val utcTimeZone = TimeZone.UTC
         val initialSelectedDateMillis =
             if (dateTime != null) {
-                dateTime.toInstant(systemTimeZone).toEpochMilliseconds()
+                dateTime.toInstant(utcTimeZone)
             } else {
                 val currentDateTime = Clock.System.now()
-                val tomorrow = currentDateTime.plus(1, DateTimeUnit.DAY, systemTimeZone)
-                tomorrow.toEpochMilliseconds()
-            }
+                currentDateTime.plus(1, DateTimeUnit.DAY, utcTimeZone)
+            }.toEpochMilliseconds()
         val datePickerState =
             rememberDatePickerState(
                 initialSelectedDateMillis = initialSelectedDateMillis,
@@ -114,20 +115,11 @@ fun DatePickerDialog(
                         datePickerState.selectedDateMillis?.let { selectedDateMillis ->
                             val selectedDateTime =
                                 Instant
-                                    .fromEpochMilliseconds(
-                                        selectedDateMillis,
-                                    ).toLocalDateTime(systemTimeZone)
-                            val dueDateTime =
-                                LocalDateTime(
-                                    year = selectedDateTime.year,
-                                    month = selectedDateTime.month,
-                                    dayOfMonth = selectedDateTime.dayOfMonth,
-                                    hour = 23,
-                                    minute = 59,
-                                    second = 59,
-                                    nanosecond = 999,
-                                )
-                            onConfirmButtonClick(dueDateTime)
+                                    .fromEpochMilliseconds(selectedDateMillis)
+                                    .toLocalDateTime(TimeZone.currentSystemDefault())
+                            val dueTime =
+                                LocalTime(23, 59, 59, 999999999).atDate(selectedDateTime.date)
+                            onConfirmButtonClick(dueTime)
                         }
                     },
                     enabled = confirmEnabled.value,
@@ -298,10 +290,10 @@ fun TimePickerDialog(
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: (LocalDateTime) -> Unit,
 ) {
-    if (open) {
+    if (open && dateTime != null) {
         val state =
             rememberTimePickerState(
-                initialHour = dateTime!!.hour,
+                initialHour = dateTime.hour,
                 initialMinute = dateTime.minute,
             )
         val showingPicker = remember { mutableStateOf(true) }
@@ -312,13 +304,10 @@ fun TimePickerDialog(
             onConfirm = {
                 onDismissRequest()
                 val selectedDateTime =
-                    LocalDateTime(
-                        year = dateTime.year,
-                        month = dateTime.month,
-                        dayOfMonth = dateTime.dayOfMonth,
+                    LocalTime(
                         hour = state.hour,
                         minute = state.minute,
-                    )
+                    ).atDate(dateTime.date)
                 onConfirmButtonClick(selectedDateTime)
             },
             title =
