@@ -19,6 +19,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.exceptions.GetCredentialException
+import androidx.credentials.exceptions.NoCredentialException
 import app.edumate.R
 import app.edumate.core.Constants
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
@@ -90,8 +91,9 @@ fun GoogleSignInButton(
             } catch (_: GoogleIdTokenParsingException) {
                 // Handle GoogleIdTokenParsingException thrown by `GoogleIdTokenCredential.createFrom()`
                 onSignInFailure(context.getString(R.string.error_auth_google_invalid_id_token))
+            } catch (e: NoCredentialException) {
+                onSignInFailure(e.message.toString())
             } catch (e: Exception) {
-                // Handle unknown exceptions
                 onSignInFailure(e.message.toString())
             }
         }
