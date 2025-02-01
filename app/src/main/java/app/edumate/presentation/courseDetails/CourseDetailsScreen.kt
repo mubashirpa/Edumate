@@ -65,7 +65,7 @@ fun CourseDetailsScreen(
 @Composable
 fun CourseDetailsContent(
     courseWithMembers: CourseWithMembers,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,

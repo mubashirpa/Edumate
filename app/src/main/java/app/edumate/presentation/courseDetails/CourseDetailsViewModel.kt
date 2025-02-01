@@ -7,55 +7,86 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import app.edumate.R
 import app.edumate.core.Result
+import app.edumate.core.UiText
 import app.edumate.domain.model.member.UserRole
-import app.edumate.domain.usecase.course.GetCourseWithCurrentUserUseCase
+import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
+import app.edumate.domain.usecase.course.GetCourseWithMembersUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
 class CourseDetailsViewModel(
     savedStateHandle: SavedStateHandle,
-    private val getCourseWithCurrentUserUseCase: GetCourseWithCurrentUserUseCase,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
+    private val getCourseWithMembersUseCase: GetCourseWithMembersUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(CourseDetailsUiState())
         private set
 
-    val courseId = savedStateHandle.toRoute<Screen.CourseDetails>().courseId
+    val args = savedStateHandle.toRoute<Screen.CourseDetails>()
+    var currentUserId: String? = null
 
     init {
-        getCourse(courseId)
+        getCurrentUser()
+        getCourse(args.courseId)
     }
 
     fun onEvent(event: CourseDetailsUiEvent) {
         when (event) {
             CourseDetailsUiEvent.OnRetry -> {
-                getCourse(courseId)
+                getCourse(args.courseId)
             }
         }
     }
 
-    private fun getCourse(id: String) {
-        getCourseWithCurrentUserUseCase(id)
+    private fun getCurrentUser() {
+        getCurrentUserUseCase()
+            .onEach { result ->
+                if (result is Result.Success) {
+                    currentUserId = result.data?.id
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun getCourse(courseId: String) {
+        getCourseWithMembersUseCase(courseId)
             .onEach { result ->
                 uiState =
                     when (result) {
                         is Result.Success -> {
                             val course = result.data
-                            val currentUser = course?.members?.firstOrNull()
+                            val currentMember = course?.members?.find { it.userId == currentUserId }
+
+                            // Determine the role of the current user within the course
                             val currentUserRole =
-                                when (currentUser?.role) {
+                                when (currentMember?.role) {
                                     UserRole.TEACHER -> {
-                                        if (course.ownerId == currentUser.userId) {
-                                            CurrentUserRole.OWNER
-                                        } else {
-                                            CurrentUserRole.TEACHER
-                                        }
+                                        CourseUserRole.Teacher(
+                                            isCourseOwner = course.ownerId == currentUserId,
+                                        )
                                     }
 
-                                    else -> CurrentUserRole.STUDENT
+                                    UserRole.STUDENT -> CourseUserRole.Student
+
+                                    // Handle the case where the user's role is null (unexpected scenario)
+                                    null -> {
+                                        // Update UI state to reflect an error due to an unexpected null role
+                                        uiState.copy(
+                                            courseResult =
+                                                Result.Error(
+                                                    UiText.StringResource(R.string.error_unexpected),
+                                                ),
+                                        )
+                                        return@onEach // Exit the flow collection early
+                                    }
                                 }
-                            uiState.copy(currentUserRole = currentUserRole, courseResult = result)
+
+                            uiState.copy(
+                                currentUserRole = currentUserRole,
+                                courseResult = result,
+                            )
                         }
 
                         else -> uiState.copy(courseResult = result)
