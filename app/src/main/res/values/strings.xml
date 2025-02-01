@@ -145,6 +145,8 @@
     <string name="insert_link">Insert link</string>
     <string name="upload_file">Upload file</string>
     <string name="pick_photo">Pick photo</string>
+    <string name="missing_question_type">Missing question type</string>
+    <string name="missing_title">Missing title</string>
 
     <!-- Screen titles -->
     <string name="title_profile_screen">Profile</string>

@@ -25,6 +25,7 @@ import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.courseWork.UpdateCourseWorkUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
+import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -44,6 +45,7 @@ class CreateCourseWorkViewModel(
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
+    private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(CreateCourseWorkUiState())
         private set
@@ -385,6 +387,10 @@ class CreateCourseWorkViewModel(
         dueTime: String?,
         workType: CourseWorkType,
     ) {
+        if (!validateCourseWorkValues(title, workType)) {
+            return
+        }
+
         when (workType) {
             CourseWorkType.ASSIGNMENT -> {
                 createAssignmentUseCase(
@@ -457,6 +463,10 @@ class CreateCourseWorkViewModel(
         maxPoints: Int?,
         dueTime: String?,
     ) {
+        if (!validateCourseWorkValues(title, uiState.workType!!)) {
+            return
+        }
+
         updateCourseWorkUseCase(
             id = id,
             title = title,
@@ -490,5 +500,26 @@ class CreateCourseWorkViewModel(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun validateCourseWorkValues(
+        title: String,
+        workType: CourseWorkType,
+    ): Boolean {
+        val titleResult = validateTextField.execute(title)
+        if (!titleResult.successful) {
+            uiState = uiState.copy(titleError = UiText.StringResource(R.string.missing_title))
+            return false
+        }
+
+        val isQuestion =
+            workType == CourseWorkType.SHORT_ANSWER_QUESTION || workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION
+        if (isQuestion && uiState.questionTypeSelectionOptionIndex == null) {
+            uiState =
+                uiState.copy(userMessage = UiText.StringResource(R.string.missing_question_type))
+            return false
+        }
+
+        return true
     }
 }
