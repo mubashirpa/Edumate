@@ -103,7 +103,9 @@ private fun ClassworkListItemContent(
     dueTime: String? = null,
 ) {
     val creationDateTime =
-        remember { Instant.parse(creationTime).toLocalDateTime(TimeZone.currentSystemDefault()) }
+        remember(creationTime) {
+            Instant.parse(creationTime).toLocalDateTime(TimeZone.currentSystemDefault())
+        }
     val trailingContent: @Composable (() -> Unit)? =
         if (isCurrentUserTeacher) {
             {
