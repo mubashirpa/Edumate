@@ -52,11 +52,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -95,6 +98,7 @@ fun StreamScreen(
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
     val filePicker =
@@ -284,6 +288,7 @@ fun StreamScreen(
                                                         announcement,
                                                     ),
                                                 )
+                                                focusRequester.requestFocus()
                                             },
                                             onDeleteClick = { id ->
                                                 onEvent(
@@ -338,7 +343,8 @@ fun StreamScreen(
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp)
-                                    .padding(top = 12.dp, bottom = 16.dp),
+                                    .padding(top = 12.dp, bottom = 16.dp)
+                                    .focusRequester(focusRequester),
                         )
                     }
                 }
@@ -483,7 +489,12 @@ private fun AnnouncementTextField(
                 )
             }
         },
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
+        keyboardOptions =
+            KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                autoCorrectEnabled = true,
+                imeAction = ImeAction.Send,
+            ),
         onKeyboardAction = {
             onEvent(StreamUiEvent.CreateAnnouncement)
         },
