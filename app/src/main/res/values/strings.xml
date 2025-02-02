@@ -144,6 +144,8 @@
     <string name="verify_your_account">Verify your account</string>
     <string name="welcome_back">Welcome back</string>
     <string name="your_teacher_hasn_t_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
+    <string name="posted_edited_">Posted %1$s (Edited %2$s)</string>
+    <string name="yesterday">Yesterday</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>

@@ -9,6 +9,7 @@ import androidx.navigation.toRoute
 import app.edumate.core.Navigation
 import app.edumate.core.ext.GetOnceResult
 import app.edumate.domain.model.course.CourseWithMembers
+import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen
 import app.edumate.presentation.courseWork.CourseWorkUiEvent
@@ -16,6 +17,7 @@ import app.edumate.presentation.courseWork.CourseWorkViewModel
 import app.edumate.presentation.createCourseWork.CreateCourseWorkScreen
 import app.edumate.presentation.people.PeopleScreen
 import app.edumate.presentation.stream.StreamScreen
+import app.edumate.presentation.stream.StreamViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -33,7 +35,14 @@ fun CourseDetailsNavHost(
         modifier = modifier,
     ) {
         composable<Screen.Stream> {
-            StreamScreen()
+            val viewModel: StreamViewModel = koinViewModel()
+            StreamScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                courseWithMembers = courseWithMembers,
+                currentUserRole = currentUserRole,
+                onNavigateUp = onNavigateUp,
+            )
         }
         composable<Screen.CourseWork> {
             val viewModel: CourseWorkViewModel = koinViewModel()
