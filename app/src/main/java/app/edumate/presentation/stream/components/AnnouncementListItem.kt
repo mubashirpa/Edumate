@@ -2,7 +2,6 @@ package app.edumate.presentation.stream.components
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -15,14 +14,17 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AssistChip
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -33,11 +35,11 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.utils.DateTimeUtils
@@ -64,9 +66,11 @@ fun AnnouncementListItem(
     currentUserRole: CourseUserRole,
     itemUserRole: AnnouncementUserRole,
     isCurrentUserCreator: Boolean,
+    selected: Boolean,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
     onCopyLinkClick: (link: String) -> Unit,
+    onClearSelection: () -> Unit,
     onClick: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -81,6 +85,7 @@ fun AnnouncementListItem(
         currentUserRole = currentUserRole,
         itemUserRole = itemUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
+        selected = selected,
         onEditClick = {
             id?.let(onEditClick)
         },
@@ -90,6 +95,7 @@ fun AnnouncementListItem(
         onCopyLinkClick = {
             announcement.alternateLink?.let(onCopyLinkClick)
         },
+        onClearSelection = onClearSelection,
         onClick = {
             id?.let(onClick)
         },
@@ -107,9 +113,11 @@ private fun AnnouncementListItemContent(
     currentUserRole: CourseUserRole,
     itemUserRole: AnnouncementUserRole,
     isCurrentUserCreator: Boolean,
+    selected: Boolean,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCopyLinkClick: () -> Unit,
+    onClearSelection: () -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -131,15 +139,22 @@ private fun AnnouncementListItemContent(
                 null
             }
         }
+    var colors = CardDefaults.outlinedCardColors()
+    var elevation = CardDefaults.outlinedCardElevation()
+    var border = CardDefaults.outlinedCardBorder()
+
+    if (selected) {
+        colors = CardDefaults.elevatedCardColors()
+        elevation = CardDefaults.elevatedCardElevation()
+        border = CardDefaults.outlinedCardBorder(false)
+    }
 
     OutlinedCard(
         onClick = onClick,
         modifier = modifier,
-        border =
-            BorderStroke(
-                width = Dp.Hairline,
-                color = MaterialTheme.colorScheme.outline,
-            ),
+        colors = colors,
+        elevation = elevation,
+        border = border,
     ) {
         ListItem(
             headlineContent = {
@@ -174,15 +189,25 @@ private fun AnnouncementListItemContent(
                 )
             },
             trailingContent = {
-                MenuButton(
-                    currentUserRole = currentUserRole,
-                    itemUserRole = itemUserRole,
-                    isCurrentUserCreator = isCurrentUserCreator,
-                    onEditClick = onEditClick,
-                    onDeleteClick = onDeleteClick,
-                    onCopyLinkClick = onCopyLinkClick,
-                )
+                if (selected) {
+                    IconButton(onClick = onClearSelection) {
+                        Icon(
+                            imageVector = Icons.Default.Close,
+                            contentDescription = null,
+                        )
+                    }
+                } else {
+                    MenuButton(
+                        currentUserRole = currentUserRole,
+                        itemUserRole = itemUserRole,
+                        isCurrentUserCreator = isCurrentUserCreator,
+                        onEditClick = onEditClick,
+                        onDeleteClick = onDeleteClick,
+                        onCopyLinkClick = onCopyLinkClick,
+                    )
+                }
             },
+            colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         )
         Column(
             modifier =
@@ -420,13 +445,15 @@ private fun AnnouncementListItemPreview() {
             materials = emptyList(),
             creationTime = "2025-01-28T08:26:42.830742+00:00",
             updateTime = "2025-01-28T08:26:42.830742+00:00",
+            creator = User(name = "User"),
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
             itemUserRole = AnnouncementUserRole.TEACHER,
             isCurrentUserCreator = true,
-            creator = User(name = "User"),
+            selected = false,
             onEditClick = {},
             onDeleteClick = {},
             onCopyLinkClick = {},
+            onClearSelection = {},
             onClick = {},
         )
     }

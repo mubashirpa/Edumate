@@ -1,6 +1,7 @@
 package app.edumate.presentation.stream
 
 import androidx.compose.foundation.text.input.clearText
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -10,18 +11,26 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
+import app.edumate.core.Supabase
 import app.edumate.core.UiText
+import app.edumate.domain.model.material.DriveFile
+import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
+import app.edumate.domain.usecase.GetUrlMetadataUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
+import app.edumate.domain.usecase.storage.DeleteFileUseCase
+import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import java.io.File
+import java.util.UUID
 
 class StreamViewModel(
     savedStateHandle: SavedStateHandle,
@@ -30,6 +39,9 @@ class StreamViewModel(
     private val createAnnouncementUseCase: CreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val updateAnnouncementUseCase: UpdateAnnouncementUseCase,
+    private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
+    private val uploadFileUseCase: UploadFileUseCase,
+    private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(StreamUiState())
@@ -37,6 +49,7 @@ class StreamViewModel(
 
     private val args = savedStateHandle.toRoute<Screen.Stream>()
     private var getAnnouncementsJob: Job? = null
+    private var announcementId = UUID.randomUUID().toString()
 
     init {
         getCurrentUser()
@@ -49,22 +62,65 @@ class StreamViewModel(
     fun onEvent(event: StreamUiEvent) {
         when (event) {
             StreamUiEvent.CreateAnnouncement -> {
-                createAnnouncement(
-                    courseId = args.courseId,
-                    text =
-                        uiState.text.text
-                            .toString()
-                            .trim(),
-                    materials = uiState.attachments,
-                )
+                val text =
+                    uiState.text.text
+                        .toString()
+                        .trim()
+
+                if (uiState.editAnnouncementIndex == null) {
+                    createAnnouncement(
+                        courseId = args.courseId,
+                        id = announcementId,
+                        text = text,
+                        materials = uiState.attachments,
+                    )
+                } else {
+                    updateAnnouncement(
+                        courseId = args.courseId,
+                        id = announcementId,
+                        text = text,
+                        materials = uiState.attachments,
+                    )
+                }
+            }
+
+            is StreamUiEvent.OnAddLinkAttachment -> {
+                getUrlMetadata(event.link)
             }
 
             is StreamUiEvent.OnDeleteAnnouncement -> {
                 deleteAnnouncement(event.id)
             }
 
+            is StreamUiEvent.OnEditAnnouncement -> {
+                uiState = uiState.copy(editAnnouncementIndex = event.index)
+
+                val announcement = event.announcement
+                if (announcement != null) {
+                    announcementId = announcement.id.orEmpty()
+                    uiState.text.setTextAndPlaceCursorAtEnd(announcement.text.orEmpty())
+                    uiState.attachments.clear()
+                    uiState.attachments.addAll(announcement.materials.orEmpty())
+                } else {
+                    resetAnnouncementState()
+                }
+            }
+
             is StreamUiEvent.OnExpandedAppBarDropdownChange -> {
                 uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
+            }
+
+            is StreamUiEvent.OnFilePicked -> {
+                uploadFile(
+                    courseId = args.courseId,
+                    id = announcementId,
+                    title = event.title,
+                    file = event.file,
+                )
+            }
+
+            is StreamUiEvent.OnOpenAddLinkDialogChange -> {
+                uiState = uiState.copy(openAddLinkDialog = event.open)
             }
 
             is StreamUiEvent.OnOpenDeleteAnnouncementDialogChange -> {
@@ -78,11 +134,32 @@ class StreamViewModel(
                 )
             }
 
+            is StreamUiEvent.OnRemoveAttachment -> {
+                val attachment = uiState.attachments[event.position]
+                when {
+                    attachment.driveFile != null -> {
+                        deleteFile(
+                            courseId = args.courseId,
+                            id = announcementId,
+                            material = attachment,
+                        )
+                    }
+
+                    attachment.link != null -> {
+                        uiState.attachments.removeAt(event.position)
+                    }
+                }
+            }
+
             StreamUiEvent.OnRetry -> {
                 getAnnouncements(
                     courseId = args.courseId,
                     isRefreshing = false,
                 )
+            }
+
+            is StreamUiEvent.OnShowAddAttachmentBottomSheetChange -> {
+                uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
             }
 
             StreamUiEvent.UserMessageShown -> {
@@ -104,16 +181,18 @@ class StreamViewModel(
 
     private fun createAnnouncement(
         courseId: String,
+        id: String,
         text: String,
         materials: List<Material>?,
     ) {
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
-            uiState = uiState.copy(userMessage = UiText.StringResource(R.string.missing_message))
+            uiState =
+                uiState.copy(userMessage = UiText.StringResource(R.string.missing_message))
             return
         }
 
-        createAnnouncementUseCase(courseId, text, materials)
+        createAnnouncementUseCase(courseId, text, materials, id)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -131,8 +210,8 @@ class StreamViewModel(
                     }
 
                     is Result.Success -> {
+                        resetAnnouncementState()
                         uiState = uiState.copy(openProgressDialog = false)
-                        uiState.text.clearText()
                         getAnnouncements(courseId, true)
                     }
                 }
@@ -195,7 +274,8 @@ class StreamViewModel(
     ) {
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
-            uiState = uiState.copy(userMessage = UiText.StringResource(R.string.missing_message))
+            uiState =
+                uiState.copy(userMessage = UiText.StringResource(R.string.missing_message))
             return
         }
 
@@ -217,8 +297,12 @@ class StreamViewModel(
                     }
 
                     is Result.Success -> {
-                        uiState = uiState.copy(openProgressDialog = false)
-                        uiState.text.clearText()
+                        resetAnnouncementState()
+                        uiState =
+                            uiState.copy(
+                                editAnnouncementIndex = null,
+                                openProgressDialog = false,
+                            )
                         getAnnouncements(courseId, true)
                     }
                 }
@@ -253,5 +337,118 @@ class StreamViewModel(
                     }
                 }
             }.launchIn(viewModelScope)
+    }
+
+    private fun getUrlMetadata(url: String) {
+        getUrlMetadataUseCase(url)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        val link =
+                            Link(
+                                url = url,
+                                title = url,
+                            )
+                        uiState.attachments.add(Material(link = link))
+                        uiState = uiState.copy(openProgressDialog = false)
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        val link = result.data!!
+                        uiState.attachments.add(Material(link = link))
+                        uiState = uiState.copy(openProgressDialog = false)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun uploadFile(
+        courseId: String,
+        id: String,
+        title: String,
+        file: File,
+    ) {
+        uploadFileUseCase(
+            bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
+            path = "$courseId/announcement/$id/$title",
+            file = file,
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            uploadProgress = null,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(uploadProgress = 0.0f)
+                }
+
+                is Result.Success -> {
+                    val state = result.data!!
+                    if (state.isDone) {
+                        val driveFile =
+                            DriveFile(
+                                alternateLink = state.url,
+                                title = title,
+                            )
+                        uiState.attachments.add(Material(driveFile = driveFile))
+                        uiState = uiState.copy(uploadProgress = null)
+                    } else {
+                        uiState = uiState.copy(uploadProgress = state.progress)
+                    }
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun deleteFile(
+        courseId: String,
+        id: String,
+        material: Material,
+    ) {
+        val title = material.driveFile?.title ?: return
+
+        deleteFileUseCase(
+            bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
+            paths = listOf("$courseId/announcement/$id/$title"),
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState.attachments.remove(material)
+                    uiState = uiState.copy(openProgressDialog = false)
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun resetAnnouncementState() {
+        announcementId = UUID.randomUUID().toString()
+        uiState.text.clearText()
+        uiState.attachments.clear()
     }
 }
