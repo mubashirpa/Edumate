@@ -10,7 +10,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -131,7 +130,6 @@ private fun CreateCourseWorkContent(
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(scrolledContainerColor = MaterialTheme.colorScheme.surface),
                 scrollBehavior = scrollBehavior,
             )
         },
@@ -139,8 +137,10 @@ private fun CreateCourseWorkContent(
             SnackbarHost(hostState = snackbarHostState)
         },
     ) { innerPadding ->
+        val contentModifier = Modifier.padding(innerPadding)
+
         if (uiState.isLoading) {
-            LoadingScreen(modifier = Modifier.padding(innerPadding))
+            LoadingScreen(modifier = contentModifier)
         } else {
             when (uiState.workType) {
                 CourseWorkType.ASSIGNMENT -> {
@@ -148,7 +148,7 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = contentModifier,
                         courseWorkId = courseWorkId,
                     )
                 }
@@ -158,7 +158,7 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = contentModifier,
                         courseWorkId = courseWorkId,
                     )
                 }
@@ -168,7 +168,7 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
-                        modifier = Modifier.padding(innerPadding),
+                        modifier = contentModifier,
                         courseWorkId = courseWorkId,
                     )
                 }
