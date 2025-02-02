@@ -69,7 +69,7 @@ class CourseWorkViewModel(
         courseId: String,
         isRefreshing: Boolean,
     ) {
-        // Cancel any ongoing listCourseWorksJob before making a new call.
+        // Cancel any ongoing getCourseWorksJob before making a new call.
         getCourseWorksJob?.cancel()
         getCourseWorksJob =
             getCourseWorksUseCase(courseId)

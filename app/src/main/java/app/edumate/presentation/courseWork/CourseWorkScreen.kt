@@ -2,12 +2,8 @@ package app.edumate.presentation.courseWork
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -50,7 +46,7 @@ import app.edumate.presentation.components.AnimatedErrorScreen
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
-import app.edumate.presentation.courseDetails.CurrentUserRole
+import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.courseWork.components.CourseWorkListItem
 import app.edumate.presentation.courseWork.components.CreateCourseWorkBottomSheet
 import app.edumate.presentation.courseWork.components.DeleteCourseWorkDialog
@@ -61,14 +57,14 @@ fun CourseWorkScreen(
     uiState: CourseWorkUiState,
     onEvent: (CourseWorkUiEvent) -> Unit,
     courseWithMembers: CourseWithMembers,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     onNavigateToCreateClasswork: (workType: CourseWorkType, id: String?) -> Unit,
     onNavigateToViewClasswork: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val scrollState = rememberLazyListState()
     val snackbarHostState = remember { SnackbarHostState() }
     val expandedFab by remember {
@@ -76,8 +72,7 @@ fun CourseWorkScreen(
             scrollState.firstVisibleItemIndex == 0
         }
     }
-    val isCurrentUserTeacher =
-        currentUserRole == CurrentUserRole.TEACHER || currentUserRole == CurrentUserRole.OWNER
+    val isCurrentUserTeacher = currentUserRole is CourseUserRole.Teacher
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -161,7 +156,6 @@ fun CourseWorkScreen(
                 )
             }
         },
-        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,

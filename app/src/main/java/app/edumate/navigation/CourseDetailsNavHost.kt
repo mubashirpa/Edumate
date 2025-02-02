@@ -57,17 +57,7 @@ fun CourseDetailsNavHost(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 courseWithMembers = courseWithMembers,
-                currentUserRole =
-                    when (currentUserRole) { // TODO: Fix this
-                        CourseUserRole.Student -> CurrentUserRole.STUDENT
-                        is CourseUserRole.Teacher -> {
-                            if (currentUserRole.isCourseOwner) {
-                                CurrentUserRole.OWNER
-                            } else {
-                                CurrentUserRole.TEACHER
-                            }
-                        }
-                    },
+                currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onNavigateToCreateClasswork = { workType, id ->
                     navController.navigate(
