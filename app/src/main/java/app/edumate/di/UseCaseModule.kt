@@ -3,7 +3,10 @@ package app.edumate.di
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
+import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
+import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
+import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
@@ -44,10 +47,12 @@ import org.koin.dsl.module
 
 val useCaseModule =
     module {
+        singleOf(::CreateAnnouncementUseCase)
         singleOf(::CreateCourseUseCase)
         singleOf(::CreateAssignmentUseCase)
         singleOf(::CreateMaterialUseCase)
         singleOf(::CreateQuestionUseCase)
+        singleOf(::DeleteAnnouncementUseCase)
         singleOf(::DeleteCourseUseCase)
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteFileUseCase)
@@ -71,6 +76,7 @@ val useCaseModule =
         singleOf(::SignOutUseCase)
         singleOf(::SignUpUseCase)
         singleOf(::UnenrollCourseUseCase)
+        singleOf(::UpdateAnnouncementUseCase)
         singleOf(::UpdateCourseUseCase)
         singleOf(::UpdateCourseWorkUseCase)
         singleOf(::UpdatePasswordUseCase)

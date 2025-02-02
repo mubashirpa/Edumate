@@ -15,3 +15,16 @@ fun AnnouncementDto.toAnnouncementDomainModel(): Announcement =
         text = text,
         updateTime = updateTime,
     )
+
+fun Announcement.toAnnouncementDto(): AnnouncementDto =
+    AnnouncementDto(
+        alternateLink = alternateLink,
+        courseId = courseId,
+        creationTime = creationTime,
+        creator = creator?.toUserDto(),
+        creatorUserId = creatorUserId,
+        id = id,
+        materials = materials?.map { it.toMaterialDto() },
+        text = text,
+        updateTime = updateTime,
+    )
