@@ -34,7 +34,10 @@ class UpdateAnnouncementUseCase(
                         .updateAnnouncement(
                             id = id,
                             text = text,
-                            materials = materials?.map { it.toMaterialDto() },
+                            materials =
+                                materials
+                                    ?.map { it.toMaterialDto() }
+                                    .takeIf { !it.isNullOrEmpty() },
                         ).toAnnouncementDomainModel()
                 emit(Result.Success(result))
             } catch (_: RestException) {

@@ -41,7 +41,7 @@ class CreateAnnouncementUseCase(
                             courseId = courseId,
                             creatorUserId = userId,
                             id = id,
-                            materials = materials,
+                            materials = materials.takeIf { !it.isNullOrEmpty() },
                             text = text,
                         ).toAnnouncementDto()
                     val result =
