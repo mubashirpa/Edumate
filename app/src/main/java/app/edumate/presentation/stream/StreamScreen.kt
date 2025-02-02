@@ -452,7 +452,7 @@ private fun AttachmentsContent(
 }
 
 @Composable
-fun AnnouncementTextField(
+private fun AnnouncementTextField(
     state: TextFieldState,
     onEvent: (StreamUiEvent) -> Unit,
     modifier: Modifier = Modifier,
