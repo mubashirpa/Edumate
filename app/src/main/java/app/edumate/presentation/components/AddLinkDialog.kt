@@ -73,8 +73,13 @@ fun AddLinkDialog(
                                 imeAction = ImeAction.Done,
                             ),
                         onKeyboardAction = {
-                            focusManager.clearFocus()
-                            keyboardController?.hide()
+                            if (confirmEnabled) {
+                                onDismissRequest()
+                                onConfirmClick("${link.text}")
+                            } else {
+                                focusManager.clearFocus()
+                                keyboardController?.hide()
+                            }
                         },
                         lineLimits = TextFieldLineLimits.SingleLine,
                     )
