@@ -75,7 +75,12 @@ private fun PeopleListItemContent(
     onRemoveUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val hideTrailingContent = currentUserRole is CourseUserRole.Student && isCurrentUserItem
+    val hideTrailingContent =
+        isCurrentUserItem &&
+            (
+                currentUserRole == CourseUserRole.Student ||
+                    currentUserRole == CourseUserRole.Teacher(true)
+            )
     val trailingContent: @Composable (() -> Unit)? =
         if (hideTrailingContent) {
             null
