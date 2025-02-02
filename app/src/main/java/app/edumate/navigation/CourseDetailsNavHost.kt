@@ -10,7 +10,6 @@ import app.edumate.core.Navigation
 import app.edumate.core.ext.GetOnceResult
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.presentation.courseDetails.CourseUserRole
-import app.edumate.presentation.courseDetails.CurrentUserRole
 import app.edumate.presentation.courseWork.CourseWorkScreen
 import app.edumate.presentation.courseWork.CourseWorkUiEvent
 import app.edumate.presentation.courseWork.CourseWorkViewModel
@@ -76,17 +75,7 @@ fun CourseDetailsNavHost(
         composable<Screen.People> {
             PeopleScreen(
                 courseWithMembers = courseWithMembers,
-                currentUserRole =
-                    when (currentUserRole) { // TODO: Fix this
-                        CourseUserRole.Student -> CurrentUserRole.STUDENT
-                        is CourseUserRole.Teacher -> {
-                            if (currentUserRole.isCourseOwner) {
-                                CurrentUserRole.OWNER
-                            } else {
-                                CurrentUserRole.TEACHER
-                            }
-                        }
-                    },
+                currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
                 onLeaveCourseComplete = onLeaveCourse,
             )

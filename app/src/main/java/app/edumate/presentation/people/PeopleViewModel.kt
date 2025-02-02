@@ -97,7 +97,7 @@ class PeopleViewModel(
         courseId: String,
         isRefreshing: Boolean,
     ) {
-        // Cancel any ongoing listStudentsJob before making a new call.
+        // Cancel any ongoing getPeoplesJob before making a new call.
         getPeoplesJob?.cancel()
         getPeoplesJob =
             getMembersUseCase(courseId)

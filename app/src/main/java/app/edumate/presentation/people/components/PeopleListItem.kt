@@ -23,39 +23,38 @@ import app.edumate.R
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.user.User
 import app.edumate.presentation.components.UserAvatar
-import app.edumate.presentation.courseDetails.CurrentUserRole
+import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.theme.EdumateTheme
 
 @Composable
 fun PeopleListItem(
-    user: User?,
+    person: User?,
     role: UserRole,
     courseOwnerId: String,
     currentUserId: String,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onEmailUserClick: (email: String) -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val itemUserId = user?.id
-    val isCurrentUser = currentUserId == itemUserId
+    val itemUserId = person?.id
+    val isCurrentUserItem = currentUserId == itemUserId
     val itemUserRole =
-        when {
-            courseOwnerId == itemUserId -> ItemUserRole.OWNER
-            role == UserRole.TEACHER -> ItemUserRole.TEACHER
-            else -> ItemUserRole.STUDENT
+        when (role) {
+            UserRole.STUDENT -> PeopleUserRole.Student
+            UserRole.TEACHER -> PeopleUserRole.Teacher(isCourseOwner = courseOwnerId == itemUserId)
         }
 
     PeopleListItemContent(
         userId = itemUserId.orEmpty(),
-        name = user?.name.orEmpty(),
-        photoUrl = user?.avatarUrl,
+        name = person?.name.orEmpty(),
+        photoUrl = person?.avatarUrl,
         currentUserRole = currentUserRole,
         itemUserRole = itemUserRole,
-        isCurrentUser = isCurrentUser,
+        isCurrentUserItem = isCurrentUserItem,
         onEmailUserClick = {
-            user?.email?.let(onEmailUserClick)
+            person?.email?.let(onEmailUserClick)
         },
         onLeaveClassClick = onLeaveClassClick,
         onRemoveUserClick = onRemoveUserClick,
@@ -68,17 +67,15 @@ private fun PeopleListItemContent(
     userId: String,
     name: String,
     photoUrl: String?,
-    currentUserRole: CurrentUserRole,
-    itemUserRole: ItemUserRole,
-    isCurrentUser: Boolean,
+    currentUserRole: CourseUserRole,
+    itemUserRole: PeopleUserRole,
+    isCurrentUserItem: Boolean,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val hideTrailingContent =
-        (currentUserRole == CurrentUserRole.OWNER && itemUserRole == ItemUserRole.OWNER) ||
-            (currentUserRole == CurrentUserRole.STUDENT)
+    val hideTrailingContent = currentUserRole is CourseUserRole.Student && isCurrentUserItem
     val trailingContent: @Composable (() -> Unit)? =
         if (hideTrailingContent) {
             null
@@ -87,7 +84,7 @@ private fun PeopleListItemContent(
                 PeopleMenuButton(
                     currentUserRole = currentUserRole,
                     itemUserRole = itemUserRole,
-                    isCurrentUser = isCurrentUser,
+                    isCurrentUserItem = isCurrentUserItem,
                     onEmailUserClick = onEmailUserClick,
                     onLeaveClassClick = onLeaveClassClick,
                     onRemoveUserClick = onRemoveUserClick,
@@ -113,9 +110,9 @@ private fun PeopleListItemContent(
 
 @Composable
 private fun PeopleMenuButton(
-    currentUserRole: CurrentUserRole,
-    itemUserRole: ItemUserRole,
-    isCurrentUser: Boolean,
+    currentUserRole: CourseUserRole,
+    itemUserRole: PeopleUserRole,
+    isCurrentUserItem: Boolean,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -134,30 +131,23 @@ private fun PeopleMenuButton(
             onDismissRequest = { expanded = false },
         ) {
             when (currentUserRole) {
-                CurrentUserRole.OWNER -> {
-                    when (itemUserRole) {
-                        ItemUserRole.TEACHER -> {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.email))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onEmailUserClick()
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.remove))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onRemoveUserClick()
-                                },
-                            )
-                        }
+                CourseUserRole.Student -> {
+                    if (!isCurrentUserItem) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(text = stringResource(id = R.string.email))
+                            },
+                            onClick = {
+                                expanded = false
+                                onEmailUserClick()
+                            },
+                        )
+                    }
+                }
 
-                        ItemUserRole.STUDENT -> {
+                is CourseUserRole.Teacher -> {
+                    when (itemUserRole) {
+                        PeopleUserRole.Student -> {
                             DropdownMenuItem(
                                 text = {
                                     Text(text = stringResource(id = R.string.email_student))
@@ -178,84 +168,55 @@ private fun PeopleMenuButton(
                             )
                         }
 
-                        else -> {
-                            // Nothing shown
-                        }
-                    }
-                }
+                        is PeopleUserRole.Teacher -> {
+                            when {
+                                itemUserRole.isCourseOwner -> {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = stringResource(id = R.string.email))
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            onEmailUserClick()
+                                        },
+                                    )
+                                }
 
-                CurrentUserRole.TEACHER -> {
-                    when (itemUserRole) {
-                        ItemUserRole.OWNER -> {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.email))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onEmailUserClick()
-                                },
-                            )
-                        }
+                                isCurrentUserItem -> {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = stringResource(id = R.string.leave_class))
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            onLeaveClassClick()
+                                        },
+                                    )
+                                }
 
-                        ItemUserRole.TEACHER -> {
-                            if (isCurrentUser) {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = stringResource(id = R.string.leave_class))
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onLeaveClassClick()
-                                    },
-                                )
-                            } else {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = stringResource(id = R.string.email))
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onEmailUserClick()
-                                    },
-                                )
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(text = stringResource(id = R.string.remove))
-                                    },
-                                    onClick = {
-                                        expanded = false
-                                        onRemoveUserClick()
-                                    },
-                                )
+                                else -> {
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = stringResource(id = R.string.email))
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            onEmailUserClick()
+                                        },
+                                    )
+                                    DropdownMenuItem(
+                                        text = {
+                                            Text(text = stringResource(id = R.string.remove))
+                                        },
+                                        onClick = {
+                                            expanded = false
+                                            onRemoveUserClick()
+                                        },
+                                    )
+                                }
                             }
                         }
-
-                        ItemUserRole.STUDENT -> {
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.email_student))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onEmailUserClick()
-                                },
-                            )
-                            DropdownMenuItem(
-                                text = {
-                                    Text(text = stringResource(id = R.string.remove_student))
-                                },
-                                onClick = {
-                                    expanded = false
-                                    onRemoveUserClick()
-                                },
-                            )
-                        }
                     }
-                }
-
-                CurrentUserRole.STUDENT -> {
-                    // Nothing shown
                 }
             }
         }
@@ -270,9 +231,9 @@ private fun PeopleListItemPreview() {
             userId = "user",
             name = "User",
             photoUrl = null,
-            currentUserRole = CurrentUserRole.OWNER,
-            itemUserRole = ItemUserRole.TEACHER,
-            isCurrentUser = false,
+            currentUserRole = CourseUserRole.Teacher(true),
+            itemUserRole = PeopleUserRole.Teacher(true),
+            isCurrentUserItem = false,
             onEmailUserClick = {},
             onLeaveClassClick = {},
             onRemoveUserClick = {},
@@ -280,8 +241,10 @@ private fun PeopleListItemPreview() {
     }
 }
 
-private enum class ItemUserRole {
-    OWNER,
-    TEACHER,
-    STUDENT,
+sealed class PeopleUserRole {
+    data class Teacher(
+        val isCourseOwner: Boolean,
+    ) : PeopleUserRole()
+
+    data object Student : PeopleUserRole()
 }

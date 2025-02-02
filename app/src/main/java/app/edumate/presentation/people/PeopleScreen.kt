@@ -6,14 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -68,7 +64,7 @@ import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LeaveCourseDialog
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
-import app.edumate.presentation.courseDetails.CurrentUserRole
+import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.people.components.DeletePersonDialog
 import app.edumate.presentation.people.components.InviteBottomSheet
 import app.edumate.presentation.people.components.PeopleListItem
@@ -79,7 +75,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun PeopleScreen(
     courseWithMembers: CourseWithMembers,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     onLeaveCourseComplete: () -> Unit,
     modifier: Modifier = Modifier,
@@ -113,17 +109,16 @@ fun PeopleContent(
     uiState: PeopleUiState,
     onEvent: (PeopleUiEvent) -> Unit,
     courseWithMembers: CourseWithMembers,
-    currentUserRole: CurrentUserRole,
+    currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val context = LocalContext.current
     val scrollState = rememberLazyListState()
     val coroutineScope = rememberCoroutineScope()
     val snackbarHostState = remember { SnackbarHostState() }
-    val isCurrentUserTeacher =
-        currentUserRole == CurrentUserRole.TEACHER || currentUserRole == CurrentUserRole.OWNER
+    val isCurrentUserTeacher = currentUserRole is CourseUserRole.Teacher
     val bottomMargin = if (isCurrentUserTeacher) 100.dp else 0.dp
     val expandedFab by remember {
         derivedStateOf {
@@ -213,7 +208,6 @@ fun PeopleContent(
                 )
             }
         },
-        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
@@ -334,7 +328,7 @@ fun PeopleContent(
                                             key = { it.user!!.id!! },
                                         ) { teacher ->
                                             PeopleListItem(
-                                                user = teacher.user,
+                                                person = teacher.user,
                                                 role = teacher.role!!,
                                                 courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                                 currentUserId = uiState.currentUserId.orEmpty(),
@@ -369,7 +363,7 @@ fun PeopleContent(
                                             key = { it.user!!.id!! },
                                         ) { student ->
                                             PeopleListItem(
-                                                user = student.user,
+                                                person = student.user,
                                                 role = student.role!!,
                                                 courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                                 currentUserId = uiState.currentUserId.orEmpty(),
