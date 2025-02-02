@@ -4,20 +4,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
-import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Send
@@ -65,6 +60,7 @@ import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
 import app.edumate.presentation.stream.components.AnnouncementUserRole
+import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
 
@@ -78,7 +74,7 @@ fun StreamScreen(
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -152,9 +148,11 @@ fun StreamScreen(
             )
         },
         snackbarHost = {
-            SnackbarHost(hostState = snackbarHostState)
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier.padding(bottom = 68.dp),
+            )
         },
-        contentWindowInsets = WindowInsets.systemBars.only(WindowInsetsSides.Horizontal + WindowInsetsSides.Top),
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
@@ -229,7 +227,13 @@ fun StreamScreen(
                                         itemUserRole = announcementItemUserRole,
                                         isCurrentUserCreator = isCurrentUserCreator,
                                         onEditClick = { /*TODO*/ },
-                                        onDeleteClick = { /*TODO*/ },
+                                        onDeleteClick = { id ->
+                                            onEvent(
+                                                StreamUiEvent.OnOpenDeleteAnnouncementDialogChange(
+                                                    id,
+                                                ),
+                                            )
+                                        },
                                         onCopyLinkClick = {
                                             ClipboardUtils.copyTextToClipboard(
                                                 context = context,
@@ -251,13 +255,13 @@ fun StreamScreen(
                             }
                         }
                         OutlinedTextField(
-                            state = rememberTextFieldState(),
+                            state = uiState.text,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp, vertical = 12.dp),
                             placeholder = {
-                                Text(text = "Announce something your class")
+                                Text(text = stringResource(R.string.announce_something_your_class))
                             },
                             leadingIcon = {
                                 BadgedBox(
@@ -271,7 +275,10 @@ fun StreamScreen(
                                                     modifier =
                                                         Modifier.semantics {
                                                             contentDescription =
-                                                                "$badgeNumber new notifications"
+                                                                context.getString(
+                                                                    R.string._attachments,
+                                                                    badgeNumber,
+                                                                )
                                                         },
                                                 )
                                             }
@@ -287,7 +294,7 @@ fun StreamScreen(
                                 }
                             },
                             trailingIcon = {
-                                IconButton(onClick = { /*TODO*/ }) {
+                                IconButton(onClick = { onEvent(StreamUiEvent.CreateAnnouncement) }) {
                                     Icon(
                                         imageVector = Icons.AutoMirrored.Filled.Send,
                                         contentDescription = null,
@@ -295,7 +302,9 @@ fun StreamScreen(
                                 }
                             },
                             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Send),
-                            onKeyboardAction = { /*TODO*/ },
+                            onKeyboardAction = {
+                                onEvent(StreamUiEvent.CreateAnnouncement)
+                            },
                             lineLimits = TextFieldLineLimits.SingleLine,
                             shape = CircleShape,
                         )
@@ -304,6 +313,16 @@ fun StreamScreen(
             }
         }
     }
+
+    DeleteAnnouncementDialog(
+        open = uiState.deleteAnnouncementId != null,
+        onDismissRequest = {
+            onEvent(StreamUiEvent.OnOpenDeleteAnnouncementDialogChange(null))
+        },
+        onConfirmButtonClick = {
+            onEvent(StreamUiEvent.OnDeleteAnnouncement(uiState.deleteAnnouncementId!!))
+        },
+    )
 
     ProgressDialog(
         open = uiState.openProgressDialog,
