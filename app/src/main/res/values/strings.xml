@@ -8,6 +8,7 @@
     <string name="add_option">Add option</string>
     <string name="all">All</string>
     <string name="all_students">All students</string>
+    <string name="announce_something_your_class">Announce something your class</string>
     <string name="app_name">Edumate</string>
     <string name="ask">Ask</string>
     <string name="ask_gemini">Ask Gemini</string>
@@ -130,6 +131,7 @@
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_google">Sign up with Google</string>
     <string name="signing_in">Signing in</string>
+    <string name="start_a_conversation_with_your_class">Start a conversation with your class.</string>
     <string name="students">Students</string>
     <string name="subject">Subject</string>
     <string name="switch_to_text_input">Switch to Text Input</string>
@@ -197,6 +199,4 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
-    <string name="_attachments">%1$s attachments</string>
-    <string name="announce_something_your_class">Announce something your class</string>
 </resources>
