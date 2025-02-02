@@ -29,12 +29,12 @@ class CreateAnnouncementUseCase(
         courseId: String,
         text: String,
         materials: List<Material>?,
+        id: String = UUID.randomUUID().toString(),
     ): Flow<Result<Announcement>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val id = UUID.randomUUID().toString()
                     val announcement =
                         Announcement(
                             alternateLink = "${Constants.EDUMATE_BASE_URL}c/$courseId/p/$id/details",
