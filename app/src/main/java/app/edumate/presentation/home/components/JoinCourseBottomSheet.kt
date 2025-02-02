@@ -33,8 +33,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.ImeAction
@@ -87,8 +85,6 @@ private fun JoinCourseBottomSheetContent(
 ) {
     val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
     val maxWidthModifier = Modifier.fillMaxWidth()
-    val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
 
     Column(modifier = modifier) {
@@ -134,16 +130,13 @@ private fun JoinCourseBottomSheetContent(
                 isError = courseIdError != null,
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Go),
                 onKeyboardAction = {
-                    focusManager.clearFocus()
-                    keyboardController?.hide()
+                    onJoinCourse(courseId.text.toString())
                 },
                 lineLimits = TextFieldLineLimits.SingleLine,
             )
             Spacer(modifier = Modifier.height(16.dp))
             Button(
                 onClick = {
-                    keyboardController?.hide()
-                    focusManager.clearFocus()
                     onJoinCourse(courseId.text.toString())
                 },
                 modifier = maxWidthModifier,

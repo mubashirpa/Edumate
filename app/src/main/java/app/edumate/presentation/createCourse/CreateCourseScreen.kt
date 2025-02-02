@@ -36,7 +36,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.text.input.ImeAction
@@ -91,7 +90,6 @@ private fun CreateCourseContent(
     courseId: String? = null,
 ) {
     val focusManager = LocalFocusManager.current
-    val keyboardController = LocalSoftwareKeyboardController.current
     val focusRequester = remember { FocusRequester() }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -213,16 +211,13 @@ private fun CreateCourseContent(
                             imeAction = ImeAction.Done,
                         ),
                     onKeyboardAction = {
-                        focusManager.clearFocus()
-                        keyboardController?.hide()
+                        onEvent(CreateCourseUiEvent.CreateCourse)
                     },
                     lineLimits = TextFieldLineLimits.SingleLine,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
                     onClick = {
-                        keyboardController?.hide()
-                        focusManager.clearFocus()
                         onEvent(CreateCourseUiEvent.CreateCourse)
                     },
                     modifier = Modifier.fillMaxWidth(),
