@@ -37,6 +37,7 @@ object Authentication {
 object Supabase {
     object Column {
         const val COURSE_ID = "course_id"
+        const val CREATION_TIME = "creation_time"
         const val DESCRIPTION = "description"
         const val DUE_TIME = "due_time"
         const val ID = "id"
