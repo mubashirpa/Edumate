@@ -33,6 +33,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
@@ -122,13 +123,12 @@ fun AnnouncementReplyBottomSheet(
                                 }
                             },
                         )
-                        HorizontalDivider()
+                        HorizontalDivider(thickness = Dp.Hairline)
                         CommentTextField(
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(horizontal = 16.dp)
-                                    .padding(top = 12.dp, bottom = 16.dp),
+                                    .padding(16.dp),
                         )
                     }
                 }
