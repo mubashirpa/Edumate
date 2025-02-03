@@ -284,10 +284,10 @@ fun StreamScreen(
                                                     ),
                                                 )
                                             },
-                                            onCopyLinkClick = {
+                                            onCopyLinkClick = { link ->
                                                 ClipboardUtils.copyTextToClipboard(
                                                     context = context,
-                                                    textCopied = courseWithMembers.joinLink,
+                                                    textCopied = link,
                                                 ) {
                                                     coroutineScope.launch {
                                                         snackbarHostState.showSnackbar(
