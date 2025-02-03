@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -253,10 +253,10 @@ fun StreamScreen(
                                         ),
                                     verticalArrangement = Arrangement.spacedBy(10.dp),
                                 ) {
-                                    itemsIndexed(
+                                    items(
                                         items = announcements,
-                                        key = { _, announcement -> announcement.id!! },
-                                    ) { index, announcement ->
+                                        key = { it.id!! },
+                                    ) { announcement ->
                                         val isCurrentUserCreator =
                                             announcement.creatorUserId == uiState.currentUserId
                                         val announcementUserRole =
@@ -280,11 +280,10 @@ fun StreamScreen(
                                             currentUserRole = currentUserRole,
                                             itemUserRole = announcementItemUserRole,
                                             isCurrentUserCreator = isCurrentUserCreator,
-                                            selected = index == uiState.editAnnouncementIndex,
+                                            selected = announcement.id == uiState.editAnnouncementId,
                                             onEditClick = {
                                                 onEvent(
                                                     StreamUiEvent.OnEditAnnouncement(
-                                                        index,
                                                         announcement,
                                                     ),
                                                 )
@@ -312,12 +311,7 @@ fun StreamScreen(
                                                 }
                                             },
                                             onClearSelection = {
-                                                onEvent(
-                                                    StreamUiEvent.OnEditAnnouncement(
-                                                        null,
-                                                        null,
-                                                    ),
-                                                )
+                                                onEvent(StreamUiEvent.OnEditAnnouncement(null))
                                             },
                                             onClick = { /*TODO*/ },
                                             modifier = Modifier.animateItem(),

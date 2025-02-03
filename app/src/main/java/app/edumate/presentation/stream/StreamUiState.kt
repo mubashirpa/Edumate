@@ -12,7 +12,7 @@ data class StreamUiState(
     val announcementResult: Result<List<Announcement>> = Result.Empty(),
     val attachments: SnapshotStateList<Material> = mutableStateListOf(),
     val currentUserId: String? = null,
-    val editAnnouncementIndex: Int? = null,
+    val editAnnouncementId: String? = null,
     val expandedAppBarDropdown: Boolean = false,
     val deleteAnnouncementId: String? = null,
     val isRefreshing: Boolean = false,

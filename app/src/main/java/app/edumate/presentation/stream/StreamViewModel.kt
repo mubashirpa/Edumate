@@ -67,7 +67,7 @@ class StreamViewModel(
                         .toString()
                         .trim()
 
-                if (uiState.editAnnouncementIndex == null) {
+                if (uiState.editAnnouncementId == null) {
                     createAnnouncement(
                         courseId = args.courseId,
                         id = announcementId,
@@ -93,9 +93,9 @@ class StreamViewModel(
             }
 
             is StreamUiEvent.OnEditAnnouncement -> {
-                uiState = uiState.copy(editAnnouncementIndex = event.index)
-
                 val announcement = event.announcement
+                uiState = uiState.copy(editAnnouncementId = announcement?.id)
+
                 if (announcement != null) {
                     announcementId = announcement.id.orEmpty()
                     uiState.text.setTextAndPlaceCursorAtEnd(announcement.text.orEmpty())
@@ -300,7 +300,7 @@ class StreamViewModel(
                         resetAnnouncementState()
                         uiState =
                             uiState.copy(
-                                editAnnouncementIndex = null,
+                                editAnnouncementId = null,
                                 openProgressDialog = false,
                             )
                         getAnnouncements(courseId, true)

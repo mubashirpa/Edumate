@@ -13,7 +13,6 @@ sealed class StreamUiEvent {
     ) : StreamUiEvent()
 
     data class OnEditAnnouncement(
-        val index: Int?,
         val announcement: Announcement?,
     ) : StreamUiEvent()
 
