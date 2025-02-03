@@ -1,7 +1,9 @@
 package app.edumate.presentation.people.components
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
@@ -9,6 +11,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -19,12 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.user.User
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.theme.EdumateTheme
+import com.airbnb.lottie.model.content.CircleShape
 
 @Composable
 fun PeopleListItem(
@@ -102,11 +107,26 @@ private fun PeopleListItemContent(
             Text(text = name)
         },
         modifier = modifier,
+        overlineContent = {
+            if (itemUserRole is PeopleUserRole.Teacher) {
+                Text(text = stringResource(R.string.instructor))
+            }
+        },
         leadingContent = {
             UserAvatar(
                 id = userId,
                 fullName = name,
                 photoUrl = photoUrl,
+                modifier =
+                    if (itemUserRole == PeopleUserRole.Teacher(true)) {
+                        Modifier.border(
+                            width = 2.dp,
+                            shape = CircleShape,
+                            color = MaterialTheme.colorScheme.primary,
+                        )
+                    } else {
+                        Modifier
+                    },
             )
         },
         trailingContent = trailingContent,
