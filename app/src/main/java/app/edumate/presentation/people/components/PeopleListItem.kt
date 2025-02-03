@@ -29,7 +29,6 @@ import app.edumate.domain.model.user.User
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.theme.EdumateTheme
-import com.airbnb.lottie.model.content.CircleShape
 
 @Composable
 fun PeopleListItem(
