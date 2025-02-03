@@ -46,6 +46,7 @@ import app.edumate.core.utils.DateTimeUtils
 import app.edumate.core.utils.RelativeDate
 import app.edumate.domain.model.announcement.Announcement
 import app.edumate.domain.model.material.Material
+import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.user.User
 import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.courseDetails.CourseUserRole
@@ -63,9 +64,9 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun AnnouncementListItem(
     announcement: Announcement,
+    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
-    itemUserRole: AnnouncementUserRole,
-    isCurrentUserCreator: Boolean,
+    currentUserId: String,
     selected: Boolean,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
@@ -75,6 +76,7 @@ fun AnnouncementListItem(
     modifier: Modifier = Modifier,
 ) {
     val id = announcement.id
+    val isCurrentUserCreator = announcement.creatorUserId == currentUserId
 
     AnnouncementListItemContent(
         text = announcement.text.orEmpty(),
@@ -82,8 +84,8 @@ fun AnnouncementListItem(
         creationTime = announcement.creationTime.orEmpty(),
         updateTime = announcement.updateTime.orEmpty(),
         creator = announcement.creator,
-        currentUserRole = currentUserRole,
         itemUserRole = itemUserRole,
+        currentUserRole = currentUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
         selected = selected,
         onEditClick = {
@@ -110,8 +112,8 @@ private fun AnnouncementListItemContent(
     creationTime: String,
     updateTime: String,
     creator: User?,
+    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
-    itemUserRole: AnnouncementUserRole,
     isCurrentUserCreator: Boolean,
     selected: Boolean,
     onEditClick: () -> Unit,
@@ -198,8 +200,8 @@ private fun AnnouncementListItemContent(
                     }
                 } else {
                     MenuButton(
-                        currentUserRole = currentUserRole,
                         itemUserRole = itemUserRole,
+                        currentUserRole = currentUserRole,
                         isCurrentUserCreator = isCurrentUserCreator,
                         onEditClick = onEditClick,
                         onDeleteClick = onDeleteClick,
@@ -291,8 +293,8 @@ private fun AnnouncementListItemContent(
 
 @Composable
 private fun MenuButton(
+    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
-    itemUserRole: AnnouncementUserRole,
     isCurrentUserCreator: Boolean,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
@@ -337,7 +339,7 @@ private fun MenuButton(
                 }
 
                 is CourseUserRole.Teacher -> {
-                    if (itemUserRole == AnnouncementUserRole.TEACHER) {
+                    if (itemUserRole == UserRole.TEACHER) {
                         DropdownMenuItem(
                             text = {
                                 Text(text = stringResource(id = R.string.edit))
@@ -446,8 +448,8 @@ private fun AnnouncementListItemPreview() {
             creationTime = "2025-01-28T08:26:42.830742+00:00",
             updateTime = "2025-01-28T08:26:42.830742+00:00",
             creator = User(name = "User"),
+            itemUserRole = UserRole.TEACHER,
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
-            itemUserRole = AnnouncementUserRole.TEACHER,
             isCurrentUserCreator = true,
             selected = false,
             onEditClick = {},
@@ -457,9 +459,4 @@ private fun AnnouncementListItemPreview() {
             onClick = {},
         )
     }
-}
-
-enum class AnnouncementUserRole {
-    STUDENT,
-    TEACHER,
 }

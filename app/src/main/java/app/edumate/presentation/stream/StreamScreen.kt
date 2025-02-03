@@ -80,7 +80,6 @@ import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
 import app.edumate.presentation.stream.components.AnnouncementReplyBottomSheet
-import app.edumate.presentation.stream.components.AnnouncementUserRole
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
@@ -258,29 +257,17 @@ fun StreamScreen(
                                         items = announcements,
                                         key = { it.id!! },
                                     ) { announcement ->
-                                        val isCurrentUserCreator =
-                                            announcement.creatorUserId == uiState.currentUserId
                                         val announcementUserRole =
                                             courseWithMembers.members
                                                 ?.find {
                                                     it.userId == announcement.creatorUserId
-                                                }?.role
-                                        val announcementItemUserRole =
-                                            when {
-                                                announcementUserRole == UserRole.TEACHER -> {
-                                                    AnnouncementUserRole.TEACHER
-                                                }
-
-                                                else -> {
-                                                    AnnouncementUserRole.STUDENT
-                                                }
-                                            }
+                                                }?.role ?: UserRole.STUDENT
 
                                         AnnouncementListItem(
                                             announcement = announcement,
+                                            itemUserRole = announcementUserRole,
                                             currentUserRole = currentUserRole,
-                                            itemUserRole = announcementItemUserRole,
-                                            isCurrentUserCreator = isCurrentUserCreator,
+                                            currentUserId = uiState.currentUserId.orEmpty(),
                                             selected = announcement.id == uiState.editAnnouncementId,
                                             onEditClick = {
                                                 onEvent(
