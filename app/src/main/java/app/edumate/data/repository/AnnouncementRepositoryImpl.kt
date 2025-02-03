@@ -2,6 +2,7 @@ package app.edumate.data.repository
 
 import app.edumate.core.Supabase
 import app.edumate.data.remote.dto.announcement.AnnouncementDto
+import app.edumate.data.remote.dto.comment.CommentsDto
 import app.edumate.data.remote.dto.material.MaterialDto
 import app.edumate.domain.repository.AnnouncementRepository
 import io.github.jan.supabase.postgrest.Postgrest
@@ -62,4 +63,13 @@ class AnnouncementRepositoryImpl(
                     eq(Supabase.Column.ID, id)
                 }
             }.decodeSingle()
+
+    override suspend fun getComments(id: String): List<CommentsDto> =
+        postgrest
+            .from(Supabase.Table.ANNOUNCEMENT_COMMENTS)
+            .select(Columns.raw("comment:comments(*, creator:users!creator_user_id(*))")) {
+                filter {
+                    eq(Supabase.Column.ANNOUNCEMENT_ID, id)
+                }
+            }.decodeList()
 }

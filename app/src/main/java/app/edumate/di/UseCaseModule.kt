@@ -5,6 +5,7 @@ import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
+import app.edumate.domain.usecase.announcement.GetAnnouncementCommentsUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
@@ -48,8 +49,8 @@ import org.koin.dsl.module
 val useCaseModule =
     module {
         singleOf(::CreateAnnouncementUseCase)
-        singleOf(::CreateCourseUseCase)
         singleOf(::CreateAssignmentUseCase)
+        singleOf(::CreateCourseUseCase)
         singleOf(::CreateMaterialUseCase)
         singleOf(::CreateQuestionUseCase)
         singleOf(::DeleteAnnouncementUseCase)
@@ -57,6 +58,7 @@ val useCaseModule =
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteFileUseCase)
         singleOf(::DeleteMemberUseCase)
+        singleOf(::GetAnnouncementCommentsUseCase)
         singleOf(::GetAnnouncementsUseCase)
         singleOf(::GetCourseUseCase)
         singleOf(::GetCourseWithMembersUseCase)
