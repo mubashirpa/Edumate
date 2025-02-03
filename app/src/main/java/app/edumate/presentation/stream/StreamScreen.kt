@@ -79,6 +79,7 @@ import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
+import app.edumate.presentation.stream.components.AnnouncementReplyBottomSheet
 import app.edumate.presentation.stream.components.AnnouncementUserRole
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
@@ -313,7 +314,13 @@ fun StreamScreen(
                                             onClearSelection = {
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))
                                             },
-                                            onClick = { /*TODO*/ },
+                                            onClick = { id ->
+                                                onEvent(
+                                                    StreamUiEvent.OnShowReplyBottomSheetChange(
+                                                        id,
+                                                    ),
+                                                )
+                                            },
                                             modifier = Modifier.animateItem(),
                                         )
                                     }
@@ -379,6 +386,14 @@ fun StreamScreen(
         },
         onConfirmClick = {
             onEvent(StreamUiEvent.OnAddLinkAttachment(it))
+        },
+    )
+
+    AnnouncementReplyBottomSheet(
+        commentsResult = uiState.commentsResult,
+        show = uiState.replyAnnouncementId != null,
+        onDismissRequest = {
+            onEvent(StreamUiEvent.OnShowReplyBottomSheetChange(null))
         },
     )
 

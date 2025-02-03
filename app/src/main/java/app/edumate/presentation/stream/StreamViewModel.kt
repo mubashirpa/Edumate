@@ -19,6 +19,7 @@ import app.edumate.domain.model.material.Material
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
+import app.edumate.domain.usecase.announcement.GetAnnouncementCommentsUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
@@ -39,6 +40,7 @@ class StreamViewModel(
     private val createAnnouncementUseCase: CreateAnnouncementUseCase,
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val updateAnnouncementUseCase: UpdateAnnouncementUseCase,
+    private val getAnnouncementCommentsUseCase: GetAnnouncementCommentsUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
@@ -160,6 +162,20 @@ class StreamViewModel(
 
             is StreamUiEvent.OnShowAddAttachmentBottomSheetChange -> {
                 uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
+            }
+
+            is StreamUiEvent.OnShowReplyBottomSheetChange -> {
+                val announcementId = event.announcementId
+                if (announcementId != null) {
+                    uiState = uiState.copy(replyAnnouncementId = event.announcementId)
+                    getAnnouncementComments(announcementId)
+                } else {
+                    uiState =
+                        uiState.copy(
+                            commentsResult = Result.Empty(),
+                            replyAnnouncementId = null,
+                        )
+                }
             }
 
             StreamUiEvent.UserMessageShown -> {
@@ -450,5 +466,12 @@ class StreamViewModel(
         announcementId = UUID.randomUUID().toString()
         uiState.text.clearText()
         uiState.attachments.clear()
+    }
+
+    private fun getAnnouncementComments(id: String) {
+        getAnnouncementCommentsUseCase(id)
+            .onEach { result ->
+                uiState = uiState.copy(commentsResult = result)
+            }.launchIn(viewModelScope)
     }
 }

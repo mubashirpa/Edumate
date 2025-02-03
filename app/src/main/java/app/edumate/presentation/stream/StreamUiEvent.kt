@@ -41,6 +41,10 @@ sealed class StreamUiEvent {
         val show: Boolean,
     ) : StreamUiEvent()
 
+    data class OnShowReplyBottomSheetChange(
+        val announcementId: String?,
+    ) : StreamUiEvent()
+
     data object CreateAnnouncement : StreamUiEvent()
 
     data object OnRefresh : StreamUiEvent()
