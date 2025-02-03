@@ -29,7 +29,9 @@ import app.edumate.R
 import app.edumate.core.utils.DateTimeUtils
 import app.edumate.core.utils.RelativeDate
 import app.edumate.domain.model.comment.Comment
+import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.UserAvatar
+import app.edumate.presentation.courseDetails.CourseUserRole
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.LocalDateTime
@@ -43,9 +45,16 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun ReplyListItem(
     comment: Comment,
+    itemUserRole: UserRole,
+    currentUserRole: CourseUserRole,
+    currentUserId: String,
+    onEditClick: (id: String) -> Unit,
+    onDeleteClick: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val id = comment.id
     val creator = comment.creator
+    val isCurrentUserCreator = comment.creatorUserId == currentUserId
     val creationDateTime =
         remember {
             try {
@@ -88,8 +97,15 @@ fun ReplyListItem(
             },
             trailingContent = {
                 MenuButton(
-                    onEditClick = { /*TODO*/ },
-                    onDeleteClick = { /*TODO*/ },
+                    itemUserRole = itemUserRole,
+                    currentUserRole = currentUserRole,
+                    isCurrentUserCreator = isCurrentUserCreator,
+                    onEditClick = {
+                        id?.let(onEditClick)
+                    },
+                    onDeleteClick = {
+                        id?.let(onDeleteClick)
+                    },
                 )
             },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -148,6 +164,9 @@ private fun formatDate(dateTime: LocalDateTime): String {
 
 @Composable
 private fun MenuButton(
+    itemUserRole: UserRole,
+    currentUserRole: CourseUserRole,
+    isCurrentUserCreator: Boolean,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
 ) {
@@ -164,24 +183,44 @@ private fun MenuButton(
             expanded = expanded,
             onDismissRequest = { expanded = false },
         ) {
-            DropdownMenuItem(
-                text = {
-                    Text(stringResource(id = R.string.edit))
-                },
-                onClick = {
-                    expanded = false
-                    onEditClick()
-                },
-            )
-            DropdownMenuItem(
-                text = {
-                    Text(stringResource(id = R.string.delete))
-                },
-                onClick = {
-                    expanded = false
-                    onDeleteClick()
-                },
-            )
+            when (currentUserRole) {
+                CourseUserRole.Student -> {
+                    if (isCurrentUserCreator) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(stringResource(id = R.string.delete))
+                            },
+                            onClick = {
+                                expanded = false
+                                onDeleteClick()
+                            },
+                        )
+                    }
+                }
+
+                is CourseUserRole.Teacher -> {
+                    if (itemUserRole == UserRole.TEACHER) {
+                        DropdownMenuItem(
+                            text = {
+                                Text(stringResource(id = R.string.edit))
+                            },
+                            onClick = {
+                                expanded = false
+                                onEditClick()
+                            },
+                        )
+                    }
+                    DropdownMenuItem(
+                        text = {
+                            Text(stringResource(id = R.string.delete))
+                        },
+                        onClick = {
+                            expanded = false
+                            onDeleteClick()
+                        },
+                    )
+                }
+            }
         }
     }
 }

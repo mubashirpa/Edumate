@@ -377,8 +377,11 @@ fun StreamScreen(
     )
 
     AnnouncementReplyBottomSheet(
-        commentsResult = uiState.commentsResult,
         show = uiState.replyAnnouncementId != null,
+        commentsResult = uiState.commentsResult,
+        members = courseWithMembers.members.orEmpty(),
+        currentUserRole = currentUserRole,
+        currentUserId = uiState.currentUserId.orEmpty(),
         onDismissRequest = {
             onEvent(StreamUiEvent.OnShowReplyBottomSheetChange(null))
         },

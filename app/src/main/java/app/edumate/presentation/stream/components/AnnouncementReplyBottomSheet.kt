@@ -37,8 +37,11 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.domain.model.comment.Comment
+import app.edumate.domain.model.member.Member
+import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
+import app.edumate.presentation.courseDetails.CourseUserRole
 import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,6 +49,9 @@ import kotlin.collections.orEmpty
 fun AnnouncementReplyBottomSheet(
     show: Boolean,
     commentsResult: Result<List<Comment>>,
+    members: List<Member>,
+    currentUserRole: CourseUserRole,
+    currentUserId: String,
     onDismissRequest: () -> Unit,
 ) {
     if (show) {
@@ -99,7 +105,20 @@ fun AnnouncementReplyBottomSheet(
                                     items = comments,
                                     key = { it.id!! },
                                 ) { comment ->
-                                    ReplyListItem(comment = comment)
+                                    val commentUserRole =
+                                        members
+                                            .find {
+                                                it.userId == comment.creatorUserId
+                                            }?.role ?: UserRole.STUDENT
+
+                                    ReplyListItem(
+                                        comment = comment,
+                                        itemUserRole = commentUserRole,
+                                        currentUserRole = currentUserRole,
+                                        currentUserId = currentUserId,
+                                        onEditClick = { /*TODO*/ },
+                                        onDeleteClick = { /*TODO*/ },
+                                    )
                                 }
                             },
                         )
