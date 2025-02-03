@@ -95,19 +95,24 @@ fun ReplyListItem(
                     photoUrl = creator?.avatarUrl,
                 )
             },
-            trailingContent = {
-                MenuButton(
-                    itemUserRole = itemUserRole,
-                    currentUserRole = currentUserRole,
-                    isCurrentUserCreator = isCurrentUserCreator,
-                    onEditClick = {
-                        id?.let(onEditClick)
-                    },
-                    onDeleteClick = {
-                        id?.let(onDeleteClick)
-                    },
-                )
-            },
+            trailingContent =
+                if (currentUserRole == CourseUserRole.Student && !isCurrentUserCreator) {
+                    null
+                } else {
+                    {
+                        MenuButton(
+                            itemUserRole = itemUserRole,
+                            currentUserRole = currentUserRole,
+                            isCurrentUserCreator = isCurrentUserCreator,
+                            onEditClick = {
+                                id?.let(onEditClick)
+                            },
+                            onDeleteClick = {
+                                id?.let(onDeleteClick)
+                            },
+                        )
+                    }
+                },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         )
         Text(
