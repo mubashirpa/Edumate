@@ -4,9 +4,9 @@ import app.edumate.data.remote.dto.comment.CommentsDto
 
 interface CommentRepository {
     suspend fun updateComment(
-        commentId: String,
+        id: String,
         text: String,
     ): CommentsDto
 
-    suspend fun deleteComment(commentId: String): CommentsDto
+    suspend fun deleteComment(id: String): CommentsDto
 }

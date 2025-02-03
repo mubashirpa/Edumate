@@ -13,7 +13,7 @@ class CommentRepositoryImpl(
     private val postgrest: Postgrest,
 ) : CommentRepository {
     override suspend fun updateComment(
-        commentId: String,
+        id: String,
         text: String,
     ): CommentsDto =
         postgrest[Supabase.Table.COMMENTS]
@@ -28,16 +28,16 @@ class CommentRepositoryImpl(
             ) {
                 select()
                 filter {
-                    eq(Supabase.Column.ID, commentId)
+                    eq(Supabase.Column.ID, id)
                 }
             }.decodeSingle()
 
-    override suspend fun deleteComment(commentId: String): CommentsDto =
+    override suspend fun deleteComment(id: String): CommentsDto =
         postgrest[Supabase.Table.COMMENTS]
             .delete {
                 select()
                 filter {
-                    eq(Supabase.Column.ID, commentId)
+                    eq(Supabase.Column.ID, id)
                 }
             }.decodeSingle()
 }
