@@ -302,11 +302,13 @@ fun StreamScreen(
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))
                                             },
                                             onClick = { id ->
-                                                onEvent(
-                                                    StreamUiEvent.OnShowReplyBottomSheetChange(
-                                                        id,
-                                                    ),
-                                                )
+                                                if (uiState.editAnnouncementId == null) {
+                                                    onEvent(
+                                                        StreamUiEvent.OnShowReplyBottomSheetChange(
+                                                            id,
+                                                        ),
+                                                    )
+                                                }
                                             },
                                             modifier = Modifier.animateItem(),
                                         )

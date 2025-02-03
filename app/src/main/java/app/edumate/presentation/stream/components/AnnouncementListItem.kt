@@ -99,7 +99,9 @@ fun AnnouncementListItem(
         },
         onClearSelection = onClearSelection,
         onClick = {
-            id?.let(onClick)
+            if (!selected) {
+                id?.let(onClick)
+            }
         },
         modifier = modifier,
     )
