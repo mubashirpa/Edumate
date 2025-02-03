@@ -18,6 +18,8 @@ import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
 import app.edumate.domain.usecase.authentication.SignOutUseCase
 import app.edumate.domain.usecase.authentication.SignUpUseCase
 import app.edumate.domain.usecase.authentication.UpdatePasswordUseCase
+import app.edumate.domain.usecase.comment.DeleteCommentUseCase
+import app.edumate.domain.usecase.comment.UpdateCommentUseCase
 import app.edumate.domain.usecase.course.CreateCourseUseCase
 import app.edumate.domain.usecase.course.DeleteCourseUseCase
 import app.edumate.domain.usecase.course.GetCourseUseCase
@@ -54,6 +56,7 @@ val useCaseModule =
         singleOf(::CreateMaterialUseCase)
         singleOf(::CreateQuestionUseCase)
         singleOf(::DeleteAnnouncementUseCase)
+        singleOf(::DeleteCommentUseCase)
         singleOf(::DeleteCourseUseCase)
         singleOf(::DeleteCourseWorkUseCase)
         singleOf(::DeleteFileUseCase)
@@ -79,6 +82,7 @@ val useCaseModule =
         singleOf(::SignUpUseCase)
         singleOf(::UnenrollCourseUseCase)
         singleOf(::UpdateAnnouncementUseCase)
+        singleOf(::UpdateCommentUseCase)
         singleOf(::UpdateCourseUseCase)
         singleOf(::UpdateCourseWorkUseCase)
         singleOf(::UpdatePasswordUseCase)
