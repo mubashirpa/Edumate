@@ -37,6 +37,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -68,6 +70,7 @@ fun CommentsBottomSheet(
     if (replyAnnouncementId != null) {
         val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val snackbarHostState = remember { SnackbarHostState() }
+        val focusRequester = remember { FocusRequester() }
         val context = LocalContext.current
         val isFullscreen = bottomSheetState.targetValue == SheetValue.Expanded
         val cornerSize by animateDpAsState(
@@ -140,11 +143,28 @@ fun CommentsBottomSheet(
                                             itemUserRole = commentUserRole,
                                             currentUserRole = currentUserRole,
                                             currentUserId = currentUserId,
-                                            onEditClick = { /*TODO*/ },
+                                            selected = comment.id == uiState.editCommentId,
+                                            onEditClick = {
+                                                onEvent(
+                                                    StreamUiEvent.OnEditComment(
+                                                        announcementId = replyAnnouncementId,
+                                                        comment = comment,
+                                                    ),
+                                                )
+                                                focusRequester.requestFocus()
+                                            },
                                             onDeleteClick = { id ->
                                                 onEvent(
                                                     StreamUiEvent.OnOpenDeleteCommentDialogChange(
                                                         id,
+                                                    ),
+                                                )
+                                            },
+                                            onClearSelection = {
+                                                onEvent(
+                                                    StreamUiEvent.OnEditComment(
+                                                        announcementId = replyAnnouncementId,
+                                                        comment = null,
                                                     ),
                                                 )
                                             },
@@ -160,17 +180,13 @@ fun CommentsBottomSheet(
                                 state = uiState.comment,
                                 enabled = !uiState.isLoading,
                                 onSendClick = { text ->
-                                    onEvent(
-                                        StreamUiEvent.AddComment(
-                                            replyAnnouncementId,
-                                            text,
-                                        ),
-                                    )
+                                    onEvent(StreamUiEvent.AddComment(replyAnnouncementId))
                                 },
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .padding(16.dp),
+                                        .padding(16.dp)
+                                        .focusRequester(focusRequester),
                             )
                         }
                     }

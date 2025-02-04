@@ -25,6 +25,7 @@ import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.comment.DeleteCommentUseCase
+import app.edumate.domain.usecase.comment.UpdateCommentUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
@@ -44,6 +45,7 @@ class StreamViewModel(
     private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val createAnnouncementCommentUseCase: CreateAnnouncementCommentUseCase,
     private val getAnnouncementCommentsUseCase: GetAnnouncementCommentsUseCase,
+    private val updateCommentUseCase: UpdateCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
@@ -71,10 +73,23 @@ class StreamViewModel(
     fun onEvent(event: StreamUiEvent) {
         when (event) {
             is StreamUiEvent.AddComment -> {
-                addComment(
-                    announcementId = event.announcementId,
-                    text = event.text,
-                )
+                val text =
+                    commentsBottomSheetUiState.comment.text
+                        .toString()
+                        .trim()
+
+                if (commentsBottomSheetUiState.editCommentId != null) {
+                    updateComment(
+                        announcementId = event.announcementId,
+                        id = commentsBottomSheetUiState.editCommentId!!,
+                        text = text,
+                    )
+                } else {
+                    addComment(
+                        announcementId = event.announcementId,
+                        text = text,
+                    )
+                }
             }
 
             is StreamUiEvent.AddLinkAttachment -> {
@@ -130,7 +145,15 @@ class StreamViewModel(
             }
 
             is StreamUiEvent.OnEditComment -> {
-                // TODO
+                val comment = event.comment
+                commentsBottomSheetUiState =
+                    commentsBottomSheetUiState.copy(editCommentId = comment?.id)
+
+                if (comment != null) {
+                    commentsBottomSheetUiState.comment.setTextAndPlaceCursorAtEnd(comment.text.orEmpty())
+                } else {
+                    commentsBottomSheetUiState.comment.clearText()
+                }
             }
 
             is StreamUiEvent.OnExpandedAppBarDropdownChange -> {
@@ -476,6 +499,48 @@ class StreamViewModel(
                         }
                     }
                 }.launchIn(viewModelScope)
+    }
+
+    private fun updateComment(
+        announcementId: String,
+        id: String,
+        text: String,
+    ) {
+        val textResult = validateTextField.execute(text)
+        if (!textResult.successful) {
+            commentsBottomSheetUiState =
+                commentsBottomSheetUiState.copy(
+                    userMessage = UiText.StringResource(R.string.missing_message),
+                )
+            return
+        }
+
+        updateCommentUseCase(id, text)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        commentsBottomSheetUiState =
+                            commentsBottomSheetUiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        commentsBottomSheetUiState =
+                            commentsBottomSheetUiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        commentsBottomSheetUiState.comment.clearText()
+                        commentsBottomSheetUiState =
+                            commentsBottomSheetUiState.copy(editCommentId = null)
+                        getComments(announcementId, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun deleteComment(

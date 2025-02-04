@@ -1,11 +1,13 @@
 package app.edumate.presentation.stream.components
 
 import android.content.Context
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -50,8 +52,10 @@ fun CommentListItem(
     itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
     currentUserId: String,
+    selected: Boolean,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
+    onClearSelection: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -69,7 +73,9 @@ fun CommentListItem(
             }
         }
 
-    Column(modifier = modifier) {
+    Column(
+        modifier = modifier.then(if (selected) Modifier.background(MaterialTheme.colorScheme.surface) else Modifier),
+    ) {
         ListItem(
             headlineContent = {
                 Text(
@@ -99,28 +105,41 @@ fun CommentListItem(
                 )
             },
             trailingContent =
-                if (currentUserRole == CourseUserRole.Student && !isCurrentUserCreator) {
-                    null
-                } else {
-                    {
-                        MenuButton(
-                            itemUserRole = itemUserRole,
-                            currentUserRole = currentUserRole,
-                            isCurrentUserCreator = isCurrentUserCreator,
-                            onEditClick = {
-                                id?.let(onEditClick)
-                            },
-                            onDeleteClick = {
-                                id?.let(onDeleteClick)
-                            },
-                        )
+                when {
+                    selected -> {
+                        {
+                            IconButton(onClick = onClearSelection) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    }
+
+                    currentUserRole == CourseUserRole.Student && !isCurrentUserCreator -> null
+
+                    else -> {
+                        {
+                            MenuButton(
+                                itemUserRole = itemUserRole,
+                                currentUserRole = currentUserRole,
+                                isCurrentUserCreator = isCurrentUserCreator,
+                                onEditClick = {
+                                    id?.let(onEditClick)
+                                },
+                                onDeleteClick = {
+                                    id?.let(onDeleteClick)
+                                },
+                            )
+                        }
                     }
                 },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
         )
         Text(
             text = comment.text.orEmpty(),
-            modifier = Modifier.padding(start = 72.dp, end = 16.dp),
+            modifier = Modifier.padding(start = 72.dp, end = 16.dp, bottom = 12.dp),
         )
     }
 }

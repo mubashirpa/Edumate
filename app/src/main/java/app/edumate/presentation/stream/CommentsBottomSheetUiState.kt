@@ -9,6 +9,7 @@ data class CommentsBottomSheetUiState(
     val comment: TextFieldState = TextFieldState(),
     val commentsResult: Result<List<Comment>> = Result.Empty(),
     val deleteCommentId: String? = null,
+    val editCommentId: String? = null,
     val isLoading: Boolean = false,
     val userMessage: UiText? = null,
 )
