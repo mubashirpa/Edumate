@@ -56,6 +56,7 @@ object Supabase {
     }
 
     object Function {
+        const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
         const val INSERT_MEMBER = "insert_member"
     }
 

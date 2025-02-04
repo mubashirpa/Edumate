@@ -2,6 +2,7 @@ package app.edumate.data.repository
 
 import app.edumate.core.Supabase
 import app.edumate.data.remote.dto.announcement.AnnouncementDto
+import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.comment.CommentsDto
 import app.edumate.data.remote.dto.material.MaterialDto
 import app.edumate.domain.repository.AnnouncementRepository
@@ -12,6 +13,8 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 class AnnouncementRepositoryImpl(
     private val postgrest: Postgrest,
@@ -63,6 +66,22 @@ class AnnouncementRepositoryImpl(
                     eq(Supabase.Column.ID, id)
                 }
             }.decodeSingle()
+
+    override suspend fun createComment(
+        id: String,
+        userId: String,
+        text: String,
+    ): CommentDto =
+        postgrest
+            .rpc(
+                function = Supabase.Function.INSERT_ANNOUNCEMENT_COMMENT,
+                parameters =
+                    buildJsonObject {
+                        put(Supabase.Column.ANNOUNCEMENT_ID, id)
+                        put(Supabase.Column.USER_ID, userId)
+                        put(Supabase.Column.TEXT, text)
+                    },
+            ).decodeSingle()
 
     override suspend fun getComments(id: String): List<CommentsDto> =
         postgrest
