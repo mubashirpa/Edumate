@@ -5,7 +5,6 @@ import app.edumate.data.remote.dto.course.CourseWithMembersDto
 import app.edumate.data.remote.dto.course.CoursesDto
 import app.edumate.domain.model.course.Course
 import app.edumate.domain.model.course.CourseWithMembers
-import app.edumate.domain.model.course.Courses
 import app.edumate.domain.model.member.UserRole
 
 fun CourseDto.toCourseDomainModel(): Course =
@@ -40,10 +39,21 @@ fun Course.toCourseDto(): CourseDto =
         updateTime = updateTime,
     )
 
-fun CoursesDto.toCoursesDomainModel(): Courses =
-    Courses(
-        course = course?.toCourseDomainModel(),
+fun CoursesDto.toCourseDomainModel(): Course =
+    Course(
+        alternateLink = course?.alternateLink,
+        creationTime = course?.creationTime,
+        description = course?.description,
+        enrollmentCode = course?.enrollmentCode,
+        id = course?.id,
+        name = course?.name,
+        owner = course?.owner?.toUserDomainModel(),
+        ownerId = course?.ownerId,
         role = role?.let { enumValueOf<UserRole>(it.name) },
+        room = course?.room,
+        section = course?.section,
+        subject = course?.subject,
+        updateTime = course?.updateTime,
     )
 
 fun CourseWithMembersDto.toCourseWithMembersDomainModel(): CourseWithMembers =

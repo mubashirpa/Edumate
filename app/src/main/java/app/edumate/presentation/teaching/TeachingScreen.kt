@@ -52,25 +52,25 @@ fun TeachingScreen(
             content = {
                 items(
                     items = teaching,
-                    key = { it.course!!.id!! },
-                ) { courses ->
+                    key = { it.id!! },
+                ) { course ->
                     TeachingListItem(
                         onClick = { id ->
                             onNavigateToClassDetails(id)
                         },
-                        teachingCourse = courses.course!!,
-                        isOwner = courses.course.ownerId == uiState.currentUser?.id,
+                        teachingCourse = course,
+                        isOwner = course.ownerId == uiState.currentUser?.id,
                         onShareClick = { url ->
                             IntentUtils.shareText(context, url)
                         },
                         onEditClick = {
-                            onNavigateToCreateCourse(courses.course.id)
+                            onNavigateToCreateCourse(course.id)
                         },
                         onDeleteClick = {
-                            onEvent(HomeUiEvent.OnOpenDeleteCourseDialogChange(courses.course.id))
+                            onEvent(HomeUiEvent.OnOpenDeleteCourseDialogChange(course.id))
                         },
                         onLeaveClick = {
-                            onEvent(HomeUiEvent.OnOpenLeaveCourseDialogChange(courses.course))
+                            onEvent(HomeUiEvent.OnOpenLeaveCourseDialogChange(course))
                         },
                     )
                 }

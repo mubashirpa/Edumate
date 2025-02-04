@@ -3,8 +3,8 @@ package app.edumate.domain.usecase.course
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.data.mapper.toCoursesDomainModel
-import app.edumate.domain.model.course.Courses
+import app.edumate.data.mapper.toCourseDomainModel
+import app.edumate.domain.model.course.Course
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
@@ -21,7 +21,7 @@ class GetCoursesUseCase(
     private val authenticationRepository: AuthenticationRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
-    operator fun invoke(): Flow<Result<List<Courses>>> =
+    operator fun invoke(): Flow<Result<List<Course>>> =
         flow {
             try {
                 emit(Result.Loading())
@@ -29,7 +29,7 @@ class GetCoursesUseCase(
                     val courses =
                         courseRepository
                             .getCourses(userId)
-                            .map { it.toCoursesDomainModel() }
+                            .map { it.toCourseDomainModel() }
                     emit(Result.Success(courses))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: RestException) {

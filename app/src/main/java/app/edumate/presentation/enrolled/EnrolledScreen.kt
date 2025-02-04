@@ -47,13 +47,13 @@ fun EnrolledScreen(
             content = {
                 items(
                     items = enrolled,
-                    key = { it.course!!.id!! },
-                ) { courses ->
+                    key = { it.id!! },
+                ) { course ->
                     EnrolledListItem(
                         onClick = { id ->
                             onNavigateToClassDetails(id)
                         },
-                        enrolledCourse = courses.course!!,
+                        enrolledCourse = course,
                         onCourseUnenroll = { id ->
                             onEvent(HomeUiEvent.OnOpenUnenrollDialogChange(id))
                         },
