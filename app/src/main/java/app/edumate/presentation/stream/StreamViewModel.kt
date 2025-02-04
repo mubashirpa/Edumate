@@ -24,6 +24,7 @@ import app.edumate.domain.usecase.announcement.GetAnnouncementCommentsUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
+import app.edumate.domain.usecase.comment.DeleteCommentUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
@@ -37,12 +38,13 @@ import java.util.UUID
 class StreamViewModel(
     savedStateHandle: SavedStateHandle,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
-    private val getAnnouncementsUseCase: GetAnnouncementsUseCase,
     private val createAnnouncementUseCase: CreateAnnouncementUseCase,
-    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
+    private val getAnnouncementsUseCase: GetAnnouncementsUseCase,
     private val updateAnnouncementUseCase: UpdateAnnouncementUseCase,
-    private val getAnnouncementCommentsUseCase: GetAnnouncementCommentsUseCase,
+    private val deleteAnnouncementUseCase: DeleteAnnouncementUseCase,
     private val createAnnouncementCommentUseCase: CreateAnnouncementCommentUseCase,
+    private val getAnnouncementCommentsUseCase: GetAnnouncementCommentsUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
     private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
@@ -68,9 +70,9 @@ class StreamViewModel(
 
     fun onEvent(event: StreamUiEvent) {
         when (event) {
-            is StreamUiEvent.AddAnnouncementComment -> {
-                addAnnouncementComment(
-                    id = event.announcementId,
+            is StreamUiEvent.AddComment -> {
+                addComment(
+                    announcementId = event.announcementId,
                     text = event.text,
                 )
             }
@@ -106,6 +108,13 @@ class StreamViewModel(
                 deleteAnnouncement(event.id)
             }
 
+            is StreamUiEvent.DeleteComment -> {
+                deleteComment(
+                    announcementId = event.announcementId,
+                    id = event.id,
+                )
+            }
+
             is StreamUiEvent.OnEditAnnouncement -> {
                 val announcement = event.announcement
                 uiState = uiState.copy(editAnnouncementId = announcement?.id)
@@ -118,6 +127,10 @@ class StreamViewModel(
                 } else {
                     resetAnnouncementState()
                 }
+            }
+
+            is StreamUiEvent.OnEditComment -> {
+                // TODO
             }
 
             is StreamUiEvent.OnExpandedAppBarDropdownChange -> {
@@ -141,15 +154,20 @@ class StreamViewModel(
                 uiState = uiState.copy(deleteAnnouncementId = event.announcementId)
             }
 
+            is StreamUiEvent.OnOpenDeleteCommentDialogChange -> {
+                commentsBottomSheetUiState =
+                    commentsBottomSheetUiState.copy(deleteCommentId = event.commentId)
+            }
+
             is StreamUiEvent.OnShowAddAttachmentBottomSheetChange -> {
                 uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
             }
 
-            is StreamUiEvent.OnShowReplyBottomSheetChange -> {
+            is StreamUiEvent.OnShowCommentsBottomSheetChange -> {
                 val announcementId = event.announcementId
                 if (announcementId != null) {
                     uiState = uiState.copy(replyAnnouncementId = event.announcementId)
-                    getAnnouncementComments(announcementId, false)
+                    getComments(announcementId = announcementId, isRefreshing = false)
                 } else {
                     uiState = uiState.copy(replyAnnouncementId = null)
                     // Reset the bottom sheet state on close
@@ -184,6 +202,13 @@ class StreamViewModel(
             StreamUiEvent.Retry -> {
                 getAnnouncements(
                     courseId = args.courseId,
+                    isRefreshing = false,
+                )
+            }
+
+            is StreamUiEvent.RetryComment -> {
+                getComments(
+                    announcementId = event.announcementId,
                     isRefreshing = false,
                 )
             }
@@ -366,8 +391,8 @@ class StreamViewModel(
             }.launchIn(viewModelScope)
     }
 
-    private fun addAnnouncementComment(
-        id: String,
+    private fun addComment(
+        announcementId: String,
         text: String,
     ) {
         val textResult = validateTextField.execute(text)
@@ -379,7 +404,7 @@ class StreamViewModel(
             return
         }
 
-        createAnnouncementCommentUseCase(id, text)
+        createAnnouncementCommentUseCase(announcementId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -399,20 +424,20 @@ class StreamViewModel(
 
                     is Result.Success -> {
                         commentsBottomSheetUiState.comment.clearText()
-                        getAnnouncementComments(id, true)
+                        getComments(announcementId, true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun getAnnouncementComments(
-        id: String,
+    private fun getComments(
+        announcementId: String,
         isRefreshing: Boolean,
     ) {
         // Cancel any ongoing getAnnouncementCommentsJob before making a new call.
         getAnnouncementCommentsJob?.cancel()
         getAnnouncementCommentsJob =
-            getAnnouncementCommentsUseCase(id)
+            getAnnouncementCommentsUseCase(announcementId)
                 .onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
@@ -451,6 +476,38 @@ class StreamViewModel(
                         }
                     }
                 }.launchIn(viewModelScope)
+    }
+
+    private fun deleteComment(
+        announcementId: String,
+        id: String,
+    ) {
+        deleteCommentUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        commentsBottomSheetUiState =
+                            commentsBottomSheetUiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        commentsBottomSheetUiState =
+                            commentsBottomSheetUiState.copy(
+                                deleteCommentId = null,
+                                isLoading = true,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        getComments(announcementId, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun getUrlMetadata(url: String) {
