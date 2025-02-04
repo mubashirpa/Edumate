@@ -8,6 +8,7 @@ import app.edumate.domain.model.comment.Comment
 data class CommentsBottomSheetUiState(
     val comment: TextFieldState = TextFieldState(),
     val commentsResult: Result<List<Comment>> = Result.Empty(),
+    val deleteCommentId: String? = null,
     val isLoading: Boolean = false,
     val userMessage: UiText? = null,
 )
