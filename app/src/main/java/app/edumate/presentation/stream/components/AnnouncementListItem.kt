@@ -1,5 +1,6 @@
 package app.edumate.presentation.stream.components
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.horizontalScroll
@@ -173,6 +174,7 @@ private fun AnnouncementListItemContent(
                 if (creationDateTime != null) {
                     val formattedDateTime =
                         formatDate(
+                            context = context,
                             creationDateTime = creationDateTime,
                             updateDateTime = updateDateTime,
                         )
@@ -376,70 +378,6 @@ private fun MenuButton(
     }
 }
 
-@Composable
-private fun formatDate(
-    creationDateTime: LocalDateTime,
-    updateDateTime: LocalDateTime?,
-): String {
-    val posted = formatDate(dateTime = creationDateTime)
-    val edited = updateDateTime?.let { formatDate(dateTime = it) }
-
-    return if (updateDateTime != null && creationDateTime.compareTo(updateDateTime) == 0) {
-        posted
-    } else {
-        stringResource(
-            id = R.string.posted_edited_,
-            posted,
-            edited.toString(),
-        )
-    }
-}
-
-@Composable
-private fun formatDate(dateTime: LocalDateTime): String {
-    val relativeDate = DateTimeUtils.getRelativeDateStatus(dateTime.date)
-
-    return when (relativeDate) {
-        RelativeDate.TODAY -> {
-            dateTime.format(
-                LocalDateTime.Format {
-                    time(
-                        LocalTime.Format {
-                            amPmHour()
-                            char(':')
-                            minute()
-                            char(' ')
-                            amPmMarker("AM", "PM")
-                        },
-                    )
-                },
-            )
-        }
-
-        RelativeDate.YESTERDAY -> {
-            stringResource(id = R.string.yesterday)
-        }
-
-        else -> {
-            dateTime.format(
-                LocalDateTime.Format {
-                    date(
-                        LocalDate.Format {
-                            monthName(MonthNames.ENGLISH_ABBREVIATED)
-                            char(' ')
-                            dayOfMonth()
-                            if (!DateTimeUtils.isThisYear(dateTime.date)) {
-                                chars(", ")
-                                year()
-                            }
-                        },
-                    )
-                },
-            )
-        }
-    }
-}
-
 @Preview
 @Composable
 private fun AnnouncementListItemPreview() {
@@ -460,5 +398,67 @@ private fun AnnouncementListItemPreview() {
             onClearSelection = {},
             onClick = {},
         )
+    }
+}
+
+private fun formatDate(
+    context: Context,
+    creationDateTime: LocalDateTime,
+    updateDateTime: LocalDateTime?,
+): String {
+    val posted = formatDate(context, creationDateTime)
+    val edited = updateDateTime?.let { formatDate(context, it) }
+
+    return if (updateDateTime != null && creationDateTime.compareTo(updateDateTime) == 0) {
+        posted
+    } else {
+        context.getString(R.string.posted_edited_, posted, edited.toString())
+    }
+}
+
+private fun formatDate(
+    context: Context,
+    dateTime: LocalDateTime,
+): String {
+    val relativeDate = DateTimeUtils.getRelativeDateStatus(dateTime.date)
+
+    return when (relativeDate) {
+        RelativeDate.TODAY -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    time(
+                        LocalTime.Format {
+                            amPmHour()
+                            char(':')
+                            minute()
+                            char(' ')
+                            amPmMarker("AM", "PM")
+                        },
+                    )
+                },
+            )
+        }
+
+        RelativeDate.YESTERDAY -> {
+            context.getString(R.string.yesterday)
+        }
+
+        else -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    date(
+                        LocalDate.Format {
+                            monthName(MonthNames.ENGLISH_ABBREVIATED)
+                            char(' ')
+                            dayOfMonth()
+                            if (!DateTimeUtils.isThisYear(dateTime.date)) {
+                                chars(", ")
+                                year()
+                            }
+                        },
+                    )
+                },
+            )
+        }
     }
 }
