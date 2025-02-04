@@ -49,13 +49,14 @@ import app.edumate.presentation.theme.EdumateTheme
 @Composable
 fun JoinCourseBottomSheet(
     uiState: JoinCourseBottomSheetUiState,
+    show: Boolean,
     user: User?,
     onDismissRequest: () -> Unit,
     onJoinCourse: (courseId: String) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    if (uiState.showBottomSheet) {
+    if (show) {
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = sheetState,

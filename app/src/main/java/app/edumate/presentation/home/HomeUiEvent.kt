@@ -15,7 +15,7 @@ sealed class HomeUiEvent {
         val courseId: String,
     ) : HomeUiEvent()
 
-    data class OnAppBarDropdownExpandedChange(
+    data class OnExpandedAppBarDropdownChange(
         val expanded: Boolean,
     ) : HomeUiEvent()
 
@@ -43,9 +43,9 @@ sealed class HomeUiEvent {
         val courseId: String,
     ) : HomeUiEvent()
 
-    data object OnRefresh : HomeUiEvent()
+    data object Refresh : HomeUiEvent()
 
-    data object OnRetry : HomeUiEvent()
+    data object Retry : HomeUiEvent()
 
     data object UserMessageShown : HomeUiEvent()
 }

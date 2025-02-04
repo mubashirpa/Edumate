@@ -2,7 +2,7 @@ package app.edumate.presentation.home
 
 import android.net.Uri
 import android.webkit.URLUtil
-import androidx.compose.foundation.text.input.TextFieldState
+import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -36,6 +36,8 @@ class HomeViewModel(
 ) : ViewModel() {
     var uiState by mutableStateOf(HomeUiState())
         private set
+    var joinCourseBottomSheetUiState by mutableStateOf(JoinCourseBottomSheetUiState())
+        private set
 
     private val args = savedStateHandle.toRoute<Screen.Home>()
     private var getCoursesJob: Job? = null
@@ -45,29 +47,26 @@ class HomeViewModel(
         getCourses(refreshing = false)
 
         if (!args.courseId.isNullOrEmpty() && args.enrollmentCode != null) {
-            uiState =
-                uiState.copy(
-                    joinCourseUiState =
-                        uiState.joinCourseUiState.copy(
-                            courseId =
-                                TextFieldState(
-                                    args.courseId,
-                                ),
-                            showBottomSheet = true,
-                        ),
-                )
+            joinCourseBottomSheetUiState.courseId.setTextAndPlaceCursorAtEnd(args.courseId)
+            uiState = uiState.copy(showJoinCourseBottomSheet = true)
         }
     }
 
     fun onEvent(event: HomeUiEvent) {
         when (event) {
-            is HomeUiEvent.DeleteCourse -> deleteCourse(event.courseId)
+            is HomeUiEvent.DeleteCourse -> {
+                deleteCourse(event.courseId)
+            }
 
-            is HomeUiEvent.JoinCourse -> joinCourse(event.courseId.trim())
+            is HomeUiEvent.JoinCourse -> {
+                joinCourse(event.courseId.trim())
+            }
 
-            is HomeUiEvent.LeaveCourse -> unenrollCourse(event.courseId)
+            is HomeUiEvent.LeaveCourse -> {
+                unenrollCourse(event.courseId)
+            }
 
-            is HomeUiEvent.OnAppBarDropdownExpandedChange -> {
+            is HomeUiEvent.OnExpandedAppBarDropdownChange -> {
                 uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
             }
 
@@ -83,22 +82,28 @@ class HomeViewModel(
                 uiState = uiState.copy(unenrollCourseId = event.courseId)
             }
 
-            HomeUiEvent.OnRefresh -> {
-                getCourses(refreshing = uiState.coursesResult is Result.Success)
-            }
-
-            HomeUiEvent.OnRetry -> getCourses(refreshing = false)
-
             is HomeUiEvent.OnShowAddCourseBottomSheetChange -> {
                 uiState = uiState.copy(showAddCourseBottomSheet = event.show)
             }
 
             is HomeUiEvent.OnShowJoinCourseBottomSheetChange -> {
-                uiState =
-                    uiState.copy(joinCourseUiState = JoinCourseBottomSheetUiState(showBottomSheet = event.show))
+                uiState = uiState.copy(showJoinCourseBottomSheet = event.show)
+                if (!event.show) {
+                    joinCourseBottomSheetUiState = JoinCourseBottomSheetUiState()
+                }
             }
 
-            is HomeUiEvent.UnenrollCourse -> unenrollCourse(event.courseId)
+            HomeUiEvent.Refresh -> {
+                getCourses(refreshing = uiState.coursesResult is Result.Success)
+            }
+
+            HomeUiEvent.Retry -> {
+                getCourses(refreshing = false)
+            }
+
+            is HomeUiEvent.UnenrollCourse -> {
+                unenrollCourse(event.courseId)
+            }
 
             HomeUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -167,12 +172,9 @@ class HomeViewModel(
     private fun joinCourse(courseId: String) {
         val courseIdResult = validateTextField.execute(courseId)
         if (!courseIdResult.successful) {
-            uiState =
-                uiState.copy(
-                    joinCourseUiState =
-                        uiState.joinCourseUiState.copy(
-                            courseIdError = UiText.StringResource(R.string.ask_teacher_for_class_code),
-                        ),
+            joinCourseBottomSheetUiState =
+                joinCourseBottomSheetUiState.copy(
+                    courseIdError = UiText.StringResource(R.string.ask_teacher_for_class_code),
                 )
             return
         }
@@ -191,30 +193,27 @@ class HomeViewModel(
                     is Result.Empty -> {}
 
                     is Result.Error -> {
-                        uiState =
-                            uiState.copy(
-                                joinCourseUiState = uiState.joinCourseUiState.copy(error = result.message),
-                                openProgressDialog = false,
+                        joinCourseBottomSheetUiState =
+                            joinCourseBottomSheetUiState.copy(
+                                error = result.message,
                             )
+                        uiState = uiState.copy(openProgressDialog = false)
                     }
 
                     is Result.Loading -> {
-                        uiState =
-                            uiState.copy(
-                                joinCourseUiState =
-                                    uiState.joinCourseUiState.copy(
-                                        courseIdError = null,
-                                        error = null,
-                                    ),
-                                openProgressDialog = true,
+                        joinCourseBottomSheetUiState =
+                            joinCourseBottomSheetUiState.copy(
+                                courseIdError = null,
+                                error = null,
                             )
+                        uiState = uiState.copy(openProgressDialog = true)
                     }
 
                     is Result.Success -> {
                         uiState =
                             uiState.copy(
-                                joinCourseUiState = uiState.joinCourseUiState.copy(showBottomSheet = false),
                                 openProgressDialog = false,
+                                showJoinCourseBottomSheet = false,
                             )
                         getCourses(true)
                     }

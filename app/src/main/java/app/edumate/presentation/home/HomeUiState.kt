@@ -12,18 +12,11 @@ data class HomeUiState(
     val enrolledCourses: List<Course> = emptyList(),
     val expandedAppBarDropdown: Boolean = false,
     val isRefreshing: Boolean = false,
-    val joinCourseUiState: JoinCourseBottomSheetUiState = JoinCourseBottomSheetUiState(),
     val leaveCourse: Course? = null,
     val openProgressDialog: Boolean = false,
     val showAddCourseBottomSheet: Boolean = false,
+    val showJoinCourseBottomSheet: Boolean = false,
     val teachingCourses: List<Course> = emptyList(),
     val unenrollCourseId: String? = null,
     val userMessage: UiText? = null,
-)
-
-data class JoinCourseBottomSheetUiState(
-    val courseId: TextFieldState = TextFieldState(),
-    val courseIdError: UiText? = null,
-    val error: UiText? = null,
-    val showBottomSheet: Boolean = false,
 )

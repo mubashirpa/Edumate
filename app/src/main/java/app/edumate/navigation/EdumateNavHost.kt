@@ -59,7 +59,7 @@ fun EdumateNavHost(
 
             navController.GetOnceResult<Boolean>(Navigation.Args.CREATE_COURSE_SUCCESS) { refresh ->
                 if (refresh) {
-                    viewModel.onEvent(HomeUiEvent.OnRefresh)
+                    viewModel.onEvent(HomeUiEvent.Refresh)
                 }
             }
 

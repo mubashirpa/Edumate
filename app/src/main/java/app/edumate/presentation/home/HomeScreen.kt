@@ -88,6 +88,7 @@ fun HomeScreen(
         HomeContent(
             uiState = viewModel.uiState,
             onEvent = viewModel::onEvent,
+            joinCourseBottomSheetUiState = viewModel.joinCourseBottomSheetUiState,
             onNavigationIconClick = {
                 coroutineScope.launch {
                     drawerState.open()
@@ -106,6 +107,7 @@ fun HomeScreen(
 private fun HomeContent(
     uiState: HomeUiState,
     onEvent: (HomeUiEvent) -> Unit,
+    joinCourseBottomSheetUiState: JoinCourseBottomSheetUiState,
     onNavigationIconClick: () -> Unit,
     onNavigateToCreateCourse: (courseId: String?) -> Unit,
     onNavigateToClassDetails: (courseId: String) -> Unit,
@@ -169,7 +171,7 @@ private fun HomeContent(
                     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                         IconButton(
                             onClick = {
-                                onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(true))
+                                onEvent(HomeUiEvent.OnExpandedAppBarDropdownChange(true))
                             },
                         ) {
                             Icon(
@@ -180,7 +182,7 @@ private fun HomeContent(
                         DropdownMenu(
                             expanded = uiState.expandedAppBarDropdown,
                             onDismissRequest = {
-                                onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
+                                onEvent(HomeUiEvent.OnExpandedAppBarDropdownChange(false))
                             },
                         ) {
                             DropdownMenuItem(
@@ -188,8 +190,8 @@ private fun HomeContent(
                                     Text(stringResource(id = R.string.refresh))
                                 },
                                 onClick = {
-                                    onEvent(HomeUiEvent.OnAppBarDropdownExpandedChange(false))
-                                    onEvent(HomeUiEvent.OnRefresh)
+                                    onEvent(HomeUiEvent.OnExpandedAppBarDropdownChange(false))
+                                    onEvent(HomeUiEvent.Refresh)
                                 },
                             )
                         }
@@ -226,7 +228,7 @@ private fun HomeContent(
             is Result.Error -> {
                 ErrorScreen(
                     onRetryClick = {
-                        onEvent(HomeUiEvent.OnRetry)
+                        onEvent(HomeUiEvent.Retry)
                     },
                     modifier =
                         Modifier
@@ -271,7 +273,7 @@ private fun HomeContent(
                         PullToRefreshBox(
                             isRefreshing = uiState.isRefreshing,
                             onRefresh = {
-                                onEvent(HomeUiEvent.OnRefresh)
+                                onEvent(HomeUiEvent.Refresh)
                             },
                         ) {
                             when (page) {
@@ -317,7 +319,8 @@ private fun HomeContent(
     )
 
     JoinCourseBottomSheet(
-        uiState = uiState.joinCourseUiState,
+        uiState = joinCourseBottomSheetUiState,
+        show = uiState.showJoinCourseBottomSheet,
         user = uiState.currentUser,
         onDismissRequest = {
             onEvent(HomeUiEvent.OnShowJoinCourseBottomSheetChange(false))
@@ -340,6 +343,7 @@ private fun HomeScreenPreview() {
         HomeContent(
             uiState = HomeUiState(),
             onEvent = {},
+            joinCourseBottomSheetUiState = JoinCourseBottomSheetUiState(),
             onNavigationIconClick = {},
             onNavigateToCreateCourse = {},
             onNavigateToClassDetails = {},
