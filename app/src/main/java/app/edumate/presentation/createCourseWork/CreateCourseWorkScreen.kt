@@ -182,7 +182,7 @@ private fun CreateCourseWorkContent(
             onEvent(CreateCourseWorkUiEvent.OnOpenAddLinkDialogChange(false))
         },
         onConfirmClick = {
-            onEvent(CreateCourseWorkUiEvent.OnAddLinkAttachment(it))
+            onEvent(CreateCourseWorkUiEvent.AddLinkAttachment(it))
         },
     )
 

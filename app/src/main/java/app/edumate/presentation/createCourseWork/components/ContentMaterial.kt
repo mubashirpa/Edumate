@@ -224,7 +224,7 @@ fun ContentMaterial(
                                 trailingContent = {
                                     IconButton(
                                         onClick = {
-                                            onEvent(CreateCourseWorkUiEvent.OnRemoveAttachment(index))
+                                            onEvent(CreateCourseWorkUiEvent.RemoveAttachment(index))
                                         },
                                     ) {
                                         Icon(

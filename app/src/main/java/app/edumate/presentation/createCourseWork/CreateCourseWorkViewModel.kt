@@ -60,6 +60,10 @@ class CreateCourseWorkViewModel(
 
     fun onEvent(event: CreateCourseWorkUiEvent) {
         when (event) {
+            is CreateCourseWorkUiEvent.AddLinkAttachment -> {
+                getUrlMetadata(event.link)
+            }
+
             CreateCourseWorkUiEvent.CreateCourseWork -> {
                 val title =
                     uiState.title.text
@@ -99,10 +103,6 @@ class CreateCourseWorkViewModel(
                         dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
                     )
                 }
-            }
-
-            is CreateCourseWorkUiEvent.OnAddLinkAttachment -> {
-                getUrlMetadata(event.link)
             }
 
             is CreateCourseWorkUiEvent.OnDueTimeValueChange -> {
@@ -171,7 +171,11 @@ class CreateCourseWorkViewModel(
                     )
             }
 
-            is CreateCourseWorkUiEvent.OnRemoveAttachment -> {
+            is CreateCourseWorkUiEvent.OnShowAddAttachmentBottomSheetChange -> {
+                uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
+            }
+
+            is CreateCourseWorkUiEvent.RemoveAttachment -> {
                 val attachment = uiState.attachments[event.position]
                 when {
                     attachment.driveFile != null -> {
@@ -188,14 +192,228 @@ class CreateCourseWorkViewModel(
                 }
             }
 
-            is CreateCourseWorkUiEvent.OnShowAddAttachmentBottomSheetChange -> {
-                uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
-            }
-
             CreateCourseWorkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
             }
         }
+    }
+
+    private fun createCourseWork(
+        courseId: String,
+        id: String,
+        title: String,
+        description: String?,
+        choices: List<String>?,
+        materials: List<Material>?,
+        maxPoints: Int?,
+        dueTime: String?,
+        workType: CourseWorkType,
+    ) {
+        if (!validateCourseWorkValues(title, workType)) {
+            return
+        }
+
+        when (workType) {
+            CourseWorkType.ASSIGNMENT -> {
+                createAssignmentUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    materials = materials,
+                    maxPoints = maxPoints,
+                    dueTime = dueTime,
+                    id = id,
+                )
+            }
+
+            CourseWorkType.MATERIAL -> {
+                createMaterialUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    materials = materials,
+                    id = id,
+                )
+            }
+
+            else -> {
+                createQuestionUseCase(
+                    courseId = courseId,
+                    title = title,
+                    description = description,
+                    choices = choices,
+                    materials = materials,
+                    maxPoints = maxPoints,
+                    dueTime = dueTime,
+                    workType = workType,
+                    id = id,
+                )
+            }
+        }.onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState =
+                        uiState.copy(
+                            isCreateCourseWorkSuccess = true,
+                            openProgressDialog = false,
+                        )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun getCourseWork(id: String) {
+        getCourseWorkUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        val courseWorkResponse = result.data
+                        if (courseWorkResponse != null) {
+                            courseWorkResponse.materials?.let { attachments ->
+                                uiState.attachments.addAll(attachments)
+                            }
+                            val choices =
+                                courseWorkResponse.multipleChoiceQuestion?.choices
+                            if (!choices.isNullOrEmpty()) {
+                                uiState.choices.clear()
+                                uiState.choices.addAll(choices)
+                            }
+                            courseWorkResponse.description?.let { description ->
+                                uiState.description.setTextAndPlaceCursorAtEnd(description)
+                            }
+                            val dueTime =
+                                courseWorkResponse.dueTime?.let { input ->
+                                    Instant
+                                        .parse(input)
+                                        .toLocalDateTime(TimeZone.currentSystemDefault())
+                                }
+                            courseWorkResponse.title?.let { title ->
+                                uiState.title.setTextAndPlaceCursorAtEnd(title)
+                            }
+                            val questionTypeSelectionOptionIndex =
+                                courseWorkResponse.workType?.let { workType ->
+                                    when (courseWorkResponse.workType) {
+                                        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> 1
+                                        CourseWorkType.SHORT_ANSWER_QUESTION -> 0
+                                        else -> null
+                                    }
+                                }
+
+                            uiState =
+                                uiState.copy(
+                                    dueTime = dueTime,
+                                    isLoading = false,
+                                    points = courseWorkResponse.maxPoints,
+                                    questionTypeSelectionOptionIndex = questionTypeSelectionOptionIndex,
+                                    workType = courseWorkResponse.workType,
+                                )
+                        } else {
+                            uiState =
+                                uiState.copy(
+                                    isLoading = false,
+                                    userMessage = UiText.StringResource(R.string.error_unexpected),
+                                )
+                        }
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun updateCourseWork(
+        id: String,
+        title: String,
+        description: String?,
+        choices: List<String>?,
+        materials: List<Material>?,
+        maxPoints: Int?,
+        dueTime: String?,
+    ) {
+        if (!validateCourseWorkValues(title, uiState.workType!!)) {
+            return
+        }
+
+        updateCourseWorkUseCase(
+            id = id,
+            title = title,
+            description = description,
+            choices = choices,
+            materials = materials,
+            maxPoints = maxPoints,
+            dueTime = dueTime,
+        ).onEach { result ->
+            when (result) {
+                is Result.Empty -> {}
+
+                is Result.Error -> {
+                    uiState =
+                        uiState.copy(
+                            openProgressDialog = false,
+                            userMessage = result.message,
+                        )
+                }
+
+                is Result.Loading -> {
+                    uiState = uiState.copy(openProgressDialog = true)
+                }
+
+                is Result.Success -> {
+                    uiState =
+                        uiState.copy(
+                            isCreateCourseWorkSuccess = true,
+                            openProgressDialog = false,
+                        )
+                }
+            }
+        }.launchIn(viewModelScope)
+    }
+
+    private fun validateCourseWorkValues(
+        title: String,
+        workType: CourseWorkType,
+    ): Boolean {
+        val titleResult = validateTextField.execute(title)
+        if (!titleResult.successful) {
+            uiState = uiState.copy(titleError = UiText.StringResource(R.string.missing_title))
+            return false
+        }
+
+        val isQuestion =
+            workType == CourseWorkType.SHORT_ANSWER_QUESTION || workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION
+        if (isQuestion && uiState.questionTypeSelectionOptionIndex == null) {
+            uiState =
+                uiState.copy(userMessage = UiText.StringResource(R.string.missing_question_type))
+            return false
+        }
+
+        return true
     }
 
     private fun uploadFile(
@@ -303,223 +521,5 @@ class CreateCourseWorkViewModel(
                     }
                 }
             }.launchIn(viewModelScope)
-    }
-
-    private fun getCourseWork(id: String) {
-        getCourseWorkUseCase(id)
-            .onEach { result ->
-                when (result) {
-                    is Result.Empty -> {}
-
-                    is Result.Error -> {
-                        uiState =
-                            uiState.copy(
-                                isLoading = false,
-                                userMessage = result.message,
-                            )
-                    }
-
-                    is Result.Loading -> {
-                        uiState = uiState.copy(isLoading = true)
-                    }
-
-                    is Result.Success -> {
-                        val courseWorkResponse = result.data
-                        if (courseWorkResponse != null) {
-                            courseWorkResponse.materials?.let { attachments ->
-                                uiState.attachments.addAll(attachments)
-                            }
-                            val choices =
-                                courseWorkResponse.multipleChoiceQuestion?.choices
-                            if (!choices.isNullOrEmpty()) {
-                                uiState.choices.clear()
-                                uiState.choices.addAll(choices)
-                            }
-                            courseWorkResponse.description?.let { description ->
-                                uiState.description.setTextAndPlaceCursorAtEnd(description)
-                            }
-                            val dueTime =
-                                courseWorkResponse.dueTime?.let { input ->
-                                    Instant
-                                        .parse(input)
-                                        .toLocalDateTime(TimeZone.currentSystemDefault())
-                                }
-                            courseWorkResponse.title?.let { title ->
-                                uiState.title.setTextAndPlaceCursorAtEnd(title)
-                            }
-                            val questionTypeSelectionOptionIndex =
-                                courseWorkResponse.workType?.let { workType ->
-                                    when (courseWorkResponse.workType) {
-                                        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> 1
-                                        CourseWorkType.SHORT_ANSWER_QUESTION -> 0
-                                        else -> null
-                                    }
-                                }
-
-                            uiState =
-                                uiState.copy(
-                                    dueTime = dueTime,
-                                    isLoading = false,
-                                    points = courseWorkResponse.maxPoints,
-                                    questionTypeSelectionOptionIndex = questionTypeSelectionOptionIndex,
-                                    workType = courseWorkResponse.workType,
-                                )
-                        } else {
-                            uiState =
-                                uiState.copy(
-                                    isLoading = false,
-                                    userMessage = UiText.StringResource(R.string.error_unexpected),
-                                )
-                        }
-                    }
-                }
-            }.launchIn(viewModelScope)
-    }
-
-    private fun createCourseWork(
-        courseId: String,
-        id: String,
-        title: String,
-        description: String?,
-        choices: List<String>?,
-        materials: List<Material>?,
-        maxPoints: Int?,
-        dueTime: String?,
-        workType: CourseWorkType,
-    ) {
-        if (!validateCourseWorkValues(title, workType)) {
-            return
-        }
-
-        when (workType) {
-            CourseWorkType.ASSIGNMENT -> {
-                createAssignmentUseCase(
-                    courseId = courseId,
-                    title = title,
-                    description = description,
-                    materials = materials,
-                    maxPoints = maxPoints,
-                    dueTime = dueTime,
-                    id = id,
-                )
-            }
-
-            CourseWorkType.MATERIAL -> {
-                createMaterialUseCase(
-                    courseId = courseId,
-                    title = title,
-                    description = description,
-                    materials = materials,
-                    id = id,
-                )
-            }
-
-            else -> {
-                createQuestionUseCase(
-                    courseId = courseId,
-                    title = title,
-                    description = description,
-                    choices = choices,
-                    materials = materials,
-                    maxPoints = maxPoints,
-                    dueTime = dueTime,
-                    workType = workType,
-                    id = id,
-                )
-            }
-        }.onEach { result ->
-            when (result) {
-                is Result.Empty -> {}
-
-                is Result.Error -> {
-                    uiState =
-                        uiState.copy(
-                            openProgressDialog = false,
-                            userMessage = result.message,
-                        )
-                }
-
-                is Result.Loading -> {
-                    uiState = uiState.copy(openProgressDialog = true)
-                }
-
-                is Result.Success -> {
-                    uiState =
-                        uiState.copy(
-                            isCreateCourseWorkSuccess = true,
-                            openProgressDialog = false,
-                        )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    private fun updateCourseWork(
-        id: String,
-        title: String,
-        description: String?,
-        choices: List<String>?,
-        materials: List<Material>?,
-        maxPoints: Int?,
-        dueTime: String?,
-    ) {
-        if (!validateCourseWorkValues(title, uiState.workType!!)) {
-            return
-        }
-
-        updateCourseWorkUseCase(
-            id = id,
-            title = title,
-            description = description,
-            choices = choices,
-            materials = materials,
-            maxPoints = maxPoints,
-            dueTime = dueTime,
-        ).onEach { result ->
-            when (result) {
-                is Result.Empty -> {}
-
-                is Result.Error -> {
-                    uiState =
-                        uiState.copy(
-                            openProgressDialog = false,
-                            userMessage = result.message,
-                        )
-                }
-
-                is Result.Loading -> {
-                    uiState = uiState.copy(openProgressDialog = true)
-                }
-
-                is Result.Success -> {
-                    uiState =
-                        uiState.copy(
-                            isCreateCourseWorkSuccess = true,
-                            openProgressDialog = false,
-                        )
-                }
-            }
-        }.launchIn(viewModelScope)
-    }
-
-    private fun validateCourseWorkValues(
-        title: String,
-        workType: CourseWorkType,
-    ): Boolean {
-        val titleResult = validateTextField.execute(title)
-        if (!titleResult.successful) {
-            uiState = uiState.copy(titleError = UiText.StringResource(R.string.missing_title))
-            return false
-        }
-
-        val isQuestion =
-            workType == CourseWorkType.SHORT_ANSWER_QUESTION || workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION
-        if (isQuestion && uiState.questionTypeSelectionOptionIndex == null) {
-            uiState =
-                uiState.copy(userMessage = UiText.StringResource(R.string.missing_question_type))
-            return false
-        }
-
-        return true
     }
 }
