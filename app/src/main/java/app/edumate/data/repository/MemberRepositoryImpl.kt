@@ -1,6 +1,7 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
+import app.edumate.data.remote.dto.member.UserRoleDto
 import app.edumate.data.remote.dto.user.UsersDto
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.postgrest.Postgrest
@@ -33,6 +34,24 @@ class MemberRepositoryImpl(
                         put(Supabase.Column.USER_ID, userId)
                     },
             )
+    }
+
+    override suspend fun updateMember(
+        courseId: String,
+        userId: String,
+        role: UserRoleDto,
+    ) {
+        postgrest[Supabase.Table.MEMBERS]
+            .update(
+                {
+                    set(Supabase.Column.ROLE, role)
+                },
+            ) {
+                filter {
+                    eq(Supabase.Column.COURSE_ID, courseId)
+                    eq(Supabase.Column.USER_ID, userId)
+                }
+            }
     }
 
     override suspend fun deleteMember(

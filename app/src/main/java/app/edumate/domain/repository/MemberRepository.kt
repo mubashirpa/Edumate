@@ -1,5 +1,6 @@
 package app.edumate.domain.repository
 
+import app.edumate.data.remote.dto.member.UserRoleDto
 import app.edumate.data.remote.dto.user.UsersDto
 
 interface MemberRepository {
@@ -8,6 +9,12 @@ interface MemberRepository {
     suspend fun insertMember(
         courseId: String,
         userId: String,
+    )
+
+    suspend fun updateMember(
+        courseId: String,
+        userId: String,
+        role: UserRoleDto,
     )
 
     suspend fun deleteMember(

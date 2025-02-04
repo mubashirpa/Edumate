@@ -46,6 +46,7 @@ object Supabase {
         const val MAX_POINTS = "max_points"
         const val MULTIPLE_CHOICE_QUESTION = "multiple_choice_question"
         const val NAME = "name"
+        const val ROLE = "role"
         const val ROOM = "room"
         const val SECTION = "section"
         const val SUBJECT = "subject"
