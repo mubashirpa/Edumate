@@ -305,7 +305,7 @@ fun StreamScreen(
                                             onClick = { id ->
                                                 if (uiState.editAnnouncementId == null) {
                                                     onEvent(
-                                                        StreamUiEvent.OnShowReplyBottomSheetChange(
+                                                        StreamUiEvent.OnShowCommentsBottomSheetChange(
                                                             id,
                                                         ),
                                                     )
@@ -387,7 +387,7 @@ fun StreamScreen(
         currentUserRole = currentUserRole,
         currentUserId = uiState.currentUserId.orEmpty(),
         onDismissRequest = {
-            onEvent(StreamUiEvent.OnShowReplyBottomSheetChange(null))
+            onEvent(StreamUiEvent.OnShowCommentsBottomSheetChange(null))
         },
     )
 
