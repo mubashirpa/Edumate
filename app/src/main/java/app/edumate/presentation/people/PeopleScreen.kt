@@ -177,7 +177,7 @@ fun PeopleContent(
                                 },
                                 onClick = {
                                     onEvent(PeopleUiEvent.OnExpandedAppBarDropdownChange(false))
-                                    onEvent(PeopleUiEvent.OnRefresh)
+                                    onEvent(PeopleUiEvent.Refresh)
                                 },
                             )
                         }
@@ -212,7 +212,7 @@ fun PeopleContent(
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
             onRefresh = {
-                onEvent(PeopleUiEvent.OnRefresh)
+                onEvent(PeopleUiEvent.Refresh)
             },
             modifier =
                 Modifier
@@ -225,7 +225,7 @@ fun PeopleContent(
                 is Result.Error -> {
                     ErrorScreen(
                         onRetryClick = {
-                            onEvent(PeopleUiEvent.OnRetry)
+                            onEvent(PeopleUiEvent.Retry)
                         },
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = peopleResult.message!!.asString(),
@@ -249,7 +249,7 @@ fun PeopleContent(
                             FilterChip(
                                 selected = uiState.filter == PeopleFilterType.ALL,
                                 onClick = {
-                                    onEvent(PeopleUiEvent.OnFilterChange(PeopleFilterType.ALL))
+                                    onEvent(PeopleUiEvent.OnFilterValueChange(PeopleFilterType.ALL))
                                 },
                                 label = {
                                     Text(stringResource(id = R.string.all))
@@ -270,7 +270,7 @@ fun PeopleContent(
                             FilterChip(
                                 selected = uiState.filter == PeopleFilterType.TEACHERS,
                                 onClick = {
-                                    onEvent(PeopleUiEvent.OnFilterChange(PeopleFilterType.TEACHERS))
+                                    onEvent(PeopleUiEvent.OnFilterValueChange(PeopleFilterType.TEACHERS))
                                 },
                                 label = {
                                     Text(stringResource(id = R.string.teachers))
@@ -291,7 +291,7 @@ fun PeopleContent(
                             FilterChip(
                                 selected = uiState.filter == PeopleFilterType.STUDENTS,
                                 onClick = {
-                                    onEvent(PeopleUiEvent.OnFilterChange(PeopleFilterType.STUDENTS))
+                                    onEvent(PeopleUiEvent.OnFilterValueChange(PeopleFilterType.STUDENTS))
                                 },
                                 label = {
                                     Text(stringResource(id = R.string.students))
@@ -427,7 +427,7 @@ fun PeopleContent(
         onConfirmButtonClick = {
             onEvent(PeopleUiEvent.OnOpenLeaveClassDialogChange(false))
             uiState.currentUserId?.let {
-                onEvent(PeopleUiEvent.OnLeaveClass(it))
+                onEvent(PeopleUiEvent.LeaveClass(it))
             }
         },
     )
@@ -439,7 +439,7 @@ fun PeopleContent(
             onEvent(PeopleUiEvent.OnOpenDeleteUserDialogChange(null))
         },
         onConfirmButtonClick = { userId ->
-            onEvent(PeopleUiEvent.OnDeletePerson(userId))
+            onEvent(PeopleUiEvent.DeletePerson(userId))
         },
     )
 

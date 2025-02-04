@@ -39,20 +39,20 @@ class PeopleViewModel(
 
     fun onEvent(event: PeopleUiEvent) {
         when (event) {
-            is PeopleUiEvent.OnDeletePerson -> {
+            is PeopleUiEvent.DeletePerson -> {
                 deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = false)
+            }
+
+            is PeopleUiEvent.LeaveClass -> {
+                deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = true)
             }
 
             is PeopleUiEvent.OnExpandedAppBarDropdownChange -> {
                 uiState = uiState.copy(expandedAppBarDropdown = event.expanded)
             }
 
-            is PeopleUiEvent.OnFilterChange -> {
+            is PeopleUiEvent.OnFilterValueChange -> {
                 uiState = uiState.copy(filter = event.type)
-            }
-
-            is PeopleUiEvent.OnLeaveClass -> {
-                deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = true)
             }
 
             is PeopleUiEvent.OnOpenDeleteUserDialogChange -> {
@@ -63,19 +63,19 @@ class PeopleViewModel(
                 uiState = uiState.copy(openLeaveClassDialog = event.open)
             }
 
-            PeopleUiEvent.OnRefresh -> {
+            is PeopleUiEvent.OnShowInviteBottomSheetChange -> {
+                uiState = uiState.copy(showInviteBottomSheet = event.show)
+            }
+
+            PeopleUiEvent.Refresh -> {
                 getPeoples(
                     courseId = args.courseId,
                     isRefreshing = uiState.peopleResult is Result.Success,
                 )
             }
 
-            PeopleUiEvent.OnRetry -> {
+            PeopleUiEvent.Retry -> {
                 getPeoples(courseId = args.courseId, isRefreshing = false)
-            }
-
-            is PeopleUiEvent.OnShowInviteBottomSheetChange -> {
-                uiState = uiState.copy(showInviteBottomSheet = event.show)
             }
 
             PeopleUiEvent.UserMessageShown -> {

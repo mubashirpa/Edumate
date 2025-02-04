@@ -3,7 +3,11 @@ package app.edumate.presentation.people
 import app.edumate.domain.model.user.Users
 
 sealed class PeopleUiEvent {
-    data class OnDeletePerson(
+    data class DeletePerson(
+        val userId: String,
+    ) : PeopleUiEvent()
+
+    data class LeaveClass(
         val userId: String,
     ) : PeopleUiEvent()
 
@@ -11,12 +15,8 @@ sealed class PeopleUiEvent {
         val expanded: Boolean,
     ) : PeopleUiEvent()
 
-    data class OnFilterChange(
+    data class OnFilterValueChange(
         val type: PeopleFilterType,
-    ) : PeopleUiEvent()
-
-    data class OnLeaveClass(
-        val userId: String,
     ) : PeopleUiEvent()
 
     data class OnOpenDeleteUserDialogChange(
@@ -31,9 +31,9 @@ sealed class PeopleUiEvent {
         val show: Boolean,
     ) : PeopleUiEvent()
 
-    data object OnRefresh : PeopleUiEvent()
+    data object Refresh : PeopleUiEvent()
 
-    data object OnRetry : PeopleUiEvent()
+    data object Retry : PeopleUiEvent()
 
     data object UserMessageShown : PeopleUiEvent()
 }
