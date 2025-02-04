@@ -34,6 +34,7 @@
     <string name="delete">Delete</string>
     <string name="description">Description</string>
     <string name="dialog_message_delete_announcement">Comments will also be deleted.</string>
+    <string name="dialog_message_delete_comment">Are you sure you want to delete this comment?</string>
     <string name="dialog_message_delete_course">You will no longer have access to any posts or comments that have been added to this class.\n\n<b>Warning: There is no way to undo this action.</b></string>
     <string name="dialog_message_delete_coursework">Grades and comments will also be deleted.</string>
     <string name="dialog_message_delete_material">Comments will also be deleted.</string>
@@ -41,6 +42,7 @@
     <string name="dialog_message_unenroll">By doing this you won\'t be able to see or participate in the class anymore.</string>
     <string name="dialog_title_delete_announcement">Delete announcement?</string>
     <string name="dialog_title_delete_assignment">Delete assignment?</string>
+    <string name="dialog_title_delete_comment">Delete comment?</string>
     <string name="dialog_title_delete_course">Delete class?</string>
     <string name="dialog_title_delete_material">Delete material?</string>
     <string name="dialog_title_delete_question">Delete question?</string>
