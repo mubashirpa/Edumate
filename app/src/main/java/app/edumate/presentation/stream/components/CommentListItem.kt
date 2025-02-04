@@ -1,5 +1,6 @@
 package app.edumate.presentation.stream.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -22,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -43,7 +45,7 @@ import kotlinx.datetime.format.char
 import kotlinx.datetime.toLocalDateTime
 
 @Composable
-fun ReplyListItem(
+fun CommentListItem(
     comment: Comment,
     itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
@@ -52,6 +54,7 @@ fun ReplyListItem(
     onDeleteClick: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     val id = comment.id
     val creator = comment.creator
     val isCurrentUserCreator = comment.creatorUserId == currentUserId
@@ -79,7 +82,7 @@ fun ReplyListItem(
             supportingContent =
                 creationDateTime?.let { creationTime ->
                     {
-                        val time = formatDate(dateTime = creationTime)
+                        val time = formatDate(context, creationTime)
                         Text(
                             text = time,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -119,51 +122,6 @@ fun ReplyListItem(
             text = comment.text.orEmpty(),
             modifier = Modifier.padding(start = 72.dp, end = 16.dp),
         )
-    }
-}
-
-@Composable
-private fun formatDate(dateTime: LocalDateTime): String {
-    val relativeDate = DateTimeUtils.getRelativeDateStatus(dateTime.date)
-
-    return when (relativeDate) {
-        RelativeDate.TODAY -> {
-            dateTime.format(
-                LocalDateTime.Format {
-                    time(
-                        LocalTime.Format {
-                            amPmHour()
-                            char(':')
-                            minute()
-                            char(' ')
-                            amPmMarker("AM", "PM")
-                        },
-                    )
-                },
-            )
-        }
-
-        RelativeDate.YESTERDAY -> {
-            stringResource(id = R.string.yesterday)
-        }
-
-        else -> {
-            dateTime.format(
-                LocalDateTime.Format {
-                    date(
-                        LocalDate.Format {
-                            monthName(MonthNames.ENGLISH_ABBREVIATED)
-                            char(' ')
-                            dayOfMonth()
-                            if (!DateTimeUtils.isThisYear(dateTime.date)) {
-                                chars(", ")
-                                year()
-                            }
-                        },
-                    )
-                },
-            )
-        }
     }
 }
 
@@ -226,6 +184,53 @@ private fun MenuButton(
                     )
                 }
             }
+        }
+    }
+}
+
+private fun formatDate(
+    context: Context,
+    dateTime: LocalDateTime,
+): String {
+    val relativeDate = DateTimeUtils.getRelativeDateStatus(dateTime.date)
+
+    return when (relativeDate) {
+        RelativeDate.TODAY -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    time(
+                        LocalTime.Format {
+                            amPmHour()
+                            char(':')
+                            minute()
+                            char(' ')
+                            amPmMarker("AM", "PM")
+                        },
+                    )
+                },
+            )
+        }
+
+        RelativeDate.YESTERDAY -> {
+            context.getString(R.string.yesterday)
+        }
+
+        else -> {
+            dateTime.format(
+                LocalDateTime.Format {
+                    date(
+                        LocalDate.Format {
+                            monthName(MonthNames.ENGLISH_ABBREVIATED)
+                            char(' ')
+                            dayOfMonth()
+                            if (!DateTimeUtils.isThisYear(dateTime.date)) {
+                                chars(", ")
+                                year()
+                            }
+                        },
+                    )
+                },
+            )
         }
     }
 }
