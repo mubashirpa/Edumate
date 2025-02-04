@@ -3,6 +3,7 @@ package app.edumate.di
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
+import app.edumate.domain.usecase.announcement.CreateAnnouncementCommentUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementCommentsUseCase
@@ -50,6 +51,7 @@ import org.koin.dsl.module
 
 val useCaseModule =
     module {
+        singleOf(::CreateAnnouncementCommentUseCase)
         singleOf(::CreateAnnouncementUseCase)
         singleOf(::CreateAssignmentUseCase)
         singleOf(::CreateCourseUseCase)
