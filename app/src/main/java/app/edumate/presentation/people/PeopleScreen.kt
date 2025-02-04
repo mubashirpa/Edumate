@@ -330,10 +330,10 @@ fun PeopleContent(
                                         }
                                     items(
                                         items = items,
-                                        key = { it.user!!.id!! },
+                                        key = { it.id!! },
                                     ) { teacher ->
                                         PeopleListItem(
-                                            person = teacher.user,
+                                            person = teacher,
                                             role = teacher.role!!,
                                             courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                             currentUserId = uiState.currentUserId.orEmpty(),
@@ -410,7 +410,7 @@ fun PeopleContent(
     )
 
     DeletePersonDialog(
-        user = uiState.deletePerson?.user,
+        user = uiState.deletePerson,
         isTeacher = uiState.deletePerson?.role == UserRole.TEACHER,
         onDismissRequest = {
             onEvent(PeopleUiEvent.OnOpenDeleteUserDialogChange(null))

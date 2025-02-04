@@ -1,7 +1,7 @@
 package app.edumate.presentation.people
 
 import app.edumate.domain.model.member.UserRole
-import app.edumate.domain.model.user.Users
+import app.edumate.domain.model.user.User
 
 sealed class PeopleUiEvent {
     data class ChangePersonRole(
@@ -26,7 +26,7 @@ sealed class PeopleUiEvent {
     ) : PeopleUiEvent()
 
     data class OnOpenDeleteUserDialogChange(
-        val user: Users?,
+        val user: User?,
     ) : PeopleUiEvent()
 
     data class OnOpenLeaveClassDialogChange(

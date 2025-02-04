@@ -11,7 +11,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.member.UserRole
-import app.edumate.domain.model.user.Users
+import app.edumate.domain.model.user.User
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
 import app.edumate.domain.usecase.member.GetMembersUseCase
@@ -142,8 +142,8 @@ class PeopleViewModel(
 
                         is Result.Success -> {
                             val peoples = result.data.orEmpty()
-                            val students = mutableListOf<Users>()
-                            val teachers = mutableListOf<Users>()
+                            val students = mutableListOf<User>()
+                            val teachers = mutableListOf<User>()
 
                             peoples.forEach { person ->
                                 when (person.role!!) {

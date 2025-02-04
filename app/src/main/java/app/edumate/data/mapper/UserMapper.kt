@@ -4,7 +4,6 @@ import app.edumate.data.remote.dto.user.UserDto
 import app.edumate.data.remote.dto.user.UsersDto
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.user.User
-import app.edumate.domain.model.user.Users
 
 fun UserDto.toUserDomainModel(): User =
     User(
@@ -22,8 +21,11 @@ fun User.toUserDto(): UserDto =
         name = name,
     )
 
-fun UsersDto.toUsersDomainModel(): Users =
-    Users(
+fun UsersDto.toUserDomainModel(): User =
+    User(
+        avatarUrl = user?.avatarUrl,
+        email = user?.email,
+        id = user?.id,
+        name = user?.name,
         role = role?.let { enumValueOf<UserRole>(it.name) },
-        user = user?.toUserDomainModel(),
     )
