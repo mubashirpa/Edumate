@@ -79,7 +79,7 @@ import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
-import app.edumate.presentation.stream.components.AnnouncementReplyBottomSheet
+import app.edumate.presentation.stream.components.CommentsBottomSheet
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
@@ -92,6 +92,7 @@ fun StreamScreen(
     onEvent: (StreamUiEvent) -> Unit,
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
+    commentsBottomSheetUiState: CommentsBottomSheetUiState,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -185,7 +186,7 @@ fun StreamScreen(
                                 },
                                 onClick = {
                                     onEvent(StreamUiEvent.OnExpandedAppBarDropdownChange(false))
-                                    onEvent(StreamUiEvent.OnRefresh)
+                                    onEvent(StreamUiEvent.Refresh)
                                 },
                             )
                         }
@@ -204,7 +205,7 @@ fun StreamScreen(
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
             onRefresh = {
-                onEvent(StreamUiEvent.OnRefresh)
+                onEvent(StreamUiEvent.Refresh)
             },
             modifier =
                 Modifier
@@ -217,7 +218,7 @@ fun StreamScreen(
                 is Result.Error -> {
                     ErrorScreen(
                         onRetryClick = {
-                            onEvent(StreamUiEvent.OnRetry)
+                            onEvent(StreamUiEvent.Retry)
                         },
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = announcementResult.message!!.asString(),
@@ -348,7 +349,7 @@ fun StreamScreen(
             onEvent(StreamUiEvent.OnOpenDeleteAnnouncementDialogChange(null))
         },
         onConfirmButtonClick = {
-            onEvent(StreamUiEvent.OnDeleteAnnouncement(uiState.deleteAnnouncementId!!))
+            onEvent(StreamUiEvent.DeleteAnnouncement(uiState.deleteAnnouncementId!!))
         },
     )
 
@@ -374,13 +375,14 @@ fun StreamScreen(
             onEvent(StreamUiEvent.OnOpenAddLinkDialogChange(false))
         },
         onConfirmClick = {
-            onEvent(StreamUiEvent.OnAddLinkAttachment(it))
+            onEvent(StreamUiEvent.AddLinkAttachment(it))
         },
     )
 
-    AnnouncementReplyBottomSheet(
-        show = uiState.replyAnnouncementId != null,
-        commentsResult = uiState.commentsResult,
+    CommentsBottomSheet(
+        uiState = commentsBottomSheetUiState,
+        onEvent = onEvent,
+        replyAnnouncementId = uiState.replyAnnouncementId,
         members = courseWithMembers.members.orEmpty(),
         currentUserRole = currentUserRole,
         currentUserId = uiState.currentUserId.orEmpty(),
@@ -430,7 +432,7 @@ private fun AttachmentsContent(
 
                 AssistChip(
                     onClick = {
-                        onEvent(StreamUiEvent.OnRemoveAttachment(index))
+                        onEvent(StreamUiEvent.RemoveAttachment(index))
                     },
                     label = {
                         Text(
@@ -513,6 +515,7 @@ private fun StreamScreenPreview() {
             onEvent = {},
             courseWithMembers = CourseWithMembers(),
             currentUserRole = CourseUserRole.Teacher(true),
+            commentsBottomSheetUiState = CommentsBottomSheetUiState(),
             onNavigateUp = {},
         )
     }

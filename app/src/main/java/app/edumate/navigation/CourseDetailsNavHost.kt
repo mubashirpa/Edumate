@@ -40,6 +40,7 @@ fun CourseDetailsNavHost(
                 onEvent = viewModel::onEvent,
                 courseWithMembers = courseWithMembers,
                 currentUserRole = currentUserRole,
+                commentsBottomSheetUiState = viewModel.commentsBottomSheetUiState,
                 onNavigateUp = onNavigateUp,
             )
         }
