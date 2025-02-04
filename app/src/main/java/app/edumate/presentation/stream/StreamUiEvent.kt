@@ -7,7 +7,6 @@ import java.io.File
 sealed class StreamUiEvent {
     data class AddComment(
         val announcementId: String,
-        val text: String,
     ) : StreamUiEvent()
 
     data class AddLinkAttachment(
