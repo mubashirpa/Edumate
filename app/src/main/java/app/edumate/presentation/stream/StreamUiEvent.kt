@@ -4,11 +4,16 @@ import app.edumate.domain.model.announcement.Announcement
 import java.io.File
 
 sealed class StreamUiEvent {
-    data class OnAddLinkAttachment(
+    data class AddAnnouncementComment(
+        val announcementId: String,
+        val text: String,
+    ) : StreamUiEvent()
+
+    data class AddLinkAttachment(
         val link: String,
     ) : StreamUiEvent()
 
-    data class OnDeleteAnnouncement(
+    data class DeleteAnnouncement(
         val id: String,
     ) : StreamUiEvent()
 
@@ -33,10 +38,6 @@ sealed class StreamUiEvent {
         val announcementId: String?,
     ) : StreamUiEvent()
 
-    data class OnRemoveAttachment(
-        val position: Int,
-    ) : StreamUiEvent()
-
     data class OnShowAddAttachmentBottomSheetChange(
         val show: Boolean,
     ) : StreamUiEvent()
@@ -45,11 +46,15 @@ sealed class StreamUiEvent {
         val announcementId: String?,
     ) : StreamUiEvent()
 
+    data class RemoveAttachment(
+        val position: Int,
+    ) : StreamUiEvent()
+
     data object CreateAnnouncement : StreamUiEvent()
 
-    data object OnRefresh : StreamUiEvent()
+    data object Refresh : StreamUiEvent()
 
-    data object OnRetry : StreamUiEvent()
+    data object Retry : StreamUiEvent()
 
     data object UserMessageShown : StreamUiEvent()
 }

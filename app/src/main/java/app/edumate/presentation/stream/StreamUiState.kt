@@ -6,13 +6,11 @@ import androidx.compose.runtime.snapshots.SnapshotStateList
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.announcement.Announcement
-import app.edumate.domain.model.comment.Comment
 import app.edumate.domain.model.material.Material
 
 data class StreamUiState(
     val announcementResult: Result<List<Announcement>> = Result.Empty(),
     val attachments: SnapshotStateList<Material> = mutableStateListOf(),
-    val commentsResult: Result<List<Comment>> = Result.Empty(),
     val currentUserId: String? = null,
     val editAnnouncementId: String? = null,
     val expandedAppBarDropdown: Boolean = false,
