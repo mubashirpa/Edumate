@@ -215,6 +215,7 @@ class HomeViewModel(
                                 openProgressDialog = false,
                                 showJoinCourseBottomSheet = false,
                             )
+                        joinCourseBottomSheetUiState = JoinCourseBottomSheetUiState()
                         getCourses(true)
                     }
                 }
