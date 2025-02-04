@@ -338,11 +338,11 @@ fun PeopleContent(
                                             courseOwnerId = courseWithMembers.ownerId.orEmpty(),
                                             currentUserId = uiState.currentUserId.orEmpty(),
                                             currentUserRole = currentUserRole,
-                                            onMakeTeacherClick = { userId ->
+                                            onChangePersonRole = { userId, role ->
                                                 onEvent(
                                                     PeopleUiEvent.ChangePersonRole(
-                                                        userId,
-                                                        UserRole.TEACHER,
+                                                        userId = userId,
+                                                        role = role,
                                                     ),
                                                 )
                                             },

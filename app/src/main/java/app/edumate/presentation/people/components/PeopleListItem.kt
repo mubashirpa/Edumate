@@ -37,7 +37,7 @@ fun PeopleListItem(
     courseOwnerId: String,
     currentUserId: String,
     currentUserRole: CourseUserRole,
-    onMakeTeacherClick: (userId: String) -> Unit,
+    onChangePersonRole: (userId: String, role: UserRole) -> Unit,
     onEmailUserClick: (email: String) -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -59,7 +59,14 @@ fun PeopleListItem(
         itemUserRole = itemUserRole,
         isCurrentUserItem = isCurrentUserItem,
         onMakeTeacherClick = {
-            itemUserId?.let(onMakeTeacherClick)
+            itemUserId?.let {
+                onChangePersonRole(it, UserRole.TEACHER)
+            }
+        },
+        onDismissAsTeacherClick = {
+            itemUserId?.let {
+                onChangePersonRole(it, UserRole.STUDENT)
+            }
         },
         onEmailUserClick = {
             person?.email?.let(onEmailUserClick)
@@ -79,6 +86,7 @@ private fun PeopleListItemContent(
     itemUserRole: PeopleUserRole,
     isCurrentUserItem: Boolean,
     onMakeTeacherClick: () -> Unit,
+    onDismissAsTeacherClick: () -> Unit,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -100,6 +108,7 @@ private fun PeopleListItemContent(
                     itemUserRole = itemUserRole,
                     isCurrentUserItem = isCurrentUserItem,
                     onMakeTeacherClick = onMakeTeacherClick,
+                    onDismissAsTeacherClick = onDismissAsTeacherClick,
                     onEmailUserClick = onEmailUserClick,
                     onLeaveClassClick = onLeaveClassClick,
                     onRemoveUserClick = onRemoveUserClick,
@@ -144,6 +153,7 @@ private fun MenuButton(
     itemUserRole: PeopleUserRole,
     isCurrentUserItem: Boolean,
     onMakeTeacherClick: () -> Unit,
+    onDismissAsTeacherClick: () -> Unit,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -237,6 +247,17 @@ private fun MenuButton(
                                 }
 
                                 else -> {
+                                    if (currentUserRole.isCourseOwner) {
+                                        DropdownMenuItem(
+                                            text = {
+                                                Text(text = stringResource(R.string.dismiss_as_teacher))
+                                            },
+                                            onClick = {
+                                                expanded = false
+                                                onDismissAsTeacherClick()
+                                            },
+                                        )
+                                    }
                                     DropdownMenuItem(
                                         text = {
                                             Text(text = stringResource(id = R.string.email))
@@ -277,6 +298,7 @@ private fun PeopleListItemPreview() {
             itemUserRole = PeopleUserRole.Teacher(true),
             isCurrentUserItem = false,
             onMakeTeacherClick = {},
+            onDismissAsTeacherClick = {},
             onEmailUserClick = {},
             onLeaveClassClick = {},
             onRemoveUserClick = {},
