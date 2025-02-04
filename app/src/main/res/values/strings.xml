@@ -75,7 +75,6 @@
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
     <string name="insert_link">Insert link</string>
-    <string name="instructor">Instructor</string>
     <string name="invite">Invite</string>
     <string name="invite_link_copied">Invite link copied</string>
     <string name="invite_students_to_your_class">Invite students to your class.</string>
@@ -90,6 +89,7 @@
     <string name="link">Link</string>
     <string name="logging_out">Logging out</string>
     <string name="logout">Logout</string>
+    <string name="make_teacher">Make teacher</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
     <string name="missing_message">Missing message</string>
@@ -142,6 +142,7 @@
     <string name="subject">Subject</string>
     <string name="switch_to_text_input">Switch to Text Input</string>
     <string name="switch_to_touch_input">Switch to Touch Input</string>
+    <string name="teacher">Teacher</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
     <string name="unable_to_leave_class">Unable to leave class.</string>

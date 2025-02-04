@@ -322,75 +322,52 @@ fun PeopleContent(
                                 state = scrollState,
                                 contentPadding = PaddingValues(bottom = bottomMargin),
                                 content = {
-                                    if (uiState.filter == PeopleFilterType.ALL || uiState.filter == PeopleFilterType.TEACHERS) {
-                                        items(
-                                            items = uiState.teachers,
-                                            key = { it.user!!.id!! },
-                                        ) { teacher ->
-                                            PeopleListItem(
-                                                person = teacher.user,
-                                                role = teacher.role!!,
-                                                courseOwnerId = courseWithMembers.ownerId.orEmpty(),
-                                                currentUserId = uiState.currentUserId.orEmpty(),
-                                                currentUserRole = currentUserRole,
-                                                onEmailUserClick = { email ->
-                                                    IntentUtils.composeEmail(
-                                                        context,
-                                                        arrayOf(email),
-                                                    )
-                                                },
-                                                onLeaveClassClick = {
-                                                    onEvent(
-                                                        PeopleUiEvent.OnOpenLeaveClassDialogChange(
-                                                            true,
-                                                        ),
-                                                    )
-                                                },
-                                                onRemoveUserClick = {
-                                                    onEvent(
-                                                        PeopleUiEvent.OnOpenDeleteUserDialogChange(
-                                                            teacher,
-                                                        ),
-                                                    )
-                                                },
-                                                modifier = Modifier.animateItem(),
-                                            )
+                                    val items =
+                                        when (uiState.filter) {
+                                            PeopleFilterType.ALL -> uiState.teachers + uiState.students
+                                            PeopleFilterType.TEACHERS -> uiState.teachers
+                                            PeopleFilterType.STUDENTS -> uiState.students
                                         }
-                                    }
-                                    if (uiState.filter == PeopleFilterType.ALL || uiState.filter == PeopleFilterType.STUDENTS) {
-                                        items(
-                                            items = uiState.students,
-                                            key = { it.user!!.id!! },
-                                        ) { student ->
-                                            PeopleListItem(
-                                                person = student.user,
-                                                role = student.role!!,
-                                                courseOwnerId = courseWithMembers.ownerId.orEmpty(),
-                                                currentUserId = uiState.currentUserId.orEmpty(),
-                                                currentUserRole = currentUserRole,
-                                                onEmailUserClick = { email ->
-                                                    IntentUtils.composeEmail(
-                                                        context,
-                                                        arrayOf(email),
-                                                    )
-                                                },
-                                                onLeaveClassClick = {
-                                                    onEvent(
-                                                        PeopleUiEvent.OnOpenLeaveClassDialogChange(
-                                                            true,
-                                                        ),
-                                                    )
-                                                },
-                                                onRemoveUserClick = {
-                                                    onEvent(
-                                                        PeopleUiEvent.OnOpenDeleteUserDialogChange(
-                                                            student,
-                                                        ),
-                                                    )
-                                                },
-                                                modifier = Modifier.animateItem(),
-                                            )
-                                        }
+                                    items(
+                                        items = items,
+                                        key = { it.user!!.id!! },
+                                    ) { teacher ->
+                                        PeopleListItem(
+                                            person = teacher.user,
+                                            role = teacher.role!!,
+                                            courseOwnerId = courseWithMembers.ownerId.orEmpty(),
+                                            currentUserId = uiState.currentUserId.orEmpty(),
+                                            currentUserRole = currentUserRole,
+                                            onMakeTeacherClick = { userId ->
+                                                onEvent(
+                                                    PeopleUiEvent.ChangePersonRole(
+                                                        userId,
+                                                        UserRole.TEACHER,
+                                                    ),
+                                                )
+                                            },
+                                            onEmailUserClick = { email ->
+                                                IntentUtils.composeEmail(
+                                                    context,
+                                                    arrayOf(email),
+                                                )
+                                            },
+                                            onLeaveClassClick = {
+                                                onEvent(
+                                                    PeopleUiEvent.OnOpenLeaveClassDialogChange(
+                                                        true,
+                                                    ),
+                                                )
+                                            },
+                                            onRemoveUserClick = {
+                                                onEvent(
+                                                    PeopleUiEvent.OnOpenDeleteUserDialogChange(
+                                                        teacher,
+                                                    ),
+                                                )
+                                            },
+                                            modifier = Modifier.animateItem(),
+                                        )
                                     }
                                 },
                             )

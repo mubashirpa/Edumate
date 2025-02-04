@@ -1,8 +1,14 @@
 package app.edumate.presentation.people
 
+import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.model.user.Users
 
 sealed class PeopleUiEvent {
+    data class ChangePersonRole(
+        val userId: String,
+        val role: UserRole,
+    ) : PeopleUiEvent()
+
     data class DeletePerson(
         val userId: String,
     ) : PeopleUiEvent()

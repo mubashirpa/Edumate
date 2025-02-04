@@ -15,6 +15,7 @@ import app.edumate.domain.model.user.Users
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.member.DeleteMemberUseCase
 import app.edumate.domain.usecase.member.GetMembersUseCase
+import app.edumate.domain.usecase.member.UpdateMemberUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -24,6 +25,7 @@ class PeopleViewModel(
     savedStateHandle: SavedStateHandle,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getMembersUseCase: GetMembersUseCase,
+    private val updateMemberUseCase: UpdateMemberUseCase,
     private val deleteMemberUseCase: DeleteMemberUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(PeopleUiState())
@@ -39,6 +41,14 @@ class PeopleViewModel(
 
     fun onEvent(event: PeopleUiEvent) {
         when (event) {
+            is PeopleUiEvent.ChangePersonRole -> {
+                updatePerson(
+                    courseId = args.courseId,
+                    userId = event.userId,
+                    role = event.role,
+                )
+            }
+
             is PeopleUiEvent.DeletePerson -> {
                 deletePerson(courseId = args.courseId, userId = event.userId, isUserLeaving = false)
             }
@@ -152,6 +162,36 @@ class PeopleViewModel(
                         }
                     }
                 }.launchIn(viewModelScope)
+    }
+
+    private fun updatePerson(
+        courseId: String,
+        userId: String,
+        role: UserRole,
+    ) {
+        updateMemberUseCase(courseId, userId, role)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getPeoples(args.courseId, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun deletePerson(

@@ -37,6 +37,7 @@ fun PeopleListItem(
     courseOwnerId: String,
     currentUserId: String,
     currentUserRole: CourseUserRole,
+    onMakeTeacherClick: (userId: String) -> Unit,
     onEmailUserClick: (email: String) -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -57,6 +58,9 @@ fun PeopleListItem(
         currentUserRole = currentUserRole,
         itemUserRole = itemUserRole,
         isCurrentUserItem = isCurrentUserItem,
+        onMakeTeacherClick = {
+            itemUserId?.let(onMakeTeacherClick)
+        },
         onEmailUserClick = {
             person?.email?.let(onEmailUserClick)
         },
@@ -74,6 +78,7 @@ private fun PeopleListItemContent(
     currentUserRole: CourseUserRole,
     itemUserRole: PeopleUserRole,
     isCurrentUserItem: Boolean,
+    onMakeTeacherClick: () -> Unit,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -90,10 +95,11 @@ private fun PeopleListItemContent(
             null
         } else {
             {
-                PeopleMenuButton(
+                MenuButton(
                     currentUserRole = currentUserRole,
                     itemUserRole = itemUserRole,
                     isCurrentUserItem = isCurrentUserItem,
+                    onMakeTeacherClick = onMakeTeacherClick,
                     onEmailUserClick = onEmailUserClick,
                     onLeaveClassClick = onLeaveClassClick,
                     onRemoveUserClick = onRemoveUserClick,
@@ -108,7 +114,7 @@ private fun PeopleListItemContent(
         modifier = modifier,
         overlineContent = {
             if (itemUserRole is PeopleUserRole.Teacher) {
-                Text(text = stringResource(R.string.instructor))
+                Text(text = stringResource(R.string.teacher))
             }
         },
         leadingContent = {
@@ -133,10 +139,11 @@ private fun PeopleListItemContent(
 }
 
 @Composable
-private fun PeopleMenuButton(
+private fun MenuButton(
     currentUserRole: CourseUserRole,
     itemUserRole: PeopleUserRole,
     isCurrentUserItem: Boolean,
+    onMakeTeacherClick: () -> Unit,
     onEmailUserClick: () -> Unit,
     onLeaveClassClick: () -> Unit,
     onRemoveUserClick: () -> Unit,
@@ -172,6 +179,17 @@ private fun PeopleMenuButton(
                 is CourseUserRole.Teacher -> {
                     when (itemUserRole) {
                         PeopleUserRole.Student -> {
+                            if (currentUserRole.isCourseOwner) {
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(text = stringResource(R.string.make_teacher))
+                                    },
+                                    onClick = {
+                                        expanded = false
+                                        onMakeTeacherClick()
+                                    },
+                                )
+                            }
                             DropdownMenuItem(
                                 text = {
                                     Text(text = stringResource(id = R.string.email_student))
@@ -258,6 +276,7 @@ private fun PeopleListItemPreview() {
             currentUserRole = CourseUserRole.Teacher(true),
             itemUserRole = PeopleUserRole.Teacher(true),
             isCurrentUserItem = false,
+            onMakeTeacherClick = {},
             onEmailUserClick = {},
             onLeaveClassClick = {},
             onRemoveUserClick = {},
