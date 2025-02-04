@@ -81,7 +81,7 @@ class AnnouncementRepositoryImpl(
                         put(Supabase.Column.USER_ID, userId)
                         put(Supabase.Column.TEXT, text)
                     },
-            ).decodeSingle()
+            ).decodeAs()
 
     override suspend fun getComments(id: String): List<CommentsDto> =
         postgrest
