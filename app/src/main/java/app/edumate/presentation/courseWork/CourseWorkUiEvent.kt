@@ -3,7 +3,7 @@ package app.edumate.presentation.courseWork
 import app.edumate.domain.model.courseWork.CourseWork
 
 sealed class CourseWorkUiEvent {
-    data class OnDeleteCourseWork(
+    data class DeleteCourseWork(
         val id: String,
     ) : CourseWorkUiEvent()
 
@@ -19,9 +19,9 @@ sealed class CourseWorkUiEvent {
         val show: Boolean,
     ) : CourseWorkUiEvent()
 
-    data object OnRefresh : CourseWorkUiEvent()
+    data object Refresh : CourseWorkUiEvent()
 
-    data object OnRetry : CourseWorkUiEvent()
+    data object Retry : CourseWorkUiEvent()
 
     data object UserMessageShown : CourseWorkUiEvent()
 }

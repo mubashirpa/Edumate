@@ -125,7 +125,7 @@ fun CourseWorkScreen(
                                 },
                                 onClick = {
                                     onEvent(CourseWorkUiEvent.OnExpandedAppBarDropdownChange(false))
-                                    onEvent(CourseWorkUiEvent.OnRefresh)
+                                    onEvent(CourseWorkUiEvent.Refresh)
                                 },
                             )
                         }
@@ -160,7 +160,7 @@ fun CourseWorkScreen(
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
             onRefresh = {
-                onEvent(CourseWorkUiEvent.OnRefresh)
+                onEvent(CourseWorkUiEvent.Refresh)
             },
             modifier =
                 Modifier
@@ -173,7 +173,7 @@ fun CourseWorkScreen(
                 is Result.Error -> {
                     ErrorScreen(
                         onRetryClick = {
-                            onEvent(CourseWorkUiEvent.OnRetry)
+                            onEvent(CourseWorkUiEvent.Retry)
                         },
                         modifier = Modifier.fillMaxSize(),
                         errorMessage = courseWorkResult.message!!.asString(),
@@ -252,7 +252,7 @@ fun CourseWorkScreen(
         workType = uiState.deleteCourseWork?.workType,
         onConfirmButtonClick = {
             uiState.deleteCourseWork?.id?.also { id ->
-                onEvent(CourseWorkUiEvent.OnDeleteCourseWork(id))
+                onEvent(CourseWorkUiEvent.DeleteCourseWork(id))
             }
         },
     )

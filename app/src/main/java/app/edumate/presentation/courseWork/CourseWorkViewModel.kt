@@ -32,7 +32,7 @@ class CourseWorkViewModel(
 
     fun onEvent(event: CourseWorkUiEvent) {
         when (event) {
-            is CourseWorkUiEvent.OnDeleteCourseWork -> {
+            is CourseWorkUiEvent.DeleteCourseWork -> {
                 deleteCourseWork(event.id)
             }
 
@@ -44,19 +44,19 @@ class CourseWorkViewModel(
                 uiState = uiState.copy(deleteCourseWork = event.courseWork)
             }
 
-            CourseWorkUiEvent.OnRefresh -> {
+            is CourseWorkUiEvent.OnShowCreateCourseWorkBottomSheetChange -> {
+                uiState = uiState.copy(showCreateCourseWorkBottomSheet = event.show)
+            }
+
+            CourseWorkUiEvent.Refresh -> {
                 getCourseWorks(
                     courseId = args.courseId,
                     isRefreshing = uiState.courseWorkResult is Result.Success,
                 )
             }
 
-            CourseWorkUiEvent.OnRetry -> {
+            CourseWorkUiEvent.Retry -> {
                 getCourseWorks(courseId = args.courseId, isRefreshing = false)
-            }
-
-            is CourseWorkUiEvent.OnShowCreateCourseWorkBottomSheetChange -> {
-                uiState = uiState.copy(showCreateCourseWorkBottomSheet = event.show)
             }
 
             CourseWorkUiEvent.UserMessageShown -> {

@@ -49,7 +49,7 @@ fun CourseDetailsNavHost(
 
             navController.GetOnceResult<Boolean>(Navigation.Args.CREATE_COURSE_WORK_SUCCESS) { refresh ->
                 if (refresh) {
-                    viewModel.onEvent(CourseWorkUiEvent.OnRefresh)
+                    viewModel.onEvent(CourseWorkUiEvent.Refresh)
                 }
             }
 
