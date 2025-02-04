@@ -103,7 +103,9 @@ fun CommentsBottomSheet(
 
                         is Result.Error -> {
                             ErrorScreen(
-                                onRetryClick = { /*TODO*/ },
+                                onRetryClick = {
+                                    onEvent(StreamUiEvent.RetryComment(replyAnnouncementId))
+                                },
                                 modifier = Modifier.fillMaxSize(),
                                 errorMessage = commentsResult.message!!.asString(),
                             )
@@ -139,7 +141,13 @@ fun CommentsBottomSheet(
                                             currentUserRole = currentUserRole,
                                             currentUserId = currentUserId,
                                             onEditClick = { /*TODO*/ },
-                                            onDeleteClick = { /*TODO*/ },
+                                            onDeleteClick = { id ->
+                                                onEvent(
+                                                    StreamUiEvent.OnOpenDeleteCommentDialogChange(
+                                                        id,
+                                                    ),
+                                                )
+                                            },
                                         )
                                     }
                                 },
@@ -153,7 +161,7 @@ fun CommentsBottomSheet(
                                 enabled = !uiState.isLoading,
                                 onSendClick = { text ->
                                     onEvent(
-                                        StreamUiEvent.AddAnnouncementComment(
+                                        StreamUiEvent.AddComment(
                                             replyAnnouncementId,
                                             text,
                                         ),
@@ -174,6 +182,21 @@ fun CommentsBottomSheet(
             }
         }
     }
+
+    DeleteCommentDialog(
+        open = uiState.deleteCommentId != null,
+        onDismissRequest = {
+            onEvent(StreamUiEvent.OnOpenDeleteCommentDialogChange(null))
+        },
+        onConfirmButtonClick = {
+            onEvent(
+                StreamUiEvent.DeleteComment(
+                    announcementId = replyAnnouncementId!!,
+                    id = uiState.deleteCommentId!!,
+                ),
+            )
+        },
+    )
 }
 
 @Composable
