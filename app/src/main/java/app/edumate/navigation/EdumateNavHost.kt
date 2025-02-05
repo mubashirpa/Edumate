@@ -19,6 +19,7 @@ import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.home.HomeUiEvent
 import app.edumate.presentation.home.HomeViewModel
+import app.edumate.presentation.imageViewer.ImageViewerScreen
 import app.edumate.presentation.profile.ProfileScreen
 import org.koin.androidx.compose.koinViewModel
 
@@ -131,6 +132,10 @@ fun EdumateNavHost(
                     navController.navigateUp()
                 },
             )
+        }
+        composable<Screen.ImageViewer> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screen.ImageViewer>()
+            ImageViewerScreen(imageUrl = route.imageUrl)
         }
     }
 }
