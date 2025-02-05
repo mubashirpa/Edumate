@@ -15,6 +15,8 @@ sealed class CreateCourseWorkUiEvent {
     data class OnFilePicked(
         val file: File,
         val title: String,
+        val mimeType: String?,
+        val size: Long?,
     ) : CreateCourseWorkUiEvent()
 
     data class OnOpenAddLinkDialogChange(

@@ -26,8 +26,12 @@ import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.outlined.LiveHelp
 import androidx.compose.material.icons.automirrored.outlined.Subject
 import androidx.compose.material.icons.filled.Attachment
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.CalendarToday
 import androidx.compose.material.icons.outlined.InsertChart
@@ -66,6 +70,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
+import app.edumate.core.utils.FileType
+import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.presentation.components.FieldListItem
 import app.edumate.presentation.createCourseWork.CreateCourseWorkUiEvent
@@ -91,7 +97,9 @@ fun ContentQuestion(
     courseWorkId: String? = null,
 ) {
     val questionTypes = stringArrayResource(id = R.array.question_type)
+    val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
+    val fileUtils = remember { FileUtils(context) }
 
     Column(modifier = modifier) {
         Column(
@@ -301,8 +309,17 @@ fun ContentQuestion(
 
                             when {
                                 material.driveFile != null -> {
+                                    val mimeType =
+                                        fileUtils.getFileTypeFromMimeType(material.driveFile.mimeType)
                                     title = material.driveFile.title.orEmpty()
-                                    icon = Icons.AutoMirrored.Filled.InsertDriveFile
+                                    icon =
+                                        when (mimeType) {
+                                            FileType.IMAGE -> Icons.Default.Image
+                                            FileType.VIDEO -> Icons.Default.VideoFile
+                                            FileType.AUDIO -> Icons.Default.AudioFile
+                                            FileType.PDF -> Icons.Default.PictureAsPdf
+                                            FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
+                                        }
                                 }
 
                                 material.link != null -> {
@@ -334,7 +351,7 @@ fun ContentQuestion(
                                         AsyncImage(
                                             model =
                                                 ImageRequest
-                                                    .Builder(LocalContext.current)
+                                                    .Builder(context)
                                                     .data(material.link.thumbnailUrl)
                                                     .crossfade(true)
                                                     .build(),

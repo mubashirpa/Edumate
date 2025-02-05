@@ -1,5 +1,7 @@
 package app.edumate.presentation.createCourseWork
 
+import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
@@ -85,27 +87,15 @@ private fun CreateCourseWorkContent(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val fileUtils = remember { FileUtils(context) }
     val filePicker =
-        rememberLauncherForActivityResult(GetContent()) { uri ->
-            if (uri != null) {
-                val title =
-                    fileUtils.getFileName(uri)
-                        ?: "${uri.lastPathSegment}.${fileUtils.getFileExtension(uri)}"
-                val bytes = fileUtils.uriToByteArray(uri)
-                val file = File(context.cacheDir, title)
-                file.writeBytes(bytes)
-                onEvent(CreateCourseWorkUiEvent.OnFilePicked(file, title))
+        rememberLauncherForActivityResult(GetContent()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
             }
         }
     val photoPicker =
-        rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-            if (uri != null) {
-                val title =
-                    fileUtils.getFileName(uri)
-                        ?: "${uri.lastPathSegment}.${fileUtils.getFileExtension(uri)}"
-                val bytes = fileUtils.uriToByteArray(uri)
-                val file = File(context.cacheDir, title)
-                file.writeBytes(bytes)
-                onEvent(CreateCourseWorkUiEvent.OnFilePicked(file, title))
+        rememberLauncherForActivityResult(PickVisualMedia()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
             }
         }
 
@@ -212,4 +202,23 @@ private fun CreateCourseWorkContent(
         progress = { uiState.uploadProgress ?: 0.0f },
         onDismissRequest = {},
     )
+}
+
+private fun Uri.handleFile(
+    fileUtils: FileUtils,
+    context: Context,
+): CreateCourseWorkUiEvent.OnFilePicked {
+    val title =
+        fileUtils.getFileName(this) ?: "$lastPathSegment.${fileUtils.getFileExtension(this)}"
+    val bytes = fileUtils.uriToByteArray(this)
+    val file = File(context.cacheDir, title)
+    file.writeBytes(bytes)
+    val length =
+        try {
+            file.length()
+        } catch (_: SecurityException) {
+            null
+        }
+    val mimeType = fileUtils.getMimeType(this)
+    return CreateCourseWorkUiEvent.OnFilePicked(file, title, mimeType, length)
 }
