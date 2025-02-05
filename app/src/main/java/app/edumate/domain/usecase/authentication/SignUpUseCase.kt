@@ -23,21 +23,18 @@ class SignUpUseCase(
         flow {
             try {
                 emit(Result.Loading())
-                val user = authenticationRepository.signUpWithEmail(name, email, password)
-                authenticationRepository.saveSignInInfo(email, password)
-                emit(Result.Success(user!!))
+                authenticationRepository.signUpWithEmail(name, email, password)?.let { user ->
+                    if (user.identities.isNullOrEmpty()) {
+                        emit(Result.Error(UiText.StringResource(R.string.auth_error_email_already_in_use)))
+                    } else {
+                        authenticationRepository.saveSignInInfo(email, password)
+                        emit(Result.Success(user))
+                    }
+                } ?: emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))
             } catch (e: AuthRestException) {
                 when (e.errorCode) {
-                    AuthErrorCode.EmailExists -> {
-                        emit(Result.Error(UiText.StringResource(R.string.auth_error_email_already_in_use)))
-                    }
-
                     AuthErrorCode.WeakPassword -> {
                         emit(Result.Error(UiText.StringResource(R.string.auth_error_weak_password)))
-                    }
-
-                    AuthErrorCode.UserAlreadyExists -> {
-                        emit(Result.Error(UiText.StringResource(R.string.auth_error_email_already_in_use)))
                     }
 
                     else -> {
