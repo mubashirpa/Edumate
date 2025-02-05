@@ -138,7 +138,11 @@ fun EdumateNavHost(
         }
         composable<Screen.ImageViewer> { backStackEntry ->
             val route = backStackEntry.toRoute<Screen.ImageViewer>()
-            ImageViewerScreen(imageUrl = route.imageUrl)
+            ImageViewerScreen(
+                imageUrl = route.imageUrl,
+                onNavigateUp = navController::navigateUp,
+                title = route.title,
+            )
         }
     }
 }
