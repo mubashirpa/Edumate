@@ -16,7 +16,8 @@ fun MaterialDto.toMaterialDomainModel(): Material =
 fun DriveFileDto.toDriveFileDomainModel(): DriveFile =
     DriveFile(
         alternateLink = alternateLink,
-        id = id,
+        mimeType = mimeType,
+        size = size,
         thumbnailUrl = thumbnailUrl,
         title = title,
     )
@@ -37,7 +38,8 @@ fun Material.toMaterialDto(): MaterialDto =
 fun DriveFile.toDriveFileDto(): DriveFileDto =
     DriveFileDto(
         alternateLink = alternateLink,
-        id = id,
+        mimeType = mimeType,
+        size = size,
         thumbnailUrl = thumbnailUrl,
         title = title,
     )

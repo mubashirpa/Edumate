@@ -7,7 +7,9 @@ import kotlinx.serialization.Serializable
 data class DriveFileDto(
     @SerialName("alternate_link")
     val alternateLink: String? = null,
-    val id: String? = null,
+    @SerialName("mime_type")
+    val mimeType: String? = null,
+    val size: Int? = null,
     @SerialName("thumbnail_url")
     val thumbnailUrl: String? = null,
     val title: String? = null,
