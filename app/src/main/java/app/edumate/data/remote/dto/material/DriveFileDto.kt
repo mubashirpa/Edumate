@@ -9,7 +9,7 @@ data class DriveFileDto(
     val alternateLink: String? = null,
     @SerialName("mime_type")
     val mimeType: String? = null,
-    val size: Int? = null,
+    val size: Long? = null,
     @SerialName("thumbnail_url")
     val thumbnailUrl: String? = null,
     val title: String? = null,
