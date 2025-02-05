@@ -17,6 +17,8 @@ import app.edumate.presentation.createCourseWork.CreateCourseWorkScreen
 import app.edumate.presentation.people.PeopleScreen
 import app.edumate.presentation.stream.StreamScreen
 import app.edumate.presentation.stream.StreamViewModel
+import app.edumate.presentation.viewCourseWork.ViewCourseWorkScreen
+import app.edumate.presentation.viewCourseWork.ViewCourseWorkViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -69,7 +71,13 @@ fun CourseDetailsNavHost(
                     )
                 },
                 onNavigateToViewClasswork = {
-                    // TODO: View classwork
+                    navController.navigate(
+                        Screen.ViewCourseWork(
+                            id = it,
+                            courseId = courseWithMembers.id,
+                            isCurrentUserStudent = currentUserRole == CourseUserRole.Student,
+                        ),
+                    )
                 },
             )
         }
@@ -92,6 +100,15 @@ fun CourseDetailsNavHost(
                     navController.navigateUp()
                 },
                 courseWorkId = route.id,
+            )
+        }
+        composable<Screen.ViewCourseWork> {
+            val viewModel: ViewCourseWorkViewModel = koinViewModel()
+            ViewCourseWorkScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                currentUserRole = currentUserRole,
+                onNavigateUp = navController::navigateUp,
             )
         }
     }
