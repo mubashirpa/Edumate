@@ -15,9 +15,13 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -44,6 +48,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.utils.DateTimeUtils
+import app.edumate.core.utils.FileType
+import app.edumate.core.utils.FileUtils
 import app.edumate.core.utils.RelativeDate
 import app.edumate.domain.model.announcement.Announcement
 import app.edumate.domain.model.material.Material
@@ -69,6 +75,7 @@ fun AnnouncementListItem(
     currentUserRole: CourseUserRole,
     currentUserId: String,
     selected: Boolean,
+    fileUtils: FileUtils,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
     onCopyLinkClick: (link: String) -> Unit,
@@ -89,6 +96,7 @@ fun AnnouncementListItem(
         currentUserRole = currentUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
         selected = selected,
+        fileUtils = fileUtils,
         onEditClick = {
             id?.let(onEditClick)
         },
@@ -119,6 +127,7 @@ private fun AnnouncementListItemContent(
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
     selected: Boolean,
+    fileUtils: FileUtils,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCopyLinkClick: () -> Unit,
@@ -238,6 +247,17 @@ private fun AnnouncementListItemContent(
                     materials.forEach { material ->
                         when {
                             material.driveFile != null -> {
+                                val mimeType =
+                                    fileUtils.getFileTypeFromMimeType(material.driveFile.mimeType)
+                                val icon =
+                                    when (mimeType) {
+                                        FileType.IMAGE -> Icons.Default.Image
+                                        FileType.VIDEO -> Icons.Default.VideoFile
+                                        FileType.AUDIO -> Icons.Default.AudioFile
+                                        FileType.PDF -> Icons.Default.PictureAsPdf
+                                        FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
+                                    }
+
                                 AssistChip(
                                     onClick = {
                                         val browserIntent =
@@ -257,7 +277,7 @@ private fun AnnouncementListItemContent(
                                     modifier = Modifier.widthIn(max = 180.dp),
                                     leadingIcon = {
                                         Icon(
-                                            imageVector = Icons.AutoMirrored.Filled.InsertDriveFile, // TODO("Add icons based on file type")
+                                            imageVector = icon,
                                             contentDescription = null,
                                         )
                                     },
@@ -392,6 +412,7 @@ private fun AnnouncementListItemPreview() {
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
             isCurrentUserCreator = true,
             selected = false,
+            fileUtils = FileUtils(LocalContext.current),
             onEditClick = {},
             onDeleteClick = {},
             onCopyLinkClick = {},

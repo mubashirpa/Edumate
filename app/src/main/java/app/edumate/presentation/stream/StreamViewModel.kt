@@ -166,6 +166,8 @@ class StreamViewModel(
                     id = announcementId,
                     title = event.title,
                     file = event.file,
+                    mimeType = event.mimeType,
+                    size = event.size,
                 )
             }
 
@@ -609,6 +611,8 @@ class StreamViewModel(
         id: String,
         title: String,
         file: File,
+        mimeType: String?,
+        size: Long?,
     ) {
         uploadFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
@@ -636,6 +640,8 @@ class StreamViewModel(
                         val driveFile =
                             DriveFile(
                                 alternateLink = state.url,
+                                mimeType = mimeType,
+                                size = size,
                                 title = title,
                             )
                         uiState.attachments.add(Material(driveFile = driveFile))

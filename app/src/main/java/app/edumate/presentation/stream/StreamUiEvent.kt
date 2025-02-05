@@ -38,6 +38,8 @@ sealed class StreamUiEvent {
     data class OnFilePicked(
         val file: File,
         val title: String,
+        val mimeType: String?,
+        val size: Long?,
     ) : StreamUiEvent()
 
     data class OnOpenAddLinkDialogChange(

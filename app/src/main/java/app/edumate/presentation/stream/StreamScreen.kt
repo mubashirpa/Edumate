@@ -1,5 +1,7 @@
 package app.edumate.presentation.stream
 
+import android.content.Context
+import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
@@ -28,10 +30,14 @@ import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Attachment
+import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -67,6 +73,7 @@ import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
 import app.edumate.core.utils.ClipboardUtils
+import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.model.material.Material
@@ -103,27 +110,15 @@ fun StreamScreen(
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
     val filePicker =
-        rememberLauncherForActivityResult(GetContent()) { uri ->
-            if (uri != null) {
-                val title =
-                    fileUtils.getFileName(uri)
-                        ?: "${uri.lastPathSegment}.${fileUtils.getFileExtension(uri)}"
-                val bytes = fileUtils.uriToByteArray(uri)
-                val file = File(context.cacheDir, title)
-                file.writeBytes(bytes)
-                onEvent(StreamUiEvent.OnFilePicked(file, title))
+        rememberLauncherForActivityResult(GetContent()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
             }
         }
     val photoPicker =
-        rememberLauncherForActivityResult(PickVisualMedia()) { uri ->
-            if (uri != null) {
-                val title =
-                    fileUtils.getFileName(uri)
-                        ?: "${uri.lastPathSegment}.${fileUtils.getFileExtension(uri)}"
-                val bytes = fileUtils.uriToByteArray(uri)
-                val file = File(context.cacheDir, title)
-                file.writeBytes(bytes)
-                onEvent(StreamUiEvent.OnFilePicked(file, title))
+        rememberLauncherForActivityResult(PickVisualMedia()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
             }
         }
 
@@ -270,6 +265,7 @@ fun StreamScreen(
                                             currentUserRole = currentUserRole,
                                             currentUserId = uiState.currentUserId.orEmpty(),
                                             selected = announcement.id == uiState.editAnnouncementId,
+                                            fileUtils = fileUtils,
                                             onEditClick = {
                                                 onEvent(
                                                     StreamUiEvent.OnEditAnnouncement(
@@ -320,6 +316,7 @@ fun StreamScreen(
                         AttachmentsContent(
                             attachments = uiState.attachments,
                             onEvent = onEvent,
+                            fileUtils = fileUtils,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
@@ -407,6 +404,7 @@ fun StreamScreen(
 private fun AttachmentsContent(
     attachments: List<Material>,
     onEvent: (StreamUiEvent) -> Unit,
+    fileUtils: FileUtils,
     modifier: Modifier = Modifier,
 ) {
     if (attachments.isNotEmpty()) {
@@ -420,8 +418,17 @@ private fun AttachmentsContent(
 
                 when {
                     attachment.driveFile != null -> {
+                        val mimeType =
+                            fileUtils.getFileTypeFromMimeType(attachment.driveFile.mimeType)
                         title = attachment.driveFile.title.orEmpty()
-                        icon = Icons.AutoMirrored.Filled.InsertDriveFile
+                        icon =
+                            when (mimeType) {
+                                FileType.IMAGE -> Icons.Default.Image
+                                FileType.VIDEO -> Icons.Default.VideoFile
+                                FileType.AUDIO -> Icons.Default.AudioFile
+                                FileType.PDF -> Icons.Default.PictureAsPdf
+                                FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
+                            }
                     }
 
                     attachment.link != null -> {
@@ -519,4 +526,23 @@ private fun StreamScreenPreview() {
             onNavigateUp = {},
         )
     }
+}
+
+private fun Uri.handleFile(
+    fileUtils: FileUtils,
+    context: Context,
+): StreamUiEvent.OnFilePicked {
+    val title =
+        fileUtils.getFileName(this) ?: "$lastPathSegment.${fileUtils.getFileExtension(this)}"
+    val bytes = fileUtils.uriToByteArray(this)
+    val file = File(context.cacheDir, title)
+    file.writeBytes(bytes)
+    val length =
+        try {
+            file.length()
+        } catch (_: SecurityException) {
+            null
+        }
+    val mimeType = fileUtils.getMimeType(this)
+    return StreamUiEvent.OnFilePicked(file, title, mimeType, length)
 }
