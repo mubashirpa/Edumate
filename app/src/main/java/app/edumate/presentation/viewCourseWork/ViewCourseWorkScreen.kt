@@ -56,6 +56,7 @@ fun ViewCourseWorkScreen(
     onEvent: (ViewCourseWorkUiEvent) -> Unit,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -247,6 +248,7 @@ fun ViewCourseWorkScreen(
                                         courseWork = courseWork!!,
                                         isCurrentUserTeacher = isCurrentUserTeacher,
                                         fileUtils = fileUtils,
+                                        onNavigateToImageViewer = onNavigateToImageViewer,
                                         modifier = Modifier.fillMaxSize(),
                                     )
                                 }

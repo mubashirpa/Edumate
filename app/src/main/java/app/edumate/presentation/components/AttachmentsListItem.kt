@@ -47,13 +47,15 @@ import coil3.request.crossfade
 fun AttachmentsListItem(
     material: Material,
     fileUtils: FileUtils,
-    onClick: (url: String) -> Unit,
+    onClickFile: (mimeType: FileType, url: String) -> Unit,
+    onClickLink: (url: String) -> Unit,
 ) {
     AttachmentsListItemContent(
         driveFile = material.driveFile,
         link = material.link,
         fileUtils = fileUtils,
-        onClick = onClick,
+        onClickFile = onClickFile,
+        onClickLink = onClickLink,
     )
 }
 
@@ -62,9 +64,11 @@ private fun AttachmentsListItemContent(
     driveFile: DriveFile?,
     link: Link?,
     fileUtils: FileUtils,
-    onClick: (url: String) -> Unit,
+    onClickFile: (mimeType: FileType, url: String) -> Unit,
+    onClickLink: (url: String) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
+    val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
     val thumbnail: String?
@@ -72,8 +76,6 @@ private fun AttachmentsListItemContent(
 
     when {
         driveFile != null -> {
-            val mimeType =
-                fileUtils.getFileTypeFromMimeType(driveFile.mimeType)
             title = driveFile.title.orEmpty()
             icon =
                 when (mimeType) {
@@ -110,7 +112,10 @@ private fun AttachmentsListItemContent(
                     indication = null,
                     enabled = url != null,
                     onClick = {
-                        onClick(url!!)
+                        when {
+                            link != null -> onClickLink(url!!)
+                            driveFile != null -> onClickFile(mimeType, url!!)
+                        }
                     },
                 ),
     ) {

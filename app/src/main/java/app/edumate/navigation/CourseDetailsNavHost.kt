@@ -27,6 +27,7 @@ fun CourseDetailsNavHost(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -44,6 +45,7 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 commentsBottomSheetUiState = viewModel.commentsBottomSheetUiState,
                 onNavigateUp = onNavigateUp,
+                onNavigateToImageViewer = onNavigateToImageViewer,
             )
         }
         composable<Screen.CourseWork> {
@@ -109,6 +111,7 @@ fun CourseDetailsNavHost(
                 onEvent = viewModel::onEvent,
                 currentUserRole = currentUserRole,
                 onNavigateUp = navController::navigateUp,
+                onNavigateToImageViewer = onNavigateToImageViewer,
             )
         }
     }

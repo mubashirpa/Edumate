@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.ext.header
+import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.courseWork.CourseWorkType
@@ -59,6 +60,7 @@ fun ViewCourseWorkContent(
     courseWork: CourseWork,
     isCurrentUserTeacher: Boolean,
     fileUtils: FileUtils,
+    onNavigateToImageViewer: (url: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -119,7 +121,15 @@ fun ViewCourseWorkContent(
                     AttachmentsListItem(
                         material = material,
                         fileUtils = fileUtils,
-                        onClick = { url ->
+                        onClickFile = { mimeType, url ->
+                            if (mimeType == FileType.IMAGE) {
+                                onNavigateToImageViewer(url)
+                            } else {
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(browserIntent)
+                            }
+                        },
+                        onClickLink = { url ->
                             val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                             context.startActivity(browserIntent)
                         },

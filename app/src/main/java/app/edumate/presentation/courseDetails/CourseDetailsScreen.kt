@@ -26,6 +26,7 @@ fun CourseDetailsScreen(
     uiState: CourseDetailsUiState,
     onEvent: (CourseDetailsUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -53,6 +54,7 @@ fun CourseDetailsScreen(
                     courseWithMembers = courseWithMembers,
                     currentUserRole = uiState.currentUserRole,
                     onNavigateUp = onNavigateUp,
+                    onNavigateToImageViewer = onNavigateToImageViewer,
                     onLeaveCourse = onLeaveCourse,
                     modifier = modifier,
                 )
@@ -71,6 +73,7 @@ fun CourseDetailsContent(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
     // Separate NavHostController for nested navigation
@@ -91,6 +94,7 @@ fun CourseDetailsContent(
             courseWithMembers = courseWithMembers,
             currentUserRole = currentUserRole,
             onNavigateUp = onNavigateUp,
+            onNavigateToImageViewer = onNavigateToImageViewer,
             onLeaveCourse = onLeaveCourse,
             modifier =
                 Modifier

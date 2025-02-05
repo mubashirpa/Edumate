@@ -1,6 +1,7 @@
 package app.edumate.presentation.stream
 
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
@@ -101,6 +102,7 @@ fun StreamScreen(
     currentUserRole: CourseUserRole,
     commentsBottomSheetUiState: CommentsBottomSheetUiState,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -297,6 +299,15 @@ fun StreamScreen(
                                             },
                                             onClearSelection = {
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))
+                                            },
+                                            onFileAttachmentClick = { mimeType, url ->
+                                                if (mimeType == FileType.IMAGE) {
+                                                    onNavigateToImageViewer(url)
+                                                } else {
+                                                    val browserIntent =
+                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                    context.startActivity(browserIntent)
+                                                }
                                             },
                                             onClick = { id ->
                                                 if (uiState.editAnnouncementId == null) {
@@ -524,6 +535,7 @@ private fun StreamScreenPreview() {
             currentUserRole = CourseUserRole.Teacher(true),
             commentsBottomSheetUiState = CommentsBottomSheetUiState(),
             onNavigateUp = {},
+            onNavigateToImageViewer = {},
         )
     }
 }
