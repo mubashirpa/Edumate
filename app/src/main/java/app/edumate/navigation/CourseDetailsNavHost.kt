@@ -27,7 +27,7 @@ fun CourseDetailsNavHost(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
-    onNavigateToImageViewer: (url: String) -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

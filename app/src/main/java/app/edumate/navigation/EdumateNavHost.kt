@@ -126,8 +126,8 @@ fun EdumateNavHost(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
-                onNavigateToImageViewer = { url ->
-                    navController.navigate(Screen.ImageViewer(url))
+                onNavigateToImageViewer = { url, title ->
+                    navController.navigate(Screen.ImageViewer(url, title))
                 },
                 onLeaveCourse = {
                     navController.previousBackStackEntry

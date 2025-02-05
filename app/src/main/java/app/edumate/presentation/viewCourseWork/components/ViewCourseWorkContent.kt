@@ -60,7 +60,7 @@ fun ViewCourseWorkContent(
     courseWork: CourseWork,
     isCurrentUserTeacher: Boolean,
     fileUtils: FileUtils,
-    onNavigateToImageViewer: (url: String) -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -121,9 +121,9 @@ fun ViewCourseWorkContent(
                     AttachmentsListItem(
                         material = material,
                         fileUtils = fileUtils,
-                        onClickFile = { mimeType, url ->
+                        onClickFile = { mimeType, url, title ->
                             if (mimeType == FileType.IMAGE) {
-                                onNavigateToImageViewer(url)
+                                onNavigateToImageViewer(url, title)
                             } else {
                                 val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                                 context.startActivity(browserIntent)

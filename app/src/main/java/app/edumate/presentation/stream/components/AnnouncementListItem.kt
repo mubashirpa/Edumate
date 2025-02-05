@@ -80,7 +80,7 @@ fun AnnouncementListItem(
     onDeleteClick: (id: String) -> Unit,
     onCopyLinkClick: (link: String) -> Unit,
     onClearSelection: () -> Unit,
-    onFileAttachmentClick: (mimeType: FileType, url: String) -> Unit,
+    onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClick: (id: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -134,7 +134,7 @@ private fun AnnouncementListItemContent(
     onDeleteClick: () -> Unit,
     onCopyLinkClick: () -> Unit,
     onClearSelection: () -> Unit,
-    onFileAttachmentClick: (mimeType: FileType, url: String) -> Unit,
+    onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -264,7 +264,11 @@ private fun AnnouncementListItemContent(
                                 AssistChip(
                                     onClick = {
                                         material.driveFile.alternateLink?.let {
-                                            onFileAttachmentClick(mimeType, it)
+                                            onFileAttachmentClick(
+                                                mimeType,
+                                                it,
+                                                material.driveFile.title,
+                                            )
                                         }
                                     },
                                     label = {
@@ -417,7 +421,7 @@ private fun AnnouncementListItemPreview() {
             onDeleteClick = {},
             onCopyLinkClick = {},
             onClearSelection = {},
-            onFileAttachmentClick = { _, _ -> },
+            onFileAttachmentClick = { _, _, _ -> },
             onClick = {},
         )
     }

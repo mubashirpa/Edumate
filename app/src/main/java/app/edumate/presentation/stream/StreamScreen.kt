@@ -102,7 +102,7 @@ fun StreamScreen(
     currentUserRole: CourseUserRole,
     commentsBottomSheetUiState: CommentsBottomSheetUiState,
     onNavigateUp: () -> Unit,
-    onNavigateToImageViewer: (url: String) -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -300,9 +300,9 @@ fun StreamScreen(
                                             onClearSelection = {
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))
                                             },
-                                            onFileAttachmentClick = { mimeType, url ->
+                                            onFileAttachmentClick = { mimeType, url, title ->
                                                 if (mimeType == FileType.IMAGE) {
-                                                    onNavigateToImageViewer(url)
+                                                    onNavigateToImageViewer(url, title)
                                                 } else {
                                                     val browserIntent =
                                                         Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -535,7 +535,7 @@ private fun StreamScreenPreview() {
             currentUserRole = CourseUserRole.Teacher(true),
             commentsBottomSheetUiState = CommentsBottomSheetUiState(),
             onNavigateUp = {},
-            onNavigateToImageViewer = {},
+            onNavigateToImageViewer = { _, _ -> },
         )
     }
 }

@@ -47,7 +47,7 @@ import coil3.request.crossfade
 fun AttachmentsListItem(
     material: Material,
     fileUtils: FileUtils,
-    onClickFile: (mimeType: FileType, url: String) -> Unit,
+    onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClickLink: (url: String) -> Unit,
 ) {
     AttachmentsListItemContent(
@@ -64,7 +64,7 @@ private fun AttachmentsListItemContent(
     driveFile: DriveFile?,
     link: Link?,
     fileUtils: FileUtils,
-    onClickFile: (mimeType: FileType, url: String) -> Unit,
+    onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClickLink: (url: String) -> Unit,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -114,7 +114,7 @@ private fun AttachmentsListItemContent(
                     onClick = {
                         when {
                             link != null -> onClickLink(url!!)
-                            driveFile != null -> onClickFile(mimeType, url!!)
+                            driveFile != null -> onClickFile(mimeType, url!!, driveFile.title)
                         }
                     },
                 ),

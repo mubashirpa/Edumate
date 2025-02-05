@@ -26,7 +26,7 @@ fun CourseDetailsScreen(
     uiState: CourseDetailsUiState,
     onEvent: (CourseDetailsUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
-    onNavigateToImageViewer: (url: String) -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -73,7 +73,7 @@ fun CourseDetailsContent(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
-    onNavigateToImageViewer: (url: String) -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
     // Separate NavHostController for nested navigation
