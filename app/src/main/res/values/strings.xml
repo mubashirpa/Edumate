@@ -15,8 +15,10 @@
     <string name="ask_gemini">Ask Gemini</string>
     <string name="ask_teacher_for_class_code">Ask your teacher for the class code then enter it here</string>
     <string name="assign">Assign</string>
+    <string name="assigned">Assigned</string>
     <string name="assignment">Assignment</string>
     <string name="assignment_title">Assignment title</string>
+    <string name="attachments">Attachments</string>
     <string name="cancel">Cancel</string>
     <string name="change_point_value">Change point value</string>
     <string name="choose_new_password">Choose new password</string>
@@ -51,6 +53,7 @@
     <string name="dialog_title_remove_teacher">Remove teacher?</string>
     <string name="dialog_title_unenroll">Unenroll</string>
     <string name="dismiss_as_teacher">Dismiss as teacher</string>
+    <string name="done_late">Done late</string>
     <string name="dont_have_an_account">Don\'t have an account?</string>
     <string name="due_">Due %1$s</string>
     <string name="due_today">Due today</string>
@@ -76,6 +79,7 @@
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
     <string name="insert_link">Insert link</string>
+    <string name="instructions">Instructions</string>
     <string name="invite">Invite</string>
     <string name="invite_link_copied">Invite link copied</string>
     <string name="invite_students_to_your_class">Invite students to your class.</string>
@@ -85,6 +89,8 @@
     <string name="join_class_description">Ask your teacher for the class code, then enter it here</string>
     <string name="label_animate_bottom_sheet_corner_size" translatable="false">ModalBottomSheet Corner Size</string>
     <string name="label_animate_bottom_sheet_top_padding" translatable="false">ModalBottomSheet DragHandle Top Padding</string>
+    <string name="label_student_answers">Student Answers</string>
+    <string name="label_student_work">Student Work</string>
     <string name="leave">Leave</string>
     <string name="leave_class">Leave class</string>
     <string name="link">Link</string>
@@ -93,6 +99,7 @@
     <string name="make_teacher">Make teacher</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
+    <string name="missing">Missing</string>
     <string name="missing_message">Missing message</string>
     <string name="missing_question_type">Missing question type</string>
     <string name="missing_title">Missing title</string>
@@ -146,6 +153,9 @@
     <string name="teacher">Teacher</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
+    <string name="turn_in">Turn in</string>
+    <string name="turned_in">Turned in</string>
+    <string name="type_your_answer">Type your answer</string>
     <string name="unable_to_leave_class">Unable to leave class.</string>
     <string name="unable_to_remove_student">Unable to remove student.</string>
     <string name="unable_to_remove_teacher">Unable to remove teacher.</string>
@@ -159,6 +169,8 @@
     <string name="your_teacher_hasn_t_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
     <string name="posted_edited_">Posted %1$s (Edited %2$s)</string>
     <string name="yesterday">Yesterday</string>
+    <string name="your_answer">Your answer</string>
+    <string name="your_work">Your work</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>

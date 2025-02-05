@@ -13,6 +13,7 @@ import app.edumate.presentation.resetPassword.ResetPasswordViewModel
 import app.edumate.presentation.signIn.SignInViewModel
 import app.edumate.presentation.signUp.SignUpViewModel
 import app.edumate.presentation.stream.StreamViewModel
+import app.edumate.presentation.viewCourseWork.ViewCourseWorkViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -31,4 +32,5 @@ val viewModelModule =
         viewModelOf(::SignInViewModel)
         viewModelOf(::SignUpViewModel)
         viewModelOf(::StreamViewModel)
+        viewModelOf(::ViewCourseWorkViewModel)
     }
