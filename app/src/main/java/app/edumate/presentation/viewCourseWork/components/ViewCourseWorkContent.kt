@@ -184,9 +184,9 @@ private fun LazyGridScope.shortAnswerContent(
 
         OutlinedCard(modifier = modifier) {
             when (val studentSubmissionResult = uiState.studentSubmissionResult) {
-                is app.edumate.core.Result.Empty -> {}
+                is Result.Empty -> {}
 
-                is app.edumate.core.Result.Error -> {
+                is Result.Error -> {
                     ErrorScreen(
                         modifier =
                             Modifier
@@ -199,11 +199,11 @@ private fun LazyGridScope.shortAnswerContent(
                     )
                 }
 
-                is app.edumate.core.Result.Loading -> {
+                is Result.Loading -> {
                     LoadingScreen(modifier = Modifier.height(128.dp))
                 }
 
-                is app.edumate.core.Result.Success -> {
+                is Result.Success -> {
                     val studentSubmission = studentSubmissionResult.data
 
                     if (studentSubmission != null) {
@@ -306,9 +306,9 @@ private fun LazyGridScope.multipleChoiceContent(
     header {
         OutlinedCard(modifier = modifier) {
             when (val studentSubmissionResult = uiState.studentSubmissionResult) {
-                is app.edumate.core.Result.Empty -> {}
+                is Result.Empty -> {}
 
-                is app.edumate.core.Result.Error -> {
+                is Result.Error -> {
                     ErrorScreen(
                         modifier =
                             Modifier
@@ -321,7 +321,7 @@ private fun LazyGridScope.multipleChoiceContent(
                     )
                 }
 
-                is app.edumate.core.Result.Loading -> {
+                is Result.Loading -> {
                     LoadingScreen(modifier = Modifier.height(128.dp))
                 }
 
