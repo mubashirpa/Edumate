@@ -101,7 +101,7 @@ fun CommentListItem(
                 UserAvatar(
                     id = creator?.id.orEmpty(),
                     fullName = creator?.name.orEmpty(),
-                    photoUrl = creator?.avatarUrl,
+                    photoUrl = creator?.photoUrl,
                 )
             },
             trailingContent =

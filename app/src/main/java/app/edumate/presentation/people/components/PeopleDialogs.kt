@@ -56,7 +56,7 @@ fun DeletePersonDialog(
                     UserAvatar(
                         id = userId.orEmpty(),
                         fullName = userName,
-                        photoUrl = user.avatarUrl,
+                        photoUrl = user.photoUrl,
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(text = userName)

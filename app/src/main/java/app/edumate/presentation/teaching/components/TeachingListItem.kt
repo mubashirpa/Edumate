@@ -99,7 +99,7 @@ fun TeachingListItem(
                     UserAvatar(
                         id = teachingCourse.owner?.id.orEmpty(),
                         fullName = teachingCourse.owner?.name.orEmpty(),
-                        photoUrl = teachingCourse.owner?.avatarUrl,
+                        photoUrl = teachingCourse.owner?.photoUrl,
                         size = InputChipDefaults.AvatarSize,
                         shape = MaterialTheme.shapes.medium,
                         textStyle = MaterialTheme.typography.labelSmall,

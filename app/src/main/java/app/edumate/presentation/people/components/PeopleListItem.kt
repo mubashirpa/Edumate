@@ -54,7 +54,7 @@ fun PeopleListItem(
     PeopleListItemContent(
         userId = itemUserId.orEmpty(),
         name = person?.name.orEmpty(),
-        photoUrl = person?.avatarUrl,
+        photoUrl = person?.photoUrl,
         currentUserRole = currentUserRole,
         itemUserRole = itemUserRole,
         isCurrentUserItem = isCurrentUserItem,

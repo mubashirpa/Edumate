@@ -100,7 +100,7 @@ private fun JoinCourseBottomSheetContent(
                 UserAvatar(
                     id = user?.id.orEmpty(),
                     fullName = user?.name.orEmpty(),
-                    photoUrl = user?.avatarUrl,
+                    photoUrl = user?.photoUrl,
                 )
             },
             colors = colors,

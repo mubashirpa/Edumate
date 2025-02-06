@@ -162,7 +162,7 @@ private fun HomeContent(
                             fullName =
                                 uiState.currentUser?.name
                                     ?: uiState.currentUser?.email.orEmpty(),
-                            photoUrl = uiState.currentUser?.avatarUrl,
+                            photoUrl = uiState.currentUser?.photoUrl,
                             modifier = Modifier.clickable(onClick = onNavigateToProfile),
                             size = 30.dp,
                             textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),

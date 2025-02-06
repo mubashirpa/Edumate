@@ -132,7 +132,7 @@ private fun ProfileContent(
                         fullName =
                             currentUser?.name
                                 ?: currentUser?.email.orEmpty(),
-                        photoUrl = currentUser?.avatarUrl,
+                        photoUrl = currentUser?.photoUrl,
                         size = 96.dp,
                         shape = MaterialTheme.shapes.extraLarge,
                         textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 36.sp),

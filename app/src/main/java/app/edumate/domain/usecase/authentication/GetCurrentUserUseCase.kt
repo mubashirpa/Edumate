@@ -18,16 +18,16 @@ class GetCurrentUserUseCase(
             authenticationRepository.currentUser()?.let {
                 val currentUser =
                     User(
-                        avatarUrl =
-                            it.userMetadata
-                                ?.get(Authentication.Metadata.AVATAR_URL)
-                                ?.toString()
-                                ?.replace("\"", ""),
                         email = it.email,
                         id = it.id,
                         name =
                             it.userMetadata
                                 ?.get(Authentication.Metadata.NAME)
+                                ?.toString()
+                                ?.replace("\"", ""),
+                        photoUrl =
+                            it.userMetadata
+                                ?.get(Authentication.Metadata.AVATAR_URL)
                                 ?.toString()
                                 ?.replace("\"", ""),
                     )
