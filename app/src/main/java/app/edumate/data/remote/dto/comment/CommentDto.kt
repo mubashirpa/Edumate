@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CommentDto(
+    @SerialName("course_id")
+    val courseId: String? = null,
     @SerialName("creation_time")
     val creationTime: String? = null,
     val creator: UserDto? = null,
