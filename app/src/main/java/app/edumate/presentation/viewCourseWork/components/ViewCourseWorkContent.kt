@@ -1,7 +1,10 @@
 package app.edumate.presentation.viewCourseWork.components
 
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -45,11 +48,13 @@ import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.courseWork.CourseWorkType
+import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.AttachmentsListItem
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkUiEvent
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkUiState
+import java.io.File
 import kotlin.collections.forEach
 import kotlin.collections.orEmpty
 
@@ -70,6 +75,12 @@ fun ViewCourseWorkContent(
     val attachments = courseWork.materials
     val workType = courseWork.workType
     val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
+    val filePicker =
+        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
+            }
+        }
 
     LazyVerticalGrid(
         columns = GridCells.Adaptive(minSize = 128.dp),
@@ -143,7 +154,7 @@ fun ViewCourseWorkContent(
                             Button(
                                 onClick = {
                                     onEvent(
-                                        ViewCourseWorkUiEvent.OnShowYourWorkBottomSheetChange(
+                                        ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(
                                             true,
                                         ),
                                     )
@@ -179,6 +190,65 @@ fun ViewCourseWorkContent(
                     else -> Unit
                 }
             }
+        },
+    )
+
+    StudentSubmissionBottomSheet(
+        show = uiState.showStudentSubmissionBottomSheet,
+        courseWork = courseWork,
+        studentSubmissionResult = uiState.studentSubmissionResult,
+        attachments = uiState.assignmentAttachments,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(false))
+        },
+        onAddAttachmentClick = {
+            filePicker.launch("*/*")
+        },
+        onRemoveAttachmentClick = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenRemoveAttachmentDialogChange(it))
+        },
+        onSubmitClick = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenTurnInDialogChange(true))
+        },
+        onUnSubmitClick = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenUnSubmitDialogChange(true))
+        },
+        onRetryClick = {
+            onEvent(ViewCourseWorkUiEvent.Retry)
+        },
+    )
+
+    TurnInDialog(
+        open = uiState.openTurnInDialog,
+        courseWorkTitle = courseWork.title.orEmpty(),
+        isQuestion = workType == CourseWorkType.MULTIPLE_CHOICE_QUESTION || workType == CourseWorkType.SHORT_ANSWER_QUESTION,
+        submissionState = uiState.studentSubmissionResult.data?.state ?: SubmissionState.CREATED,
+        studentSubmissionAttachmentsSize = uiState.assignmentAttachments.size,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenTurnInDialogChange(false))
+        },
+        onConfirmButtonClick = {
+            onEvent(ViewCourseWorkUiEvent.TurnIn(courseWork.workType))
+        },
+    )
+
+    UnSubmitDialog(
+        open = uiState.openUnSubmitDialog,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenUnSubmitDialogChange(false))
+        },
+        onConfirmButtonClick = {
+            onEvent(ViewCourseWorkUiEvent.Reclaim)
+        },
+    )
+
+    RemoveAttachmentDialog(
+        open = uiState.removeAttachmentIndex != null,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenRemoveAttachmentDialogChange(null))
+        },
+        onConfirmButtonClick = {
+            onEvent(ViewCourseWorkUiEvent.RemoveAttachment(uiState.removeAttachmentIndex!!))
         },
     )
 }
@@ -421,4 +491,23 @@ private fun LazyGridScope.multipleChoiceContent(
             }
         }
     }
+}
+
+private fun Uri.handleFile(
+    fileUtils: FileUtils,
+    context: Context,
+): ViewCourseWorkUiEvent.OnFilePicked {
+    val title =
+        fileUtils.getFileName(this) ?: "$lastPathSegment.${fileUtils.getFileExtension(this)}"
+    val bytes = fileUtils.uriToByteArray(this)
+    val file = File(context.cacheDir, title)
+    file.writeBytes(bytes)
+    val length =
+        try {
+            file.length()
+        } catch (_: SecurityException) {
+            null
+        }
+    val mimeType = fileUtils.getMimeType(this)
+    return ViewCourseWorkUiEvent.OnFilePicked(file, title, mimeType, length)
 }

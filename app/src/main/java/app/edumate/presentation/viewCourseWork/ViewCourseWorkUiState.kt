@@ -10,8 +10,8 @@ import app.edumate.domain.model.material.Material
 import app.edumate.domain.model.studentSubmission.StudentSubmission
 
 data class ViewCourseWorkUiState(
+    val assignmentAttachments: SnapshotStateList<Material> = mutableStateListOf(),
     val courseWorkResult: Result<CourseWork> = Result.Empty(),
-    val currentUserId: String? = null,
     val editShortAnswer: Boolean = false,
     val expandedAppBarDropdown: Boolean = false,
     val isRefreshing: Boolean = false,
@@ -21,8 +21,8 @@ data class ViewCourseWorkUiState(
     val openUnSubmitDialog: Boolean = false,
     val removeAttachmentIndex: Int? = null,
     val shortAnswer: TextFieldState = TextFieldState(),
-    val showYourWorkBottomSheet: Boolean = false,
-    val studentSubmissionAttachments: SnapshotStateList<Material> = mutableStateListOf(),
+    val showStudentSubmissionBottomSheet: Boolean = false,
     val studentSubmissionResult: Result<StudentSubmission> = Result.Empty(),
+    val uploadProgress: Float? = null,
     val userMessage: UiText? = null,
 )

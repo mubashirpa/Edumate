@@ -1,7 +1,7 @@
 package app.edumate.presentation.viewCourseWork
 
-import android.net.Uri
 import app.edumate.domain.model.courseWork.CourseWorkType
+import java.io.File
 
 sealed class ViewCourseWorkUiEvent {
     data class OnEditShortAnswerChange(
@@ -13,8 +13,10 @@ sealed class ViewCourseWorkUiEvent {
     ) : ViewCourseWorkUiEvent()
 
     data class OnFilePicked(
-        val uri: Uri,
+        val file: File,
         val title: String,
+        val mimeType: String?,
+        val size: Long?,
     ) : ViewCourseWorkUiEvent()
 
     data class OnMultipleChoiceAnswerValueChange(
@@ -33,7 +35,7 @@ sealed class ViewCourseWorkUiEvent {
         val open: Boolean,
     ) : ViewCourseWorkUiEvent()
 
-    data class OnShowYourWorkBottomSheetChange(
+    data class OnShowStudentSubmissionBottomSheetChange(
         val show: Boolean,
     ) : ViewCourseWorkUiEvent()
 
