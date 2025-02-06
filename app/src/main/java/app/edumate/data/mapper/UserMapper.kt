@@ -7,25 +7,25 @@ import app.edumate.domain.model.user.User
 
 fun UserDto.toUserDomainModel(): User =
     User(
-        avatarUrl = avatarUrl,
         email = email,
         id = id,
         name = name,
+        photoUrl = photoUrl,
     )
 
 fun User.toUserDto(): UserDto =
     UserDto(
-        avatarUrl = avatarUrl,
         email = email,
         id = id,
         name = name,
+        photoUrl = photoUrl,
     )
 
 fun UsersDto.toUserDomainModel(): User =
     User(
-        avatarUrl = user?.avatarUrl,
         email = user?.email,
         id = user?.id,
         name = user?.name,
+        photoUrl = user?.photoUrl,
         role = role?.let { enumValueOf<UserRole>(it.name) },
     )
