@@ -59,11 +59,14 @@ object Supabase {
     object Function {
         const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
         const val INSERT_MEMBER = "insert_member"
+        const val GET_STUDENT_SUBMISSION = "get_or_create_student_submission"
     }
 
     object Parameters {
         const val ANNOUNCEMENT_ID = "p_announcement_id"
         const val COURSE_ID = "p_course_id"
+        const val COURSE_WORK_ID = "p_course_work_id"
+        const val COURSE_WORK_TYPE = "p_course_work_type"
         const val TEXT = "p_text"
         const val USER_ID = "p_user_id"
     }
