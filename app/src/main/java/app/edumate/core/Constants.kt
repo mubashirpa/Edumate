@@ -61,6 +61,13 @@ object Supabase {
         const val INSERT_MEMBER = "insert_member"
     }
 
+    object Parameters {
+        const val ANNOUNCEMENT_ID = "p_announcement_id"
+        const val COURSE_ID = "p_course_id"
+        const val TEXT = "p_text"
+        const val USER_ID = "p_user_id"
+    }
+
     object Storage {
         const val MATERIALS_BUCKET_ID = "materials"
     }
@@ -70,7 +77,7 @@ object Supabase {
         const val ANNOUNCEMENT_COMMENTS = "announcement_comments"
         const val COMMENTS = "comments"
         const val COURSES = "courses"
-        const val COURSE_WORKS = "courseworks"
+        const val COURSE_WORKS = "course_works"
         const val MEMBERS = "members"
     }
 }

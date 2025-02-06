@@ -86,6 +86,7 @@ class StreamViewModel(
                     )
                 } else {
                     addComment(
+                        courseId = args.courseId,
                         announcementId = event.announcementId,
                         text = text,
                     )
@@ -417,6 +418,7 @@ class StreamViewModel(
     }
 
     private fun addComment(
+        courseId: String,
         announcementId: String,
         text: String,
     ) {
@@ -429,7 +431,7 @@ class StreamViewModel(
             return
         }
 
-        createAnnouncementCommentUseCase(announcementId, text)
+        createAnnouncementCommentUseCase(courseId, announcementId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}

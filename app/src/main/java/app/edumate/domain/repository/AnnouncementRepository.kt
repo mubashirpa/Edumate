@@ -19,10 +19,11 @@ interface AnnouncementRepository {
     suspend fun deleteAnnouncement(id: String): AnnouncementDto
 
     suspend fun createComment(
-        id: String,
+        courseId: String,
+        announcementId: String,
         userId: String,
         text: String,
     ): CommentDto
 
-    suspend fun getComments(id: String): List<CommentsDto>
+    suspend fun getComments(announcementId: String): List<CommentsDto>
 }

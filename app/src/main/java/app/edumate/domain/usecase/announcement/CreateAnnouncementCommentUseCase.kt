@@ -22,14 +22,18 @@ class CreateAnnouncementCommentUseCase(
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     operator fun invoke(
-        id: String,
+        courseId: String,
+        announcementId: String,
         text: String,
     ): Flow<Result<Comment>> =
         flow {
             try {
                 emit(Result.Loading())
                 authenticationRepository.currentUser()?.id?.let { userId ->
-                    val result = announcementRepository.createComment(id, userId, text).toComment()
+                    val result =
+                        announcementRepository
+                            .createComment(courseId, announcementId, userId, text)
+                            .toComment()
                     emit(Result.Success(result))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: RestException) {

@@ -68,7 +68,8 @@ class AnnouncementRepositoryImpl(
             }.decodeSingle()
 
     override suspend fun createComment(
-        id: String,
+        courseId: String,
+        announcementId: String,
         userId: String,
         text: String,
     ): CommentDto =
@@ -77,18 +78,19 @@ class AnnouncementRepositoryImpl(
                 function = Supabase.Function.INSERT_ANNOUNCEMENT_COMMENT,
                 parameters =
                     buildJsonObject {
-                        put(Supabase.Column.ANNOUNCEMENT_ID, id)
-                        put(Supabase.Column.USER_ID, userId)
-                        put(Supabase.Column.TEXT, text)
+                        put(Supabase.Parameters.COURSE_ID, courseId)
+                        put(Supabase.Parameters.ANNOUNCEMENT_ID, announcementId)
+                        put(Supabase.Parameters.USER_ID, userId)
+                        put(Supabase.Parameters.TEXT, text)
                     },
             ).decodeAs()
 
-    override suspend fun getComments(id: String): List<CommentsDto> =
+    override suspend fun getComments(announcementId: String): List<CommentsDto> =
         postgrest
             .from(Supabase.Table.ANNOUNCEMENT_COMMENTS)
             .select(Columns.raw("comment:comments(*, creator:users!creator_user_id(*))")) {
                 filter {
-                    eq(Supabase.Column.ANNOUNCEMENT_ID, id)
+                    eq(Supabase.Column.ANNOUNCEMENT_ID, announcementId)
                 }
             }.decodeList()
 }
