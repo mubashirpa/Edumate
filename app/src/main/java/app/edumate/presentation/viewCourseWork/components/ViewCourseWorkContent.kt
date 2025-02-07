@@ -199,6 +199,7 @@ fun ViewCourseWorkContent(
         courseWork = courseWork,
         studentSubmissionResult = uiState.studentSubmissionResult,
         attachments = uiState.assignmentAttachments,
+        userMessage = uiState.userMessage,
         onDismissRequest = {
             onEvent(ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(false))
         },
