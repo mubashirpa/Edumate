@@ -30,4 +30,7 @@ fun StudentSubmissionDto.toStudentSubmissionDomainModel(): StudentSubmission =
 fun AssignmentSubmissionDto.toAssignmentSubmissionDomainModel(): AssignmentSubmission =
     AssignmentSubmission(attachments = attachments?.map { it.toMaterialDomainModel() })
 
+fun AssignmentSubmission.toAssignmentSubmissionDomainModel(): AssignmentSubmissionDto =
+    AssignmentSubmissionDto(attachments = attachments?.map { it.toMaterialDto() })
+
 fun QuestionSubmissionDto.toQuestionSubmissionDomainModel(): QuestionSubmission = QuestionSubmission(answer = answer)

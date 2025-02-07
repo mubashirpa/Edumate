@@ -37,7 +37,7 @@ class StudentSubmissionRepositoryImpl(
 
     override suspend fun modifyStudentSubmissionAttachments(
         id: String,
-        attachments: AssignmentSubmissionDto,
+        attachments: AssignmentSubmissionDto?,
     ): StudentSubmissionDto =
         postgrest[Supabase.Table.STUDENT_SUBMISSIONS]
             .update(

@@ -14,7 +14,7 @@ interface StudentSubmissionRepository {
 
     suspend fun modifyStudentSubmissionAttachments(
         id: String,
-        attachments: AssignmentSubmissionDto,
+        attachments: AssignmentSubmissionDto?,
     ): StudentSubmissionDto
 
     suspend fun updateStudentSubmission(
