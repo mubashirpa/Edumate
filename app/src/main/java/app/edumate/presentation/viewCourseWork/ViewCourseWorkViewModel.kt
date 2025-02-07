@@ -316,6 +316,7 @@ class ViewCourseWorkViewModel(
                     }
 
                     is Result.Success -> {
+                        uiState = uiState.copy(editShortAnswer = false)
                         turnIn(courseWorkId, id)
                     }
                 }
