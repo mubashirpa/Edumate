@@ -439,7 +439,7 @@ private fun LazyGridScope.multipleChoiceContent(
                             )
                         }
                         Spacer(modifier = Modifier.height(12.dp))
-                        Column(modifier = Modifier.selectableGroup()) {
+                        Column(modifier = Modifier.padding(bottom = 12.dp).selectableGroup()) {
                             choices.forEach { text ->
                                 Row(
                                     Modifier
@@ -480,7 +480,8 @@ private fun LazyGridScope.multipleChoiceContent(
                                 modifier =
                                     Modifier
                                         .fillMaxWidth()
-                                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                                        .padding(horizontal = 16.dp)
+                                        .padding(bottom = 12.dp),
                                 enabled = uiState.multipleChoiceAnswer.isNotEmpty(),
                             ) {
                                 Text(text = stringResource(id = R.string.turn_in))
