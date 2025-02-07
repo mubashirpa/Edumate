@@ -52,6 +52,7 @@ import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.AttachmentsListItem
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
+import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkUiEvent
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkUiState
 import java.io.File
@@ -250,6 +251,12 @@ fun ViewCourseWorkContent(
         onConfirmButtonClick = {
             onEvent(ViewCourseWorkUiEvent.RemoveAttachment(uiState.removeAttachmentIndex!!))
         },
+    )
+
+    ProgressDialog(
+        open = uiState.uploadProgress != null,
+        progress = { uiState.uploadProgress ?: 0.0f },
+        onDismissRequest = {},
     )
 }
 
