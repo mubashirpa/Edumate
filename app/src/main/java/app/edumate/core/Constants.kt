@@ -37,6 +37,8 @@ object Authentication {
 object Supabase {
     object Column {
         const val ANNOUNCEMENT_ID = "announcement_id"
+        const val ASSIGNED_GRADE = "assigned_grade"
+        const val ASSIGNMENT_SUBMISSION = "assignment_submission"
         const val COURSE_ID = "course_id"
         const val CREATION_TIME = "creation_time"
         const val DESCRIPTION = "description"
@@ -49,6 +51,7 @@ object Supabase {
         const val ROLE = "role"
         const val ROOM = "room"
         const val SECTION = "section"
+        const val STATE = "state"
         const val SUBJECT = "subject"
         const val TEXT = "text"
         const val TITLE = "title"
@@ -57,6 +60,7 @@ object Supabase {
     }
 
     object Function {
+        const val TURN_IN_STUDENT_SUBMISSION = "turn_in_student_submission"
         const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
         const val INSERT_MEMBER = "insert_member"
         const val GET_STUDENT_SUBMISSION = "get_or_create_student_submission"
@@ -67,6 +71,7 @@ object Supabase {
         const val COURSE_ID = "p_course_id"
         const val COURSE_WORK_ID = "p_course_work_id"
         const val COURSE_WORK_TYPE = "p_course_work_type"
+        const val ID = "p_id"
         const val TEXT = "p_text"
         const val USER_ID = "p_user_id"
     }
@@ -82,6 +87,7 @@ object Supabase {
         const val COURSES = "courses"
         const val COURSE_WORKS = "course_works"
         const val MEMBERS = "members"
+        const val STUDENT_SUBMISSIONS = "student_submissions"
     }
 }
 

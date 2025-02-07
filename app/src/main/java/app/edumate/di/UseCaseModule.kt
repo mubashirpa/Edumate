@@ -42,6 +42,8 @@ import app.edumate.domain.usecase.member.UpdateMemberUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
@@ -79,12 +81,14 @@ val useCaseModule =
         singleOf(::GetUrlMetadataUseCase)
         singleOf(::IsUserLoggedInUseCase)
         singleOf(::JoinCourseUseCase)
+        singleOf(::ReclaimStudentSubmissionUseCase)
         singleOf(::ResendSignUpConfirmationEmailUseCase)
         singleOf(::ResetPasswordUseCase)
         singleOf(::SignInUseCase)
         singleOf(::SignInWithGoogleUseCase)
         singleOf(::SignOutUseCase)
         singleOf(::SignUpUseCase)
+        singleOf(::TurnInStudentSubmissionUseCase)
         singleOf(::UnenrollCourseUseCase)
         singleOf(::UpdateAnnouncementUseCase)
         singleOf(::UpdateCommentUseCase)
