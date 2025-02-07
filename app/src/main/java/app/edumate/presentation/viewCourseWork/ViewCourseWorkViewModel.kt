@@ -20,6 +20,7 @@ import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.UpdateStudentSubmissionUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -33,6 +34,7 @@ class ViewCourseWorkViewModel(
     private val modifyStudentSubmissionAttachmentsUseCase: ModifyStudentSubmissionAttachmentsUseCase,
     private val turnInStudentSubmissionUseCase: TurnInStudentSubmissionUseCase,
     private val reclaimStudentSubmissionUseCase: ReclaimStudentSubmissionUseCase,
+    private val updateStudentSubmissionUseCase: UpdateStudentSubmissionUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
 ) : ViewModel() {
@@ -128,7 +130,32 @@ class ViewCourseWorkViewModel(
             }
 
             is ViewCourseWorkUiEvent.TurnIn -> {
-                turnIn(courseWorkId = courseWorkId, id = studentSubmissionId!!)
+                when (courseWorkType) {
+                    CourseWorkType.ASSIGNMENT -> {
+                        turnIn(courseWorkId = courseWorkId, id = studentSubmissionId!!)
+                    }
+
+                    CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                        updateStudentSubmission(
+                            id = studentSubmissionId!!,
+                            multipleChoiceAnswer = uiState.multipleChoiceAnswer,
+                            shortAnswer = null,
+                        )
+                    }
+
+                    CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                        updateStudentSubmission(
+                            id = studentSubmissionId!!,
+                            multipleChoiceAnswer = null,
+                            shortAnswer =
+                                uiState.shortAnswer.text
+                                    .toString()
+                                    .trim(),
+                        )
+                    }
+
+                    else -> {}
+                }
             }
 
             ViewCourseWorkUiEvent.UserMessageShown -> {
@@ -261,6 +288,35 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun updateStudentSubmission(
+        id: String,
+        multipleChoiceAnswer: String?,
+        shortAnswer: String?,
+    ) {
+        updateStudentSubmissionUseCase(id, multipleChoiceAnswer, shortAnswer)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        turnIn(courseWorkId, id)
                     }
                 }
             }.launchIn(viewModelScope)
