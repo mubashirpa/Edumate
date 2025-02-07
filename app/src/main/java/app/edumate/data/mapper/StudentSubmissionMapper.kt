@@ -1,8 +1,10 @@
 package app.edumate.data.mapper
 
+import app.edumate.data.remote.dto.courseWork.CourseWorkTypeDto
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.QuestionSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
+import app.edumate.data.remote.dto.studentSubmission.SubmissionStateDto
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.studentSubmission.AssignmentSubmission
 import app.edumate.domain.model.studentSubmission.QuestionSubmission
@@ -27,10 +29,30 @@ fun StudentSubmissionDto.toStudentSubmissionDomainModel(): StudentSubmission =
         userId = userId,
     )
 
+fun StudentSubmission.toStudentSubmissionDto(): StudentSubmissionDto =
+    StudentSubmissionDto(
+        alternateLink = alternateLink,
+        assignedGrade = assignedGrade,
+        assignmentSubmission = assignmentSubmission?.toAssignmentSubmissionDto(),
+        courseId = courseId,
+        courseWorkId = courseWorkId,
+        courseWorkType = courseWorkType?.let { enumValueOf<CourseWorkTypeDto>(it.name) },
+        creationTime = creationTime,
+        id = id,
+        late = late,
+        multipleChoiceSubmission = multipleChoiceSubmission?.toQuestionSubmissionDto(),
+        shortAnswerSubmission = shortAnswerSubmission?.toQuestionSubmissionDto(),
+        state = state?.let { enumValueOf<SubmissionStateDto>(it.name) },
+        updateTime = updateTime,
+        userId = userId,
+    )
+
 fun AssignmentSubmissionDto.toAssignmentSubmissionDomainModel(): AssignmentSubmission =
     AssignmentSubmission(attachments = attachments?.map { it.toMaterialDomainModel() })
 
-fun AssignmentSubmission.toAssignmentSubmissionDomainModel(): AssignmentSubmissionDto =
+fun AssignmentSubmission.toAssignmentSubmissionDto(): AssignmentSubmissionDto =
     AssignmentSubmissionDto(attachments = attachments?.map { it.toMaterialDto() })
 
 fun QuestionSubmissionDto.toQuestionSubmissionDomainModel(): QuestionSubmission = QuestionSubmission(answer = answer)
+
+fun QuestionSubmission.toQuestionSubmissionDto(): QuestionSubmissionDto = QuestionSubmissionDto(answer = answer)

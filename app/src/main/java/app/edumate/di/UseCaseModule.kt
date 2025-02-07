@@ -45,6 +45,7 @@ import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.UpdateStudentSubmissionUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
 import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
@@ -98,6 +99,7 @@ val useCaseModule =
         singleOf(::UpdateCourseWorkUseCase)
         singleOf(::UpdateMemberUseCase)
         singleOf(::UpdatePasswordUseCase)
+        singleOf(::UpdateStudentSubmissionUseCase)
         singleOf(::UploadFileUseCase)
         singleOf(::ValidateEmail)
         singleOf(::ValidateName)

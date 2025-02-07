@@ -3,10 +3,9 @@ package app.edumate.domain.usecase.studentSubmission
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.data.mapper.toAssignmentSubmissionDto
 import app.edumate.data.mapper.toStudentSubmissionDomainModel
-import app.edumate.domain.model.material.Material
-import app.edumate.domain.model.studentSubmission.AssignmentSubmission
+import app.edumate.data.mapper.toStudentSubmissionDto
+import app.edumate.domain.model.studentSubmission.QuestionSubmission
 import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.repository.StudentSubmissionRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
@@ -18,28 +17,31 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 
-class ModifyStudentSubmissionAttachmentsUseCase(
+class UpdateStudentSubmissionUseCase(
     private val studentSubmissionRepository: StudentSubmissionRepository,
     private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     operator fun invoke(
         id: String,
-        attachments: List<Material>?,
+        multipleChoiceAnswer: String? = null,
+        shortAnswer: String? = null,
+        assignedGrade: Int? = null,
     ): Flow<Result<StudentSubmission>> =
         flow {
             try {
                 emit(Result.Loading())
-                val assignmentSubmission =
-                    if (attachments.isNullOrEmpty()) {
-                        null
-                    } else {
-                        AssignmentSubmission(attachments)
-                    }?.toAssignmentSubmissionDto()
+                val updates =
+                    StudentSubmission(
+                        multipleChoiceSubmission = multipleChoiceAnswer?.let { QuestionSubmission(it) },
+                        shortAnswerSubmission = shortAnswer?.let { QuestionSubmission(it) },
+                        assignedGrade = assignedGrade,
+                    ).toStudentSubmissionDto()
+
                 val studentSubmission =
                     studentSubmissionRepository
-                        .modifyStudentSubmissionAttachments(
+                        .updateStudentSubmission(
                             id = id,
-                            attachments = assignmentSubmission,
+                            updates = updates,
                         ).toStudentSubmissionDomainModel()
                 emit(Result.Success(studentSubmission))
             } catch (_: RestException) {
