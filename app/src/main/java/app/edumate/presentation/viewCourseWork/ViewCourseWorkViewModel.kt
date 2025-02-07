@@ -122,11 +122,7 @@ class ViewCourseWorkViewModel(
             }
 
             ViewCourseWorkUiEvent.RetryStudentSubmission -> {
-                getStudentSubmission(
-                    courseId = courseId,
-                    courseWorkId = courseWorkId,
-                    courseWorkType = courseWorkType!!,
-                )
+                getStudentSubmission(courseId = courseId, courseWorkId = courseWorkId)
             }
 
             is ViewCourseWorkUiEvent.TurnIn -> {
@@ -215,7 +211,6 @@ class ViewCourseWorkViewModel(
                                 getStudentSubmission(
                                     courseId = courseId,
                                     courseWorkId = courseWorkId,
-                                    courseWorkType = courseWorkType!!,
                                 )
                             }
                         }
@@ -226,12 +221,11 @@ class ViewCourseWorkViewModel(
     private fun getStudentSubmission(
         courseId: String,
         courseWorkId: String,
-        courseWorkType: CourseWorkType,
     ) {
         // Cancel any ongoing getStudentSubmissionJob before making a new call.
         getStudentSubmissionJob?.cancel()
         getStudentSubmissionJob =
-            getStudentSubmissionUseCase(courseId, courseWorkId, courseWorkType)
+            getStudentSubmissionUseCase(courseId, courseWorkId)
                 .onEach { result ->
                     if (result is Result.Success) {
                         val studentSubmission = result.data!!
@@ -346,7 +340,7 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getStudentSubmission(courseId, courseWorkId, courseWorkType!!)
+                        getStudentSubmission(courseId, courseWorkId)
                     }
                 }
             }.launchIn(viewModelScope)
@@ -372,7 +366,7 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getStudentSubmission(courseId, courseWorkId, courseWorkType!!)
+                        getStudentSubmission(courseId, courseWorkId)
                     }
                 }
             }.launchIn(viewModelScope)

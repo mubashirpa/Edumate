@@ -1,6 +1,5 @@
 package app.edumate.domain.repository
 
-import app.edumate.data.remote.dto.courseWork.CourseWorkTypeDto
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
 
@@ -9,7 +8,6 @@ interface StudentSubmissionRepository {
         courseId: String,
         courseWorkId: String,
         userId: String,
-        courseWorkType: CourseWorkTypeDto,
     ): StudentSubmissionDto
 
     suspend fun modifyStudentSubmissionAttachments(

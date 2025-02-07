@@ -1,10 +1,10 @@
 package app.edumate.domain.usecase.studentSubmission
 
+import android.util.Log
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.data.mapper.toStudentSubmissionDomainModel
-import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.StudentSubmissionRepository
@@ -25,7 +25,6 @@ class GetStudentSubmissionUseCase(
     operator fun invoke(
         courseId: String,
         courseWorkId: String,
-        courseWorkType: CourseWorkType,
     ): Flow<Result<StudentSubmission>> =
         flow {
             try {
@@ -37,11 +36,11 @@ class GetStudentSubmissionUseCase(
                                 courseId = courseId,
                                 courseWorkId = courseWorkId,
                                 userId = userId,
-                                courseWorkType = enumValueOf(courseWorkType.name),
                             ).toStudentSubmissionDomainModel()
                     emit(Result.Success(studentSubmission))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
-            } catch (_: RestException) {
+            } catch (e: RestException) {
+                Log.e("hello", e.message, e)
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))

@@ -1,7 +1,6 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
-import app.edumate.data.remote.dto.courseWork.CourseWorkTypeDto
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.SubmissionStateDto
@@ -21,7 +20,6 @@ class StudentSubmissionRepositoryImpl(
         courseId: String,
         courseWorkId: String,
         userId: String,
-        courseWorkType: CourseWorkTypeDto,
     ): StudentSubmissionDto =
         postgrest
             .rpc(
@@ -31,7 +29,6 @@ class StudentSubmissionRepositoryImpl(
                         put(Supabase.Parameter.COURSE_ID, courseId)
                         put(Supabase.Parameter.COURSE_WORK_ID, courseWorkId)
                         put(Supabase.Parameter.USER_ID, userId)
-                        put(Supabase.Parameter.COURSE_WORK_TYPE, courseWorkType.name)
                     },
             ).decodeAs()
 

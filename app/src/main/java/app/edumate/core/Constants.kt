@@ -72,7 +72,6 @@ object Supabase {
         const val ANNOUNCEMENT_ID = "p_announcement_id"
         const val COURSE_ID = "p_course_id"
         const val COURSE_WORK_ID = "p_course_work_id"
-        const val COURSE_WORK_TYPE = "p_course_work_type"
         const val ID = "p_id"
         const val TEXT = "p_text"
         const val USER_ID = "p_user_id"
