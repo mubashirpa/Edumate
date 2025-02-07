@@ -17,6 +17,7 @@ import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
 import app.edumate.navigation.Screen
@@ -29,6 +30,7 @@ class ViewCourseWorkViewModel(
     savedStateHandle: SavedStateHandle,
     private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
+    private val modifyStudentSubmissionAttachmentsUseCase: ModifyStudentSubmissionAttachmentsUseCase,
     private val turnInStudentSubmissionUseCase: TurnInStudentSubmissionUseCase,
     private val reclaimStudentSubmissionUseCase: ReclaimStudentSubmissionUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
@@ -236,6 +238,34 @@ class ViewCourseWorkViewModel(
                 }.launchIn(viewModelScope)
     }
 
+    private fun modifyAttachments(
+        id: String,
+        attachments: List<Material>,
+    ) {
+        modifyStudentSubmissionAttachmentsUseCase(id, attachments)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
     private fun turnIn(
         courseWorkId: String,
         id: String,
@@ -332,6 +362,7 @@ class ViewCourseWorkViewModel(
                             )
                         uiState.assignmentAttachments.add(Material(driveFile = driveFile))
                         uiState = uiState.copy(uploadProgress = null)
+                        modifyAttachments(submissionId, uiState.assignmentAttachments)
                     } else {
                         uiState = uiState.copy(uploadProgress = state.progress)
                     }
@@ -369,7 +400,7 @@ class ViewCourseWorkViewModel(
 
                 is Result.Success -> {
                     uiState.assignmentAttachments.remove(material)
-                    uiState = uiState.copy(openProgressDialog = false)
+                    modifyAttachments(submissionId, uiState.assignmentAttachments)
                 }
             }
         }.launchIn(viewModelScope)
