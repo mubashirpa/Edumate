@@ -17,6 +17,8 @@ import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -27,6 +29,8 @@ class ViewCourseWorkViewModel(
     savedStateHandle: SavedStateHandle,
     private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
+    private val turnInStudentSubmissionUseCase: TurnInStudentSubmissionUseCase,
+    private val reclaimStudentSubmissionUseCase: ReclaimStudentSubmissionUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
 ) : ViewModel() {
@@ -34,14 +38,18 @@ class ViewCourseWorkViewModel(
         private set
 
     private val args = savedStateHandle.toRoute<Screen.ViewCourseWork>()
+    private val courseId = args.courseId
+    private val courseWorkId = args.id
+    private val isCurrentUserStudent = args.isCurrentUserStudent
     private var getCourseWorkJob: Job? = null
     private var getStudentSubmissionJob: Job? = null
+    private var studentSubmissionId: String? = null
+    private var courseWorkType: CourseWorkType? = null
 
     init {
         getCourseWork(
-            id = args.id,
+            id = courseWorkId,
             isRefreshing = false,
-            isCurrentUserStudent = args.isCurrentUserStudent,
         )
     }
 
@@ -57,9 +65,9 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.OnFilePicked -> {
                 uploadFile(
-                    courseId = args.courseId,
-                    courseWorkId = args.id,
-                    submissionId = "", // TODO
+                    courseId = courseId,
+                    courseWorkId = courseWorkId,
+                    submissionId = studentSubmissionId!!,
                     title = event.title,
                     file = event.file,
                     mimeType = event.mimeType,
@@ -87,35 +95,39 @@ class ViewCourseWorkViewModel(
                 uiState = uiState.copy(showStudentSubmissionBottomSheet = event.show)
             }
 
-            ViewCourseWorkUiEvent.Reclaim -> TODO()
+            ViewCourseWorkUiEvent.Reclaim -> {
+                reclaim(studentSubmissionId!!)
+            }
 
             ViewCourseWorkUiEvent.Refresh -> {
-                getCourseWork(
-                    id = args.id,
-                    isRefreshing = true,
-                    isCurrentUserStudent = args.isCurrentUserStudent,
-                )
+                getCourseWork(id = courseWorkId, isRefreshing = true)
             }
 
             is ViewCourseWorkUiEvent.RemoveAttachment -> {
                 val attachment = uiState.assignmentAttachments[event.position]
                 deleteFile(
-                    courseId = args.courseId,
-                    courseWorkId = args.id,
-                    submissionId = "", // TODO
+                    courseId = courseId,
+                    courseWorkId = courseWorkId,
+                    submissionId = studentSubmissionId!!,
                     material = attachment,
                 )
             }
 
             ViewCourseWorkUiEvent.Retry -> {
-                getCourseWork(
-                    id = args.id,
-                    isRefreshing = false,
-                    isCurrentUserStudent = args.isCurrentUserStudent,
+                getCourseWork(id = courseWorkId, isRefreshing = false)
+            }
+
+            ViewCourseWorkUiEvent.RetryStudentSubmission -> {
+                getStudentSubmission(
+                    courseId = courseId,
+                    courseWorkId = courseWorkId,
+                    courseWorkType = courseWorkType!!,
                 )
             }
 
-            is ViewCourseWorkUiEvent.TurnIn -> TODO()
+            is ViewCourseWorkUiEvent.TurnIn -> {
+                turnIn(courseWorkId = courseWorkId, id = studentSubmissionId!!)
+            }
 
             ViewCourseWorkUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -126,7 +138,6 @@ class ViewCourseWorkViewModel(
     private fun getCourseWork(
         id: String,
         isRefreshing: Boolean,
-        isCurrentUserStudent: Boolean,
     ) {
         // Cancel any ongoing getCourseWorkJob before making a new call.
         getCourseWorkJob?.cancel()
@@ -169,10 +180,14 @@ class ViewCourseWorkViewModel(
                                 )
 
                             val courseWork = result.data!!
-                            val courseWorkType = courseWork.workType!!
+                            courseWorkType = courseWork.workType
 
                             if (isCurrentUserStudent && courseWorkType != CourseWorkType.MATERIAL) {
-                                getStudentSubmission(args.courseId, args.id, courseWorkType)
+                                getStudentSubmission(
+                                    courseId = courseId,
+                                    courseWorkId = courseWorkId,
+                                    courseWorkType = courseWorkType!!,
+                                )
                             }
                         }
                     }
@@ -191,6 +206,8 @@ class ViewCourseWorkViewModel(
                 .onEach { result ->
                     if (result is Result.Success) {
                         val studentSubmission = result.data!!
+                        studentSubmissionId = studentSubmission.id
+
                         when (courseWorkType) {
                             CourseWorkType.ASSIGNMENT -> {
                                 val attachments =
@@ -214,8 +231,64 @@ class ViewCourseWorkViewModel(
                             else -> {}
                         }
                     }
+
                     uiState = uiState.copy(studentSubmissionResult = result)
                 }.launchIn(viewModelScope)
+    }
+
+    private fun turnIn(
+        courseWorkId: String,
+        id: String,
+    ) {
+        turnInStudentSubmissionUseCase(courseWorkId, id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getStudentSubmission(courseId, courseWorkId, courseWorkType!!)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun reclaim(id: String) {
+        reclaimStudentSubmissionUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getStudentSubmission(courseId, courseWorkId, courseWorkType!!)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun uploadFile(
