@@ -214,7 +214,7 @@ fun ViewCourseWorkContent(
             onEvent(ViewCourseWorkUiEvent.OnOpenUnSubmitDialogChange(true))
         },
         onRetryClick = {
-            onEvent(ViewCourseWorkUiEvent.Retry)
+            onEvent(ViewCourseWorkUiEvent.RetryStudentSubmission)
         },
     )
 

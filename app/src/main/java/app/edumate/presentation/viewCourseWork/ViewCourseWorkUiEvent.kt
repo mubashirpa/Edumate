@@ -53,5 +53,7 @@ sealed class ViewCourseWorkUiEvent {
 
     data object Retry : ViewCourseWorkUiEvent()
 
+    data object RetryStudentSubmission : ViewCourseWorkUiEvent()
+
     data object UserMessageShown : ViewCourseWorkUiEvent()
 }
