@@ -68,7 +68,7 @@ object Supabase {
         const val GET_STUDENT_SUBMISSION = "get_or_create_student_submission"
     }
 
-    object Parameters {
+    object Parameter {
         const val ANNOUNCEMENT_ID = "p_announcement_id"
         const val COURSE_ID = "p_course_id"
         const val COURSE_WORK_ID = "p_course_work_id"

@@ -30,8 +30,8 @@ class MemberRepositoryImpl(
                 function = Supabase.Function.INSERT_MEMBER,
                 parameters =
                     buildJsonObject {
-                        put(Supabase.Parameters.COURSE_ID, courseId)
-                        put(Supabase.Parameters.USER_ID, userId)
+                        put(Supabase.Parameter.COURSE_ID, courseId)
+                        put(Supabase.Parameter.USER_ID, userId)
                     },
             )
     }

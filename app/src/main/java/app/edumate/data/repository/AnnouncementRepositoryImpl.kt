@@ -78,10 +78,10 @@ class AnnouncementRepositoryImpl(
                 function = Supabase.Function.INSERT_ANNOUNCEMENT_COMMENT,
                 parameters =
                     buildJsonObject {
-                        put(Supabase.Parameters.COURSE_ID, courseId)
-                        put(Supabase.Parameters.ANNOUNCEMENT_ID, announcementId)
-                        put(Supabase.Parameters.USER_ID, userId)
-                        put(Supabase.Parameters.TEXT, text)
+                        put(Supabase.Parameter.COURSE_ID, courseId)
+                        put(Supabase.Parameter.ANNOUNCEMENT_ID, announcementId)
+                        put(Supabase.Parameter.USER_ID, userId)
+                        put(Supabase.Parameter.TEXT, text)
                     },
             ).decodeAs()
 

@@ -28,10 +28,10 @@ class StudentSubmissionRepositoryImpl(
                 function = Supabase.Function.GET_STUDENT_SUBMISSION,
                 parameters =
                     buildJsonObject {
-                        put(Supabase.Parameters.COURSE_ID, courseId)
-                        put(Supabase.Parameters.COURSE_WORK_ID, courseWorkId)
-                        put(Supabase.Parameters.USER_ID, userId)
-                        put(Supabase.Parameters.COURSE_WORK_TYPE, courseWorkType.name)
+                        put(Supabase.Parameter.COURSE_ID, courseId)
+                        put(Supabase.Parameter.COURSE_WORK_ID, courseWorkId)
+                        put(Supabase.Parameter.USER_ID, userId)
+                        put(Supabase.Parameter.COURSE_WORK_TYPE, courseWorkType.name)
                     },
             ).decodeAs()
 
@@ -114,8 +114,8 @@ class StudentSubmissionRepositoryImpl(
                 function = Supabase.Function.TURN_IN_STUDENT_SUBMISSION,
                 parameters =
                     buildJsonObject {
-                        put(Supabase.Parameters.COURSE_WORK_ID, courseWorkId)
-                        put(Supabase.Parameters.ID, id)
+                        put(Supabase.Parameter.COURSE_WORK_ID, courseWorkId)
+                        put(Supabase.Parameter.ID, id)
                     },
             )
     }
