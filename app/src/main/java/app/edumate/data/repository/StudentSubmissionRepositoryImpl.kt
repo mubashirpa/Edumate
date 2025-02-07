@@ -53,12 +53,20 @@ class StudentSubmissionRepositoryImpl(
 
     override suspend fun updateStudentSubmission(
         id: String,
-        assignedGrade: Int?,
+        updates: StudentSubmissionDto,
     ): StudentSubmissionDto =
         postgrest[Supabase.Table.STUDENT_SUBMISSIONS]
             .update(
                 {
-                    set(Supabase.Column.ASSIGNED_GRADE, assignedGrade)
+                    updates.multipleChoiceSubmission?.let {
+                        set(Supabase.Column.MULTIPLE_CHOICE_SUBMISSION, it)
+                    }
+                    updates.shortAnswerSubmission?.let {
+                        set(Supabase.Column.SHORT_ANSWER_SUBMISSION, it)
+                    }
+                    updates.assignedGrade?.let {
+                        set(Supabase.Column.ASSIGNED_GRADE, it)
+                    }
 
                     val now: Instant = Clock.System.now()
                     val updateTime = now.toLocalDateTime(TimeZone.UTC)

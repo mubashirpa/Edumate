@@ -19,7 +19,7 @@ interface StudentSubmissionRepository {
 
     suspend fun updateStudentSubmission(
         id: String,
-        assignedGrade: Int?,
+        updates: StudentSubmissionDto,
     ): StudentSubmissionDto
 
     suspend fun reclaimStudentSubmission(id: String)
