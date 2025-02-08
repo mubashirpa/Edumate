@@ -1,8 +1,7 @@
 package app.edumate.di
 
-import app.edumate.data.AndroidMailMatcher
-import app.edumate.domain.MailMatcher
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
+import app.edumate.domain.usecase.GetUserPreferencesUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementCommentUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
@@ -10,7 +9,7 @@ import app.edumate.domain.usecase.announcement.GetAnnouncementCommentsUseCase
 import app.edumate.domain.usecase.announcement.GetAnnouncementsUseCase
 import app.edumate.domain.usecase.announcement.UpdateAnnouncementUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
-import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
+import app.edumate.domain.usecase.authentication.GetLoginPreferencesUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
 import app.edumate.domain.usecase.authentication.ResendSignUpConfirmationEmailUseCase
 import app.edumate.domain.usecase.authentication.ResetPasswordUseCase
@@ -52,7 +51,6 @@ import app.edumate.domain.usecase.validation.ValidateName
 import app.edumate.domain.usecase.validation.ValidatePassword
 import app.edumate.domain.usecase.validation.ValidateRepeatedPassword
 import app.edumate.domain.usecase.validation.ValidateTextField
-import kotlinx.coroutines.Dispatchers
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -78,11 +76,12 @@ val useCaseModule =
         singleOf(::GetCourseWorksUseCase)
         singleOf(::GetCoursesUseCase)
         singleOf(::GetCurrentUserUseCase)
+        singleOf(::GetLoginPreferencesUseCase)
         singleOf(::GetMembersUseCase)
-        singleOf(::GetSignInInfoUseCase)
         singleOf(::GetStudentSubmissionUseCase)
         singleOf(::GetStudentSubmissionsUseCase)
         singleOf(::GetUrlMetadataUseCase)
+        singleOf(::GetUserPreferencesUseCase)
         singleOf(::IsUserLoggedInUseCase)
         singleOf(::JoinCourseUseCase)
         singleOf(::ModifyStudentSubmissionAttachmentsUseCase)
@@ -108,6 +107,4 @@ val useCaseModule =
         singleOf(::ValidatePassword)
         singleOf(::ValidateRepeatedPassword)
         singleOf(::ValidateTextField)
-        single<MailMatcher> { AndroidMailMatcher() }
-        single { Dispatchers.IO }
     }
