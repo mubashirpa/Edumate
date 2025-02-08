@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="app_theme">
+        <item>System default</item>
+        <item>Light</item>
+        <item>Dark</item>
+    </string-array>
     <string-array name="question_type">
         <item>Short answer</item>
         <item>Multiple choice</item>
