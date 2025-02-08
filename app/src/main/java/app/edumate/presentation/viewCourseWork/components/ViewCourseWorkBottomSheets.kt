@@ -3,6 +3,7 @@ package app.edumate.presentation.viewCourseWork.components
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -38,6 +39,7 @@ import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -47,6 +49,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -65,6 +68,7 @@ import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -80,11 +84,11 @@ fun StudentSubmissionBottomSheet(
     onSubmitClick: () -> Unit,
     onUnSubmitClick: () -> Unit,
     onRetryClick: () -> Unit,
+    onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
 ) {
     if (show) {
         val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val context = LocalContext.current
-        val fileUtils = remember { FileUtils(context) }
         val scrollState = rememberScrollState()
         val snackbarHostState = remember { SnackbarHostState() }
         val isFullscreen =
@@ -165,89 +169,21 @@ fun StudentSubmissionBottomSheet(
                             val studentSubmission = studentSubmissionResult.data
 
                             if (studentSubmission != null) {
-                                Column(
+                                StudentSubmissionBottomSheetContent(
+                                    bottomSheetState = bottomSheetState,
+                                    studentSubmission = studentSubmission,
+                                    attachments = attachments,
+                                    onAddAttachmentClick = onAddAttachmentClick,
+                                    onRemoveAttachmentClick = onRemoveAttachmentClick,
+                                    onSubmitClick = onSubmitClick,
+                                    onUnSubmitClick = onUnSubmitClick,
+                                    onFileAttachmentClick = onFileAttachmentClick,
                                     modifier =
                                         Modifier.padding(
                                             horizontal = 16.dp,
                                             vertical = 12.dp,
                                         ),
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.attachments),
-                                        style = MaterialTheme.typography.titleMedium,
-                                    )
-                                    Spacer(modifier = Modifier.height(16.dp))
-                                    if (attachments.isEmpty()) {
-                                        ErrorScreen(
-                                            modifier =
-                                                Modifier
-                                                    .fillMaxWidth()
-                                                    .height(128.dp),
-                                            errorMessage = stringResource(id = R.string.you_have_no_attachments_uploaded),
-                                        )
-                                    } else {
-                                        attachments.onEachIndexed { index, attachment ->
-                                            val mimeType =
-                                                fileUtils.getFileTypeFromMimeType(attachment.driveFile?.mimeType)
-                                            val icon =
-                                                when (mimeType) {
-                                                    FileType.IMAGE -> Icons.Default.Image
-                                                    FileType.VIDEO -> Icons.Default.VideoFile
-                                                    FileType.AUDIO -> Icons.Default.AudioFile
-                                                    FileType.PDF -> Icons.Default.PictureAsPdf
-                                                    FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                                                }
-
-                                            ListItem(
-                                                headlineContent = {
-                                                    Text(
-                                                        text = attachment.driveFile?.title.orEmpty(),
-                                                        overflow = TextOverflow.Ellipsis,
-                                                        maxLines = 1,
-                                                    )
-                                                },
-                                                modifier =
-                                                    Modifier.border(
-                                                        width = 1.dp,
-                                                        color = MaterialTheme.colorScheme.outlineVariant,
-                                                        shape = MaterialTheme.shapes.medium,
-                                                    ),
-                                                leadingContent = {
-                                                    Icon(
-                                                        imageVector = icon,
-                                                        contentDescription = null,
-                                                    )
-                                                },
-                                                trailingContent = {
-                                                    if (studentSubmission.state != SubmissionState.TURNED_IN) {
-                                                        IconButton(
-                                                            onClick = {
-                                                                onRemoveAttachmentClick(index)
-                                                            },
-                                                        ) {
-                                                            Icon(
-                                                                imageVector = Icons.Default.Clear,
-                                                                contentDescription = null,
-                                                            )
-                                                        }
-                                                    }
-                                                },
-                                                colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                                            )
-                                            if (index < attachments.lastIndex) {
-                                                Spacer(modifier = Modifier.height(10.dp))
-                                            }
-                                        }
-                                    }
-                                    Spacer(modifier = Modifier.height(24.dp))
-                                    StudentSubmissionActionButtons(
-                                        studentSubmission = studentSubmission,
-                                        attachments = attachments,
-                                        onAddWorkClick = onAddAttachmentClick,
-                                        onSubmitClick = onSubmitClick,
-                                        onUnSubmitClick = onUnSubmitClick,
-                                    )
-                                }
+                                )
                             } else {
                                 ErrorScreen(
                                     modifier =
@@ -265,6 +201,119 @@ fun StudentSubmissionBottomSheet(
                 )
             }
         }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun StudentSubmissionBottomSheetContent(
+    bottomSheetState: SheetState,
+    studentSubmission: StudentSubmission,
+    attachments: List<Material>,
+    onAddAttachmentClick: () -> Unit,
+    onRemoveAttachmentClick: (Int) -> Unit,
+    onSubmitClick: () -> Unit,
+    onUnSubmitClick: () -> Unit,
+    onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val fileUtils = remember { FileUtils(context) }
+    val coroutineScope = rememberCoroutineScope()
+
+    Column(modifier = modifier) {
+        Text(
+            text = stringResource(id = R.string.attachments),
+            style = MaterialTheme.typography.titleMedium,
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        if (attachments.isEmpty()) {
+            ErrorScreen(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(128.dp),
+                errorMessage = stringResource(id = R.string.you_have_no_attachments_uploaded),
+            )
+        } else {
+            attachments.onEachIndexed { index, attachment ->
+                attachment.driveFile?.let { driveFile ->
+                    val mimeType =
+                        fileUtils.getFileTypeFromMimeType(driveFile.mimeType)
+                    val icon =
+                        when (mimeType) {
+                            FileType.IMAGE -> Icons.Default.Image
+                            FileType.VIDEO -> Icons.Default.VideoFile
+                            FileType.AUDIO -> Icons.Default.AudioFile
+                            FileType.PDF -> Icons.Default.PictureAsPdf
+                            FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
+                        }
+
+                    ListItem(
+                        headlineContent = {
+                            Text(
+                                text = driveFile.title.orEmpty(),
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1,
+                            )
+                        },
+                        modifier =
+                            Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = MaterialTheme.shapes.medium,
+                                ).clickable {
+                                    driveFile.alternateLink?.let { link ->
+                                        coroutineScope
+                                            .launch { bottomSheetState.hide() }
+                                            .invokeOnCompletion {
+                                                if (!bottomSheetState.isVisible) {
+                                                    onFileAttachmentClick(
+                                                        mimeType,
+                                                        link,
+                                                        driveFile.title,
+                                                    )
+                                                }
+                                            }
+                                    }
+                                },
+                        leadingContent = {
+                            Icon(
+                                imageVector = icon,
+                                contentDescription = null,
+                            )
+                        },
+                        trailingContent = {
+                            if (studentSubmission.state != SubmissionState.TURNED_IN) {
+                                IconButton(
+                                    onClick = {
+                                        onRemoveAttachmentClick(index)
+                                    },
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = null,
+                                    )
+                                }
+                            }
+                        },
+                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
+                    )
+                    if (index < attachments.lastIndex) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
+                }
+            }
+        }
+        Spacer(modifier = Modifier.height(24.dp))
+        StudentSubmissionActionButtons(
+            studentSubmission = studentSubmission,
+            attachments = attachments,
+            onAddWorkClick = onAddAttachmentClick,
+            onSubmitClick = onSubmitClick,
+            onUnSubmitClick = onUnSubmitClick,
+        )
     }
 }
 
