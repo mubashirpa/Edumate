@@ -45,7 +45,7 @@ fun HomeNavigationDrawer(
         listOf(
             HomeNavigationDrawerRoute(
                 labelId = R.string.ask_gemini,
-                route = Screen.Profile,
+                route = Screen.Profile, // TODO
                 icon = Icons.Default.Memory,
             ),
             HomeNavigationDrawerRoute(
@@ -55,7 +55,7 @@ fun HomeNavigationDrawer(
             ),
             HomeNavigationDrawerRoute(
                 labelId = R.string.settings,
-                route = Screen.Profile,
+                route = Screen.Settings,
                 icon = Icons.Default.Settings,
             ),
         )
