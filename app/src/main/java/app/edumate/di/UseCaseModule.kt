@@ -1,7 +1,6 @@
 package app.edumate.di
 
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
-import app.edumate.domain.usecase.GetUserPreferencesUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementCommentUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
 import app.edumate.domain.usecase.announcement.DeleteAnnouncementUseCase
@@ -38,6 +37,8 @@ import app.edumate.domain.usecase.member.GetMembersUseCase
 import app.edumate.domain.usecase.member.JoinCourseUseCase
 import app.edumate.domain.usecase.member.UnenrollCourseUseCase
 import app.edumate.domain.usecase.member.UpdateMemberUseCase
+import app.edumate.domain.usecase.preferences.ConfigureAppThemeUseCase
+import app.edumate.domain.usecase.preferences.GetUserPreferencesUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
@@ -56,6 +57,7 @@ import org.koin.dsl.module
 
 val useCaseModule =
     module {
+        singleOf(::ConfigureAppThemeUseCase)
         singleOf(::CreateAnnouncementCommentUseCase)
         singleOf(::CreateAnnouncementUseCase)
         singleOf(::CreateAssignmentUseCase)
