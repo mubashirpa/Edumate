@@ -23,6 +23,7 @@ object Constants {
 }
 
 object PreferencesKeys {
+    val APP_THEME = stringPreferencesKey("app_theme")
     val USER_EMAIL = stringPreferencesKey("user_email")
     val USER_PASSWORD = stringPreferencesKey("user_password")
 }

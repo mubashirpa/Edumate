@@ -9,6 +9,7 @@ import app.edumate.data.repository.JsoupRepositoryImpl
 import app.edumate.data.repository.MemberRepositoryImpl
 import app.edumate.data.repository.StorageRepositoryImpl
 import app.edumate.data.repository.StudentSubmissionRepositoryImpl
+import app.edumate.data.repository.UserPreferencesRepositoryImpl
 import app.edumate.domain.repository.AnnouncementRepository
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.CommentRepository
@@ -18,6 +19,7 @@ import app.edumate.domain.repository.JsoupRepository
 import app.edumate.domain.repository.MemberRepository
 import app.edumate.domain.repository.StorageRepository
 import app.edumate.domain.repository.StudentSubmissionRepository
+import app.edumate.domain.repository.UserPreferencesRepository
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -33,4 +35,5 @@ val repositoryModule =
         singleOf(::MemberRepositoryImpl) { bind<MemberRepository>() }
         singleOf(::StorageRepositoryImpl) { bind<StorageRepository>() }
         singleOf(::StudentSubmissionRepositoryImpl) { bind<StudentSubmissionRepository>() }
+        singleOf(::UserPreferencesRepositoryImpl) { bind<UserPreferencesRepository>() }
     }

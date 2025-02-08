@@ -1,4 +1,4 @@
-package app.edumate.domain.model
+package app.edumate.domain.model.preferences
 
 data class LoginPreferences(
     val email: String,
