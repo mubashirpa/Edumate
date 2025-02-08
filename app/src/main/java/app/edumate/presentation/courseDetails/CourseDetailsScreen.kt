@@ -36,7 +36,7 @@ fun CourseDetailsScreen(
         is Result.Error -> {
             ErrorScreen(
                 onRetryClick = {
-                    onEvent(CourseDetailsUiEvent.OnRetry)
+                    onEvent(CourseDetailsUiEvent.Retry)
                 },
                 modifier = Modifier.fillMaxSize(),
                 errorMessage = courseResult.message!!.asString(),

@@ -35,7 +35,7 @@ class CourseDetailsViewModel(
 
     fun onEvent(event: CourseDetailsUiEvent) {
         when (event) {
-            CourseDetailsUiEvent.OnRetry -> {
+            CourseDetailsUiEvent.Retry -> {
                 getCourse(args.courseId)
             }
         }
@@ -73,12 +73,13 @@ class CourseDetailsViewModel(
                                     // Handle the case where the user's role is null (unexpected scenario)
                                     null -> {
                                         // Update UI state to reflect an error due to an unexpected null role
-                                        uiState.copy(
-                                            courseResult =
-                                                Result.Error(
-                                                    UiText.StringResource(R.string.error_unexpected),
-                                                ),
-                                        )
+                                        uiState =
+                                            uiState.copy(
+                                                courseResult =
+                                                    Result.Error(
+                                                        UiText.StringResource(R.string.class_not_found),
+                                                    ),
+                                            )
                                         return@onEach // Exit the flow collection early
                                     }
                                 }
