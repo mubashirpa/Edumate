@@ -4,6 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.repository.AuthenticationRepository
+import app.edumate.domain.repository.UserPreferencesRepository
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.user.UserInfo
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 
 class SignInUseCase(
     private val authenticationRepository: AuthenticationRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) {
     operator fun invoke(
         email: String,
@@ -25,9 +27,9 @@ class SignInUseCase(
             try {
                 emit(Result.Loading())
                 if (remember) {
-                    authenticationRepository.saveSignInInfo(email, password)
+                    userPreferencesRepository.configureLoginPreferences(email, password)
                 } else {
-                    authenticationRepository.clearSignInInfo()
+                    userPreferencesRepository.clearLoginPreferences()
                 }
                 val user = authenticationRepository.signInWithEmail(email, password)
                 emit(Result.Success(user!!))

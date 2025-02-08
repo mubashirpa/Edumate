@@ -4,6 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.repository.AuthenticationRepository
+import app.edumate.domain.repository.UserPreferencesRepository
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.user.UserInfo
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.flow
 
 class SignUpUseCase(
     private val authenticationRepository: AuthenticationRepository,
+    private val userPreferencesRepository: UserPreferencesRepository,
 ) {
     operator fun invoke(
         name: String,
@@ -27,7 +29,7 @@ class SignUpUseCase(
                     if (user.identities.isNullOrEmpty()) {
                         emit(Result.Error(UiText.StringResource(R.string.auth_error_email_already_in_use)))
                     } else {
-                        authenticationRepository.saveSignInInfo(email, password)
+                        userPreferencesRepository.configureLoginPreferences(email, password)
                         emit(Result.Success(user))
                     }
                 } ?: emit(Result.Error(UiText.StringResource(R.string.auth_unknown_exception)))

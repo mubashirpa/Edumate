@@ -9,7 +9,7 @@ import androidx.lifecycle.viewModelScope
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.domain.usecase.authentication.GetSignInInfoUseCase
+import app.edumate.domain.usecase.authentication.GetLoginPreferencesUseCase
 import app.edumate.domain.usecase.authentication.ResendSignUpConfirmationEmailUseCase
 import app.edumate.domain.usecase.authentication.SignInUseCase
 import app.edumate.domain.usecase.authentication.SignInWithGoogleUseCase
@@ -24,7 +24,7 @@ class SignInViewModel(
     private val signInUseCase: SignInUseCase,
     private val signInWithGoogleUseCase: SignInWithGoogleUseCase,
     private val resendVerifyEmailUseCase: ResendSignUpConfirmationEmailUseCase,
-    private val getSignInInfoUseCase: GetSignInInfoUseCase,
+    private val getLoginPreferencesUseCase: GetLoginPreferencesUseCase,
     private val validateEmail: ValidateEmail,
     private val validatePassword: ValidatePassword,
 ) : ViewModel() {
@@ -32,7 +32,7 @@ class SignInViewModel(
         private set
 
     init {
-        getSignInInfo()
+        getLoginPreferences()
     }
 
     fun onEvent(event: SignInUiEvent) {
@@ -195,9 +195,9 @@ class SignInViewModel(
             }.launchIn(viewModelScope)
     }
 
-    private fun getSignInInfo() {
+    private fun getLoginPreferences() {
         viewModelScope.launch {
-            getSignInInfoUseCase().firstOrNull()?.let { preferences ->
+            getLoginPreferencesUseCase().firstOrNull()?.let { preferences ->
                 uiState.email.setTextAndPlaceCursorAtEnd(preferences.email)
                 uiState.password.setTextAndPlaceCursorAtEnd(preferences.password)
                 uiState = uiState.copy(rememberPassword = preferences.email.isNotEmpty())
