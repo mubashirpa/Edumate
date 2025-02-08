@@ -2,8 +2,14 @@ package app.edumate.domain.repository
 
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
+import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionListDto
 
 interface StudentSubmissionRepository {
+    suspend fun getStudentSubmissions(
+        courseId: String,
+        courseWorkId: String,
+    ): List<StudentSubmissionListDto>
+
     suspend fun getStudentSubmission(
         courseId: String,
         courseWorkId: String,
