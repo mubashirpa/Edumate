@@ -112,6 +112,7 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
+                onNavigateToViewStudentSubmission = { /*TODO*/ },
             )
         }
     }

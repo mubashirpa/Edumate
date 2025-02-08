@@ -25,6 +25,7 @@ import org.koin.androidx.compose.koinViewModel
 fun StudentWorkScreen(
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
+    onNavigateToViewStudentSubmission: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StudentWorkViewModel = koinViewModel(),
 ) {
@@ -33,6 +34,7 @@ fun StudentWorkScreen(
         onEvent = viewModel::onEvent,
         snackbarHostState = snackbarHostState,
         courseWork = courseWork,
+        onNavigateToViewStudentSubmission = onNavigateToViewStudentSubmission,
         modifier = modifier,
     )
 }
@@ -44,6 +46,7 @@ private fun StudentWorkScreenContent(
     onEvent: (StudentWorkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
+    onNavigateToViewStudentSubmission: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -95,7 +98,7 @@ private fun StudentWorkScreenContent(
                                 StudentWorkListItem(
                                     courseWork = courseWork,
                                     studentSubmission = submission,
-                                    onClick = { /*TODO*/ },
+                                    onClick = onNavigateToViewStudentSubmission,
                                     modifier = Modifier.animateItem(),
                                 )
                             }
