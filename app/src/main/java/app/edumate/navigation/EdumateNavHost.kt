@@ -22,6 +22,8 @@ import app.edumate.presentation.home.HomeUiEvent
 import app.edumate.presentation.home.HomeViewModel
 import app.edumate.presentation.imageViewer.ImageViewerScreen
 import app.edumate.presentation.profile.ProfileScreen
+import app.edumate.presentation.settings.SettingsScreen
+import app.edumate.presentation.settings.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -90,6 +92,14 @@ fun EdumateNavHost(
                         launchSingleTop = true
                     }
                 },
+            )
+        }
+        composable<Screen.Settings> {
+            val viewModel: SettingsViewModel = koinViewModel()
+            SettingsScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                onNavigateUp = navController::navigateUp,
             )
         }
         composable<Screen.CreateCourse> { backStackEntry ->

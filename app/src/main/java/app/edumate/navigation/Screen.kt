@@ -24,6 +24,9 @@ sealed class Screen {
     data object Profile : Screen()
 
     @Serializable
+    data object Settings : Screen()
+
+    @Serializable
     data class Home(
         val courseId: String?,
         @SerialName("code")
