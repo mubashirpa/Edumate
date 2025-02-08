@@ -14,6 +14,7 @@ import app.edumate.core.Constants
 import app.edumate.core.Navigation
 import app.edumate.core.ext.GetOnceResult
 import app.edumate.presentation.courseDetails.CourseDetailsScreen
+import app.edumate.presentation.courseDetails.CourseDetailsUiEvent
 import app.edumate.presentation.courseDetails.CourseDetailsViewModel
 import app.edumate.presentation.createCourse.CreateCourseScreen
 import app.edumate.presentation.home.HomeScreen
@@ -102,6 +103,9 @@ fun EdumateNavHost(
                             popUpTo(Screen.Home.ROUTE)
                         }
                     } else {
+                        // For course details screen
+                        navController.previousBackStackEntry
+                            ?.savedStateHandle[Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS] = true
                         navController.navigateUp()
                     }
                 },
@@ -122,10 +126,20 @@ fun EdumateNavHost(
                 },
         ) {
             val viewModel: CourseDetailsViewModel = koinViewModel()
+
+            navController.GetOnceResult<Boolean>(Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS) { refresh ->
+                if (refresh) {
+                    viewModel.onEvent(CourseDetailsUiEvent.Retry)
+                }
+            }
+
             CourseDetailsScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
+                onNavigateToCourseSettings = { courseId ->
+                    navController.navigate(Screen.CreateCourse(courseId))
+                },
                 onNavigateToImageViewer = { url, title ->
                     navController.navigate(Screen.ImageViewer(url, title))
                 },

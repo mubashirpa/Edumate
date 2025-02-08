@@ -27,6 +27,7 @@ fun CourseDetailsNavHost(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
+    onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
@@ -45,6 +46,7 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 commentsBottomSheetUiState = viewModel.commentsBottomSheetUiState,
                 onNavigateUp = onNavigateUp,
+                onNavigateToCourseSettings = onNavigateToCourseSettings,
                 onNavigateToImageViewer = onNavigateToImageViewer,
             )
         }

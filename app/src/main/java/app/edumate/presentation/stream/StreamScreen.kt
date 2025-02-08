@@ -102,6 +102,7 @@ fun StreamScreen(
     currentUserRole: CourseUserRole,
     commentsBottomSheetUiState: CommentsBottomSheetUiState,
     onNavigateUp: () -> Unit,
+    onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -153,7 +154,11 @@ fun StreamScreen(
                 },
                 actions = {
                     if (currentUserRole is CourseUserRole.Teacher) {
-                        IconButton(onClick = { /*TODO*/ }) {
+                        IconButton(
+                            onClick = {
+                                onNavigateToCourseSettings(courseWithMembers.id!!)
+                            },
+                        ) {
                             Icon(
                                 imageVector = Icons.Default.Settings,
                                 contentDescription = null,
@@ -539,6 +544,7 @@ private fun StreamScreenPreview() {
             currentUserRole = CourseUserRole.Teacher(true),
             commentsBottomSheetUiState = CommentsBottomSheetUiState(),
             onNavigateUp = {},
+            onNavigateToCourseSettings = {},
             onNavigateToImageViewer = { _, _ -> },
         )
     }

@@ -97,5 +97,6 @@ object Navigation {
     object Args {
         const val CREATE_COURSE_SUCCESS = "create_course_success"
         const val CREATE_COURSE_WORK_SUCCESS = "create_course_work_success"
+        const val UPDATE_COURSE_SETTINGS_SUCCESS = "update_course_settings_success"
     }
 }
