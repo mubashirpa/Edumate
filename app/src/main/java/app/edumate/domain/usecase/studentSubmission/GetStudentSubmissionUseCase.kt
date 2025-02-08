@@ -1,6 +1,5 @@
 package app.edumate.domain.usecase.studentSubmission
 
-import android.util.Log
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
@@ -39,8 +38,7 @@ class GetStudentSubmissionUseCase(
                             ).toStudentSubmissionDomainModel()
                     emit(Result.Success(studentSubmission))
                 } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
-            } catch (e: RestException) {
-                Log.e("hello", e.message, e)
+            } catch (_: RestException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))
