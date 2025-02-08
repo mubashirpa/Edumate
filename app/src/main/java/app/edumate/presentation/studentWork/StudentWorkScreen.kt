@@ -25,10 +25,17 @@ import org.koin.androidx.compose.koinViewModel
 fun StudentWorkScreen(
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
+    isRefreshing: Boolean,
     onNavigateToViewStudentSubmission: (userId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StudentWorkViewModel = koinViewModel(),
 ) {
+    LaunchedEffect(isRefreshing) {
+        if (isRefreshing) {
+            viewModel.onEvent(StudentWorkUiEvent.Refresh)
+        }
+    }
+
     StudentWorkScreenContent(
         uiState = viewModel.uiState,
         onEvent = viewModel::onEvent,

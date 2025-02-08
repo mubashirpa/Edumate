@@ -251,6 +251,7 @@ fun ViewCourseWorkScreen(
                                 StudentWorkScreen(
                                     snackbarHostState = snackbarHostState,
                                     courseWork = courseWork!!,
+                                    isRefreshing = uiState.isRefreshing,
                                     onNavigateToViewStudentSubmission = onNavigateToViewStudentSubmission,
                                     modifier = Modifier.fillMaxSize(),
                                 )
