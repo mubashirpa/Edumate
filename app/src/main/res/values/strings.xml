@@ -107,6 +107,7 @@
     <string name="logging_out">Logging out</string>
     <string name="logout">Logout</string>
     <string name="make_teacher">Make teacher</string>
+    <string name="manage_notification_settings">Manage notification settings</string>
     <string name="mark_as_done">Mark as done</string>
     <string name="material">Material</string>
     <string name="material_title">Material title</string>
@@ -117,6 +118,7 @@
     <string name="name">Name</string>
     <string name="new_password">New password</string>
     <string name="no_due_date">No due date</string>
+    <string name="notifications">Notifications</string>
     <string name="ok">OK</string>
     <string name="open_with">Open with</string>
     <string name="option_">Option %1$s</string>
@@ -127,6 +129,7 @@
     <string name="please_sign_in_to_your_account">Please sign in to your account</string>
     <string name="post">Post</string>
     <string name="posted_">Posted %1$s</string>
+    <string name="posted_edited_">Posted %1$s (Edited %2$s)</string>
     <string name="posted_yesterday">Posted yesterday</string>
     <string name="previously_">Previously %1$d/%2$d</string>
     <string name="profile">Profile</string>
@@ -167,6 +170,7 @@
     <string name="teacher">Teacher</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
+    <string name="theme">Theme</string>
     <string name="this_has_not_been_assigned_to_any_students">This hasn\'t been assigned to any students</string>
     <string name="turn_in">Turn in</string>
     <string name="turned_in">Turned in</string>
@@ -182,17 +186,17 @@
     <string name="upload_file">Upload file</string>
     <string name="verify_your_account">Verify your account</string>
     <string name="welcome_back">Welcome back</string>
-    <string name="your_teacher_hasn_t_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
-    <string name="posted_edited_">Posted %1$s (Edited %2$s)</string>
     <string name="yesterday">Yesterday</string>
     <string name="you_have_no_attachments_uploaded">You have no attachments uploaded.</string>
     <string name="your_answer">Your answer</string>
+    <string name="your_teacher_hasn_t_assigned_any_classwork_yet">Your teacher hasn\'t assigned any classwork yet.</string>
     <string name="your_work">Your work</string>
 
     <!-- Screen titles -->
     <string name="title_create_class_screen">Create class</string>
     <string name="title_edit_class_screen">Edit class</string>
     <string name="title_profile_screen">Profile</string>
+    <string name="title_settings_screen">Settings</string>
 
     <!-- Screen labels -->
     <string name="label_coursework_screen">Classwork</string>
