@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -22,12 +23,14 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -59,6 +62,7 @@ import java.io.File
 import kotlin.collections.forEach
 import kotlin.collections.orEmpty
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ViewCourseWorkContent(
     uiState: ViewCourseWorkUiState,
@@ -83,116 +87,124 @@ fun ViewCourseWorkContent(
             }
         }
 
-    LazyVerticalGrid(
-        columns = GridCells.Adaptive(minSize = 128.dp),
+    PullToRefreshBox(
+        isRefreshing = uiState.isRefreshing,
+        onRefresh = {
+            onEvent(ViewCourseWorkUiEvent.Refresh)
+        },
         modifier = modifier,
-        contentPadding = contentPadding,
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        content = {
-            header {
-                Column {
-                    Spacer(modifier = Modifier.height(6.dp))
-                    dueTime?.let {
-                        CourseWorkDueText(dueTime)
+    ) {
+        LazyVerticalGrid(
+            columns = GridCells.Adaptive(minSize = 128.dp),
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = contentPadding,
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            content = {
+                header {
+                    Column {
                         Spacer(modifier = Modifier.height(6.dp))
-                    }
-                    Text(
-                        text = courseWork.title.orEmpty(),
-                        style = MaterialTheme.typography.headlineSmall,
-                    )
-                    if (maxPoints != null && maxPoints > 0) {
-                        Spacer(modifier = Modifier.height(6.dp))
+                        dueTime?.let {
+                            CourseWorkDueText(dueTime)
+                            Spacer(modifier = Modifier.height(6.dp))
+                        }
                         Text(
-                            text = stringResource(id = R.string._points, maxPoints),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            style = MaterialTheme.typography.bodyMedium,
+                            text = courseWork.title.orEmpty(),
+                            style = MaterialTheme.typography.headlineSmall,
                         )
-                    }
-                }
-            }
-            description?.let {
-                header {
-                    Text(
-                        text = description,
-                        modifier = Modifier.padding(top = 14.dp),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        style = MaterialTheme.typography.bodyLarge,
-                    )
-                }
-            }
-            if (!attachments.isNullOrEmpty()) {
-                header {
-                    Text(
-                        text = stringResource(id = R.string.attachments),
-                        modifier = Modifier.padding(top = 14.dp, bottom = 6.dp),
-                        style = MaterialTheme.typography.titleMedium,
-                    )
-                }
-                items(attachments) { material ->
-                    AttachmentsListItem(
-                        material = material,
-                        fileUtils = fileUtils,
-                        onClickFile = { mimeType, url, title ->
-                            if (mimeType == FileType.IMAGE) {
-                                onNavigateToImageViewer(url, title)
-                            } else {
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                context.startActivity(browserIntent)
-                            }
-                        },
-                        onClickLink = { url ->
-                            val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            context.startActivity(browserIntent)
-                        },
-                    )
-                }
-            }
-            if (!isCurrentUserTeacher) {
-                when (workType) {
-                    CourseWorkType.ASSIGNMENT -> {
-                        header {
-                            Button(
-                                onClick = {
-                                    onEvent(
-                                        ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(
-                                            true,
-                                        ),
-                                    )
-                                },
-                                modifier =
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .padding(top = 14.dp),
-                            ) {
-                                Text(text = stringResource(id = R.string.your_work))
-                            }
+                        if (maxPoints != null && maxPoints > 0) {
+                            Spacer(modifier = Modifier.height(6.dp))
+                            Text(
+                                text = stringResource(id = R.string._points, maxPoints),
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
                         }
                     }
-
-                    CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-                        multipleChoiceContent(
-                            uiState = uiState,
-                            onEvent = onEvent,
-                            modifier = Modifier.padding(top = 14.dp),
-                            courseWork = courseWork,
-                        )
-                    }
-
-                    CourseWorkType.SHORT_ANSWER_QUESTION -> {
-                        shortAnswerContent(
-                            uiState = uiState,
-                            onEvent = onEvent,
-                            modifier = Modifier.padding(top = 14.dp),
-                            courseWork = courseWork,
-                        )
-                    }
-
-                    else -> Unit
                 }
-            }
-        },
-    )
+                description?.let {
+                    header {
+                        Text(
+                            text = description,
+                            modifier = Modifier.padding(top = 14.dp),
+                            color = MaterialTheme.colorScheme.onSurface,
+                            style = MaterialTheme.typography.bodyLarge,
+                        )
+                    }
+                }
+                if (!attachments.isNullOrEmpty()) {
+                    header {
+                        Text(
+                            text = stringResource(id = R.string.attachments),
+                            modifier = Modifier.padding(top = 14.dp, bottom = 6.dp),
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                    }
+                    items(attachments) { material ->
+                        AttachmentsListItem(
+                            material = material,
+                            fileUtils = fileUtils,
+                            onClickFile = { mimeType, url, title ->
+                                if (mimeType == FileType.IMAGE) {
+                                    onNavigateToImageViewer(url, title)
+                                } else {
+                                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(browserIntent)
+                                }
+                            },
+                            onClickLink = { url ->
+                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(browserIntent)
+                            },
+                        )
+                    }
+                }
+                if (!isCurrentUserTeacher) {
+                    when (workType) {
+                        CourseWorkType.ASSIGNMENT -> {
+                            header {
+                                Button(
+                                    onClick = {
+                                        onEvent(
+                                            ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(
+                                                true,
+                                            ),
+                                        )
+                                    },
+                                    modifier =
+                                        Modifier
+                                            .fillMaxWidth()
+                                            .padding(top = 14.dp),
+                                ) {
+                                    Text(text = stringResource(id = R.string.your_work))
+                                }
+                            }
+                        }
+
+                        CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
+                            multipleChoiceContent(
+                                uiState = uiState,
+                                onEvent = onEvent,
+                                modifier = Modifier.padding(top = 14.dp),
+                                courseWork = courseWork,
+                            )
+                        }
+
+                        CourseWorkType.SHORT_ANSWER_QUESTION -> {
+                            shortAnswerContent(
+                                uiState = uiState,
+                                onEvent = onEvent,
+                                modifier = Modifier.padding(top = 14.dp),
+                                courseWork = courseWork,
+                            )
+                        }
+
+                        else -> Unit
+                    }
+                }
+            },
+        )
+    }
 
     StudentSubmissionBottomSheet(
         show = uiState.showStudentSubmissionBottomSheet,

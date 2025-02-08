@@ -25,7 +25,6 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
@@ -41,11 +40,11 @@ import app.edumate.core.Result
 import app.edumate.core.utils.FileUtils
 import app.edumate.core.utils.IntentUtils
 import app.edumate.domain.model.courseWork.CourseWorkType
-import app.edumate.presentation.components.EmptyComingSoon
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
+import app.edumate.presentation.studentWork.StudentWorkScreen
 import app.edumate.presentation.viewCourseWork.components.ViewCourseWorkContent
 import kotlinx.coroutines.launch
 
@@ -234,28 +233,25 @@ fun ViewCourseWorkScreen(
                         verticalAlignment = Alignment.Top,
                         userScrollEnabled = !isSingleTabScreen,
                     ) { page ->
-                        PullToRefreshBox(
-                            isRefreshing = uiState.isRefreshing,
-                            onRefresh = {
-                                onEvent(ViewCourseWorkUiEvent.Refresh)
-                            },
-                        ) {
-                            when (page) {
-                                0 -> {
-                                    ViewCourseWorkContent(
-                                        uiState = uiState,
-                                        onEvent = onEvent,
-                                        courseWork = courseWork!!,
-                                        isCurrentUserTeacher = isCurrentUserTeacher,
-                                        fileUtils = fileUtils,
-                                        onNavigateToImageViewer = onNavigateToImageViewer,
-                                        modifier = Modifier.fillMaxSize(),
-                                    )
-                                }
+                        when (page) {
+                            0 -> {
+                                ViewCourseWorkContent(
+                                    uiState = uiState,
+                                    onEvent = onEvent,
+                                    courseWork = courseWork!!,
+                                    isCurrentUserTeacher = isCurrentUserTeacher,
+                                    fileUtils = fileUtils,
+                                    onNavigateToImageViewer = onNavigateToImageViewer,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
 
-                                1 -> {
-                                    EmptyComingSoon() // TODO
-                                }
+                            1 -> {
+                                StudentWorkScreen(
+                                    snackbarHostState = snackbarHostState,
+                                    courseWork = courseWork!!,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
                             }
                         }
                     }
