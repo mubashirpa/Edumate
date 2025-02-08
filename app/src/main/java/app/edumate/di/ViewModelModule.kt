@@ -10,6 +10,7 @@ import app.edumate.presentation.newPassword.NewPasswordViewModel
 import app.edumate.presentation.people.PeopleViewModel
 import app.edumate.presentation.profile.ProfileViewModel
 import app.edumate.presentation.resetPassword.ResetPasswordViewModel
+import app.edumate.presentation.settings.SettingsViewModel
 import app.edumate.presentation.signIn.SignInViewModel
 import app.edumate.presentation.signUp.SignUpViewModel
 import app.edumate.presentation.stream.StreamViewModel
@@ -30,6 +31,7 @@ val viewModelModule =
         viewModelOf(::PeopleViewModel)
         viewModelOf(::ProfileViewModel)
         viewModelOf(::ResetPasswordViewModel)
+        viewModelOf(::SettingsViewModel)
         viewModelOf(::SignInViewModel)
         viewModelOf(::SignUpViewModel)
         viewModelOf(::StreamViewModel)
