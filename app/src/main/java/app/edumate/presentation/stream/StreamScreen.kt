@@ -488,7 +488,11 @@ private fun AnnouncementTextField(
         state = state,
         modifier = modifier,
         placeholder = {
-            Text(text = stringResource(R.string.announce_something_your_class))
+            Text(
+                text = stringResource(R.string.announce_something_your_class),
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 1,
+            )
         },
         leadingIcon = {
             IconButton(
