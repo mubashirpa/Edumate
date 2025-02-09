@@ -13,8 +13,10 @@ import io.ktor.client.plugins.HttpRequestTimeoutException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.onStart
 
 class GetStudentSubmissionUseCase(
     private val authenticationRepository: AuthenticationRepository,
@@ -25,27 +27,49 @@ class GetStudentSubmissionUseCase(
         courseId: String,
         courseWorkId: String,
     ): Flow<Result<StudentSubmission>> =
-        flow {
-            try {
-                emit(Result.Loading())
-                authenticationRepository.currentUser()?.id?.let { userId ->
-                    val studentSubmission =
-                        studentSubmissionRepository
-                            .getStudentSubmission(
-                                courseId = courseId,
-                                courseWorkId = courseWorkId,
-                                userId = userId,
-                            ).toStudentSubmissionDomainModel()
-                    emit(Result.Success(studentSubmission))
-                } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
-            } catch (_: RestException) {
-                emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
-            } catch (_: HttpRequestTimeoutException) {
-                emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))
-            } catch (_: HttpRequestException) {
-                emit(Result.Error(UiText.StringResource(R.string.error_network_exception)))
-            } catch (_: Exception) {
-                emit(Result.Error(UiText.StringResource(R.string.error_unknown)))
-            }
+        execute {
+            val userId =
+                authenticationRepository.currentUser()?.id ?: throw UserNotLoggedInException()
+            studentSubmissionRepository
+                .getStudentSubmission(
+                    courseId = courseId,
+                    courseWorkId = courseWorkId,
+                    userId = userId,
+                ).toStudentSubmissionDomainModel()
+        }
+
+    operator fun invoke(
+        courseId: String,
+        courseWorkId: String,
+        userId: String,
+    ): Flow<Result<StudentSubmission>> =
+        execute {
+            studentSubmissionRepository
+                .getStudentSubmission(
+                    courseId = courseId,
+                    courseWorkId = courseWorkId,
+                    userId = userId,
+                ).toStudentSubmissionDomainModel()
+        }
+
+    private fun execute(block: suspend () -> StudentSubmission): Flow<Result<StudentSubmission>> =
+        flow<Result<StudentSubmission>> {
+            val result = block()
+            emit(Result.Success(result))
+        }.onStart {
+            emit(Result.Loading())
+        }.catch { throwable ->
+            emit(Result.Error(throwable.toUiText()))
         }.flowOn(ioDispatcher)
+
+    private fun Throwable.toUiText(): UiText =
+        when (this) {
+            is RestException -> UiText.DynamicString(message.toString())
+            is HttpRequestTimeoutException -> UiText.StringResource(R.string.error_timeout_exception)
+            is HttpRequestException -> UiText.StringResource(R.string.error_network_exception)
+            is UserNotLoggedInException -> UiText.StringResource(R.string.error_unexpected)
+            else -> UiText.StringResource(R.string.error_unknown)
+        }
 }
+
+class UserNotLoggedInException : Exception()
