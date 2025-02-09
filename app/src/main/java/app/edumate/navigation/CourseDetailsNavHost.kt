@@ -19,6 +19,8 @@ import app.edumate.presentation.stream.StreamScreen
 import app.edumate.presentation.stream.StreamViewModel
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkScreen
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkViewModel
+import app.edumate.presentation.viewStudentSubmission.ViewStudentSubmissionScreen
+import app.edumate.presentation.viewStudentSubmission.ViewStudentSubmissionViewModel
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -115,6 +117,14 @@ fun CourseDetailsNavHost(
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
                 onNavigateToViewStudentSubmission = { /*TODO*/ },
+            )
+        }
+        composable<Screen.ViewStudentSubmission> {
+            val viewModel: ViewStudentSubmissionViewModel = koinViewModel()
+            ViewStudentSubmissionScreen(
+                uiState = viewModel.uiState,
+                onEvent = viewModel::onEvent,
+                onNavigateUp = navController::navigateUp,
             )
         }
     }

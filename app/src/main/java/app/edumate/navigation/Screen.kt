@@ -77,6 +77,13 @@ sealed class Screen {
     ) : Screen()
 
     @Serializable
+    data class ViewStudentSubmission(
+        val courseId: String,
+        val courseWorkId: String,
+        val studentId: String,
+    ) : Screen()
+
+    @Serializable
     data class ImageViewer(
         val imageUrl: String,
         val title: String? = null,
