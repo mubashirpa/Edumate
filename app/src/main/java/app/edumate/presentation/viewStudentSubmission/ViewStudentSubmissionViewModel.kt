@@ -46,7 +46,7 @@ class ViewStudentSubmissionViewModel(
 
             ViewStudentSubmissionUiEvent.Refresh -> {
                 getStudentSubmission(
-                    isRefreshing = true,
+                    isRefreshing = uiState.studentSubmissionResult is Result.Success,
                     courseId = args.courseId,
                     courseWorkId = args.courseWorkId,
                     studentId = args.studentId,
