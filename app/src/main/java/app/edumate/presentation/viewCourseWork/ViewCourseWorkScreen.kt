@@ -121,7 +121,7 @@ fun ViewCourseWorkScreen(
                 },
                 actions = {
                     if (isCurrentUserTeacher) {
-                        courseWorkResult.data?.alternateLink?.let { alternateLink ->
+                        courseWork?.alternateLink?.let { alternateLink ->
                             IconButton(
                                 onClick = {
                                     IntentUtils.shareText(context, alternateLink)
