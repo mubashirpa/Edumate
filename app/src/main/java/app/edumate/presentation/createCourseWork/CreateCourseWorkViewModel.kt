@@ -73,12 +73,6 @@ class CreateCourseWorkViewModel(
                     uiState.description.text
                         .toString()
                         .trim()
-                val maxPoints =
-                    try {
-                        uiState.points?.toInt()
-                    } catch (_: NumberFormatException) {
-                        null
-                    }
 
                 if (args.id == null) {
                     createCourseWork(
@@ -88,7 +82,7 @@ class CreateCourseWorkViewModel(
                         description = description,
                         choices = uiState.choices,
                         materials = uiState.attachments,
-                        maxPoints = maxPoints,
+                        maxPoints = uiState.points,
                         dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
                         workType = uiState.workType!!,
                     )
@@ -99,7 +93,7 @@ class CreateCourseWorkViewModel(
                         description = description,
                         choices = uiState.choices,
                         materials = uiState.attachments,
-                        maxPoints = maxPoints,
+                        maxPoints = uiState.points,
                         dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
                     )
                 }
@@ -137,13 +131,7 @@ class CreateCourseWorkViewModel(
             }
 
             is CreateCourseWorkUiEvent.OnPointsValueChange -> {
-                val points =
-                    try {
-                        event.points?.toInt()
-                    } catch (_: NumberFormatException) {
-                        null
-                    }.takeIf { it != null && it > 0 }
-
+                val points = event.points?.toIntOrNull().takeIf { it != null && it > 0 }
                 uiState = uiState.copy(points = points)
             }
 
