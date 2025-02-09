@@ -3,7 +3,6 @@ package app.edumate.data.repository
 import app.edumate.core.Supabase
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
-import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionListDto
 import app.edumate.data.remote.dto.studentSubmission.SubmissionStateDto
 import app.edumate.domain.repository.StudentSubmissionRepository
 import io.github.jan.supabase.postgrest.Postgrest
@@ -20,7 +19,7 @@ class StudentSubmissionRepositoryImpl(
     override suspend fun getStudentSubmissions(
         courseId: String,
         courseWorkId: String,
-    ): List<StudentSubmissionListDto> =
+    ): List<StudentSubmissionDto> =
         postgrest
             .rpc(
                 function = Supabase.Function.GET_STUDENT_SUBMISSIONS_LIST,

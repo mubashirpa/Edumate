@@ -3,8 +3,8 @@ package app.edumate.domain.usecase.studentSubmission
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.data.mapper.toStudentSubmissionListDomainModel
-import app.edumate.domain.model.studentSubmission.StudentSubmissionList
+import app.edumate.data.mapper.toStudentSubmissionDomainModel
+import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.repository.StudentSubmissionRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.github.jan.supabase.exceptions.RestException
@@ -22,7 +22,7 @@ class GetStudentSubmissionsUseCase(
     operator fun invoke(
         courseId: String,
         courseWorkId: String,
-    ): Flow<Result<List<StudentSubmissionList>>> =
+    ): Flow<Result<List<StudentSubmission>>> =
         flow {
             try {
                 emit(Result.Loading())
@@ -31,7 +31,7 @@ class GetStudentSubmissionsUseCase(
                         .getStudentSubmissions(
                             courseId = courseId,
                             courseWorkId = courseWorkId,
-                        ).map { it.toStudentSubmissionListDomainModel() }
+                        ).map { it.toStudentSubmissionDomainModel() }
                 emit(Result.Success(studentSubmissions))
             } catch (_: RestException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
