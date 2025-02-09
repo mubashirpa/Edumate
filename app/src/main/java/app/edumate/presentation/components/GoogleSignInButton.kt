@@ -57,7 +57,7 @@ fun GoogleSignInButton(
             digest.fold("") { str, it -> str + "%02x".format(it) } // Hashed nonce to be passed to Google sign-in
 
         val googleIdOption: GetGoogleIdOption =
-            GetGoogleIdOption
+            GetGoogleIdOption // TODO: Misuse of Sign in with Google API
                 .Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setServerClientId(Constants.WEB_GOOGLE_CLIENT_ID)
