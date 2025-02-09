@@ -1,12 +1,12 @@
 package app.edumate.presentation.main
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -16,6 +16,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.rememberNavController
 import app.edumate.navigation.Graph
 import app.edumate.navigation.Screen
+import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.main.components.EdumateApp
 import app.edumate.presentation.theme.EdumateTheme
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,12 +34,12 @@ class MainActivity : ComponentActivity() {
         setupContent()
     }
 
-    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     private fun setupContent() {
         setContent {
             val navController = rememberNavController()
             val snackbarHostState = remember { SnackbarHostState() }
             val startDestination = determineStartDestination()
+            val uiState = viewModel.uiState
 
             EdumateTheme {
                 Scaffold(
@@ -49,10 +50,12 @@ class MainActivity : ComponentActivity() {
                     snackbarHost = {
                         SnackbarHost(hostState = snackbarHostState)
                     },
-                ) {
-                    if (!viewModel.uiState.isLoading) {
+                ) { innerPadding ->
+                    if (uiState.isLoading) {
+                        LoadingScreen(modifier = Modifier.padding(innerPadding))
+                    } else {
                         EdumateApp(
-                            uiState = viewModel.uiState,
+                            uiState = uiState,
                             onEvent = viewModel::onEvent,
                             navController = navController,
                             startDestination = startDestination,
