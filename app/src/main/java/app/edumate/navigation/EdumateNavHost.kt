@@ -1,5 +1,7 @@
 package app.edumate.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -115,11 +117,13 @@ fun EdumateNavHost(
                     } else {
                         // For course details screen
                         navController.previousBackStackEntry
-                            ?.savedStateHandle[Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS] = true
+                            ?.savedStateHandle[Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS] =
+                            true
                         navController.navigateUp()
                     }
                 },
                 onNavigateUp = navController::navigateUp,
+                modifier = Modifier.fillMaxSize().imePadding(),
                 courseId = route.courseId,
             )
         }
