@@ -1,6 +1,8 @@
 package app.edumate.data.remote.dto.studentSubmission
 
+import app.edumate.data.remote.dto.courseWork.CourseWorkDto
 import app.edumate.data.remote.dto.courseWork.CourseWorkTypeDto
+import app.edumate.data.remote.dto.user.UserDto
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -14,6 +16,8 @@ data class StudentSubmissionDto(
     val assignmentSubmission: AssignmentSubmissionDto? = null,
     @SerialName("course_id")
     val courseId: String? = null,
+    @SerialName("course_work")
+    val courseWorkDto: CourseWorkDto? = null,
     @SerialName("course_work_id")
     val courseWorkId: String? = null,
     @SerialName("course_work_type")
@@ -29,6 +33,8 @@ data class StudentSubmissionDto(
     val state: SubmissionStateDto? = null,
     @SerialName("update_time")
     val updateTime: String? = null,
+    @SerialName("user")
+    val user: UserDto? = null,
     @SerialName("user_id")
     val userId: String? = null,
 )

@@ -19,6 +19,7 @@ fun StudentSubmissionDto.toStudentSubmissionDomainModel(): StudentSubmission =
         assignedGrade = assignedGrade,
         assignmentSubmission = assignmentSubmission?.toAssignmentSubmissionDomainModel(),
         courseId = courseId,
+        courseWork = courseWorkDto?.toCourseWorkDomainModel(),
         courseWorkId = courseWorkId,
         courseWorkType = courseWorkType?.let { enumValueOf<CourseWorkType>(it.name) },
         creationTime = creationTime,
@@ -28,6 +29,7 @@ fun StudentSubmissionDto.toStudentSubmissionDomainModel(): StudentSubmission =
         shortAnswerSubmission = shortAnswerSubmission?.toQuestionSubmissionDomainModel(),
         state = state?.let { enumValueOf<SubmissionState>(it.name) },
         updateTime = updateTime,
+        user = user?.toUserDomainModel(),
         userId = userId,
     )
 
@@ -37,6 +39,7 @@ fun StudentSubmission.toStudentSubmissionDto(): StudentSubmissionDto =
         assignedGrade = assignedGrade,
         assignmentSubmission = assignmentSubmission?.toAssignmentSubmissionDto(),
         courseId = courseId,
+        courseWorkDto = courseWork?.toCourseWorkDto(),
         courseWorkId = courseWorkId,
         courseWorkType = courseWorkType?.let { enumValueOf<CourseWorkTypeDto>(it.name) },
         creationTime = creationTime,
@@ -46,6 +49,7 @@ fun StudentSubmission.toStudentSubmissionDto(): StudentSubmissionDto =
         shortAnswerSubmission = shortAnswerSubmission?.toQuestionSubmissionDto(),
         state = state?.let { enumValueOf<SubmissionStateDto>(it.name) },
         updateTime = updateTime,
+        user = user?.toUserDto(),
         userId = userId,
     )
 
