@@ -38,7 +38,7 @@ class StudentWorkViewModel(
                 getStudentSubmissions(
                     courseId = args.courseId,
                     courseWorkId = args.id,
-                    isRefreshing = true,
+                    isRefreshing = uiState.studentSubmissionsResult is Result.Success,
                 )
             }
 

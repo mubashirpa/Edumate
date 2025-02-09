@@ -104,7 +104,10 @@ class ViewCourseWorkViewModel(
             }
 
             ViewCourseWorkUiEvent.Refresh -> {
-                getCourseWork(id = courseWorkId, isRefreshing = true)
+                getCourseWork(
+                    id = courseWorkId,
+                    isRefreshing = uiState.courseWorkResult is Result.Success,
+                )
             }
 
             is ViewCourseWorkUiEvent.RemoveAttachment -> {

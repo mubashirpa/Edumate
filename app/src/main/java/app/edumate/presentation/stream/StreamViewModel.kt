@@ -204,7 +204,7 @@ class StreamViewModel(
             StreamUiEvent.Refresh -> {
                 getAnnouncements(
                     courseId = args.courseId,
-                    isRefreshing = true,
+                    isRefreshing = uiState.announcementResult is Result.Success,
                 )
             }
 
