@@ -9,6 +9,7 @@ object Constants {
     const val EDUMATE_BASE_URL = "https://edumate-learning.web.app/"
     const val WEB_GOOGLE_CLIENT_ID =
         "242656945367-ipk4n5tmvqgt9p8kqb9bk0dckgc8lefn.apps.googleusercontent.com"
+    const val ALL_NOTIFICATIONS_CHANNEL_ID = "all_notifications"
 
     object Lottie {
         const val ANIM_VERIFY_EMAIL =

@@ -118,6 +118,8 @@
     <string name="name">Name</string>
     <string name="new_password">New password</string>
     <string name="no_due_date">No due date</string>
+    <string name="notification_channel_description_all">All Notifications channel</string>
+    <string name="notification_channel_name_all">All Notifications</string>
     <string name="notifications">Notifications</string>
     <string name="ok">OK</string>
     <string name="open_with">Open with</string>
