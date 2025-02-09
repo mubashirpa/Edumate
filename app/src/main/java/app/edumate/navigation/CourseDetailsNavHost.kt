@@ -133,6 +133,7 @@ fun CourseDetailsNavHost(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
+                onNavigateToImageViewer = onNavigateToImageViewer,
             )
         }
     }

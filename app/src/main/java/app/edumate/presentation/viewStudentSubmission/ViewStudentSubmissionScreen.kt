@@ -49,6 +49,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.ext.header
 import app.edumate.core.utils.DateTimeUtils
+import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.studentSubmission.StudentSubmission
@@ -68,6 +69,7 @@ fun ViewStudentSubmissionScreen(
     uiState: ViewStudentSubmissionUiState,
     onEvent: (ViewStudentSubmissionUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -195,6 +197,7 @@ fun ViewStudentSubmissionScreen(
                         uiState = uiState,
                         onEvent = onEvent,
                         studentSubmission = studentSubmission,
+                        onNavigateToImageViewer = onNavigateToImageViewer,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -208,6 +211,7 @@ private fun ViewStudentSubmissionContent(
     uiState: ViewStudentSubmissionUiState,
     onEvent: (ViewStudentSubmissionUiEvent) -> Unit,
     studentSubmission: StudentSubmission,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -335,8 +339,14 @@ private fun ViewStudentSubmissionContent(
                             AttachmentsListItem(
                                 material = attachment,
                                 fileUtils = fileUtils,
-                                onClickFile = { _, _, _ ->
-                                    // TODO
+                                onClickFile = { mimeType, url, title ->
+                                    if (mimeType == FileType.IMAGE) {
+                                        onNavigateToImageViewer(url, title)
+                                    } else {
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(browserIntent)
+                                    }
                                 },
                                 onClickLink = { url ->
                                     val browserIntent =
