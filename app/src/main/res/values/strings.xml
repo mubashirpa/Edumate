@@ -1,5 +1,6 @@
 <resources>
     <string name="_points">%1$s points</string>
+    <string name="_return">Return</string>
     <string name="add">Add</string>
     <string name="add_a_class_to_get_started">Add a class to get started</string>
     <string name="add_a_comment">Add a comment</string>
@@ -11,6 +12,7 @@
     <string name="all">All</string>
     <string name="all_students">All students</string>
     <string name="announce_something_your_class">Announce something your class</string>
+    <string name="answer">Answer</string>
     <string name="app_name" translatable="false">Edumate</string>
     <string name="ask">Ask</string>
     <string name="ask_gemini">Ask Gemini</string>
@@ -43,6 +45,10 @@
     <string name="dialog_message_delete_coursework">Grades and comments will also be deleted.</string>
     <string name="dialog_message_delete_material">Comments will also be deleted.</string>
     <string name="dialog_message_leave_course">You won\'t be able to open the class unless you\'re reinvited.\n\n<b>You can\'t undo this action.</b></string>
+    <string name="dialog_message_return">Student will be notified and can check any grade you\'ve left.</string>
+    <string name="dialog_message_return_unsubmitted">The assignment isn\'t done yet. Are you sure you want to return it?</string>
+    <string name="dialog_message_return_update_grade">The student will be notified that the grade has changed.</string>
+    <string name="dialog_message_return_without_grading">%1$s will be notified and can check any comments you\'ve left.</string>
     <string name="dialog_message_turn_in">You didn\'t attach work for "%1$s", so your teacher will just see it\'s done.</string>
     <string name="dialog_message_turn_in_question">You won\'t be able to make changes to your answer after you submit.</string>
     <string name="dialog_message_unenroll">By doing this you won\'t be able to see or participate in the class anymore.</string>
@@ -57,6 +63,10 @@
     <string name="dialog_title_remove_attachment">Remove attachment?</string>
     <string name="dialog_title_remove_student">Remove student?</string>
     <string name="dialog_title_remove_teacher">Remove teacher?</string>
+    <string name="dialog_title_return">Return work to student?</string>
+    <string name="dialog_title_return_unsubmitted">Return unsubmitted assignment?</string>
+    <string name="dialog_title_return_update_grade">Update grade?</string>
+    <string name="dialog_title_return_without_grading">Return work without grading?</string>
     <string name="dialog_title_turn_in">Turn in your work?</string>
     <string name="dialog_title_turn_in_empty_attachments">Mark as done?</string>
     <string name="dialog_title_turn_in_question">Submit answer?</string>
@@ -88,6 +98,8 @@
     <string name="get_started">Get started</string>
     <string name="get_started_message">Helping educators and students to communicate, save time and stay organised</string>
     <string name="google">Google</string>
+    <string name="grade_">Grade/%1$d</string>
+    <string name="graded">Graded</string>
     <string name="have_an_account">Have an account?</string>
     <string name="hide_password">Hide password</string>
     <string name="insert_link">Insert link</string>
@@ -120,6 +132,7 @@
     <string name="name">Name</string>
     <string name="new_password">New password</string>
     <string name="no_due_date">No due date</string>
+    <string name="no_files_attached">No files attached</string>
     <string name="notification_channel_description_all">All Notifications channel</string>
     <string name="notification_channel_name_all">All Notifications</string>
     <string name="notifications">Notifications</string>
@@ -148,6 +161,7 @@
     <string name="reset_password_description">Enter your email address and we\'ll send  you a link to recover your password</string>
     <string name="resubmit">Resubmit</string>
     <string name="retry">Retry</string>
+    <string name="returned">Returned</string>
     <string name="room">Room</string>
     <string name="save">Save</string>
     <string name="section">Section</string>
@@ -174,6 +188,7 @@
     <string name="teacher">Teacher</string>
     <string name="teachers">Teachers</string>
     <string name="teaching">Teaching</string>
+    <string name="the_student_has_not_answered_the_question_yet">The student hasn\'t answered the question yet.</string>
     <string name="theme">Theme</string>
     <string name="this_has_not_been_assigned_to_any_students">This hasn\'t been assigned to any students</string>
     <string name="turn_in">Turn in</string>
@@ -185,6 +200,7 @@
     <string name="unenroll">Unenroll</string>
     <string name="unmarked">Unmarked</string>
     <string name="unsubmit">Unsubmit</string>
+    <string name="update">Update</string>
     <string name="update_password_description">Create a strong password for updating %1$s</string>
     <string name="updating_password">Updating password</string>
     <string name="upload_file">Upload file</string>

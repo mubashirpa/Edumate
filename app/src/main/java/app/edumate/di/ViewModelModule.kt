@@ -16,6 +16,7 @@ import app.edumate.presentation.signUp.SignUpViewModel
 import app.edumate.presentation.stream.StreamViewModel
 import app.edumate.presentation.studentWork.StudentWorkViewModel
 import app.edumate.presentation.viewCourseWork.ViewCourseWorkViewModel
+import app.edumate.presentation.viewStudentSubmission.ViewStudentSubmissionViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -37,4 +38,5 @@ val viewModelModule =
         viewModelOf(::StreamViewModel)
         viewModelOf(::StudentWorkViewModel)
         viewModelOf(::ViewCourseWorkViewModel)
+        viewModelOf(::ViewStudentSubmissionViewModel)
     }
