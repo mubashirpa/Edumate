@@ -20,7 +20,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.domain.model.courseWork.CourseWork
-import app.edumate.domain.model.studentSubmission.StudentSubmissionList
+import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.UserAvatar
 import kotlinx.datetime.Instant
@@ -29,7 +29,7 @@ import kotlinx.datetime.isDistantPast
 @Composable
 fun StudentWorkListItem(
     courseWork: CourseWork,
-    studentSubmission: StudentSubmissionList,
+    studentSubmission: StudentSubmission,
     onClick: (studentId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -64,13 +64,13 @@ fun StudentWorkListItem(
 @Composable
 private fun DueText(
     courseWork: CourseWork,
-    studentSubmission: StudentSubmissionList,
+    studentSubmission: StudentSubmission,
     modifier: Modifier = Modifier,
 ) {
     val maxPoints = courseWork.maxPoints
     val submissionState = studentSubmission.state
     val assignedGrade = studentSubmission.assignedGrade
-    val draftGrade: Int? = null // TODO
+    val draftGrade = studentSubmission.draftGrade
     val dueDateTime =
         remember {
             courseWork.dueTime?.let { dueTime ->
