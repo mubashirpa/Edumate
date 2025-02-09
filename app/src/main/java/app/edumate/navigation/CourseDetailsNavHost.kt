@@ -116,7 +116,15 @@ fun CourseDetailsNavHost(
                 currentUserRole = currentUserRole,
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
-                onNavigateToViewStudentSubmission = { /*TODO*/ },
+                onNavigateToViewStudentSubmission = { courseWorkId, studentId ->
+                    navController.navigate(
+                        Screen.ViewStudentSubmission(
+                            courseId = courseWithMembers.id,
+                            courseWorkId = courseWorkId,
+                            studentId = studentId,
+                        ),
+                    )
+                },
             )
         }
         composable<Screen.ViewStudentSubmission> {

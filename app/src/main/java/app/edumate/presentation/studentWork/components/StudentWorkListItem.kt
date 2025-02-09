@@ -30,12 +30,12 @@ import kotlinx.datetime.isDistantPast
 fun StudentWorkListItem(
     courseWork: CourseWork,
     studentSubmission: StudentSubmissionList,
-    onClick: (userId: String) -> Unit,
+    onClick: (studentId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val student = studentSubmission.user
     val studentName = student?.name.orEmpty()
-    val studentId = studentSubmission.id
+    val studentId = student?.id
 
     ListItem(
         headlineContent = {

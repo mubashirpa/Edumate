@@ -56,7 +56,7 @@ fun ViewCourseWorkScreen(
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
-    onNavigateToViewStudentSubmission: (userId: String) -> Unit,
+    onNavigateToViewStudentSubmission: (courseWorkId: String, studentId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current

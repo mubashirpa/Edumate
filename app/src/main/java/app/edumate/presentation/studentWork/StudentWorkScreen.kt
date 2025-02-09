@@ -26,7 +26,7 @@ fun StudentWorkScreen(
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
     isRefreshing: Boolean,
-    onNavigateToViewStudentSubmission: (userId: String) -> Unit,
+    onNavigateToViewStudentSubmission: (courseWorkId: String, studentId: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: StudentWorkViewModel = koinViewModel(),
 ) {
@@ -53,7 +53,7 @@ private fun StudentWorkScreenContent(
     onEvent: (StudentWorkUiEvent) -> Unit,
     snackbarHostState: SnackbarHostState,
     courseWork: CourseWork,
-    onNavigateToViewStudentSubmission: (userId: String) -> Unit,
+    onNavigateToViewStudentSubmission: (courseWorkId: String, studentId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -105,7 +105,9 @@ private fun StudentWorkScreenContent(
                                 StudentWorkListItem(
                                     courseWork = courseWork,
                                     studentSubmission = submission,
-                                    onClick = onNavigateToViewStudentSubmission,
+                                    onClick = { studentId ->
+                                        onNavigateToViewStudentSubmission(courseWork.id!!, studentId)
+                                    },
                                     modifier = Modifier.animateItem(),
                                 )
                             }
