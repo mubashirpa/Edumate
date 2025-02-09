@@ -13,6 +13,7 @@ data class StudentSubmission(
     val courseWorkId: String? = null,
     val courseWorkType: CourseWorkType? = null,
     val creationTime: String? = null,
+    val draftGrade: Int? = null,
     val id: String? = null,
     val late: Boolean? = null,
     val multipleChoiceSubmission: QuestionSubmission? = null,

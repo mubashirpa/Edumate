@@ -24,6 +24,8 @@ data class StudentSubmissionDto(
     val courseWorkType: CourseWorkTypeDto? = null,
     @SerialName("creation_time")
     val creationTime: String? = null,
+    @SerialName("draft_grade")
+    val draftGrade: Int? = null,
     val id: String? = null,
     val late: Boolean? = null,
     @SerialName("multiple_choice_submission")
