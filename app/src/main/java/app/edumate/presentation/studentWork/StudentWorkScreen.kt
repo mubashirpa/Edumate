@@ -106,7 +106,10 @@ private fun StudentWorkScreenContent(
                                     courseWork = courseWork,
                                     studentSubmission = submission,
                                     onClick = { studentId ->
-                                        onNavigateToViewStudentSubmission(courseWork.id!!, studentId)
+                                        onNavigateToViewStudentSubmission(
+                                            courseWork.id!!,
+                                            studentId,
+                                        )
                                     },
                                     modifier = Modifier.animateItem(),
                                 )
