@@ -1,6 +1,9 @@
 package app.edumate.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -16,6 +19,10 @@ fun NavGraphBuilder.authentication(
     snackbarHostState: SnackbarHostState,
     coroutineScope: CoroutineScope,
 ) {
+    val modifier =
+        Modifier
+            .fillMaxSize()
+            .imePadding()
     val navigateToSignIn: () -> Unit = {
         navController.navigate(Screen.SignIn) {
             popUpTo(Screen.SignUp) { inclusive = true }
@@ -33,6 +40,7 @@ fun NavGraphBuilder.authentication(
                 onNavigateToSignIn = {
                     navController.navigate(Screen.SignIn)
                 },
+                modifier = modifier,
             )
         }
         composable<Screen.SignIn> {
@@ -49,6 +57,7 @@ fun NavGraphBuilder.authentication(
                 onSignInComplete = {
                     navigateToHome()
                 },
+                modifier = modifier,
             )
         }
         composable<Screen.SignUp> {
@@ -63,6 +72,7 @@ fun NavGraphBuilder.authentication(
                         navigateToSignIn()
                     }
                 },
+                modifier = modifier,
             )
         }
         composable<Screen.ResetPassword> {
@@ -70,6 +80,7 @@ fun NavGraphBuilder.authentication(
                 snackbarHostState = snackbarHostState,
                 coroutineScope = coroutineScope,
                 onResetPasswordComplete = navController::navigateUp,
+                modifier = modifier,
             )
         }
     }
