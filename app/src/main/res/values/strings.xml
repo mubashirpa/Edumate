@@ -15,7 +15,6 @@
     <string name="answer">Answer</string>
     <string name="app_name" translatable="false">Edumate</string>
     <string name="ask">Ask</string>
-    <string name="ask_gemini">Ask Gemini</string>
     <string name="ask_teacher_for_class_code">Ask your teacher for the class code then enter it here</string>
     <string name="assign">Assign</string>
     <string name="assigned">Assigned</string>

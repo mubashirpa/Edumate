@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.MenuOpen
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.DrawerState
 import androidx.compose.material3.Icon
@@ -43,11 +42,6 @@ fun HomeNavigationDrawer(
 ) {
     val drawerRoutes =
         listOf(
-            HomeNavigationDrawerRoute(
-                labelId = R.string.ask_gemini,
-                route = Screen.Profile, // TODO
-                icon = Icons.Default.Memory,
-            ),
             HomeNavigationDrawerRoute(
                 labelId = R.string.profile,
                 route = Screen.Profile,
