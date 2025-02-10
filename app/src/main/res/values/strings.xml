@@ -233,7 +233,9 @@
     <string name="error_join_course_invalid_id">Invalid Course ID. Please verify and try again.</string>
     <string name="error_join_course_not_found">No course found with the given Course ID.</string>
     <string name="error_network_exception">A network error occurred. Please check your connection and try again.</string>
+    <string name="error_rest_exception">A database error occurred. Your request could not be completed at this time.</string>
     <string name="error_timeout_exception">The operation timed out. Please try again.</string>
+    <string name="error_unauthenticated_access_exception">Authentication failed. Please log in again.</string>
     <string name="error_unexpected">An unexpected error occurred.</string>
     <string name="error_unknown">Something wrong happened. Please try again.</string>
 
