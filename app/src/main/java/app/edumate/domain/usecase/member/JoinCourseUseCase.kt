@@ -27,7 +27,8 @@ class JoinCourseUseCase(
                 authenticationRepository.currentUser()?.id?.let { userId ->
                     memberRepository.insertMember(courseId, userId)
                     emit(Result.Success(true))
-                } ?: emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
+                }
+                    ?: emit(Result.Error(UiText.StringResource(R.string.error_unauthenticated_access_exception)))
             } catch (e: RestException) {
                 emit(handleRestException(e))
             } catch (_: HttpRequestTimeoutException) {
