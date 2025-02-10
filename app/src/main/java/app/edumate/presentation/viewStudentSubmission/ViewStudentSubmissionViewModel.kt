@@ -10,6 +10,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import app.edumate.core.Result
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.ReturnStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.UpdateStudentSubmissionUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
@@ -18,6 +20,8 @@ import kotlinx.coroutines.flow.onEach
 class ViewStudentSubmissionViewModel(
     savedStateHandle: SavedStateHandle,
     private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
+    private val returnStudentSubmissionUseCase: ReturnStudentSubmissionUseCase,
+    private val updateStudentSubmissionUseCase: UpdateStudentSubmissionUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(ViewStudentSubmissionUiState())
         private set
@@ -62,7 +66,14 @@ class ViewStudentSubmissionViewModel(
                 )
             }
 
-            ViewStudentSubmissionUiEvent.Return -> TODO()
+            is ViewStudentSubmissionUiEvent.Return -> {
+                event.grade?.let { grade ->
+                    updateStudentSubmission(
+                        id = event.id,
+                        grade = grade,
+                    )
+                } ?: returnStudentSubmission(event.id)
+            }
 
             ViewStudentSubmissionUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
@@ -123,5 +134,64 @@ class ViewStudentSubmissionViewModel(
                         }
                     }
                 }.launchIn(viewModelScope)
+    }
+
+    private fun returnStudentSubmission(id: String) {
+        returnStudentSubmissionUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getStudentSubmission(
+                            isRefreshing = true,
+                            courseId = args.courseId,
+                            courseWorkId = args.courseWorkId,
+                            studentId = args.studentId,
+                        )
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun updateStudentSubmission(
+        id: String,
+        grade: Int?,
+    ) {
+        updateStudentSubmissionUseCase(id = id, assignedGrade = grade)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        returnStudentSubmission(id)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 }
