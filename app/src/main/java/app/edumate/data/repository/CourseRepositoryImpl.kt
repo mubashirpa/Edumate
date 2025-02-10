@@ -31,15 +31,15 @@ class CourseRepositoryImpl(
                 }
             }.decodeList()
 
-    override suspend fun getCourse(id: String): CourseDto? =
+    override suspend fun getCourse(id: String): CourseDto =
         postgrest[Supabase.Table.COURSES]
             .select(Columns.raw("*, owner:users!owner_id(*)")) {
                 filter {
                     eq(Supabase.Column.ID, id)
                 }
-            }.decodeSingleOrNull()
+            }.decodeSingle()
 
-    override suspend fun getCourseWithMembers(id: String): CourseWithMembersDto? =
+    override suspend fun getCourseWithMembers(id: String): CourseWithMembersDto =
         postgrest[Supabase.Table.COURSES]
             .select(Columns.raw("*, members:members(role, user_id)")) {
                 filter {

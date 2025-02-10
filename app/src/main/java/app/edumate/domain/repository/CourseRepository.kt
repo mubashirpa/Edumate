@@ -9,9 +9,9 @@ interface CourseRepository {
 
     suspend fun getCourses(userId: String): List<CoursesDto>
 
-    suspend fun getCourse(id: String): CourseDto?
+    suspend fun getCourse(id: String): CourseDto
 
-    suspend fun getCourseWithMembers(id: String): CourseWithMembersDto?
+    suspend fun getCourseWithMembers(id: String): CourseWithMembersDto
 
     suspend fun updateCourse(
         id: String,
