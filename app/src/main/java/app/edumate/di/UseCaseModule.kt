@@ -45,6 +45,7 @@ import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionsUseCase
 import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.ReturnStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.UpdateStudentSubmissionUseCase
 import app.edumate.domain.usecase.validation.ValidateEmail
@@ -90,6 +91,7 @@ val useCaseModule =
         singleOf(::ReclaimStudentSubmissionUseCase)
         singleOf(::ResendSignUpConfirmationEmailUseCase)
         singleOf(::ResetPasswordUseCase)
+        singleOf(::ReturnStudentSubmissionUseCase)
         singleOf(::SignInUseCase)
         singleOf(::SignInWithGoogleUseCase)
         singleOf(::SignOutUseCase)
