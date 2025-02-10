@@ -15,50 +15,22 @@ fun ReturnDialog(
     maxPoints: Int?,
     submissionState: SubmissionState?,
     assignedGrade: Int?,
-    newAssignedGrade: Int?,
+    draftGrade: Int?,
     onDismissRequest: () -> Unit,
     onConfirmButtonClick: () -> Unit,
 ) {
     if (open) {
         val isCourseWorkGraded = (maxPoints ?: 0) > 0
-        val isStudentSubmissionMarked = isCourseWorkGraded && newAssignedGrade != null
+        val isStudentSubmissionMarked = isCourseWorkGraded && draftGrade != null && draftGrade > 0
         val isStudentSubmissionMarkUpdated = assignedGrade != null && isStudentSubmissionMarked
         val isStudentNotYetSubmitted = submissionState == SubmissionState.CREATED
-        val confirmButtonText =
-            if (isStudentSubmissionMarkUpdated) {
-                stringResource(id = R.string.update)
-            } else {
-                stringResource(id = R.string._return)
-            }
-        val (title, text) =
-            when {
-                isStudentNotYetSubmitted -> {
-                    // Student has not yet submitted
-                    stringResource(id = R.string.dialog_title_return_unsubmitted) to
-                        stringResource(id = R.string.dialog_message_return_unsubmitted)
-                }
-
-                !isStudentSubmissionMarked -> {
-                    // Course work is ungraded or student submission is unmarked
-                    stringResource(id = R.string.dialog_title_return_without_grading) to
-                        stringResource(
-                            id = R.string.dialog_message_return_without_grading,
-                            studentName,
-                        )
-                }
-
-                isStudentSubmissionMarkUpdated -> {
-                    // Course work is graded, and student submission needs updating
-                    stringResource(id = R.string.dialog_title_return_update_grade) to
-                        stringResource(id = R.string.dialog_message_return_update_grade)
-                }
-
-                else -> {
-                    // Course work is graded, and student submission is marked
-                    stringResource(id = R.string.dialog_title_return) to
-                        stringResource(id = R.string.dialog_message_return)
-                }
-            }
+        val (title, text, confirmButtonText) =
+            getDialogContent(
+                isStudentNotYetSubmitted,
+                isStudentSubmissionMarked,
+                isStudentSubmissionMarkUpdated,
+                studentName,
+            )
 
         AlertDialog(
             onDismissRequest = onDismissRequest,
@@ -86,3 +58,48 @@ fun ReturnDialog(
         )
     }
 }
+
+@Composable
+private fun getDialogContent(
+    isStudentNotYetSubmitted: Boolean,
+    isStudentSubmissionMarked: Boolean,
+    isStudentSubmissionMarkUpdated: Boolean,
+    studentName: String,
+): Triple<String, String, String> =
+    when {
+        isStudentNotYetSubmitted -> {
+            // Student has not yet submitted
+            Triple(
+                stringResource(id = R.string.dialog_title_return_unsubmitted),
+                stringResource(id = R.string.dialog_message_return_unsubmitted),
+                stringResource(id = R.string._return),
+            )
+        }
+
+        !isStudentSubmissionMarked -> {
+            // Course work is ungraded or student submission is unmarked
+            Triple(
+                stringResource(id = R.string.dialog_title_return_without_grading),
+                stringResource(id = R.string.dialog_message_return_without_grading, studentName),
+                stringResource(id = R.string._return),
+            )
+        }
+
+        isStudentSubmissionMarkUpdated -> {
+            // Course work is graded, and student submission needs updating
+            Triple(
+                stringResource(id = R.string.dialog_title_return_update_grade),
+                stringResource(id = R.string.dialog_message_return_update_grade),
+                stringResource(id = R.string.update),
+            )
+        }
+
+        else -> {
+            // Course work is graded, and student submission is marked
+            Triple(
+                stringResource(id = R.string.dialog_title_return),
+                stringResource(id = R.string.dialog_message_return),
+                stringResource(id = R.string._return),
+            )
+        }
+    }
