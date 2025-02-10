@@ -9,11 +9,14 @@ sealed class ViewStudentSubmissionUiEvent {
         val open: Boolean,
     ) : ViewStudentSubmissionUiEvent()
 
+    data class Return(
+        val id: String,
+        val grade: Int? = null,
+    ) : ViewStudentSubmissionUiEvent()
+
     data object Refresh : ViewStudentSubmissionUiEvent()
 
     data object Retry : ViewStudentSubmissionUiEvent()
-
-    data object Return : ViewStudentSubmissionUiEvent()
 
     data object UserMessageShown : ViewStudentSubmissionUiEvent()
 }
