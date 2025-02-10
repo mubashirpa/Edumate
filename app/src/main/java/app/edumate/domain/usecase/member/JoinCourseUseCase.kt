@@ -57,13 +57,13 @@ class JoinCourseUseCase(
                     }
 
                     else -> {
-                        Result.Error(UiText.StringResource(R.string.error_unexpected))
+                        Result.Error(UiText.StringResource(R.string.error_rest_exception))
                     }
                 }
             }
 
             else -> {
-                Result.Error(UiText.StringResource(R.string.error_unexpected))
+                Result.Error(UiText.StringResource(R.string.error_rest_exception))
             }
         }
 }

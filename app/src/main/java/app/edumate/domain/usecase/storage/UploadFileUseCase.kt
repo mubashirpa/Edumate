@@ -31,7 +31,7 @@ class UploadFileUseCase(
                     emit(Result.Success(it))
                 }
             } catch (_: RestException) {
-                emit(Result.Error(UiText.StringResource(R.string.error_unexpected)))
+                emit(Result.Error(UiText.StringResource(R.string.error_rest_exception)))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))
             } catch (_: HttpRequestException) {
