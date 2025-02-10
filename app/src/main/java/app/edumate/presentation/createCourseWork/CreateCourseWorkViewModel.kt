@@ -131,7 +131,11 @@ class CreateCourseWorkViewModel(
             }
 
             is CreateCourseWorkUiEvent.OnPointsValueChange -> {
-                val points = event.points?.toIntOrNull().takeIf { it != null && it > 0 }
+                val points =
+                    event.points
+                        ?.trim()
+                        ?.toIntOrNull()
+                        .takeIf { it != null && it > 0 }
                 uiState = uiState.copy(points = points)
             }
 
