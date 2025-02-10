@@ -3,7 +3,6 @@ package app.edumate.domain.usecase.member
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
-import app.edumate.core.utils.toUiText
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
