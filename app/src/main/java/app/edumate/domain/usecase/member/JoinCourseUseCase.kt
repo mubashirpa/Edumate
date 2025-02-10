@@ -3,6 +3,7 @@ package app.edumate.domain.usecase.member
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
+import app.edumate.core.utils.toUiText
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.MemberRepository
 import io.github.jan.supabase.exceptions.HttpRequestException
@@ -30,7 +31,7 @@ class JoinCourseUseCase(
                 }
                     ?: emit(Result.Error(UiText.StringResource(R.string.error_unauthenticated_access_exception)))
             } catch (e: RestException) {
-                emit(handleRestException(e))
+                emit(Result.Error(e.toUiText()))
             } catch (_: HttpRequestTimeoutException) {
                 emit(Result.Error(UiText.StringResource(R.string.error_timeout_exception)))
             } catch (_: HttpRequestException) {
@@ -40,30 +41,30 @@ class JoinCourseUseCase(
             }
         }.flowOn(ioDispatcher)
 
-    private fun handleRestException(e: RestException): Result<Boolean> =
-        when (e.statusCode) {
+    private fun RestException.toUiText(): UiText =
+        when (statusCode) {
             HttpStatusCode.BadRequest.value -> {
-                Result.Error(UiText.StringResource(R.string.error_join_course_invalid_id))
+                UiText.StringResource(R.string.error_join_course_invalid_id)
             }
 
             HttpStatusCode.Conflict.value -> {
                 when {
-                    e.message?.contains("members_pkey", ignoreCase = true) == true -> {
-                        Result.Error(UiText.StringResource(R.string.error_join_course_already_joined))
+                    error.contains("members_pkey", ignoreCase = true) -> {
+                        UiText.StringResource(R.string.error_join_course_already_joined)
                     }
 
-                    e.message?.contains("members_course_id_fkey", ignoreCase = true) == true -> {
-                        Result.Error(UiText.StringResource(R.string.error_join_course_not_found))
+                    error.contains("members_course_id_fkey", ignoreCase = true) -> {
+                        UiText.StringResource(R.string.error_join_course_not_found)
                     }
 
                     else -> {
-                        Result.Error(UiText.StringResource(R.string.error_rest_exception))
+                        UiText.StringResource(R.string.error_rest_exception)
                     }
                 }
             }
 
             else -> {
-                Result.Error(UiText.StringResource(R.string.error_rest_exception))
+                UiText.StringResource(R.string.error_rest_exception)
             }
         }
 }
