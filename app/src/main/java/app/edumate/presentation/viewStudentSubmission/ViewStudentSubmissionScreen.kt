@@ -226,8 +226,7 @@ private fun ViewStudentSubmissionContent(
     val draftGrade =
         uiState.grade.text
             .toString()
-            .takeIf { it.isNotEmpty() }
-            ?.toIntOrNull()
+            .toDraftGrade()
     val dueDateTime =
         remember {
             courseWork.dueTime?.let { dueTime ->
@@ -249,10 +248,7 @@ private fun ViewStudentSubmissionContent(
             student?.let {
                 header {
                     Row(
-                        modifier =
-                            Modifier
-                                .height(72.dp)
-                                .padding(horizontal = 4.dp, vertical = 8.dp),
+                        modifier = Modifier.padding(bottom = 2.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         UserAvatar(
@@ -457,19 +453,12 @@ private fun ViewStudentSubmissionContent(
         maxPoints = maxPoints,
         submissionState = studentSubmission.state,
         assignedGrade = studentSubmission.assignedGrade,
-        newAssignedGrade = draftGrade,
+        draftGrade = draftGrade,
         onDismissRequest = {
             onEvent(ViewStudentSubmissionUiEvent.OnOpenReturnDialogChange(false))
         },
         onConfirmButtonClick = {
-            val event =
-                if (isCourseWorkGraded && submissionState == SubmissionState.TURNED_IN && draftGrade == null) {
-                    ViewStudentSubmissionUiEvent.Return
-                } else {
-                    ViewStudentSubmissionUiEvent.Return // TODO Patch
-                }
-
-            onEvent(event)
+            onEvent(ViewStudentSubmissionUiEvent.Return(studentSubmission.id!!, draftGrade))
         },
     )
 
@@ -478,3 +467,5 @@ private fun ViewStudentSubmissionContent(
         onDismissRequest = {},
     )
 }
+
+fun String.toDraftGrade(): Int? = trim().takeIf { it.isNotEmpty() }?.toIntOrNull()
