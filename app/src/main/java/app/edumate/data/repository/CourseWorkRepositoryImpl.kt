@@ -33,13 +33,13 @@ class CourseWorkRepositoryImpl(
                 order(Supabase.Column.CREATION_TIME, Order.DESCENDING)
             }.decodeList()
 
-    override suspend fun getCourseWork(id: String): CourseWorkDto? =
+    override suspend fun getCourseWork(id: String): CourseWorkDto =
         postgrest[Supabase.Table.COURSE_WORKS]
             .select(Columns.raw("*")) {
                 filter {
                     eq(Supabase.Column.ID, id)
                 }
-            }.decodeSingleOrNull()
+            }.decodeSingle()
 
     override suspend fun updateCourseWork(
         id: String,
