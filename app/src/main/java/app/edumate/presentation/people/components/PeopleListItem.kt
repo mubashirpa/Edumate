@@ -119,7 +119,13 @@ private fun PeopleListItemContent(
         modifier = modifier,
         overlineContent = {
             if (itemUserRole is PeopleUserRole.Teacher) {
-                Text(text = stringResource(R.string.teacher))
+                val text =
+                    if (itemUserRole.isCourseOwner) {
+                        stringResource(id = R.string.admin)
+                    } else {
+                        stringResource(id = R.string.teacher)
+                    }
+                Text(text = text)
             }
         },
         leadingContent = {
