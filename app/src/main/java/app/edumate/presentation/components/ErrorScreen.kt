@@ -1,10 +1,13 @@
 package app.edumate.presentation.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -63,6 +66,7 @@ fun ErrorScreen(
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun AnimatedErrorScreen(
     url: String,
@@ -72,20 +76,25 @@ fun AnimatedErrorScreen(
 ) {
     val composition = rememberLottieComposition(LottieCompositionSpec.Url(url))
 
-    Column(
-        modifier = modifier.padding(contentPadding),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        LottieAnimation(
-            composition = composition.value,
-            modifier = Modifier.size(200.dp),
-            iterations = LottieConstants.IterateForever,
-        )
-        Spacer(modifier = Modifier.height(24.dp))
-        Text(
-            text = errorMessage,
-            textAlign = TextAlign.Center,
-        )
+    BoxWithConstraints(modifier = modifier.padding(contentPadding)) {
+        val minHeight = minHeight
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            if (minHeight > 260.dp) {
+                LottieAnimation(
+                    composition = composition.value,
+                    modifier = Modifier.size(200.dp),
+                    iterations = LottieConstants.IterateForever,
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+            }
+            Text(
+                text = errorMessage,
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }
