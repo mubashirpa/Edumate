@@ -19,6 +19,8 @@ data class AnnouncementDto(
     val id: String? = null,
     val materials: List<MaterialDto>? = null,
     val text: String? = null,
+    @SerialName("total_comments")
+    val totalComments: Int? = null,
     @SerialName("update_time")
     val updateTime: String? = null,
 )

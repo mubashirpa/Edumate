@@ -12,5 +12,6 @@ data class Announcement(
     val id: String? = null,
     val materials: List<Material>? = null,
     val text: String? = null,
+    val totalComments: Int? = null,
     val updateTime: String? = null,
 )

@@ -13,6 +13,7 @@ fun AnnouncementDto.toAnnouncementDomainModel(): Announcement =
         id = id,
         materials = materials?.map { it.toMaterialDomainModel() },
         text = text,
+        totalComments = totalComments,
         updateTime = updateTime,
     )
 
@@ -26,5 +27,6 @@ fun Announcement.toAnnouncementDto(): AnnouncementDto =
         id = id,
         materials = materials?.map { it.toMaterialDto() },
         text = text,
+        totalComments = totalComments,
         updateTime = updateTime,
     )

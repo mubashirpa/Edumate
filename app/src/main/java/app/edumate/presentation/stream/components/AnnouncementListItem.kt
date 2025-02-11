@@ -42,6 +42,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -93,6 +94,7 @@ fun AnnouncementListItem(
         creationTime = announcement.creationTime.orEmpty(),
         updateTime = announcement.updateTime.orEmpty(),
         creator = announcement.creator,
+        totalComments = announcement.totalComments ?: 0,
         itemUserRole = itemUserRole,
         currentUserRole = currentUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
@@ -125,6 +127,7 @@ private fun AnnouncementListItemContent(
     creationTime: String,
     updateTime: String,
     creator: User?,
+    totalComments: Int,
     itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
@@ -231,7 +234,7 @@ private fun AnnouncementListItemContent(
             modifier =
                 Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp, bottom = 16.dp),
+                    .padding(top = 4.dp, bottom = 16.dp),
         ) {
             Text(
                 text = text,
@@ -243,7 +246,7 @@ private fun AnnouncementListItemContent(
                         Modifier
                             .fillMaxWidth()
                             .horizontalScroll(rememberScrollState())
-                            .padding(top = 16.dp)
+                            .padding(top = 12.dp)
                             .padding(horizontal = 16.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
@@ -314,6 +317,17 @@ private fun AnnouncementListItemContent(
                         }
                     }
                 }
+            }
+            if (totalComments > 0) {
+                Text(
+                    text = pluralStringResource(R.plurals.replies, totalComments, totalComments),
+                    modifier =
+                        Modifier
+                            .padding(top = 12.dp)
+                            .padding(horizontal = 16.dp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.labelMedium,
+                )
             }
         }
     }
@@ -412,6 +426,7 @@ private fun AnnouncementListItemPreview() {
             creationTime = "2025-01-28T08:26:42.830742+00:00",
             updateTime = "2025-01-28T08:26:42.830742+00:00",
             creator = User(name = "User"),
+            totalComments = 10,
             itemUserRole = UserRole.TEACHER,
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
             isCurrentUserCreator = true,

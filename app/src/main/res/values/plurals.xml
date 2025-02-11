@@ -4,4 +4,8 @@
         <item quantity="one">%1$d attachment will be submitted for "%2$s".</item>
         <item quantity="other">%1$d attachments will be submitted for "%2$s".</item>
     </plurals>
+    <plurals name="replies">
+        <item quantity="one">%1$d Reply</item>
+        <item quantity="other">%1$d Replies</item>
+    </plurals>
 </resources>
