@@ -27,6 +27,10 @@ class ProfileViewModel(
 
     fun onEvent(event: ProfileUiEvent) {
         when (event) {
+            is ProfileUiEvent.OnOpenLogoutDialogChange -> {
+                uiState = uiState.copy(openLogoutDialog = event.open)
+            }
+
             ProfileUiEvent.SignOut -> {
                 signOut()
             }
@@ -50,7 +54,10 @@ class ProfileViewModel(
                         }
 
                         is Result.Loading -> {
-                            uiState.copy(openProgressDialog = true)
+                            uiState.copy(
+                                openLogoutDialog = false,
+                                openProgressDialog = true,
+                            )
                         }
 
                         is Result.Success -> {

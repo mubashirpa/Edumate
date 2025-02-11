@@ -42,6 +42,7 @@ import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.components.UserAvatar
+import app.edumate.presentation.profile.components.LogoutDialog
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.flow.filter
 import org.koin.androidx.compose.koinViewModel
@@ -164,7 +165,7 @@ private fun ProfileContent(
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = {
-                            onEvent(ProfileUiEvent.SignOut)
+                            onEvent(ProfileUiEvent.OnOpenLogoutDialogChange(true))
                         },
                     ) {
                         Text(text = stringResource(R.string.logout))
@@ -173,6 +174,16 @@ private fun ProfileContent(
             }
         }
     }
+
+    LogoutDialog(
+        open = uiState.openLogoutDialog,
+        onDismissRequest = {
+            onEvent(ProfileUiEvent.OnOpenLogoutDialogChange(false))
+        },
+        onConfirmation = {
+            onEvent(ProfileUiEvent.SignOut)
+        },
+    )
 
     ProgressDialog(
         text = stringResource(R.string.logging_out),

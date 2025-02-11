@@ -45,6 +45,8 @@
     <string name="dialog_message_delete_coursework">Grades and comments will also be deleted.</string>
     <string name="dialog_message_delete_material">Comments will also be deleted.</string>
     <string name="dialog_message_leave_course">You won\'t be able to open the class unless you\'re reinvited.\n\n<b>You can\'t undo this action.</b></string>
+    <string name="dialog_message_logout">Are you sure you want to logout of your account?</string>
+    <string name="dialog_message_request_notification_permission">Notification permission is required to show notifications</string>
     <string name="dialog_message_return">Student will be notified and can check any grade you\'ve left.</string>
     <string name="dialog_message_return_unsubmitted">The assignment isn\'t done yet. Are you sure you want to return it?</string>
     <string name="dialog_message_return_update_grade">The student will be notified that the grade has changed.</string>
@@ -63,6 +65,7 @@
     <string name="dialog_title_remove_attachment">Remove attachment?</string>
     <string name="dialog_title_remove_student">Remove student?</string>
     <string name="dialog_title_remove_teacher">Remove teacher?</string>
+    <string name="dialog_title_request_notification_permission">Notification permission</string>
     <string name="dialog_title_return">Return work to student?</string>
     <string name="dialog_title_return_unsubmitted">Return unsubmitted assignment?</string>
     <string name="dialog_title_return_update_grade">Update grade?</string>
@@ -262,6 +265,4 @@
     <string name="error_invalid_email">Please enter a valid email.</string>
     <string name="error_invalid_password">Use a mix of letters and numbers that you can remember.</string>
     <string name="error_invalid_repeated_password">You must enter the same password twice in order to confirm it.</string>
-    <string name="dialog_title_request_notification_permission">Notification permission</string>
-    <string name="dialog_message_request_notification_permission">Notification permission is required to show notifications</string>
 </resources>
