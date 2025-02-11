@@ -18,6 +18,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
@@ -47,11 +51,14 @@ fun MultipleChoiceContent(
 
     Column(modifier = modifier) {
         choices.onEachIndexed { index, choice ->
-            var text =
-                TextFieldValue(
-                    text = choice,
-                    selection = TextRange(choice.length),
+            var state by remember(choice) {
+                mutableStateOf(
+                    TextFieldValue(
+                        text = choice,
+                        selection = TextRange(choice.length),
+                    ),
                 )
+            }
 
             ListItem(
                 headlineContent = {
@@ -64,9 +71,8 @@ fun MultipleChoiceContent(
                             onClick = null,
                         )
                         BasicTextField(
-                            value = text,
+                            value = state,
                             onValueChange = {
-                                text = it
                                 onChoiceChange(index, it.text)
                             },
                             modifier =
@@ -75,14 +81,8 @@ fun MultipleChoiceContent(
                                     .padding(start = 16.dp)
                                     .onFocusChanged { focusState ->
                                         if (focusState.isFocused) {
-                                            text =
-                                                text.copy(
-                                                    selection =
-                                                        TextRange(
-                                                            0,
-                                                            choice.length,
-                                                        ),
-                                                )
+                                            state =
+                                                state.copy(selection = TextRange(0, choice.length))
                                         }
                                     },
                             textStyle =
