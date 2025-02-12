@@ -2,7 +2,6 @@ package app.edumate.domain.repository
 
 import app.edumate.data.remote.dto.announcement.AnnouncementDto
 import app.edumate.data.remote.dto.comment.CommentDto
-import app.edumate.data.remote.dto.comment.CommentsDto
 import app.edumate.data.remote.dto.material.MaterialDto
 
 interface AnnouncementRepository {
@@ -25,5 +24,5 @@ interface AnnouncementRepository {
         text: String,
     ): CommentDto
 
-    suspend fun getComments(announcementId: String): List<CommentsDto>
+    suspend fun getComments(announcementId: String): List<CommentDto>
 }
