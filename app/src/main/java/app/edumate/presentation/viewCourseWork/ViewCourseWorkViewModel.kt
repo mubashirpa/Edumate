@@ -68,7 +68,6 @@ class ViewCourseWorkViewModel(
     private var getStudentSubmissionJob: Job? = null
     private var studentSubmissionId: String? = null
     private var courseWorkType: CourseWorkType? = null
-    private var submissionId: String? = null
     private var getSubmissionCommentsJob: Job? = null
 
     init {
@@ -119,7 +118,7 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange -> {
                 if (commentsUiState.commentsResult is Result.Empty) {
-                    submissionId?.let {
+                    studentSubmissionId?.let {
                         getComments(it, false)
                     }
                 }
@@ -197,7 +196,7 @@ class ViewCourseWorkViewModel(
     fun onEvent(event: CommentsBottomSheetUiEvent) {
         when (event) {
             is CommentsBottomSheetUiEvent.AddComment -> {
-                submissionId?.let {
+                studentSubmissionId?.let {
                     if (commentsUiState.editCommentId != null) {
                         updateComment(
                             submissionId = it,
@@ -215,7 +214,7 @@ class ViewCourseWorkViewModel(
             }
 
             is CommentsBottomSheetUiEvent.DeleteComment -> {
-                submissionId?.let {
+                studentSubmissionId?.let {
                     deleteComment(
                         submissionId = it,
                         id = event.commentId,
@@ -235,7 +234,7 @@ class ViewCourseWorkViewModel(
             }
 
             CommentsBottomSheetUiEvent.Retry -> {
-                submissionId?.let {
+                studentSubmissionId?.let {
                     getComments(it, false)
                 }
             }
@@ -295,14 +294,14 @@ class ViewCourseWorkViewModel(
                         }
 
                         is Result.Success -> {
+                            val courseWork = result.data!!
+                            courseWorkType = courseWork.workType
+
                             uiState =
                                 uiState.copy(
                                     courseWorkResult = result,
                                     isRefreshing = false,
                                 )
-
-                            val courseWork = result.data!!
-                            courseWorkType = courseWork.workType
 
                             if (isCurrentUserStudent && courseWorkType != CourseWorkType.MATERIAL) {
                                 getStudentSubmission(
