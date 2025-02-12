@@ -29,6 +29,7 @@
     <string name="class_name">Class name</string>
     <string name="class_not_found">Class not found</string>
     <string name="clear_text">Clear text</string>
+    <string name="comments">Comments</string>
     <string name="confirm">Confirm</string>
     <string name="confirm_new_password">Confirm new password</string>
     <string name="confirm_password">Confirm password</string>

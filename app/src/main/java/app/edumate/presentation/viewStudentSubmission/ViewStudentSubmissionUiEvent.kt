@@ -9,6 +9,10 @@ sealed class ViewStudentSubmissionUiEvent {
         val open: Boolean,
     ) : ViewStudentSubmissionUiEvent()
 
+    data class OnShowCommentsBottomSheetChange(
+        val show: Boolean,
+    ) : ViewStudentSubmissionUiEvent()
+
     data class Return(
         val id: String,
         val grade: Int? = null,

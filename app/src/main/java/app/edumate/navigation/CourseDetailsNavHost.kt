@@ -133,6 +133,8 @@ fun CourseDetailsNavHost(
             ViewStudentSubmissionScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
+                commentsUiState = viewModel.commentsUiState,
+                commentsOnEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
             )

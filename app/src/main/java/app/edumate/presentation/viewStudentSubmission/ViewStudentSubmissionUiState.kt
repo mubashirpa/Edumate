@@ -11,6 +11,7 @@ data class ViewStudentSubmissionUiState(
     val isRefreshing: Boolean = false,
     val openProgressDialog: Boolean = false,
     val openReturnDialog: Boolean = false,
+    val showCommentsBottomSheet: Boolean = false,
     val studentSubmissionResult: Result<StudentSubmission> = Result.Empty(),
     val title: String = "",
     val userMessage: UiText? = null,

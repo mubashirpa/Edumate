@@ -19,10 +19,12 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -55,10 +57,14 @@ import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.studentSubmission.StudentSubmission
 import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.AttachmentsListItem
+import app.edumate.presentation.components.CommentsBottomSheet
+import app.edumate.presentation.components.CommentsBottomSheetUiEvent
+import app.edumate.presentation.components.CommentsBottomSheetUiState
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.components.UserAvatar
+import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.viewStudentSubmission.components.GradeBottomBar
 import app.edumate.presentation.viewStudentSubmission.components.ReturnDialog
 import kotlinx.datetime.Instant
@@ -68,6 +74,8 @@ import kotlinx.datetime.Instant
 fun ViewStudentSubmissionScreen(
     uiState: ViewStudentSubmissionUiState,
     onEvent: (ViewStudentSubmissionUiEvent) -> Unit,
+    commentsUiState: CommentsBottomSheetUiState,
+    commentsOnEvent: (CommentsBottomSheetUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
@@ -163,6 +171,25 @@ fun ViewStudentSubmissionScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
+        floatingActionButton = {
+            if (studentSubmissionResult is Result.Success) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(text = stringResource(R.string.comments))
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Comment,
+                            contentDescription = null,
+                        )
+                    },
+                    onClick = {
+                        onEvent(ViewStudentSubmissionUiEvent.OnShowCommentsBottomSheetChange(true))
+                    },
+                    expanded = true,
+                )
+            }
+        },
     ) { innerPadding ->
         PullToRefreshBox(
             isRefreshing = uiState.isRefreshing,
@@ -204,6 +231,17 @@ fun ViewStudentSubmissionScreen(
             }
         }
     }
+
+    CommentsBottomSheet(
+        uiState = commentsUiState,
+        onEvent = commentsOnEvent,
+        show = uiState.showCommentsBottomSheet,
+        currentUserRole = CourseUserRole.Teacher(true), // TODO
+        currentUserId = "",
+        onDismissRequest = {
+            onEvent(ViewStudentSubmissionUiEvent.OnShowCommentsBottomSheetChange(false))
+        },
+    )
 }
 
 @Composable
