@@ -9,11 +9,13 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +42,9 @@ import app.edumate.core.Result
 import app.edumate.core.utils.FileUtils
 import app.edumate.core.utils.IntentUtils
 import app.edumate.domain.model.courseWork.CourseWorkType
+import app.edumate.presentation.components.CommentsBottomSheet
+import app.edumate.presentation.components.CommentsBottomSheetUiEvent
+import app.edumate.presentation.components.CommentsBottomSheetUiState
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
@@ -54,6 +59,8 @@ fun ViewCourseWorkScreen(
     uiState: ViewCourseWorkUiState,
     onEvent: (ViewCourseWorkUiEvent) -> Unit,
     currentUserRole: CourseUserRole,
+    commentsUiState: CommentsBottomSheetUiState,
+    commentsOnEvent: (CommentsBottomSheetUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onNavigateToViewStudentSubmission: (courseWorkId: String, studentId: String) -> Unit,
@@ -182,6 +189,25 @@ fun ViewCourseWorkScreen(
         snackbarHost = {
             SnackbarHost(hostState = snackbarHostState)
         },
+        floatingActionButton = {
+            if (!isCurrentUserTeacher) {
+                ExtendedFloatingActionButton(
+                    text = {
+                        Text(text = stringResource(R.string.comments))
+                    },
+                    icon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Default.Comment,
+                            contentDescription = null,
+                        )
+                    },
+                    onClick = {
+                        onEvent(ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange(true))
+                    },
+                    expanded = true,
+                )
+            }
+        },
     ) { innerPadding ->
         when (courseWorkResult) {
             is Result.Empty -> {}
@@ -262,6 +288,17 @@ fun ViewCourseWorkScreen(
             }
         }
     }
+
+    CommentsBottomSheet(
+        uiState = commentsUiState,
+        onEvent = commentsOnEvent,
+        show = uiState.showCommentsBottomSheet,
+        currentUserRole = currentUserRole,
+        currentUserId = uiState.currentUserId.orEmpty(),
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange(false))
+        },
+    )
 
     ProgressDialog(
         open = uiState.openProgressDialog,

@@ -115,6 +115,8 @@ fun CourseDetailsNavHost(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
                 currentUserRole = currentUserRole,
+                commentsUiState = viewModel.commentsUiState,
+                commentsOnEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
                 onNavigateToViewStudentSubmission = { courseWorkId, studentId ->
