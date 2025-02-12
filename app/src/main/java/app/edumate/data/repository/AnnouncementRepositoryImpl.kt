@@ -6,8 +6,6 @@ import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.material.MaterialDto
 import app.edumate.domain.repository.AnnouncementRepository
 import io.github.jan.supabase.postgrest.Postgrest
-import io.github.jan.supabase.postgrest.query.Columns
-import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -27,13 +25,13 @@ class AnnouncementRepositoryImpl(
 
     override suspend fun getAnnouncements(courseId: String): List<AnnouncementDto> =
         postgrest
-            .from(Supabase.Table.ANNOUNCEMENTS)
-            .select(Columns.raw("*, creator:users!creator_user_id(*)")) {
-                filter {
-                    eq(Supabase.Column.COURSE_ID, courseId)
-                }
-                order(Supabase.Column.CREATION_TIME, Order.DESCENDING)
-            }.decodeList()
+            .rpc(
+                function = Supabase.Function.GET_ANNOUNCEMENTS,
+                parameters =
+                    buildJsonObject {
+                        put(Supabase.Parameter.COURSE_ID, courseId)
+                    },
+            ).decodeList()
 
     override suspend fun updateAnnouncement(
         id: String,

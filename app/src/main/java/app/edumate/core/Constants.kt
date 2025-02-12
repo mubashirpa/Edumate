@@ -63,14 +63,15 @@ object Supabase {
     }
 
     object Function {
-        const val TURN_IN_STUDENT_SUBMISSION = "turn_in_student_submission"
-        const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
-        const val INSERT_MEMBER = "insert_member"
-        const val INSERT_SUBMISSION_COMMENT = "insert_submission_comment"
+        const val GET_ANNOUNCEMENTS = "get_announcements"
         const val GET_ANNOUNCEMENT_COMMENTS = "get_announcement_comments"
         const val GET_STUDENT_SUBMISSION = "get_or_insert_student_submission"
         const val GET_STUDENT_SUBMISSIONS_LIST = "get_student_submissions_list"
         const val GET_SUBMISSION_COMMENTS = "get_submission_comments"
+        const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
+        const val INSERT_MEMBER = "insert_member"
+        const val INSERT_SUBMISSION_COMMENT = "insert_submission_comment"
+        const val TURN_IN_STUDENT_SUBMISSION = "turn_in_student_submission"
     }
 
     object Parameter {
