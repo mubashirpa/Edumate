@@ -1,5 +1,6 @@
 package app.edumate.data.mapper
 
+import app.edumate.data.remote.dto.member.UserRoleDto
 import app.edumate.data.remote.dto.user.UserDto
 import app.edumate.data.remote.dto.user.UsersDto
 import app.edumate.domain.model.member.UserRole
@@ -11,6 +12,7 @@ fun UserDto.toUserDomainModel(): User =
         id = id,
         name = name,
         photoUrl = photoUrl,
+        role = role?.let { enumValueOf<UserRole>(it.name) },
     )
 
 fun User.toUserDto(): UserDto =
@@ -19,6 +21,7 @@ fun User.toUserDto(): UserDto =
         id = id,
         name = name,
         photoUrl = photoUrl,
+        role = role?.let { enumValueOf<UserRoleDto>(it.name) },
     )
 
 fun UsersDto.toUserDomainModel(): User =
