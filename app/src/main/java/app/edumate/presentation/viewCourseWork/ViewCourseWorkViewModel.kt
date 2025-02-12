@@ -1,5 +1,6 @@
 package app.edumate.presentation.viewCourseWork
 
+import androidx.compose.foundation.text.input.clearText
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,20 +9,30 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
+import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.Supabase
+import app.edumate.core.UiText
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Material
+import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
+import app.edumate.domain.usecase.comment.DeleteCommentUseCase
+import app.edumate.domain.usecase.comment.UpdateCommentUseCase
 import app.edumate.domain.usecase.courseWork.GetCourseWorkUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
+import app.edumate.domain.usecase.studentSubmission.CreateSubmissionCommentUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
+import app.edumate.domain.usecase.studentSubmission.GetSubmissionCommentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.TurnInStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.UpdateStudentSubmissionUseCase
+import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
+import app.edumate.presentation.components.CommentsBottomSheetUiEvent
+import app.edumate.presentation.components.CommentsBottomSheetUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -29,16 +40,24 @@ import java.io.File
 
 class ViewCourseWorkViewModel(
     savedStateHandle: SavedStateHandle,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCourseWorkUseCase: GetCourseWorkUseCase,
     private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
     private val modifyStudentSubmissionAttachmentsUseCase: ModifyStudentSubmissionAttachmentsUseCase,
     private val turnInStudentSubmissionUseCase: TurnInStudentSubmissionUseCase,
     private val reclaimStudentSubmissionUseCase: ReclaimStudentSubmissionUseCase,
     private val updateStudentSubmissionUseCase: UpdateStudentSubmissionUseCase,
+    private val getSubmissionCommentsUseCase: GetSubmissionCommentsUseCase,
+    private val createSubmissionCommentUseCase: CreateSubmissionCommentUseCase,
+    private val updateCommentUseCase: UpdateCommentUseCase,
+    private val deleteCommentUseCase: DeleteCommentUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
+    private val validateTextField: ValidateTextField,
 ) : ViewModel() {
     var uiState by mutableStateOf(ViewCourseWorkUiState())
+        private set
+    var commentsUiState by mutableStateOf(CommentsBottomSheetUiState())
         private set
 
     private val args = savedStateHandle.toRoute<Screen.ViewCourseWork>()
@@ -49,8 +68,11 @@ class ViewCourseWorkViewModel(
     private var getStudentSubmissionJob: Job? = null
     private var studentSubmissionId: String? = null
     private var courseWorkType: CourseWorkType? = null
+    private var submissionId: String? = null
+    private var getSubmissionCommentsJob: Job? = null
 
     init {
+        getCurrentUser()
         getCourseWork(
             id = courseWorkId,
             isRefreshing = false,
@@ -93,6 +115,15 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.OnOpenUnSubmitDialogChange -> {
                 uiState = uiState.copy(openUnSubmitDialog = event.open)
+            }
+
+            is ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange -> {
+                if (commentsUiState.commentsResult is Result.Empty) {
+                    submissionId?.let {
+                        getComments(it, false)
+                    }
+                }
+                uiState = uiState.copy(showCommentsBottomSheet = event.show)
             }
 
             is ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange -> {
@@ -161,6 +192,69 @@ class ViewCourseWorkViewModel(
                 uiState = uiState.copy(userMessage = null)
             }
         }
+    }
+
+    fun onEvent(event: CommentsBottomSheetUiEvent) {
+        when (event) {
+            is CommentsBottomSheetUiEvent.AddComment -> {
+                submissionId?.let {
+                    if (commentsUiState.editCommentId != null) {
+                        updateComment(
+                            submissionId = it,
+                            id = commentsUiState.editCommentId!!,
+                            text = event.text,
+                        )
+                    } else {
+                        addComment(
+                            courseId = args.courseId,
+                            submissionId = it,
+                            text = event.text,
+                        )
+                    }
+                }
+            }
+
+            is CommentsBottomSheetUiEvent.DeleteComment -> {
+                submissionId?.let {
+                    deleteComment(
+                        submissionId = it,
+                        id = event.commentId,
+                    )
+                }
+            }
+
+            is CommentsBottomSheetUiEvent.OnEditComment -> {
+                commentsUiState =
+                    commentsUiState.copy(editCommentId = event.commentId)
+                commentsUiState.comment.setTextAndPlaceCursorAtEnd(event.text)
+            }
+
+            is CommentsBottomSheetUiEvent.OnOpenDeleteCommentDialogChange -> {
+                commentsUiState =
+                    commentsUiState.copy(deleteCommentId = event.commentId)
+            }
+
+            CommentsBottomSheetUiEvent.Retry -> {
+                submissionId?.let {
+                    getComments(it, false)
+                }
+            }
+
+            CommentsBottomSheetUiEvent.UserMessageShown -> {
+                commentsUiState = commentsUiState.copy(userMessage = null)
+            }
+        }
+    }
+
+    private fun getCurrentUser() {
+        getCurrentUserUseCase()
+            .onEach { result ->
+                if (result is Result.Success) {
+                    result.data?.id?.let { userId ->
+                        uiState = uiState.copy(currentUserId = userId)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun getCourseWork(
@@ -370,6 +464,168 @@ class ViewCourseWorkViewModel(
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
                         getStudentSubmission(courseId, courseWorkId)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun addComment(
+        courseId: String,
+        submissionId: String,
+        text: String,
+    ) {
+        val textResult = validateTextField.execute(text)
+        if (!textResult.successful) {
+            commentsUiState =
+                commentsUiState.copy(
+                    userMessage = UiText.StringResource(R.string.missing_message),
+                )
+            return
+        }
+
+        createSubmissionCommentUseCase(courseId, submissionId, text)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        commentsUiState =
+                            commentsUiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        commentsUiState =
+                            commentsUiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        commentsUiState.comment.clearText()
+                        getComments(submissionId, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun getComments(
+        submissionId: String,
+        isRefreshing: Boolean,
+    ) {
+        // Cancel any ongoing getSubmissionCommentsJob before making a new call.
+        getSubmissionCommentsJob?.cancel()
+        getSubmissionCommentsJob =
+            getSubmissionCommentsUseCase(submissionId)
+                .onEach { result ->
+                    when (result) {
+                        is Result.Empty -> {}
+
+                        is Result.Error -> {
+                            // The Result.Error state is only used during initial loading and retry attempts.
+                            // Otherwise, a snackbar is displayed using the userMessage property.
+                            commentsUiState =
+                                if (isRefreshing) {
+                                    commentsUiState.copy(
+                                        isLoading = false,
+                                        userMessage = result.message,
+                                    )
+                                } else {
+                                    commentsUiState.copy(commentsResult = result)
+                                }
+                        }
+
+                        is Result.Loading -> {
+                            // The Result.Loading state is only used during initial loading and retry attempts.
+                            // In other cases, the PullRefreshIndicator is shown with isRefreshing = true.
+                            commentsUiState =
+                                if (isRefreshing) {
+                                    commentsUiState.copy(isLoading = true)
+                                } else {
+                                    commentsUiState.copy(commentsResult = result)
+                                }
+                        }
+
+                        is Result.Success -> {
+                            commentsUiState =
+                                commentsUiState.copy(
+                                    isLoading = false,
+                                    commentsResult = result,
+                                )
+                        }
+                    }
+                }.launchIn(viewModelScope)
+    }
+
+    private fun updateComment(
+        submissionId: String,
+        id: String,
+        text: String,
+    ) {
+        val textResult = validateTextField.execute(text)
+        if (!textResult.successful) {
+            commentsUiState =
+                commentsUiState.copy(
+                    userMessage = UiText.StringResource(R.string.missing_message),
+                )
+            return
+        }
+
+        updateCommentUseCase(id, text)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        commentsUiState =
+                            commentsUiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        commentsUiState =
+                            commentsUiState.copy(isLoading = true)
+                    }
+
+                    is Result.Success -> {
+                        commentsUiState.comment.clearText()
+                        commentsUiState =
+                            commentsUiState.copy(editCommentId = null)
+                        getComments(submissionId, true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun deleteComment(
+        submissionId: String,
+        id: String,
+    ) {
+        deleteCommentUseCase(id)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        commentsUiState =
+                            commentsUiState.copy(
+                                isLoading = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        commentsUiState =
+                            commentsUiState.copy(
+                                deleteCommentId = null,
+                                isLoading = true,
+                            )
+                    }
+
+                    is Result.Success -> {
+                        getComments(submissionId, true)
                     }
                 }
             }.launchIn(viewModelScope)

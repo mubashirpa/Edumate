@@ -35,6 +35,10 @@ sealed class ViewCourseWorkUiEvent {
         val open: Boolean,
     ) : ViewCourseWorkUiEvent()
 
+    data class OnShowCommentsBottomSheetChange(
+        val show: Boolean,
+    ) : ViewCourseWorkUiEvent()
+
     data class OnShowStudentSubmissionBottomSheetChange(
         val show: Boolean,
     ) : ViewCourseWorkUiEvent()
