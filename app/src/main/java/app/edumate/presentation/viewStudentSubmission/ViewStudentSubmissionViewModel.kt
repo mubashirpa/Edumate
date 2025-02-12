@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
+import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.comment.DeleteCommentUseCase
 import app.edumate.domain.usecase.comment.UpdateCommentUseCase
 import app.edumate.domain.usecase.studentSubmission.CreateSubmissionCommentUseCase
@@ -29,6 +30,7 @@ import kotlinx.coroutines.flow.onEach
 
 class ViewStudentSubmissionViewModel(
     savedStateHandle: SavedStateHandle,
+    private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getStudentSubmissionUseCase: GetStudentSubmissionUseCase,
     private val returnStudentSubmissionUseCase: ReturnStudentSubmissionUseCase,
     private val updateStudentSubmissionUseCase: UpdateStudentSubmissionUseCase,
@@ -49,6 +51,7 @@ class ViewStudentSubmissionViewModel(
     private var getSubmissionCommentsJob: Job? = null
 
     init {
+        getCurrentUser()
         getStudentSubmission(
             isRefreshing = false,
             courseId = args.courseId,
@@ -159,6 +162,17 @@ class ViewStudentSubmissionViewModel(
                 commentsUiState = commentsUiState.copy(userMessage = null)
             }
         }
+    }
+
+    private fun getCurrentUser() {
+        getCurrentUserUseCase()
+            .onEach { result ->
+                if (result is Result.Success) {
+                    result.data?.id?.let { userId ->
+                        uiState = uiState.copy(currentUserId = userId)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 
     private fun getStudentSubmission(
