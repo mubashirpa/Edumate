@@ -72,7 +72,6 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun AnnouncementListItem(
     announcement: Announcement,
-    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
     currentUserId: String,
     selected: Boolean,
@@ -95,7 +94,6 @@ fun AnnouncementListItem(
         updateTime = announcement.updateTime.orEmpty(),
         creator = announcement.creator,
         totalComments = announcement.totalComments ?: 0,
-        itemUserRole = itemUserRole,
         currentUserRole = currentUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
         selected = selected,
@@ -128,7 +126,6 @@ private fun AnnouncementListItemContent(
     updateTime: String,
     creator: User?,
     totalComments: Int,
-    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
     selected: Boolean,
@@ -219,7 +216,7 @@ private fun AnnouncementListItemContent(
                     }
                 } else {
                     MenuButton(
-                        itemUserRole = itemUserRole,
+                        itemUserRole = creator?.role,
                         currentUserRole = currentUserRole,
                         isCurrentUserCreator = isCurrentUserCreator,
                         onEditClick = onEditClick,
@@ -335,7 +332,7 @@ private fun AnnouncementListItemContent(
 
 @Composable
 private fun MenuButton(
-    itemUserRole: UserRole,
+    itemUserRole: UserRole?,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
     onEditClick: () -> Unit,
@@ -427,7 +424,6 @@ private fun AnnouncementListItemPreview() {
             updateTime = "2025-01-28T08:26:42.830742+00:00",
             creator = User(name = "User"),
             totalComments = 10,
-            itemUserRole = UserRole.TEACHER,
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
             isCurrentUserCreator = true,
             selected = false,

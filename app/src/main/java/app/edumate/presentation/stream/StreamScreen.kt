@@ -78,7 +78,6 @@ import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.domain.model.material.Material
-import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.AddAttachmentBottomSheet
 import app.edumate.presentation.components.AddLinkDialog
 import app.edumate.presentation.components.AnimatedErrorScreen
@@ -263,15 +262,8 @@ fun StreamScreen(
                                         items = announcements,
                                         key = { it.id!! },
                                     ) { announcement ->
-                                        val announcementUserRole =
-                                            courseWithMembers.members
-                                                ?.find {
-                                                    it.userId == announcement.creatorUserId
-                                                }?.role ?: UserRole.STUDENT
-
                                         AnnouncementListItem(
                                             announcement = announcement,
-                                            itemUserRole = announcementUserRole,
                                             currentUserRole = currentUserRole,
                                             currentUserId = uiState.currentUserId.orEmpty(),
                                             selected = announcement.id == uiState.editAnnouncementId,
