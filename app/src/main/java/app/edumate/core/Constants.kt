@@ -67,6 +67,7 @@ object Supabase {
         const val TURN_IN_STUDENT_SUBMISSION = "turn_in_student_submission"
         const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
         const val INSERT_MEMBER = "insert_member"
+        const val GET_ANNOUNCEMENT_COMMENTS = "get_announcement_comments"
         const val GET_STUDENT_SUBMISSION = "get_or_insert_student_submission"
         const val GET_STUDENT_SUBMISSIONS_LIST = "get_student_submissions_list"
     }
