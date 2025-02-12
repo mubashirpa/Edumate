@@ -30,6 +30,8 @@ import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
 import app.edumate.domain.usecase.validation.ValidateTextField
 import app.edumate.navigation.Screen
+import app.edumate.presentation.components.CommentsBottomSheetUiEvent
+import app.edumate.presentation.components.CommentsBottomSheetUiState
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
@@ -54,7 +56,7 @@ class StreamViewModel(
 ) : ViewModel() {
     var uiState by mutableStateOf(StreamUiState())
         private set
-    var commentsBottomSheetUiState by mutableStateOf(CommentsBottomSheetUiState())
+    var commentsUiState by mutableStateOf(CommentsBottomSheetUiState())
         private set
 
     private val args = savedStateHandle.toRoute<Screen.Stream>()
@@ -72,27 +74,6 @@ class StreamViewModel(
 
     fun onEvent(event: StreamUiEvent) {
         when (event) {
-            is StreamUiEvent.AddComment -> {
-                val text =
-                    commentsBottomSheetUiState.comment.text
-                        .toString()
-                        .trim()
-
-                if (commentsBottomSheetUiState.editCommentId != null) {
-                    updateComment(
-                        announcementId = event.announcementId,
-                        id = commentsBottomSheetUiState.editCommentId!!,
-                        text = text,
-                    )
-                } else {
-                    addComment(
-                        courseId = args.courseId,
-                        announcementId = event.announcementId,
-                        text = text,
-                    )
-                }
-            }
-
             is StreamUiEvent.AddLinkAttachment -> {
                 getUrlMetadata(event.link)
             }
@@ -124,13 +105,6 @@ class StreamViewModel(
                 deleteAnnouncement(event.id)
             }
 
-            is StreamUiEvent.DeleteComment -> {
-                deleteComment(
-                    announcementId = event.announcementId,
-                    id = event.id,
-                )
-            }
-
             is StreamUiEvent.OnEditAnnouncement -> {
                 val announcement = event.announcement
                 uiState = uiState.copy(editAnnouncementId = announcement?.id)
@@ -142,18 +116,6 @@ class StreamViewModel(
                     uiState.attachments.addAll(announcement.materials.orEmpty())
                 } else {
                     resetAnnouncementState()
-                }
-            }
-
-            is StreamUiEvent.OnEditComment -> {
-                val comment = event.comment
-                commentsBottomSheetUiState =
-                    commentsBottomSheetUiState.copy(editCommentId = comment?.id)
-
-                if (comment != null) {
-                    commentsBottomSheetUiState.comment.setTextAndPlaceCursorAtEnd(comment.text.orEmpty())
-                } else {
-                    commentsBottomSheetUiState.comment.clearText()
                 }
             }
 
@@ -180,11 +142,6 @@ class StreamViewModel(
                 uiState = uiState.copy(deleteAnnouncementId = event.announcementId)
             }
 
-            is StreamUiEvent.OnOpenDeleteCommentDialogChange -> {
-                commentsBottomSheetUiState =
-                    commentsBottomSheetUiState.copy(deleteCommentId = event.commentId)
-            }
-
             is StreamUiEvent.OnShowAddAttachmentBottomSheetChange -> {
                 uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
             }
@@ -197,7 +154,7 @@ class StreamViewModel(
                 } else {
                     uiState = uiState.copy(replyAnnouncementId = null)
                     // Reset the bottom sheet state on close
-                    commentsBottomSheetUiState = CommentsBottomSheetUiState()
+                    commentsUiState = CommentsBottomSheetUiState()
                 }
             }
 
@@ -232,16 +189,63 @@ class StreamViewModel(
                 )
             }
 
-            is StreamUiEvent.RetryComment -> {
-                getComments(
-                    announcementId = event.announcementId,
-                    isRefreshing = false,
-                )
-            }
-
             StreamUiEvent.UserMessageShown -> {
                 uiState = uiState.copy(userMessage = null)
-                commentsBottomSheetUiState = commentsBottomSheetUiState.copy(userMessage = null)
+            }
+        }
+    }
+
+    fun onEvent(event: CommentsBottomSheetUiEvent) {
+        when (event) {
+            is CommentsBottomSheetUiEvent.AddComment -> {
+                uiState.replyAnnouncementId?.let { replyAnnouncementId ->
+                    if (commentsUiState.editCommentId != null) {
+                        updateComment(
+                            announcementId = replyAnnouncementId,
+                            id = commentsUiState.editCommentId!!,
+                            text = event.text,
+                        )
+                    } else {
+                        addComment(
+                            courseId = args.courseId,
+                            announcementId = replyAnnouncementId,
+                            text = event.text,
+                        )
+                    }
+                }
+            }
+
+            is CommentsBottomSheetUiEvent.DeleteComment -> {
+                uiState.replyAnnouncementId?.let { replyAnnouncementId ->
+                    deleteComment(
+                        announcementId = replyAnnouncementId,
+                        id = event.commentId,
+                    )
+                }
+            }
+
+            is CommentsBottomSheetUiEvent.OnEditComment -> {
+                commentsUiState =
+                    commentsUiState.copy(editCommentId = event.commentId)
+                commentsUiState.comment.setTextAndPlaceCursorAtEnd(event.text)
+            }
+
+            is CommentsBottomSheetUiEvent.OnOpenDeleteCommentDialogChange -> {
+                commentsUiState =
+                    commentsUiState.copy(deleteCommentId = event.commentId)
+            }
+
+            CommentsBottomSheetUiEvent.Retry -> {
+                uiState.replyAnnouncementId?.let { replyAnnouncementId ->
+                    getComments(
+                        announcementId = replyAnnouncementId,
+                        isRefreshing = false,
+                    )
+                }
+            }
+
+            CommentsBottomSheetUiEvent.UserMessageShown -> {
+                commentsUiState = commentsUiState.copy(userMessage = null)
             }
         }
     }
@@ -424,8 +428,8 @@ class StreamViewModel(
     ) {
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
-            commentsBottomSheetUiState =
-                commentsBottomSheetUiState.copy(
+            commentsUiState =
+                commentsUiState.copy(
                     userMessage = UiText.StringResource(R.string.missing_message),
                 )
             return
@@ -437,20 +441,20 @@ class StreamViewModel(
                     is Result.Empty -> {}
 
                     is Result.Error -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(
+                        commentsUiState =
+                            commentsUiState.copy(
                                 isLoading = false,
                                 userMessage = result.message,
                             )
                     }
 
                     is Result.Loading -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(isLoading = true)
+                        commentsUiState =
+                            commentsUiState.copy(isLoading = true)
                     }
 
                     is Result.Success -> {
-                        commentsBottomSheetUiState.comment.clearText()
+                        commentsUiState.comment.clearText()
                         getComments(announcementId, true)
                     }
                 }
@@ -472,31 +476,31 @@ class StreamViewModel(
                         is Result.Error -> {
                             // The Result.Error state is only used during initial loading and retry attempts.
                             // Otherwise, a snackbar is displayed using the userMessage property.
-                            commentsBottomSheetUiState =
+                            commentsUiState =
                                 if (isRefreshing) {
-                                    commentsBottomSheetUiState.copy(
+                                    commentsUiState.copy(
                                         isLoading = false,
                                         userMessage = result.message,
                                     )
                                 } else {
-                                    commentsBottomSheetUiState.copy(commentsResult = result)
+                                    commentsUiState.copy(commentsResult = result)
                                 }
                         }
 
                         is Result.Loading -> {
                             // The Result.Loading state is only used during initial loading and retry attempts.
                             // In other cases, the PullRefreshIndicator is shown with isRefreshing = true.
-                            commentsBottomSheetUiState =
+                            commentsUiState =
                                 if (isRefreshing) {
-                                    commentsBottomSheetUiState.copy(isLoading = true)
+                                    commentsUiState.copy(isLoading = true)
                                 } else {
-                                    commentsBottomSheetUiState.copy(commentsResult = result)
+                                    commentsUiState.copy(commentsResult = result)
                                 }
                         }
 
                         is Result.Success -> {
-                            commentsBottomSheetUiState =
-                                commentsBottomSheetUiState.copy(
+                            commentsUiState =
+                                commentsUiState.copy(
                                     isLoading = false,
                                     commentsResult = result,
                                 )
@@ -512,8 +516,8 @@ class StreamViewModel(
     ) {
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
-            commentsBottomSheetUiState =
-                commentsBottomSheetUiState.copy(
+            commentsUiState =
+                commentsUiState.copy(
                     userMessage = UiText.StringResource(R.string.missing_message),
                 )
             return
@@ -525,22 +529,22 @@ class StreamViewModel(
                     is Result.Empty -> {}
 
                     is Result.Error -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(
+                        commentsUiState =
+                            commentsUiState.copy(
                                 isLoading = false,
                                 userMessage = result.message,
                             )
                     }
 
                     is Result.Loading -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(isLoading = true)
+                        commentsUiState =
+                            commentsUiState.copy(isLoading = true)
                     }
 
                     is Result.Success -> {
-                        commentsBottomSheetUiState.comment.clearText()
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(editCommentId = null)
+                        commentsUiState.comment.clearText()
+                        commentsUiState =
+                            commentsUiState.copy(editCommentId = null)
                         getComments(announcementId, true)
                     }
                 }
@@ -557,16 +561,16 @@ class StreamViewModel(
                     is Result.Empty -> {}
 
                     is Result.Error -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(
+                        commentsUiState =
+                            commentsUiState.copy(
                                 isLoading = false,
                                 userMessage = result.message,
                             )
                     }
 
                     is Result.Loading -> {
-                        commentsBottomSheetUiState =
-                            commentsBottomSheetUiState.copy(
+                        commentsUiState =
+                            commentsUiState.copy(
                                 deleteCommentId = null,
                                 isLoading = true,
                             )

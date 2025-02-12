@@ -82,12 +82,14 @@ import app.edumate.domain.model.member.UserRole
 import app.edumate.presentation.components.AddAttachmentBottomSheet
 import app.edumate.presentation.components.AddLinkDialog
 import app.edumate.presentation.components.AnimatedErrorScreen
+import app.edumate.presentation.components.CommentsBottomSheet
+import app.edumate.presentation.components.CommentsBottomSheetUiEvent
+import app.edumate.presentation.components.CommentsBottomSheetUiState
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
-import app.edumate.presentation.stream.components.CommentsBottomSheet
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
@@ -100,7 +102,8 @@ fun StreamScreen(
     onEvent: (StreamUiEvent) -> Unit,
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
-    commentsBottomSheetUiState: CommentsBottomSheetUiState,
+    commentsUiState: CommentsBottomSheetUiState,
+    commentsOnEvent: (CommentsBottomSheetUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
     onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
@@ -393,10 +396,9 @@ fun StreamScreen(
     )
 
     CommentsBottomSheet(
-        uiState = commentsBottomSheetUiState,
-        onEvent = onEvent,
-        replyAnnouncementId = uiState.replyAnnouncementId,
-        members = courseWithMembers.members.orEmpty(),
+        uiState = commentsUiState,
+        onEvent = commentsOnEvent,
+        show = uiState.replyAnnouncementId != null,
         currentUserRole = currentUserRole,
         currentUserId = uiState.currentUserId.orEmpty(),
         onDismissRequest = {
@@ -542,7 +544,8 @@ private fun StreamScreenPreview() {
             onEvent = {},
             courseWithMembers = CourseWithMembers(),
             currentUserRole = CourseUserRole.Teacher(true),
-            commentsBottomSheetUiState = CommentsBottomSheetUiState(),
+            commentsUiState = CommentsBottomSheetUiState(),
+            commentsOnEvent = {},
             onNavigateUp = {},
             onNavigateToCourseSettings = {},
             onNavigateToImageViewer = { _, _ -> },
