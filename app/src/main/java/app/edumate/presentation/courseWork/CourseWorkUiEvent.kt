@@ -4,7 +4,7 @@ import app.edumate.domain.model.courseWork.CourseWork
 
 sealed class CourseWorkUiEvent {
     data class DeleteCourseWork(
-        val id: String,
+        val courseWorkId: String,
     ) : CourseWorkUiEvent()
 
     data class OnExpandedAppBarDropdownChange(

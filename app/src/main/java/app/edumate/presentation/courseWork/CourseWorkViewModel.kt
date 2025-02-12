@@ -23,17 +23,17 @@ class CourseWorkViewModel(
     var uiState by mutableStateOf(CourseWorkUiState())
         private set
 
-    private val args = savedStateHandle.toRoute<Screen.CourseWork>()
+    private val courseId = savedStateHandle.toRoute<Screen.CourseWork>().courseId
     private var getCourseWorksJob: Job? = null
 
     init {
-        getCourseWorks(args.courseId, false)
+        getCourseWorks(false)
     }
 
     fun onEvent(event: CourseWorkUiEvent) {
         when (event) {
             is CourseWorkUiEvent.DeleteCourseWork -> {
-                deleteCourseWork(event.id)
+                deleteCourseWork(event.courseWorkId)
             }
 
             is CourseWorkUiEvent.OnExpandedAppBarDropdownChange -> {
@@ -49,14 +49,11 @@ class CourseWorkViewModel(
             }
 
             CourseWorkUiEvent.Refresh -> {
-                getCourseWorks(
-                    courseId = args.courseId,
-                    isRefreshing = uiState.courseWorkResult is Result.Success,
-                )
+                getCourseWorks(uiState.courseWorkResult is Result.Success)
             }
 
             CourseWorkUiEvent.Retry -> {
-                getCourseWorks(courseId = args.courseId, isRefreshing = false)
+                getCourseWorks(false)
             }
 
             CourseWorkUiEvent.UserMessageShown -> {
@@ -65,10 +62,7 @@ class CourseWorkViewModel(
         }
     }
 
-    private fun getCourseWorks(
-        courseId: String,
-        isRefreshing: Boolean,
-    ) {
+    private fun getCourseWorks(isRefreshing: Boolean) {
         // Cancel any ongoing getCourseWorksJob before making a new call.
         getCourseWorksJob?.cancel()
         getCourseWorksJob =
@@ -113,8 +107,8 @@ class CourseWorkViewModel(
                 }.launchIn(viewModelScope)
     }
 
-    private fun deleteCourseWork(id: String) {
-        deleteCourseWorkUseCase(id)
+    private fun deleteCourseWork(courseWorkId: String) {
+        deleteCourseWorkUseCase(courseWorkId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -137,7 +131,7 @@ class CourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getCourseWorks(args.courseId, true)
+                        getCourseWorks(true)
                     }
                 }
             }.launchIn(viewModelScope)
