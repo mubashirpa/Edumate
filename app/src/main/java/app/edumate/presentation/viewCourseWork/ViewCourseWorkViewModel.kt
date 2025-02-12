@@ -65,7 +65,7 @@ class ViewCourseWorkViewModel(
 
     private val args = savedStateHandle.toRoute<Screen.ViewCourseWork>()
     private val courseId = args.courseId
-    private val courseWorkId = args.id
+    private val courseWorkId = args.courseWorkId
     private val isCurrentUserStudent = args.isCurrentUserStudent
     private var getCourseWorkJob: Job? = null
     private var getStudentSubmissionJob: Job? = null

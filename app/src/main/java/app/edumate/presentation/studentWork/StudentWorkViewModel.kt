@@ -27,7 +27,7 @@ class StudentWorkViewModel(
     init {
         getStudentSubmissions(
             courseId = args.courseId,
-            courseWorkId = args.id,
+            courseWorkId = args.courseWorkId,
             isRefreshing = false,
         )
     }
@@ -37,7 +37,7 @@ class StudentWorkViewModel(
             StudentWorkUiEvent.Refresh -> {
                 getStudentSubmissions(
                     courseId = args.courseId,
-                    courseWorkId = args.id,
+                    courseWorkId = args.courseWorkId,
                     isRefreshing = uiState.studentSubmissionsResult is Result.Success,
                 )
             }
@@ -45,7 +45,7 @@ class StudentWorkViewModel(
             StudentWorkUiEvent.Retry -> {
                 getStudentSubmissions(
                     courseId = args.courseId,
-                    courseWorkId = args.id,
+                    courseWorkId = args.courseWorkId,
                     isRefreshing = false,
                 )
             }

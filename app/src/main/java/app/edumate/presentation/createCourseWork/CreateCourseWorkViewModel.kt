@@ -51,11 +51,11 @@ class CreateCourseWorkViewModel(
         private set
 
     private val args = savedStateHandle.toRoute<Screen.CreateCourseWork>()
-    private val courseWorkId = args.id ?: UUID.randomUUID().toString()
+    private val courseWorkId = args.courseWorkId ?: UUID.randomUUID().toString()
 
     init {
-        uiState = uiState.copy(workType = args.workType)
-        args.id?.let(::getCourseWork)
+        uiState = uiState.copy(workType = args.courseWorkType)
+        args.courseWorkId?.let(::getCourseWork)
     }
 
     fun onEvent(event: CreateCourseWorkUiEvent) {
@@ -74,7 +74,7 @@ class CreateCourseWorkViewModel(
                         .toString()
                         .trim()
 
-                if (args.id == null) {
+                if (args.courseWorkId == null) {
                     createCourseWork(
                         courseId = args.courseId,
                         id = courseWorkId,

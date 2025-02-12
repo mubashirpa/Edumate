@@ -72,16 +72,16 @@ fun CourseDetailsNavHost(
                     navController.navigate(
                         Screen.CreateCourseWork(
                             courseId = courseWithMembers.id,
-                            workType = workType,
-                            id = id,
+                            courseWorkType = workType,
+                            courseWorkId = id,
                         ),
                     )
                 },
                 onNavigateToViewCourseWork = {
                     navController.navigate(
                         Screen.ViewCourseWork(
-                            id = it,
                             courseId = courseWithMembers.id,
+                            courseWorkId = it,
                             isCurrentUserStudent = currentUserRole == CourseUserRole.Student,
                         ),
                     )
@@ -106,7 +106,7 @@ fun CourseDetailsNavHost(
                         ?.savedStateHandle[Navigation.Args.CREATE_COURSE_WORK_SUCCESS] = true
                     navController.navigateUp()
                 },
-                courseWorkId = route.id,
+                courseWorkId = route.courseWorkId,
             )
         }
         composable<Screen.ViewCourseWork> {
