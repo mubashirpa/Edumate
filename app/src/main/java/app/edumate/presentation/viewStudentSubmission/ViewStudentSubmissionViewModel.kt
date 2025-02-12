@@ -225,6 +225,7 @@ class ViewStudentSubmissionViewModel(
                                 uiState.copy(
                                     isRefreshing = false,
                                     studentSubmissionResult = result,
+                                    title = submission.courseWork?.title.orEmpty(),
                                 )
                         }
                     }
