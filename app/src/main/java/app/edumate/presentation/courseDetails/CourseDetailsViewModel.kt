@@ -25,18 +25,18 @@ class CourseDetailsViewModel(
     var uiState by mutableStateOf(CourseDetailsUiState())
         private set
 
-    val args = savedStateHandle.toRoute<Screen.CourseDetails>()
+    val courseId = savedStateHandle.toRoute<Screen.CourseDetails>().courseId
     var currentUserId: String? = null
 
     init {
         getCurrentUser()
-        getCourse(args.courseId)
+        getCourse()
     }
 
     fun onEvent(event: CourseDetailsUiEvent) {
         when (event) {
             CourseDetailsUiEvent.Retry -> {
-                getCourse(args.courseId)
+                getCourse()
             }
         }
     }
@@ -45,19 +45,21 @@ class CourseDetailsViewModel(
         getCurrentUserUseCase()
             .onEach { result ->
                 if (result is Result.Success) {
-                    currentUserId = result.data?.id
+                    result.data?.id?.let { userId ->
+                        currentUserId = userId
+                    }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun getCourse(courseId: String) {
+    private fun getCourse() {
         getCourseWithMembersUseCase(courseId)
             .onEach { result ->
                 uiState =
                     when (result) {
                         is Result.Success -> {
-                            val course = result.data
-                            val currentMember = course?.members?.find { it.userId == currentUserId }
+                            val course = result.data!!
+                            val currentMember = course.members?.find { it.userId == currentUserId }
 
                             // Determine the role of the current user within the course
                             val currentUserRole =
@@ -68,7 +70,9 @@ class CourseDetailsViewModel(
                                         )
                                     }
 
-                                    UserRole.STUDENT -> CourseUserRole.Student
+                                    UserRole.STUDENT -> {
+                                        CourseUserRole.Student
+                                    }
 
                                     // Handle the case where the user's role is null (unexpected scenario)
                                     null -> {
@@ -90,7 +94,9 @@ class CourseDetailsViewModel(
                             )
                         }
 
-                        else -> uiState.copy(courseResult = result)
+                        else -> {
+                            uiState.copy(courseResult = result)
+                        }
                     }
             }.launchIn(viewModelScope)
     }
