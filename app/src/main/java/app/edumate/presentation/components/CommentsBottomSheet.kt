@@ -169,7 +169,7 @@ fun CommentsBottomSheet(
                                 state = uiState.comment,
                                 enabled = !uiState.isLoading,
                                 onSendClick = { text ->
-                                    onEvent(CommentsBottomSheetUiEvent.AddComment(text))
+                                    onEvent(CommentsBottomSheetUiEvent.AddComment(text.trim()))
                                 },
                                 modifier =
                                     Modifier
