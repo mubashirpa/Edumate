@@ -133,6 +133,7 @@ fun CourseDetailsNavHost(
             ViewStudentSubmissionScreen(
                 uiState = viewModel.uiState,
                 onEvent = viewModel::onEvent,
+                currentUserRole = currentUserRole,
                 commentsUiState = viewModel.commentsUiState,
                 commentsOnEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,

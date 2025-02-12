@@ -74,6 +74,7 @@ import kotlinx.datetime.Instant
 fun ViewStudentSubmissionScreen(
     uiState: ViewStudentSubmissionUiState,
     onEvent: (ViewStudentSubmissionUiEvent) -> Unit,
+    currentUserRole: CourseUserRole,
     commentsUiState: CommentsBottomSheetUiState,
     commentsOnEvent: (CommentsBottomSheetUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
@@ -236,8 +237,8 @@ fun ViewStudentSubmissionScreen(
         uiState = commentsUiState,
         onEvent = commentsOnEvent,
         show = uiState.showCommentsBottomSheet,
-        currentUserRole = CourseUserRole.Teacher(true), // TODO
-        currentUserId = "",
+        currentUserRole = currentUserRole,
+        currentUserId = uiState.currentUserId.orEmpty(),
         onDismissRequest = {
             onEvent(ViewStudentSubmissionUiEvent.OnShowCommentsBottomSheetChange(false))
         },
