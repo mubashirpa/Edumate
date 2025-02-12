@@ -50,7 +50,6 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.comment.Comment
 import app.edumate.presentation.courseDetails.CourseUserRole
-import app.edumate.presentation.stream.components.DeleteCommentDialog
 import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class)
