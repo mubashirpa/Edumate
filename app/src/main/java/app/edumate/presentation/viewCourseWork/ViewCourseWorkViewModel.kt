@@ -15,7 +15,9 @@ import app.edumate.core.Supabase
 import app.edumate.core.UiText
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.material.DriveFile
+import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
+import app.edumate.domain.usecase.GetUrlMetadataUseCase
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.comment.DeleteCommentUseCase
 import app.edumate.domain.usecase.comment.UpdateCommentUseCase
@@ -51,6 +53,7 @@ class ViewCourseWorkViewModel(
     private val createSubmissionCommentUseCase: CreateSubmissionCommentUseCase,
     private val updateCommentUseCase: UpdateCommentUseCase,
     private val deleteCommentUseCase: DeleteCommentUseCase,
+    private val getUrlMetadataUseCase: GetUrlMetadataUseCase,
     private val uploadFileUseCase: UploadFileUseCase,
     private val deleteFileUseCase: DeleteFileUseCase,
     private val validateTextField: ValidateTextField,
@@ -80,6 +83,10 @@ class ViewCourseWorkViewModel(
 
     fun onEvent(event: ViewCourseWorkUiEvent) {
         when (event) {
+            is ViewCourseWorkUiEvent.AddLinkAttachment -> {
+                getUrlMetadata(url = event.link, submissionId = studentSubmissionId!!)
+            }
+
             is ViewCourseWorkUiEvent.OnEditShortAnswerChange -> {
                 uiState = uiState.copy(editShortAnswer = event.edit)
             }
@@ -104,6 +111,10 @@ class ViewCourseWorkViewModel(
                 uiState = uiState.copy(multipleChoiceAnswer = event.answer)
             }
 
+            is ViewCourseWorkUiEvent.OnOpenAddLinkDialogChange -> {
+                uiState = uiState.copy(openAddLinkDialog = event.open)
+            }
+
             is ViewCourseWorkUiEvent.OnOpenRemoveAttachmentDialogChange -> {
                 uiState = uiState.copy(removeAttachmentIndex = event.index)
             }
@@ -114,6 +125,10 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.OnOpenUnSubmitDialogChange -> {
                 uiState = uiState.copy(openUnSubmitDialog = event.open)
+            }
+
+            is ViewCourseWorkUiEvent.OnShowAddAttachmentBottomSheetChange -> {
+                uiState = uiState.copy(showAddAttachmentBottomSheet = event.show)
             }
 
             is ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange -> {
@@ -142,12 +157,21 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.RemoveAttachment -> {
                 val attachment = uiState.assignmentAttachments[event.position]
-                deleteFile(
-                    courseId = courseId,
-                    courseWorkId = courseWorkId,
-                    submissionId = studentSubmissionId!!,
-                    material = attachment,
-                )
+                when {
+                    attachment.driveFile != null -> {
+                        deleteFile(
+                            courseId = courseId,
+                            courseWorkId = courseWorkId,
+                            submissionId = studentSubmissionId!!,
+                            material = attachment,
+                        )
+                    }
+
+                    attachment.link != null -> {
+                        uiState.assignmentAttachments.removeAt(event.position)
+                        modifyAttachments(studentSubmissionId!!, uiState.assignmentAttachments)
+                    }
+                }
             }
 
             ViewCourseWorkUiEvent.Retry -> {
@@ -713,5 +737,37 @@ class ViewCourseWorkViewModel(
                 }
             }
         }.launchIn(viewModelScope)
+    }
+
+    private fun getUrlMetadata(
+        url: String,
+        submissionId: String,
+    ) {
+        getUrlMetadataUseCase(url)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        val link =
+                            Link(
+                                url = url,
+                                title = url,
+                            )
+                        uiState.assignmentAttachments.add(Material(link = link))
+                        uiState = uiState.copy(openProgressDialog = false)
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        val link = result.data!!
+                        uiState.assignmentAttachments.add(Material(link = link))
+                        modifyAttachments(submissionId, uiState.assignmentAttachments)
+                    }
+                }
+            }.launchIn(viewModelScope)
     }
 }

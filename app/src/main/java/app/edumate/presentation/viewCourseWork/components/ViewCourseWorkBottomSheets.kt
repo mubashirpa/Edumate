@@ -1,5 +1,7 @@
 package app.edumate.presentation.viewCourseWork.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.border
@@ -23,9 +25,11 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Image
+import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.BottomSheetDefaults
@@ -237,27 +241,27 @@ private fun StudentSubmissionBottomSheetContent(
             )
         } else {
             attachments.onEachIndexed { index, attachment ->
-                attachment.driveFile?.let { driveFile ->
-                    val mimeType =
-                        fileUtils.getFileTypeFromMimeType(driveFile.mimeType)
-                    val icon =
-                        when (mimeType) {
-                            FileType.IMAGE -> Icons.Default.Image
-                            FileType.VIDEO -> Icons.Default.VideoFile
-                            FileType.AUDIO -> Icons.Default.AudioFile
-                            FileType.PDF -> Icons.Default.PictureAsPdf
-                            FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                        }
+                val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
+                val driveFile = attachment.driveFile
+                val link = attachment.link
+                var title = ""
+                var icon = Icons.Default.Attachment
+                var attachmentModifier: Modifier = Modifier
 
-                    ListItem(
-                        headlineContent = {
-                            Text(
-                                text = driveFile.title.orEmpty(),
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1,
-                            )
-                        },
-                        modifier =
+                when {
+                    driveFile != null -> {
+                        val mimeType =
+                            fileUtils.getFileTypeFromMimeType(driveFile.mimeType)
+                        title = driveFile.title.orEmpty()
+                        icon =
+                            when (mimeType) {
+                                FileType.IMAGE -> Icons.Default.Image
+                                FileType.VIDEO -> Icons.Default.VideoFile
+                                FileType.AUDIO -> Icons.Default.AudioFile
+                                FileType.PDF -> Icons.Default.PictureAsPdf
+                                FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
+                            }
+                        attachmentModifier =
                             Modifier
                                 .border(
                                     width = 1.dp,
@@ -277,32 +281,61 @@ private fun StudentSubmissionBottomSheetContent(
                                                 }
                                             }
                                     }
-                                },
-                        leadingContent = {
-                            Icon(
-                                imageVector = icon,
-                                contentDescription = null,
-                            )
-                        },
-                        trailingContent = {
-                            if (studentSubmission.state != SubmissionState.TURNED_IN) {
-                                IconButton(
-                                    onClick = {
-                                        onRemoveAttachmentClick(index)
-                                    },
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.Default.Clear,
-                                        contentDescription = null,
-                                    )
                                 }
-                            }
-                        },
-                        colors = ListItemDefaults.colors(containerColor = Color.Transparent),
-                    )
-                    if (index < attachments.lastIndex) {
-                        Spacer(modifier = Modifier.height(10.dp))
                     }
+
+                    link != null -> {
+                        title = link.title.orEmpty()
+                        icon = Icons.Default.Link
+                        attachmentModifier =
+                            Modifier
+                                .border(
+                                    width = 1.dp,
+                                    color = MaterialTheme.colorScheme.outlineVariant,
+                                    shape = MaterialTheme.shapes.medium,
+                                ).clickable {
+                                    link.url?.let { url ->
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(browserIntent)
+                                    }
+                                }
+                    }
+                }
+
+                ListItem(
+                    headlineContent = {
+                        Text(
+                            text = title,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                        )
+                    },
+                    modifier = attachmentModifier,
+                    leadingContent = {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                        )
+                    },
+                    trailingContent = {
+                        if (studentSubmission.state != SubmissionState.TURNED_IN) {
+                            IconButton(
+                                onClick = {
+                                    onRemoveAttachmentClick(index)
+                                },
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                )
+                            }
+                        }
+                    },
+                    colors = colors,
+                )
+                if (index < attachments.lastIndex) {
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }

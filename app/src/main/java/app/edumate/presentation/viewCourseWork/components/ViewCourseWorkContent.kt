@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,6 +54,8 @@ import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.courseWork.CourseWorkType
 import app.edumate.domain.model.studentSubmission.SubmissionState
+import app.edumate.presentation.components.AddAttachmentBottomSheet
+import app.edumate.presentation.components.AddLinkDialog
 import app.edumate.presentation.components.AttachmentsListItem
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
@@ -82,6 +86,12 @@ fun ViewCourseWorkContent(
     val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+            it?.let { uri ->
+                onEvent(uri.handleFile(fileUtils, context))
+            }
+        }
+    val photoPicker =
+        rememberLauncherForActivityResult(PickVisualMedia()) {
             it?.let { uri ->
                 onEvent(uri.handleFile(fileUtils, context))
             }
@@ -216,7 +226,7 @@ fun ViewCourseWorkContent(
             onEvent(ViewCourseWorkUiEvent.OnShowStudentSubmissionBottomSheetChange(false))
         },
         onAddAttachmentClick = {
-            filePicker.launch("*/*")
+            onEvent(ViewCourseWorkUiEvent.OnShowAddAttachmentBottomSheetChange(true))
         },
         onRemoveAttachmentClick = {
             onEvent(ViewCourseWorkUiEvent.OnOpenRemoveAttachmentDialogChange(it))
@@ -262,6 +272,32 @@ fun ViewCourseWorkContent(
         },
         onConfirmButtonClick = {
             onEvent(ViewCourseWorkUiEvent.Reclaim)
+        },
+    )
+
+    AddLinkDialog(
+        open = uiState.openAddLinkDialog,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenAddLinkDialogChange(false))
+        },
+        onConfirmClick = {
+            onEvent(ViewCourseWorkUiEvent.AddLinkAttachment(it))
+        },
+    )
+
+    AddAttachmentBottomSheet(
+        show = uiState.showAddAttachmentBottomSheet,
+        onDismissRequest = {
+            onEvent(ViewCourseWorkUiEvent.OnShowAddAttachmentBottomSheetChange(false))
+        },
+        onInsertLinkClick = {
+            onEvent(ViewCourseWorkUiEvent.OnOpenAddLinkDialogChange(true))
+        },
+        onUploadFileClick = {
+            filePicker.launch("*/*")
+        },
+        onPickPhotoClick = {
+            photoPicker.launch(PickVisualMediaRequest(PickVisualMedia.ImageOnly))
         },
     )
 

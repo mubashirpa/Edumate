@@ -4,6 +4,10 @@ import app.edumate.domain.model.courseWork.CourseWorkType
 import java.io.File
 
 sealed class ViewCourseWorkUiEvent {
+    data class AddLinkAttachment(
+        val link: String,
+    ) : ViewCourseWorkUiEvent()
+
     data class OnEditShortAnswerChange(
         val edit: Boolean,
     ) : ViewCourseWorkUiEvent()
@@ -23,6 +27,10 @@ sealed class ViewCourseWorkUiEvent {
         val answer: String,
     ) : ViewCourseWorkUiEvent()
 
+    data class OnOpenAddLinkDialogChange(
+        val open: Boolean,
+    ) : ViewCourseWorkUiEvent()
+
     data class OnOpenRemoveAttachmentDialogChange(
         val index: Int?,
     ) : ViewCourseWorkUiEvent()
@@ -33,6 +41,10 @@ sealed class ViewCourseWorkUiEvent {
 
     data class OnOpenUnSubmitDialogChange(
         val open: Boolean,
+    ) : ViewCourseWorkUiEvent()
+
+    data class OnShowAddAttachmentBottomSheetChange(
+        val show: Boolean,
     ) : ViewCourseWorkUiEvent()
 
     data class OnShowCommentsBottomSheetChange(
