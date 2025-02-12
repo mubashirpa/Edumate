@@ -1,4 +1,4 @@
-package app.edumate.presentation.stream.components
+package app.edumate.presentation.components
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
@@ -47,27 +47,23 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
-import app.edumate.domain.model.member.Member
-import app.edumate.domain.model.member.UserRole
-import app.edumate.presentation.components.ErrorScreen
-import app.edumate.presentation.components.LoadingScreen
+import app.edumate.core.UiText
+import app.edumate.domain.model.comment.Comment
 import app.edumate.presentation.courseDetails.CourseUserRole
-import app.edumate.presentation.stream.CommentsBottomSheetUiState
-import app.edumate.presentation.stream.StreamUiEvent
+import app.edumate.presentation.stream.components.DeleteCommentDialog
 import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CommentsBottomSheet(
     uiState: CommentsBottomSheetUiState,
-    onEvent: (StreamUiEvent) -> Unit,
-    replyAnnouncementId: String?,
-    members: List<Member>,
+    onEvent: (CommentsBottomSheetUiEvent) -> Unit,
+    show: Boolean,
     currentUserRole: CourseUserRole,
     currentUserId: String,
     onDismissRequest: () -> Unit,
 ) {
-    if (replyAnnouncementId != null) {
+    if (show) {
         val bottomSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val snackbarHostState = remember { SnackbarHostState() }
         val focusRequester = remember { FocusRequester() }
@@ -83,7 +79,7 @@ fun CommentsBottomSheet(
             LaunchedEffect(userMessage) {
                 snackbarHostState.showSnackbar(userMessage.asString(context))
                 // Once the message is displayed and dismissed, notify the ViewModel.
-                onEvent(StreamUiEvent.UserMessageShown)
+                onEvent(CommentsBottomSheetUiEvent.UserMessageShown)
             }
         }
 
@@ -107,7 +103,7 @@ fun CommentsBottomSheet(
                         is Result.Error -> {
                             ErrorScreen(
                                 onRetryClick = {
-                                    onEvent(StreamUiEvent.RetryComment(replyAnnouncementId))
+                                    onEvent(CommentsBottomSheetUiEvent.Retry)
                                 },
                                 modifier = Modifier.fillMaxSize(),
                                 errorMessage = commentsResult.message!!.asString(),
@@ -132,39 +128,32 @@ fun CommentsBottomSheet(
                                         items = comments,
                                         key = { it.id!! },
                                     ) { comment ->
-                                        val commentUserRole =
-                                            members
-                                                .find {
-                                                    it.userId == comment.creatorUserId
-                                                }?.role ?: UserRole.STUDENT
-
                                         CommentListItem(
                                             comment = comment,
-                                            itemUserRole = commentUserRole,
                                             currentUserRole = currentUserRole,
                                             currentUserId = currentUserId,
                                             selected = comment.id == uiState.editCommentId,
-                                            onEditClick = {
+                                            onEditClick = { id ->
                                                 onEvent(
-                                                    StreamUiEvent.OnEditComment(
-                                                        announcementId = replyAnnouncementId,
-                                                        comment = comment,
+                                                    CommentsBottomSheetUiEvent.OnEditComment(
+                                                        id,
+                                                        comment.text.orEmpty(),
                                                     ),
                                                 )
                                                 focusRequester.requestFocus()
                                             },
                                             onDeleteClick = { id ->
                                                 onEvent(
-                                                    StreamUiEvent.OnOpenDeleteCommentDialogChange(
+                                                    CommentsBottomSheetUiEvent.OnOpenDeleteCommentDialogChange(
                                                         id,
                                                     ),
                                                 )
                                             },
                                             onClearSelection = {
                                                 onEvent(
-                                                    StreamUiEvent.OnEditComment(
-                                                        announcementId = replyAnnouncementId,
-                                                        comment = null,
+                                                    CommentsBottomSheetUiEvent.OnEditComment(
+                                                        null,
+                                                        "",
                                                     ),
                                                 )
                                             },
@@ -180,7 +169,7 @@ fun CommentsBottomSheet(
                                 state = uiState.comment,
                                 enabled = !uiState.isLoading,
                                 onSendClick = { text ->
-                                    onEvent(StreamUiEvent.AddComment(replyAnnouncementId))
+                                    onEvent(CommentsBottomSheetUiEvent.AddComment(text))
                                 },
                                 modifier =
                                     Modifier
@@ -202,15 +191,12 @@ fun CommentsBottomSheet(
     DeleteCommentDialog(
         open = uiState.deleteCommentId != null,
         onDismissRequest = {
-            onEvent(StreamUiEvent.OnOpenDeleteCommentDialogChange(null))
+            onEvent(CommentsBottomSheetUiEvent.OnOpenDeleteCommentDialogChange(null))
         },
         onConfirmButtonClick = {
-            onEvent(
-                StreamUiEvent.DeleteComment(
-                    announcementId = replyAnnouncementId!!,
-                    id = uiState.deleteCommentId!!,
-                ),
-            )
+            uiState.deleteCommentId?.let { commentId ->
+                onEvent(CommentsBottomSheetUiEvent.DeleteComment(commentId))
+            }
         },
     )
 }
@@ -254,4 +240,36 @@ private fun CommentTextField(
         lineLimits = TextFieldLineLimits.SingleLine,
         shape = CircleShape,
     )
+}
+
+data class CommentsBottomSheetUiState(
+    val comment: TextFieldState = TextFieldState(),
+    val commentsResult: Result<List<Comment>> = Result.Empty(),
+    val deleteCommentId: String? = null,
+    val editCommentId: String? = null,
+    val isLoading: Boolean = false,
+    val userMessage: UiText? = null,
+)
+
+sealed class CommentsBottomSheetUiEvent {
+    data class AddComment(
+        val text: String,
+    ) : CommentsBottomSheetUiEvent()
+
+    data class DeleteComment(
+        val commentId: String,
+    ) : CommentsBottomSheetUiEvent()
+
+    data class OnEditComment(
+        val commentId: String?,
+        val text: String,
+    ) : CommentsBottomSheetUiEvent()
+
+    data class OnOpenDeleteCommentDialogChange(
+        val commentId: String?,
+    ) : CommentsBottomSheetUiEvent()
+
+    data object Retry : CommentsBottomSheetUiEvent()
+
+    data object UserMessageShown : CommentsBottomSheetUiEvent()
 }

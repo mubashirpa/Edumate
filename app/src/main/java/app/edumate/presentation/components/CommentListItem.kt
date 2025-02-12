@@ -1,4 +1,4 @@
-package app.edumate.presentation.stream.components
+package app.edumate.presentation.components
 
 import android.content.Context
 import androidx.compose.foundation.background
@@ -34,7 +34,6 @@ import app.edumate.core.utils.DateTimeUtils
 import app.edumate.core.utils.RelativeDate
 import app.edumate.domain.model.comment.Comment
 import app.edumate.domain.model.member.UserRole
-import app.edumate.presentation.components.UserAvatar
 import app.edumate.presentation.courseDetails.CourseUserRole
 import kotlinx.datetime.Instant
 import kotlinx.datetime.LocalDate
@@ -49,7 +48,6 @@ import kotlinx.datetime.toLocalDateTime
 @Composable
 fun CommentListItem(
     comment: Comment,
-    itemUserRole: UserRole,
     currentUserRole: CourseUserRole,
     currentUserId: String,
     selected: Boolean,
@@ -74,7 +72,14 @@ fun CommentListItem(
         }
 
     Column(
-        modifier = modifier.then(if (selected) Modifier.background(MaterialTheme.colorScheme.surface) else Modifier),
+        modifier =
+            modifier.then(
+                if (selected) {
+                    Modifier.background(MaterialTheme.colorScheme.surface)
+                } else {
+                    Modifier
+                },
+            ),
     ) {
         ListItem(
             headlineContent = {
@@ -122,7 +127,7 @@ fun CommentListItem(
                     else -> {
                         {
                             MenuButton(
-                                itemUserRole = itemUserRole,
+                                itemUserRole = creator?.role,
                                 currentUserRole = currentUserRole,
                                 isCurrentUserCreator = isCurrentUserCreator,
                                 onEditClick = {
@@ -146,7 +151,7 @@ fun CommentListItem(
 
 @Composable
 private fun MenuButton(
-    itemUserRole: UserRole,
+    itemUserRole: UserRole?,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
     onEditClick: () -> Unit,
