@@ -278,8 +278,10 @@ private fun ViewStudentSubmissionContent(
         modifier = modifier,
         contentPadding =
             PaddingValues(
-                horizontal = 16.dp,
-                vertical = 12.dp,
+                start = 16.dp,
+                top = 12.dp,
+                end = 16.dp,
+                bottom = 100.dp,
             ),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
