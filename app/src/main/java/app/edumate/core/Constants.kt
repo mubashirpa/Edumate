@@ -38,7 +38,6 @@ object Authentication {
 
 object Supabase {
     object Column {
-        const val ANNOUNCEMENT_ID = "announcement_id"
         const val ASSIGNED_GRADE = "assigned_grade"
         const val ASSIGNMENT_SUBMISSION = "assignment_submission"
         const val COURSE_ID = "course_id"
@@ -87,7 +86,6 @@ object Supabase {
 
     object Table {
         const val ANNOUNCEMENTS = "announcements"
-        const val ANNOUNCEMENT_COMMENTS = "announcement_comments"
         const val COMMENTS = "comments"
         const val COURSES = "courses"
         const val COURSE_WORKS = "course_works"
