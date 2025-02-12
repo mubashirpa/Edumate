@@ -74,6 +74,7 @@ fun ViewCourseWorkContent(
     courseWork: CourseWork,
     isCurrentUserTeacher: Boolean,
     fileUtils: FileUtils,
+    contentPadding: PaddingValues,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -83,7 +84,6 @@ fun ViewCourseWorkContent(
     val description = courseWork.description
     val attachments = courseWork.materials
     val workType = courseWork.workType
-    val contentPadding = PaddingValues(horizontal = 16.dp, vertical = 12.dp)
     val filePicker =
         rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
             it?.let { uri ->

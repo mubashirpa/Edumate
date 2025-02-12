@@ -2,6 +2,7 @@ package app.edumate.presentation.viewCourseWork
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -37,6 +38,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.utils.FileUtils
@@ -99,6 +101,10 @@ fun ViewCourseWorkScreen(
         rememberPagerState(initialPage = if (isSingleTabScreen) 0 else 1) {
             if (isSingleTabScreen) 1 else tabs.size
         }
+    val isFabVisible =
+        !isCurrentUserTeacher &&
+            courseWork?.workType != null &&
+            courseWork.workType != CourseWorkType.MATERIAL
 
     uiState.userMessage?.let { userMessage ->
         LaunchedEffect(userMessage) {
@@ -190,7 +196,7 @@ fun ViewCourseWorkScreen(
             SnackbarHost(hostState = snackbarHostState)
         },
         floatingActionButton = {
-            if (!isCurrentUserTeacher) {
+            if (isFabVisible) {
                 ExtendedFloatingActionButton(
                     text = {
                         Text(text = stringResource(R.string.comments))
@@ -204,7 +210,6 @@ fun ViewCourseWorkScreen(
                     onClick = {
                         onEvent(ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange(true))
                     },
-                    expanded = true,
                 )
             }
         },
@@ -268,6 +273,13 @@ fun ViewCourseWorkScreen(
                                     courseWork = courseWork!!,
                                     isCurrentUserTeacher = isCurrentUserTeacher,
                                     fileUtils = fileUtils,
+                                    contentPadding =
+                                        PaddingValues(
+                                            start = 16.dp,
+                                            top = 12.dp,
+                                            end = 16.dp,
+                                            bottom = if (isFabVisible) 100.dp else 12.dp,
+                                        ),
                                     onNavigateToImageViewer = onNavigateToImageViewer,
                                     modifier = Modifier.fillMaxSize(),
                                 )
