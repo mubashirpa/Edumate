@@ -20,6 +20,7 @@ fun CourseDto.toCourseDomainModel(): Course =
         room = room,
         section = section,
         subject = subject,
+        totalStudents = totalStudents,
         updateTime = updateTime,
     )
 
@@ -36,6 +37,7 @@ fun Course.toCourseDto(): CourseDto =
         room = room,
         section = section,
         subject = subject,
+        totalStudents = totalStudents,
         updateTime = updateTime,
     )
 
@@ -53,6 +55,7 @@ fun CoursesDto.toCourseDomainModel(): Course =
         room = course?.room,
         section = course?.section,
         subject = course?.subject,
+        totalStudents = course?.totalStudents,
         updateTime = course?.updateTime,
     )
 
@@ -63,12 +66,13 @@ fun CourseWithMembersDto.toCourseWithMembersDomainModel(): CourseWithMembers =
         description = description,
         enrollmentCode = enrollmentCode,
         id = id,
+        members = members?.map { it.toMemberDomainModel() },
         name = name,
         owner = owner?.toUserDomainModel(),
         ownerId = ownerId,
         room = room,
         section = section,
         subject = subject,
+        totalStudents = totalStudents,
         updateTime = updateTime,
-        members = members?.map { it.toMemberDomainModel() },
     )

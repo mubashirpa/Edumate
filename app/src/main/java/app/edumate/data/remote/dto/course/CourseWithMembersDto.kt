@@ -15,6 +15,7 @@ data class CourseWithMembersDto(
     @SerialName("enrollment_code")
     val enrollmentCode: String? = null,
     val id: String? = null,
+    val members: List<MemberDto>? = null,
     val name: String? = null,
     val owner: UserDto? = null,
     @SerialName("owner_id")
@@ -22,7 +23,8 @@ data class CourseWithMembersDto(
     val room: String? = null,
     val section: String? = null,
     val subject: String? = null,
+    @SerialName("total_students")
+    val totalStudents: Int? = null,
     @SerialName("update_time")
     val updateTime: String? = null,
-    val members: List<MemberDto>? = null,
 )

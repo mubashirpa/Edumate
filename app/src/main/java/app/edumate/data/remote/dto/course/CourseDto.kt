@@ -21,6 +21,8 @@ data class CourseDto(
     val room: String? = null,
     val section: String? = null,
     val subject: String? = null,
+    @SerialName("total_students")
+    val totalStudents: Int? = null,
     @SerialName("update_time")
     val updateTime: String? = null,
 )

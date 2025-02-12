@@ -10,6 +10,7 @@ data class CourseWithMembers(
     val description: String? = null,
     val enrollmentCode: String? = null,
     val id: String? = null,
+    val members: List<Member>? = null,
     val name: String? = null,
     val owner: User? = null,
     val ownerId: String? = null,
@@ -17,8 +18,8 @@ data class CourseWithMembers(
     val room: String? = null,
     val section: String? = null,
     val subject: String? = null,
+    val totalStudents: Int? = null,
     val updateTime: String? = null,
-    val members: List<Member>? = null,
 ) {
     val joinLink = "$alternateLink?code=$enrollmentCode"
 }
