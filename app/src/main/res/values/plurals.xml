@@ -8,4 +8,8 @@
         <item quantity="one">%1$d Reply</item>
         <item quantity="other">%1$d Replies</item>
     </plurals>
+    <plurals name="students">
+        <item quantity="one">%1$d student</item>
+        <item quantity="other">%1$d students</item>
+    </plurals>
 </resources>
