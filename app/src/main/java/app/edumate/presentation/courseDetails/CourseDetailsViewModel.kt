@@ -25,8 +25,8 @@ class CourseDetailsViewModel(
     var uiState by mutableStateOf(CourseDetailsUiState())
         private set
 
-    val courseId = savedStateHandle.toRoute<Screen.CourseDetails>().courseId
-    var currentUserId: String? = null
+    private val courseId = savedStateHandle.toRoute<Screen.CourseDetails>().courseId
+    private var currentUserId: String? = null
 
     init {
         getCurrentUser()
