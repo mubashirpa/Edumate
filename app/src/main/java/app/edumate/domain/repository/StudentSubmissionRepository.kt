@@ -1,5 +1,6 @@
 package app.edumate.domain.repository
 
+import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
 
@@ -33,4 +34,13 @@ interface StudentSubmissionRepository {
         courseWorkId: String,
         id: String,
     )
+
+    suspend fun createComment(
+        courseId: String,
+        submissionId: String,
+        userId: String,
+        text: String,
+    ): CommentDto
+
+    suspend fun getComments(submissionId: String): List<CommentDto>
 }

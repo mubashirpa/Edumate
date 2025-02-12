@@ -41,8 +41,10 @@ import app.edumate.domain.usecase.preferences.ConfigureAppThemeUseCase
 import app.edumate.domain.usecase.preferences.GetUserPreferencesUseCase
 import app.edumate.domain.usecase.storage.DeleteFileUseCase
 import app.edumate.domain.usecase.storage.UploadFileUseCase
+import app.edumate.domain.usecase.studentSubmission.CreateSubmissionCommentUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.GetStudentSubmissionsUseCase
+import app.edumate.domain.usecase.studentSubmission.GetSubmissionCommentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ModifyStudentSubmissionAttachmentsUseCase
 import app.edumate.domain.usecase.studentSubmission.ReclaimStudentSubmissionUseCase
 import app.edumate.domain.usecase.studentSubmission.ReturnStudentSubmissionUseCase
@@ -65,6 +67,7 @@ val useCaseModule =
         singleOf(::CreateCourseUseCase)
         singleOf(::CreateMaterialUseCase)
         singleOf(::CreateQuestionUseCase)
+        singleOf(::CreateSubmissionCommentUseCase)
         singleOf(::DeleteAnnouncementUseCase)
         singleOf(::DeleteCommentUseCase)
         singleOf(::DeleteCourseUseCase)
@@ -83,6 +86,7 @@ val useCaseModule =
         singleOf(::GetMembersUseCase)
         singleOf(::GetStudentSubmissionUseCase)
         singleOf(::GetStudentSubmissionsUseCase)
+        singleOf(::GetSubmissionCommentsUseCase)
         singleOf(::GetUrlMetadataUseCase)
         singleOf(::GetUserPreferencesUseCase)
         singleOf(::IsUserLoggedInUseCase)

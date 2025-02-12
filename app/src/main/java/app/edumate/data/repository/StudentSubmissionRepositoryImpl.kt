@@ -1,6 +1,7 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
+import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.studentSubmission.AssignmentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.StudentSubmissionDto
 import app.edumate.data.remote.dto.studentSubmission.SubmissionStateDto
@@ -130,4 +131,32 @@ class StudentSubmissionRepositoryImpl(
                     },
             )
     }
+
+    override suspend fun createComment(
+        courseId: String,
+        submissionId: String,
+        userId: String,
+        text: String,
+    ): CommentDto =
+        postgrest
+            .rpc(
+                function = Supabase.Function.INSERT_SUBMISSION_COMMENT,
+                parameters =
+                    buildJsonObject {
+                        put(Supabase.Parameter.COURSE_ID, courseId)
+                        put(Supabase.Parameter.SUBMISSION_ID, submissionId)
+                        put(Supabase.Parameter.USER_ID, userId)
+                        put(Supabase.Parameter.TEXT, text)
+                    },
+            ).decodeAs()
+
+    override suspend fun getComments(submissionId: String): List<CommentDto> =
+        postgrest
+            .rpc(
+                function = Supabase.Function.GET_SUBMISSION_COMMENTS,
+                parameters =
+                    buildJsonObject {
+                        put(Supabase.Parameter.SUBMISSION_ID, submissionId)
+                    },
+            ).decodeList()
 }

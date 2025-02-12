@@ -66,9 +66,11 @@ object Supabase {
         const val TURN_IN_STUDENT_SUBMISSION = "turn_in_student_submission"
         const val INSERT_ANNOUNCEMENT_COMMENT = "insert_announcement_comment"
         const val INSERT_MEMBER = "insert_member"
+        const val INSERT_SUBMISSION_COMMENT = "insert_submission_comment"
         const val GET_ANNOUNCEMENT_COMMENTS = "get_announcement_comments"
         const val GET_STUDENT_SUBMISSION = "get_or_insert_student_submission"
         const val GET_STUDENT_SUBMISSIONS_LIST = "get_student_submissions_list"
+        const val GET_SUBMISSION_COMMENTS = "get_submission_comments"
     }
 
     object Parameter {
@@ -76,6 +78,7 @@ object Supabase {
         const val COURSE_ID = "p_course_id"
         const val COURSE_WORK_ID = "p_course_work_id"
         const val ID = "p_id"
+        const val SUBMISSION_ID = "p_submission_id"
         const val TEXT = "p_text"
         const val USER_ID = "p_user_id"
     }
