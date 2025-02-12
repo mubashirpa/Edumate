@@ -7,14 +7,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Assignment
 import androidx.compose.material.icons.automirrored.outlined.LiveHelp
 import androidx.compose.material.icons.outlined.Book
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
@@ -25,60 +23,6 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.domain.model.courseWork.CourseWorkType
 import kotlinx.coroutines.launch
-
-@Composable
-fun DeleteCourseWorkDialog(
-    workType: CourseWorkType?,
-    onDismissRequest: () -> Unit,
-    onConfirmButtonClick: () -> Unit,
-) {
-    if (workType != null) {
-        val title: String
-        val message: String
-
-        when (workType) {
-            CourseWorkType.ASSIGNMENT -> {
-                title = stringResource(id = R.string.dialog_title_delete_assignment)
-                message = stringResource(id = R.string.dialog_message_delete_coursework)
-            }
-
-            CourseWorkType.MATERIAL -> {
-                title = stringResource(id = R.string.dialog_title_delete_material)
-                message = stringResource(id = R.string.dialog_message_delete_material)
-            }
-
-            CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
-                title = stringResource(id = R.string.dialog_title_delete_question)
-                message = stringResource(id = R.string.dialog_message_delete_coursework)
-            }
-
-            CourseWorkType.SHORT_ANSWER_QUESTION -> {
-                title = stringResource(id = R.string.dialog_title_delete_question)
-                message = stringResource(id = R.string.dialog_message_delete_coursework)
-            }
-        }
-
-        AlertDialog(
-            onDismissRequest = onDismissRequest,
-            title = {
-                Text(text = title)
-            },
-            text = {
-                Text(text = message)
-            },
-            confirmButton = {
-                TextButton(onClick = onConfirmButtonClick) {
-                    Text(stringResource(id = R.string.delete))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = onDismissRequest) {
-                    Text(stringResource(id = R.string.cancel))
-                }
-            },
-        )
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
