@@ -13,10 +13,8 @@ import androidx.compose.foundation.layout.union
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.domain.model.course.CourseWithMembers
 import app.edumate.navigation.CourseDetailsNavHost
@@ -52,23 +50,16 @@ fun CourseDetailsScreen(
         }
 
         is Result.Success -> {
-            val courseWithMembers = courseResult.data
-            if (courseWithMembers != null) {
-                CourseDetailsContent(
-                    courseWithMembers = courseWithMembers,
-                    currentUserRole = uiState.currentUserRole,
-                    onNavigateUp = onNavigateUp,
-                    onNavigateToCourseSettings = onNavigateToCourseSettings,
-                    onNavigateToImageViewer = onNavigateToImageViewer,
-                    onLeaveCourse = onLeaveCourse,
-                    modifier = modifier,
-                )
-            } else {
-                ErrorScreen(
-                    modifier = Modifier.fillMaxSize(),
-                    errorMessage = stringResource(R.string.class_not_found),
-                )
-            }
+            val courseWithMembers = courseResult.data!!
+            CourseDetailsContent(
+                courseWithMembers = courseWithMembers,
+                currentUserRole = uiState.currentUserRole,
+                onNavigateUp = onNavigateUp,
+                onNavigateToCourseSettings = onNavigateToCourseSettings,
+                onNavigateToImageViewer = onNavigateToImageViewer,
+                onLeaveCourse = onLeaveCourse,
+                modifier = modifier,
+            )
         }
     }
 }
