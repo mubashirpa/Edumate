@@ -11,7 +11,6 @@ data class CreateCourseUiState(
     val openProgressDialog: Boolean = false,
     val room: TextFieldState = TextFieldState(),
     val section: TextFieldState = TextFieldState(),
-    val showBottomSheet: Boolean = false,
     val subject: TextFieldState = TextFieldState(),
     val userMessage: UiText? = null,
 )

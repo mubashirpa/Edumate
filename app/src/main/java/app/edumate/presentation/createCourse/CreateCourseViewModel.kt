@@ -29,10 +29,10 @@ class CreateCourseViewModel(
     var uiState by mutableStateOf(CreateCourseUiState())
         private set
 
-    private val createCourse = savedStateHandle.toRoute<Screen.CreateCourse>()
+    private val courseId = savedStateHandle.toRoute<Screen.CreateCourse>().courseId
 
     init {
-        createCourse.courseId?.let(::getCourse)
+        courseId?.let(::getCourse)
     }
 
     fun onEvent(event: CreateCourseUiEvent) {
@@ -58,7 +58,7 @@ class CreateCourseViewModel(
                         .trim()
                         .ifEmpty { null }
 
-                if (createCourse.courseId == null) {
+                if (courseId == null) {
                     createCourse(
                         name = name,
                         room = room,
@@ -67,7 +67,7 @@ class CreateCourseViewModel(
                     )
                 } else {
                     updateCourse(
-                        id = createCourse.courseId,
+                        courseId = courseId,
                         name = name,
                         room = room,
                         section = section,
@@ -135,8 +135,8 @@ class CreateCourseViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun getCourse(id: String) {
-        getCourseUseCase(id)
+    private fun getCourse(courseId: String) {
+        getCourseUseCase(courseId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -175,7 +175,7 @@ class CreateCourseViewModel(
     }
 
     private fun updateCourse(
-        id: String,
+        courseId: String,
         name: String,
         room: String?,
         section: String?,
@@ -188,7 +188,7 @@ class CreateCourseViewModel(
         }
         uiState = uiState.copy(nameError = null)
 
-        updateCourseUseCase(id, name, room, section, subject)
+        updateCourseUseCase(courseId, name, room, section, subject)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}

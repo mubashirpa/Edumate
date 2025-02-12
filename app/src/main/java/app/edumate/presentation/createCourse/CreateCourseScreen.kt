@@ -109,13 +109,13 @@ private fun CreateCourseContent(
         topBar = {
             TopAppBar(
                 title = {
-                    val titleId =
+                    val title =
                         if (courseId == null) {
-                            R.string.title_create_class_screen
+                            stringResource(R.string.title_create_class_screen)
                         } else {
-                            R.string.title_edit_class_screen
+                            stringResource(R.string.title_edit_class_screen)
                         }
-                    Text(text = stringResource(id = titleId))
+                    Text(text = title)
                 },
                 navigationIcon = {
                     IconButton(onClick = onNavigateUp) {
@@ -222,14 +222,13 @@ private fun CreateCourseContent(
                     },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
-                    Text(
-                        text =
-                            if (courseId == null) {
-                                stringResource(id = R.string.create)
-                            } else {
-                                stringResource(id = R.string.save)
-                            },
-                    )
+                    val text =
+                        if (courseId == null) {
+                            stringResource(id = R.string.create)
+                        } else {
+                            stringResource(id = R.string.save)
+                        }
+                    Text(text = text)
                 }
             }
 
