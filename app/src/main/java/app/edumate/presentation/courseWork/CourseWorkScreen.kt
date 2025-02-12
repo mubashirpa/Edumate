@@ -59,8 +59,8 @@ fun CourseWorkScreen(
     courseWithMembers: CourseWithMembers,
     currentUserRole: CourseUserRole,
     onNavigateUp: () -> Unit,
-    onNavigateToCreateClasswork: (workType: CourseWorkType, id: String?) -> Unit,
-    onNavigateToViewClasswork: (id: String) -> Unit,
+    onNavigateToCreateCourseWork: (courseWorkType: CourseWorkType, courseWorkId: String?) -> Unit,
+    onNavigateToViewCourseWork: (courseWorkId: String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -185,7 +185,7 @@ fun CourseWorkScreen(
                 }
 
                 is Result.Success -> {
-                    val courseWorks = courseWorkResult.data.orEmpty()
+                    val courseWorks = courseWorkResult.data!!
                     val bottomMargin = if (isCurrentUserTeacher) 100.dp else 0.dp
 
                     if (courseWorks.isEmpty()) {
@@ -210,12 +210,12 @@ fun CourseWorkScreen(
                                     key = { it.id!! },
                                 ) { courseWork ->
                                     CourseWorkListItem(
-                                        onClick = onNavigateToViewClasswork,
+                                        onClick = onNavigateToViewCourseWork,
                                         courseWork = courseWork,
                                         workType = courseWork.workType!!,
                                         isCurrentUserTeacher = isCurrentUserTeacher,
                                         onEditClick = { id, workType ->
-                                            onNavigateToCreateClasswork(workType, id)
+                                            onNavigateToCreateCourseWork(workType, id)
                                         },
                                         onDeleteClick = {
                                             onEvent(
@@ -241,7 +241,7 @@ fun CourseWorkScreen(
         },
         show = uiState.showCreateCourseWorkBottomSheet,
         onCreateCourseWork = { type ->
-            onNavigateToCreateClasswork(type, null)
+            onNavigateToCreateCourseWork(type, null)
         },
     )
 
@@ -251,7 +251,7 @@ fun CourseWorkScreen(
         },
         workType = uiState.deleteCourseWork?.workType,
         onConfirmButtonClick = {
-            uiState.deleteCourseWork?.id?.also { id ->
+            uiState.deleteCourseWork?.id?.let { id ->
                 onEvent(CourseWorkUiEvent.DeleteCourseWork(id))
             }
         },

@@ -68,7 +68,7 @@ fun CourseDetailsNavHost(
                 courseWithMembers = courseWithMembers,
                 currentUserRole = currentUserRole,
                 onNavigateUp = onNavigateUp,
-                onNavigateToCreateClasswork = { workType, id ->
+                onNavigateToCreateCourseWork = { workType, id ->
                     navController.navigate(
                         Screen.CreateCourseWork(
                             courseId = courseWithMembers.id,
@@ -77,7 +77,7 @@ fun CourseDetailsNavHost(
                         ),
                     )
                 },
-                onNavigateToViewClasswork = {
+                onNavigateToViewCourseWork = {
                     navController.navigate(
                         Screen.ViewCourseWork(
                             id = it,
