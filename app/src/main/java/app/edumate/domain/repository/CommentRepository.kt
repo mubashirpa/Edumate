@@ -1,12 +1,12 @@
 package app.edumate.domain.repository
 
-import app.edumate.data.remote.dto.comment.CommentsDto
+import app.edumate.data.remote.dto.comment.CommentDto
 
 interface CommentRepository {
     suspend fun updateComment(
         id: String,
         text: String,
-    ): CommentsDto
+    ): CommentDto
 
-    suspend fun deleteComment(id: String): CommentsDto
+    suspend fun deleteComment(id: String): CommentDto
 }

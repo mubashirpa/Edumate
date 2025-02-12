@@ -1,7 +1,7 @@
 package app.edumate.data.repository
 
 import app.edumate.core.Supabase
-import app.edumate.data.remote.dto.comment.CommentsDto
+import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.domain.repository.CommentRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import kotlinx.datetime.Clock
@@ -15,7 +15,7 @@ class CommentRepositoryImpl(
     override suspend fun updateComment(
         id: String,
         text: String,
-    ): CommentsDto =
+    ): CommentDto =
         postgrest[Supabase.Table.COMMENTS]
             .update(
                 {
@@ -32,7 +32,7 @@ class CommentRepositoryImpl(
                 }
             }.decodeSingle()
 
-    override suspend fun deleteComment(id: String): CommentsDto =
+    override suspend fun deleteComment(id: String): CommentDto =
         postgrest[Supabase.Table.COMMENTS]
             .delete {
                 select()
