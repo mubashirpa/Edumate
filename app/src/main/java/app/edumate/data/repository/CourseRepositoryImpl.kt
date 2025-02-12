@@ -7,6 +7,7 @@ import app.edumate.data.remote.dto.course.CoursesDto
 import app.edumate.domain.repository.CourseRepository
 import io.github.jan.supabase.postgrest.Postgrest
 import io.github.jan.supabase.postgrest.query.Columns
+import io.github.jan.supabase.postgrest.query.Order
 import kotlinx.datetime.Clock
 import kotlinx.datetime.Instant
 import kotlinx.datetime.TimeZone
@@ -29,6 +30,7 @@ class CourseRepositoryImpl(
                 filter {
                     eq(Supabase.Column.USER_ID, userId)
                 }
+                order(Supabase.Column.JOINED_AT, Order.DESCENDING)
             }.decodeList()
 
     override suspend fun getCourse(id: String): CourseDto =

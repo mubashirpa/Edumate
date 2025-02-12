@@ -45,6 +45,7 @@ object Supabase {
         const val DESCRIPTION = "description"
         const val DUE_TIME = "due_time"
         const val ID = "id"
+        const val JOINED_AT = "joined_at"
         const val MATERIALS = "materials"
         const val MAX_POINTS = "max_points"
         const val MULTIPLE_CHOICE_QUESTION = "multiple_choice_question"
