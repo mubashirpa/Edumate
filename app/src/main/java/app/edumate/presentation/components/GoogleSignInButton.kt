@@ -1,5 +1,6 @@
 package app.edumate.presentation.components
 
+import android.content.Context
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ButtonDefaults
@@ -17,7 +18,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.credentials.CredentialManager
+import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.credentials.exceptions.NoCredentialException
 import app.edumate.R
@@ -57,7 +60,7 @@ fun GoogleSignInButton(
             digest.fold("") { str, it -> str + "%02x".format(it) } // Hashed nonce to be passed to Google sign-in
 
         val googleIdOption: GetGoogleIdOption =
-            GetGoogleIdOption // TODO: Misuse of Sign in with Google API
+            GetGoogleIdOption
                 .Builder()
                 .setFilterByAuthorizedAccounts(filterByAuthorizedAccounts)
                 .setServerClientId(Constants.WEB_GOOGLE_CLIENT_ID)
@@ -78,19 +81,16 @@ fun GoogleSignInButton(
                         context = context,
                     )
 
-                val googleIdTokenCredential =
-                    GoogleIdTokenCredential
-                        .createFrom(result.credential.data)
-
-                val googleIdToken = googleIdTokenCredential.idToken
-
-                onSignInSuccess(googleIdToken, rawNonce)
+                handleSignIn(
+                    context = context,
+                    result = result,
+                    onSignInSuccess = { googleIdToken ->
+                        onSignInSuccess(googleIdToken, rawNonce)
+                    },
+                    onSignInFailure = onSignInFailure,
+                )
             } catch (_: GetCredentialException) {
-                // Handle GetCredentialException thrown by `credentialManager.getCredential()`
                 onSignInFailure(context.getString(R.string.error_auth_google_credential_exception))
-            } catch (_: GoogleIdTokenParsingException) {
-                // Handle GoogleIdTokenParsingException thrown by `GoogleIdTokenCredential.createFrom()`
-                onSignInFailure(context.getString(R.string.error_auth_google_invalid_id_token))
             } catch (e: NoCredentialException) {
                 onSignInFailure(e.message.toString())
             } catch (e: Exception) {
@@ -118,5 +118,36 @@ fun GoogleSignInButton(
         )
         Spacer(modifier = Modifier.size(ButtonDefaults.IconSpacing))
         Text(text = text, style = textStyle)
+    }
+}
+
+private fun handleSignIn(
+    context: Context,
+    result: GetCredentialResponse,
+    onSignInSuccess: (idToken: String) -> Unit,
+    onSignInFailure: (message: String) -> Unit,
+) {
+    when (val credential = result.credential) {
+        is CustomCredential -> {
+            if (credential.type == GoogleIdTokenCredential.TYPE_GOOGLE_ID_TOKEN_CREDENTIAL) {
+                try {
+                    val googleIdTokenCredential =
+                        GoogleIdTokenCredential
+                            .createFrom(credential.data)
+
+                    val googleIdToken = googleIdTokenCredential.idToken
+
+                    onSignInSuccess(googleIdToken)
+                } catch (_: GoogleIdTokenParsingException) {
+                    onSignInFailure(context.getString(R.string.error_auth_google_invalid_id_token))
+                }
+            } else {
+                onSignInFailure(context.getString(R.string.error_auth_google_unexpected_credential))
+            }
+        }
+
+        else -> {
+            onSignInFailure(context.getString(R.string.error_auth_google_unexpected_credential))
+        }
     }
 }

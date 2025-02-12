@@ -257,6 +257,7 @@
     <!-- Google authentication errors -->
     <string name="error_auth_google_credential_exception">Received an invalid credential response.</string>
     <string name="error_auth_google_invalid_id_token">Received an invalid Google id token response.</string>
+    <string name="error_auth_google_unexpected_credential">Unexpected type of credential.</string>
 
     <!-- Validation errors -->
     <string name="error_blank_email">Please enter your email address.</string>
