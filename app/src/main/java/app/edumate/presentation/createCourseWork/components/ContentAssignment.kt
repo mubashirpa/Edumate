@@ -82,7 +82,6 @@ fun ContentAssignment(
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
     modifier: Modifier = Modifier,
-    courseWorkId: String? = null,
 ) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
@@ -445,14 +444,13 @@ fun ContentAssignment(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
         ) {
-            Text(
-                text =
-                    if (courseWorkId != null) {
-                        stringResource(id = R.string.save)
-                    } else {
-                        stringResource(id = R.string.assign)
-                    },
-            )
+            val text =
+                if (uiState.isNewCourseWork) {
+                    stringResource(id = R.string.assign)
+                } else {
+                    stringResource(id = R.string.save)
+                }
+            Text(text = text)
         }
         Spacer(modifier = Modifier.height(12.dp))
 

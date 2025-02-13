@@ -5,7 +5,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import app.edumate.core.Navigation
 import app.edumate.core.ext.GetOnceResult
 import app.edumate.domain.model.course.CourseWithMembers
@@ -96,8 +95,7 @@ fun CourseDetailsNavHost(
                 onLeaveCourseComplete = onLeaveCourse,
             )
         }
-        composable<Screen.CreateCourseWork> { backStackEntry ->
-            val route = backStackEntry.toRoute<Screen.CreateCourseWork>()
+        composable<Screen.CreateCourseWork> {
             CreateCourseWorkScreen(
                 courseName = courseWithMembers.name.orEmpty(),
                 onNavigateUp = navController::navigateUp,
@@ -106,7 +104,6 @@ fun CourseDetailsNavHost(
                         ?.savedStateHandle[Navigation.Args.CREATE_COURSE_WORK_SUCCESS] = true
                     navController.navigateUp()
                 },
-                courseWorkId = route.courseWorkId,
             )
         }
         composable<Screen.ViewCourseWork> {

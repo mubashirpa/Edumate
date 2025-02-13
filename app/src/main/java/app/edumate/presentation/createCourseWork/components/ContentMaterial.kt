@@ -71,7 +71,6 @@ fun ContentMaterial(
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
     modifier: Modifier = Modifier,
-    courseWorkId: String? = null,
 ) {
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
@@ -286,14 +285,13 @@ fun ContentMaterial(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
         ) {
-            Text(
-                text =
-                    if (courseWorkId != null) {
-                        stringResource(id = R.string.save)
-                    } else {
-                        stringResource(id = R.string.post)
-                    },
-            )
+            val text =
+                if (uiState.isNewCourseWork) {
+                    stringResource(id = R.string.post)
+                } else {
+                    stringResource(id = R.string.save)
+                }
+            Text(text = text)
         }
         Spacer(modifier = Modifier.height(12.dp))
     }

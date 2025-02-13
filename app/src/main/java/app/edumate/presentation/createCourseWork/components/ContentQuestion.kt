@@ -94,7 +94,6 @@ fun ContentQuestion(
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
     modifier: Modifier = Modifier,
-    courseWorkId: String? = null,
 ) {
     val questionTypes = stringArrayResource(id = R.array.question_type)
     val context = LocalContext.current
@@ -191,8 +190,8 @@ fun ContentQuestion(
                     ExposedDropdownMenuBox(
                         expanded = uiState.questionTypeDropdownExpanded,
                         onExpandedChange = {
-                            // Expandable only when creating a question (when classworkId is null)
-                            if (courseWorkId == null) {
+                            // Expandable only when creating a question
+                            if (uiState.isNewCourseWork) {
                                 onEvent(
                                     CreateCourseWorkUiEvent.OnQuestionTypeDropdownExpandedChange(
                                         it,
@@ -218,8 +217,8 @@ fun ContentQuestion(
                             readOnly = true,
                             lineLimits = TextFieldLineLimits.SingleLine,
                             trailingIcon = {
-                                // Show only when creating a question (when courseWorkId is null)
-                                if (courseWorkId == null) {
+                                // Show only when creating a question
+                                if (uiState.isNewCourseWork) {
                                     ExposedDropdownMenuDefaults.TrailingIcon(expanded = uiState.questionTypeDropdownExpanded)
                                 }
                             },
@@ -557,14 +556,13 @@ fun ContentQuestion(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
         ) {
-            Text(
-                text =
-                    if (courseWorkId != null) {
-                        stringResource(id = R.string.save)
-                    } else {
-                        stringResource(id = R.string.ask)
-                    },
-            )
+            val text =
+                if (uiState.isNewCourseWork) {
+                    stringResource(id = R.string.ask)
+                } else {
+                    stringResource(id = R.string.save)
+                }
+            Text(text = text)
         }
         Spacer(modifier = Modifier.height(12.dp))
 

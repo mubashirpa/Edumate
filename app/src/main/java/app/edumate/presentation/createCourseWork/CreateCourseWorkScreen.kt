@@ -47,7 +47,6 @@ fun CreateCourseWorkScreen(
     onNavigateUp: () -> Unit,
     onCreateCourseWorkComplete: () -> Unit,
     modifier: Modifier = Modifier,
-    courseWorkId: String? = null,
     viewModel: CreateCourseWorkViewModel = koinViewModel(),
 ) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -68,7 +67,6 @@ fun CreateCourseWorkScreen(
         courseName = courseName,
         onNavigateUp = onNavigateUp,
         modifier = modifier,
-        courseWorkId = courseWorkId,
     )
 }
 
@@ -80,7 +78,6 @@ private fun CreateCourseWorkContent(
     courseName: String,
     onNavigateUp: () -> Unit,
     modifier: Modifier = Modifier,
-    courseWorkId: String? = null,
 ) {
     val context = LocalContext.current
     val snackbarHostState = remember { SnackbarHostState() }
@@ -139,7 +136,6 @@ private fun CreateCourseWorkContent(
                         onEvent = onEvent,
                         courseName = courseName,
                         modifier = contentModifier,
-                        courseWorkId = courseWorkId,
                     )
                 }
 
@@ -149,7 +145,6 @@ private fun CreateCourseWorkContent(
                         onEvent = onEvent,
                         courseName = courseName,
                         modifier = contentModifier,
-                        courseWorkId = courseWorkId,
                     )
                 }
 
@@ -159,7 +154,6 @@ private fun CreateCourseWorkContent(
                         onEvent = onEvent,
                         courseName = courseName,
                         modifier = contentModifier,
-                        courseWorkId = courseWorkId,
                     )
                 }
             }
