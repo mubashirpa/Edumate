@@ -32,14 +32,10 @@ class SignInUseCase(
                 } else {
                     userPreferencesRepository.clearLoginPreferences()
                 }
-                val user = authenticationRepository.signInWithEmail(email, password)
-                user?.id?.let { userId ->
-                    OneSignal.login(userId)
-                    user.email?.let { email ->
-                        OneSignal.User.addEmail(email)
-                    }
-                }
-                emit(Result.Success(user!!))
+                val user = authenticationRepository.signInWithEmail(email, password)!!
+                OneSignal.login(user.id)
+                OneSignal.User.addEmail(email)
+                emit(Result.Success(user))
             } catch (e: AuthRestException) {
                 e.printStackTrace()
                 when (e.errorCode) {

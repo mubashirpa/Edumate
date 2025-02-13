@@ -18,8 +18,8 @@ class SignOutUseCase(
         flow {
             try {
                 emit(Result.Loading())
-                authenticationRepository.signOut()
                 OneSignal.logout()
+                authenticationRepository.signOut()
                 emit(Result.Success(true))
             } catch (e: AuthRestException) {
                 emit(Result.Error(UiText.DynamicString(e.message.toString())))

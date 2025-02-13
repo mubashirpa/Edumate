@@ -23,14 +23,12 @@ class SignInWithGoogleUseCase(
         flow {
             try {
                 emit(Result.Loading())
-                val user = authenticationRepository.signInWithGoogle(token, nonce)
-                user?.id?.let { userId ->
-                    OneSignal.login(userId)
-                    user.email?.let { email ->
-                        OneSignal.User.addEmail(email)
-                    }
+                val user = authenticationRepository.signInWithGoogle(token, nonce)!!
+                OneSignal.login(user.id)
+                user.email?.let { email ->
+                    OneSignal.User.addEmail(email)
                 }
-                emit(Result.Success(user!!))
+                emit(Result.Success(user))
             } catch (e: AuthRestException) {
                 e.printStackTrace()
                 when (e.errorCode) {
