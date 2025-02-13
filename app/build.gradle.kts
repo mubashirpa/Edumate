@@ -31,6 +31,11 @@ android {
 
         buildConfigField(
             "String",
+            "ONESIGNAL_APP_ID",
+            "\"${localProperties.getProperty("ONESIGNAL_APP_ID")}\"",
+        )
+        buildConfigField(
+            "String",
             "SUPABASE_ANON_KEY",
             "\"${localProperties.getProperty("SUPABASE_ANON_KEY")}\"",
         )
@@ -111,4 +116,5 @@ dependencies {
     implementation(libs.kotlinx.datetime)
     implementation(libs.lottie.compose)
     implementation(libs.jsoup)
+    implementation(libs.onesignal)
 }

@@ -22,6 +22,7 @@ coreSplashscreen = "1.2.0-alpha02"
 kotlinxDatetime = "0.6.2"
 lottieCompose = "6.6.2"
 jsoup = "1.18.3"
+onesignal = "5.2.0-beta-02"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -62,6 +63,7 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version.ref = "kotlinxDatetime" }
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+onesignal = { group = "com.onesignal", name = "OneSignal", version.ref = "onesignal" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
