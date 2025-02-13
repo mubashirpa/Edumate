@@ -4,6 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.repository.AuthenticationRepository
+import com.onesignal.OneSignal
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.user.UserInfo
@@ -23,6 +24,12 @@ class SignInWithGoogleUseCase(
             try {
                 emit(Result.Loading())
                 val user = authenticationRepository.signInWithGoogle(token, nonce)
+                user?.id?.let { userId ->
+                    OneSignal.login(userId)
+                    user.email?.let { email ->
+                        OneSignal.User.addEmail(email)
+                    }
+                }
                 emit(Result.Success(user!!))
             } catch (e: AuthRestException) {
                 e.printStackTrace()

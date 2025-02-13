@@ -5,6 +5,7 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.repository.AuthenticationRepository
 import app.edumate.domain.repository.UserPreferencesRepository
+import com.onesignal.OneSignal
 import io.github.jan.supabase.auth.exception.AuthErrorCode
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.auth.user.UserInfo
@@ -32,6 +33,12 @@ class SignInUseCase(
                     userPreferencesRepository.clearLoginPreferences()
                 }
                 val user = authenticationRepository.signInWithEmail(email, password)
+                user?.id?.let { userId ->
+                    OneSignal.login(userId)
+                    user.email?.let { email ->
+                        OneSignal.User.addEmail(email)
+                    }
+                }
                 emit(Result.Success(user!!))
             } catch (e: AuthRestException) {
                 e.printStackTrace()

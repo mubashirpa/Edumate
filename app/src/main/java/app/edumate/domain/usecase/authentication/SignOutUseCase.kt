@@ -4,6 +4,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.repository.AuthenticationRepository
+import com.onesignal.OneSignal
 import io.github.jan.supabase.auth.exception.AuthRestException
 import io.github.jan.supabase.exceptions.HttpRequestException
 import io.ktor.client.plugins.HttpRequestTimeoutException
@@ -18,6 +19,7 @@ class SignOutUseCase(
             try {
                 emit(Result.Loading())
                 authenticationRepository.signOut()
+                OneSignal.logout()
                 emit(Result.Success(true))
             } catch (e: AuthRestException) {
                 emit(Result.Error(UiText.DynamicString(e.message.toString())))
