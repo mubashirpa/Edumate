@@ -22,7 +22,7 @@ coreSplashscreen = "1.2.0-alpha02"
 kotlinxDatetime = "0.6.2"
 lottieCompose = "6.6.2"
 jsoup = "1.18.3"
-onesignal = "5.2.0-beta-02"
+onesignal = "5.1.28"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
