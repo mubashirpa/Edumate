@@ -7,13 +7,13 @@ junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.8.7"
 activityCompose = "1.10.0"
-composeBom = "2025.01.01"
+composeBom = "2025.02.00"
 koinBom = "4.0.2"
 ktor = "3.1.0"
 kotlinxSerializationJson = "1.8.0"
 supabaseBom = "3.1.1"
-navigationCompose = "2.8.6"
-material3 = "1.4.0-alpha07"
+navigationCompose = "2.8.7"
+material3 = "1.4.0-alpha08"
 credentials = "1.5.0-rc01"
 googleid = "1.1.1"
 coil3 = "3.1.0"
@@ -23,6 +23,7 @@ kotlinxDatetime = "0.6.2"
 lottieCompose = "6.6.2"
 jsoup = "1.18.3"
 onesignal = "5.1.28"
+zoomable = "2.0.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -64,6 +65,7 @@ kotlinx-datetime = { group = "org.jetbrains.kotlinx", name = "kotlinx-datetime",
 lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", version.ref = "lottieCompose" }
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 onesignal = { group = "com.onesignal", name = "OneSignal", version.ref = "onesignal" }
+zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

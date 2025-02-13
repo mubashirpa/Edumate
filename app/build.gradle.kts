@@ -117,4 +117,5 @@ dependencies {
     implementation(libs.lottie.compose)
     implementation(libs.jsoup)
     implementation(libs.onesignal)
+    implementation(libs.zoomable)
 }
