@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import app.edumate.core.Constants
 import app.edumate.di.appModule
 import com.onesignal.OneSignal
+import com.onesignal.debug.LogLevel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.GlobalContext.startKoin
@@ -22,6 +23,7 @@ class EdumateApplication : Application() {
             modules(appModule)
         }
 
+        OneSignal.Debug.logLevel = LogLevel.VERBOSE // TODO: Remove before releasing the app
         OneSignal.initWithContext(this, BuildConfig.ONESIGNAL_APP_ID)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
