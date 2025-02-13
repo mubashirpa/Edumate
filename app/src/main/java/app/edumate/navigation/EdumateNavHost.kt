@@ -169,7 +169,7 @@ fun EdumateNavHost(
             ImageViewerScreen(
                 imageUrl = route.imageUrl,
                 onNavigateUp = navController::navigateUp,
-                title = route.title,
+                imageTitle = route.title,
             )
         }
     }
