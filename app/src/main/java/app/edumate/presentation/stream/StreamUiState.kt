@@ -10,10 +10,11 @@ import app.edumate.domain.model.material.Material
 
 data class StreamUiState(
     val announcementResult: Result<List<Announcement>> = Result.Empty(),
+    val announcements: List<Announcement> = emptyList(),
     val attachments: SnapshotStateList<Material> = mutableStateListOf(),
     val currentUserId: String? = null,
     val deleteAnnouncementId: String? = null,
-    val editAnnouncementId: String? = null,
+    val editAnnouncement: Announcement? = null,
     val expandedAppBarDropdown: Boolean = false,
     val isRefreshing: Boolean = false,
     val openAddLinkDialog: Boolean = false,

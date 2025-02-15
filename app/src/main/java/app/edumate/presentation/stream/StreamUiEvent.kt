@@ -9,7 +9,7 @@ sealed class StreamUiEvent {
     ) : StreamUiEvent()
 
     data class DeleteAnnouncement(
-        val id: String,
+        val announcementId: String,
     ) : StreamUiEvent()
 
     data class OnEditAnnouncement(
@@ -45,6 +45,11 @@ sealed class StreamUiEvent {
 
     data class RemoveAttachment(
         val position: Int,
+    ) : StreamUiEvent()
+
+    data class SetAnnouncementPinned(
+        val announcementId: String,
+        val pinned: Boolean,
     ) : StreamUiEvent()
 
     data object CreateAnnouncement : StreamUiEvent()
