@@ -57,7 +57,6 @@ import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -74,7 +73,6 @@ import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
-import app.edumate.core.utils.ClipboardUtils
 import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.course.CourseWithMembers
@@ -92,7 +90,6 @@ import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
-import kotlinx.coroutines.launch
 import java.io.File
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -111,7 +108,6 @@ fun StreamScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
     val snackbarHostState = remember { SnackbarHostState() }
-    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
     val context = LocalContext.current
     val fileUtils = remember { FileUtils(context) }
@@ -290,20 +286,6 @@ fun StreamScreen(
                                                         id,
                                                     ),
                                                 )
-                                            },
-                                            onCopyLinkClick = { link ->
-                                                ClipboardUtils.copyTextToClipboard(
-                                                    context = context,
-                                                    textCopied = link,
-                                                ) {
-                                                    coroutineScope.launch {
-                                                        snackbarHostState.showSnackbar(
-                                                            context.getString(
-                                                                R.string.invite_link_copied,
-                                                            ),
-                                                        )
-                                                    }
-                                                }
                                             },
                                             onClearSelection = {
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))

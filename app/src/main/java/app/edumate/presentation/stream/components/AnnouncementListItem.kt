@@ -81,7 +81,6 @@ fun AnnouncementListItem(
     onPinClick: (id: String) -> Unit,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
-    onCopyLinkClick: (link: String) -> Unit,
     onClearSelection: () -> Unit,
     onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClick: (id: String) -> Unit,
@@ -111,9 +110,6 @@ fun AnnouncementListItem(
         onDeleteClick = {
             id?.let(onDeleteClick)
         },
-        onCopyLinkClick = {
-            announcement.alternateLink?.let(onCopyLinkClick)
-        },
         onClearSelection = onClearSelection,
         onFileAttachmentClick = onFileAttachmentClick,
         onClick = {
@@ -141,7 +137,6 @@ private fun AnnouncementListItemContent(
     onPinClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onCopyLinkClick: () -> Unit,
     onClearSelection: () -> Unit,
     onFileAttachmentClick: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClick: () -> Unit,
@@ -168,6 +163,12 @@ private fun AnnouncementListItemContent(
     var colors = CardDefaults.outlinedCardColors()
     var elevation = CardDefaults.outlinedCardElevation()
     var border = CardDefaults.outlinedCardBorder()
+    val showMenuButton =
+        when (currentUserRole) {
+            CourseUserRole.Student -> isCurrentUserCreator
+            is CourseUserRole.Teacher -> true
+            else -> false
+        }
 
     if (selected) {
         colors = CardDefaults.elevatedCardColors()
@@ -234,7 +235,7 @@ private fun AnnouncementListItemContent(
                                 contentDescription = null,
                             )
                         }
-                    } else {
+                    } else if (showMenuButton) {
                         MenuButton(
                             pinned = pinned,
                             itemUserRole = creator?.role,
@@ -243,7 +244,6 @@ private fun AnnouncementListItemContent(
                             onPinClick = onPinClick,
                             onEditClick = onEditClick,
                             onDeleteClick = onDeleteClick,
-                            onCopyLinkClick = onCopyLinkClick,
                         )
                     }
                 }
@@ -367,7 +367,6 @@ private fun MenuButton(
     onPinClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
-    onCopyLinkClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -396,15 +395,6 @@ private fun MenuButton(
                             },
                         )
                     }
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = stringResource(id = R.string.copy_link))
-                        },
-                        onClick = {
-                            expanded = false
-                            onCopyLinkClick()
-                        },
-                    )
                 }
 
                 is CourseUserRole.Teacher -> {
@@ -443,15 +433,6 @@ private fun MenuButton(
                             onDeleteClick()
                         },
                     )
-                    DropdownMenuItem(
-                        text = {
-                            Text(text = stringResource(id = R.string.copy_link))
-                        },
-                        onClick = {
-                            expanded = false
-                            onCopyLinkClick()
-                        },
-                    )
                 }
             }
         }
@@ -477,7 +458,6 @@ private fun AnnouncementListItemPreview() {
             onPinClick = {},
             onEditClick = {},
             onDeleteClick = {},
-            onCopyLinkClick = {},
             onClearSelection = {},
             onFileAttachmentClick = { _, _, _ -> },
             onClick = {},
