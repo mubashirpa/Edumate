@@ -5,6 +5,7 @@ import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,6 +14,7 @@ import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.Supabase
 import app.edumate.core.UiText
+import app.edumate.domain.model.announcement.Announcement
 import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
@@ -60,16 +62,14 @@ class StreamViewModel(
         private set
 
     private val args = savedStateHandle.toRoute<Screen.Stream>()
+    private val courseId = args.courseId
+    private var announcementId = UUID.randomUUID().toString()
     private var getAnnouncementsJob: Job? = null
     private var getAnnouncementCommentsJob: Job? = null
-    private var announcementId = UUID.randomUUID().toString()
 
     init {
         getCurrentUser()
-        getAnnouncements(
-            courseId = args.courseId,
-            isRefreshing = false,
-        )
+        getAnnouncements(false)
     }
 
     fun onEvent(event: StreamUiEvent) {
@@ -84,17 +84,13 @@ class StreamViewModel(
                         .toString()
                         .trim()
 
-                if (uiState.editAnnouncementId == null) {
+                if (uiState.editAnnouncement == null) {
                     createAnnouncement(
-                        courseId = args.courseId,
-                        id = announcementId,
                         text = text,
                         materials = uiState.attachments,
                     )
                 } else {
                     updateAnnouncement(
-                        courseId = args.courseId,
-                        id = announcementId,
                         text = text,
                         materials = uiState.attachments,
                     )
@@ -102,19 +98,22 @@ class StreamViewModel(
             }
 
             is StreamUiEvent.DeleteAnnouncement -> {
-                deleteAnnouncement(event.id)
+                deleteAnnouncement(event.announcementId)
             }
 
             is StreamUiEvent.OnEditAnnouncement -> {
                 val announcement = event.announcement
-                uiState = uiState.copy(editAnnouncementId = announcement?.id)
 
                 if (announcement != null) {
-                    announcementId = announcement.id.orEmpty()
-                    uiState.text.setTextAndPlaceCursorAtEnd(announcement.text.orEmpty())
-                    uiState.attachments.clear()
-                    uiState.attachments.addAll(announcement.materials.orEmpty())
+                    if (uiState.editAnnouncement == null && uiState.attachments.isNotEmpty()) {
+                        deleteFiles(uiState.attachments) {
+                            updateEditAnnouncementState(announcement)
+                        }
+                    } else {
+                        updateEditAnnouncementState(announcement)
+                    }
                 } else {
+                    uiState = uiState.copy(editAnnouncement = null)
                     resetAnnouncementState()
                 }
             }
@@ -125,8 +124,6 @@ class StreamViewModel(
 
             is StreamUiEvent.OnFilePicked -> {
                 uploadFile(
-                    courseId = args.courseId,
-                    id = announcementId,
                     title = event.title,
                     file = event.file,
                     mimeType = event.mimeType,
@@ -150,7 +147,7 @@ class StreamViewModel(
                 val announcementId = event.announcementId
                 if (announcementId != null) {
                     uiState = uiState.copy(replyAnnouncementId = event.announcementId)
-                    getComments(announcementId = announcementId, isRefreshing = false)
+                    getComments(commentsAnnouncementId = announcementId, isRefreshing = false)
                 } else {
                     uiState = uiState.copy(replyAnnouncementId = null)
                     // Reset the bottom sheet state on close
@@ -159,21 +156,14 @@ class StreamViewModel(
             }
 
             StreamUiEvent.Refresh -> {
-                getAnnouncements(
-                    courseId = args.courseId,
-                    isRefreshing = uiState.announcementResult is Result.Success,
-                )
+                getAnnouncements(uiState.announcementResult is Result.Success)
             }
 
             is StreamUiEvent.RemoveAttachment -> {
                 val attachment = uiState.attachments[event.position]
                 when {
                     attachment.driveFile != null -> {
-                        deleteFile(
-                            courseId = args.courseId,
-                            id = announcementId,
-                            material = attachment,
-                        )
+                        deleteFiles(materials = listOf(attachment))
                     }
 
                     attachment.link != null -> {
@@ -183,10 +173,11 @@ class StreamViewModel(
             }
 
             StreamUiEvent.Retry -> {
-                getAnnouncements(
-                    courseId = args.courseId,
-                    isRefreshing = false,
-                )
+                getAnnouncements(false)
+            }
+
+            is StreamUiEvent.SetAnnouncementPinned -> {
+                updateAnnouncementPinned(event.announcementId, event.pinned)
             }
 
             StreamUiEvent.UserMessageShown -> {
@@ -201,14 +192,13 @@ class StreamViewModel(
                 uiState.replyAnnouncementId?.let { replyAnnouncementId ->
                     if (commentsUiState.editCommentId != null) {
                         updateComment(
-                            announcementId = replyAnnouncementId,
-                            id = commentsUiState.editCommentId!!,
+                            commentsAnnouncementId = replyAnnouncementId,
+                            commentId = commentsUiState.editCommentId!!,
                             text = event.text,
                         )
                     } else {
                         addComment(
-                            courseId = args.courseId,
-                            announcementId = replyAnnouncementId,
+                            commentsAnnouncementId = replyAnnouncementId,
                             text = event.text,
                         )
                     }
@@ -218,8 +208,8 @@ class StreamViewModel(
             is CommentsBottomSheetUiEvent.DeleteComment -> {
                 uiState.replyAnnouncementId?.let { replyAnnouncementId ->
                     deleteComment(
-                        announcementId = replyAnnouncementId,
-                        id = event.commentId,
+                        commentsAnnouncementId = replyAnnouncementId,
+                        commentId = event.commentId,
                     )
                 }
             }
@@ -238,7 +228,7 @@ class StreamViewModel(
             CommentsBottomSheetUiEvent.Retry -> {
                 uiState.replyAnnouncementId?.let { replyAnnouncementId ->
                     getComments(
-                        announcementId = replyAnnouncementId,
+                        commentsAnnouncementId = replyAnnouncementId,
                         isRefreshing = false,
                     )
                 }
@@ -262,8 +252,6 @@ class StreamViewModel(
     }
 
     private fun createAnnouncement(
-        courseId: String,
-        id: String,
         text: String,
         materials: List<Material>?,
     ) {
@@ -274,7 +262,7 @@ class StreamViewModel(
             return
         }
 
-        createAnnouncementUseCase(courseId, text, materials, id)
+        createAnnouncementUseCase(courseId, text, materials, announcementId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -294,16 +282,13 @@ class StreamViewModel(
                     is Result.Success -> {
                         resetAnnouncementState()
                         uiState = uiState.copy(openProgressDialog = false)
-                        getAnnouncements(courseId, true)
+                        getAnnouncements(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun getAnnouncements(
-        courseId: String,
-        isRefreshing: Boolean,
-    ) {
+    private fun getAnnouncements(isRefreshing: Boolean) {
         // Cancel any ongoing getAnnouncementsJob before making a new call.
         getAnnouncementsJob?.cancel()
         getAnnouncementsJob =
@@ -338,10 +323,12 @@ class StreamViewModel(
                         }
 
                         is Result.Success -> {
+                            val announcements = result.data!!
                             uiState =
                                 uiState.copy(
-                                    isRefreshing = false,
                                     announcementResult = result,
+                                    announcements = announcements.sortedByDescending { it.pinned },
+                                    isRefreshing = false,
                                 )
                         }
                     }
@@ -349,10 +336,8 @@ class StreamViewModel(
     }
 
     private fun updateAnnouncement(
-        courseId: String,
-        id: String,
         text: String,
-        materials: List<Material>?,
+        materials: List<Material>,
     ) {
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
@@ -361,7 +346,7 @@ class StreamViewModel(
             return
         }
 
-        updateAnnouncementUseCase(id, text, materials)
+        updateAnnouncementUseCase(announcementId, text, materials)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -382,17 +367,46 @@ class StreamViewModel(
                         resetAnnouncementState()
                         uiState =
                             uiState.copy(
-                                editAnnouncementId = null,
+                                editAnnouncement = null,
                                 openProgressDialog = false,
                             )
-                        getAnnouncements(courseId, true)
+                        getAnnouncements(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun deleteAnnouncement(id: String) {
-        deleteAnnouncementUseCase(id)
+    private fun updateAnnouncementPinned(
+        pinnedAnnouncementId: String,
+        pinned: Boolean,
+    ) {
+        updateAnnouncementUseCase(id = pinnedAnnouncementId, pinned = pinned)
+            .onEach { result ->
+                when (result) {
+                    is Result.Empty -> {}
+
+                    is Result.Error -> {
+                        uiState =
+                            uiState.copy(
+                                openProgressDialog = false,
+                                userMessage = result.message,
+                            )
+                    }
+
+                    is Result.Loading -> {
+                        uiState = uiState.copy(openProgressDialog = true)
+                    }
+
+                    is Result.Success -> {
+                        uiState = uiState.copy(openProgressDialog = false)
+                        getAnnouncements(true)
+                    }
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun deleteAnnouncement(deleteAnnouncementId: String) {
+        deleteAnnouncementUseCase(deleteAnnouncementId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -415,15 +429,14 @@ class StreamViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getAnnouncements(args.courseId, true)
+                        getAnnouncements(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
     private fun addComment(
-        courseId: String,
-        announcementId: String,
+        commentsAnnouncementId: String,
         text: String,
     ) {
         val textResult = validateTextField.execute(text)
@@ -435,7 +448,7 @@ class StreamViewModel(
             return
         }
 
-        createAnnouncementCommentUseCase(courseId, announcementId, text)
+        createAnnouncementCommentUseCase(courseId, commentsAnnouncementId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -455,20 +468,20 @@ class StreamViewModel(
 
                     is Result.Success -> {
                         commentsUiState.comment.clearText()
-                        getComments(announcementId, true)
+                        getComments(commentsAnnouncementId, true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
     private fun getComments(
-        announcementId: String,
+        commentsAnnouncementId: String,
         isRefreshing: Boolean,
     ) {
         // Cancel any ongoing getAnnouncementCommentsJob before making a new call.
         getAnnouncementCommentsJob?.cancel()
         getAnnouncementCommentsJob =
-            getAnnouncementCommentsUseCase(announcementId)
+            getAnnouncementCommentsUseCase(commentsAnnouncementId)
                 .onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
@@ -510,8 +523,8 @@ class StreamViewModel(
     }
 
     private fun updateComment(
-        announcementId: String,
-        id: String,
+        commentsAnnouncementId: String,
+        commentId: String,
         text: String,
     ) {
         val textResult = validateTextField.execute(text)
@@ -523,7 +536,7 @@ class StreamViewModel(
             return
         }
 
-        updateCommentUseCase(id, text)
+        updateCommentUseCase(commentId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -545,17 +558,17 @@ class StreamViewModel(
                         commentsUiState.comment.clearText()
                         commentsUiState =
                             commentsUiState.copy(editCommentId = null)
-                        getComments(announcementId, true)
+                        getComments(commentsAnnouncementId, true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
     private fun deleteComment(
-        announcementId: String,
-        id: String,
+        commentsAnnouncementId: String,
+        commentId: String,
     ) {
-        deleteCommentUseCase(id)
+        deleteCommentUseCase(commentId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -577,7 +590,7 @@ class StreamViewModel(
                     }
 
                     is Result.Success -> {
-                        getComments(announcementId, true)
+                        getComments(commentsAnnouncementId, true)
                     }
                 }
             }.launchIn(viewModelScope)
@@ -613,8 +626,6 @@ class StreamViewModel(
     }
 
     private fun uploadFile(
-        courseId: String,
-        id: String,
         title: String,
         file: File,
         mimeType: String?,
@@ -622,7 +633,7 @@ class StreamViewModel(
     ) {
         uploadFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
-            path = "$courseId/announcement/$id/$title",
+            path = "$courseId/announcement/$announcementId/$title",
             file = file,
         ).onEach { result ->
             when (result) {
@@ -660,16 +671,25 @@ class StreamViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteFile(
-        courseId: String,
-        id: String,
-        material: Material,
+    private fun deleteFiles(
+        materials: List<Material>,
+        onSuccess: () -> Unit = {},
     ) {
-        val title = material.driveFile?.title ?: return
+        val paths =
+            materials.mapNotNull { material ->
+                material.driveFile?.title?.takeIf { it.isNotEmpty() }?.let {
+                    "$courseId/announcement/$announcementId/$it"
+                }
+            }
+
+        if (paths.isEmpty()) {
+            onSuccess()
+            return
+        }
 
         deleteFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
-            paths = listOf("$courseId/announcement/$id/$title"),
+            paths = paths,
         ).onEach { result ->
             when (result) {
                 is Result.Empty -> {}
@@ -687,7 +707,10 @@ class StreamViewModel(
                 }
 
                 is Result.Success -> {
-                    uiState.attachments.remove(material)
+                    uiState.attachments.removeAll { material ->
+                        material.driveFile?.title?.isNotEmpty() == true
+                    }
+                    onSuccess()
                     uiState = uiState.copy(openProgressDialog = false)
                 }
             }
@@ -698,5 +721,15 @@ class StreamViewModel(
         announcementId = UUID.randomUUID().toString()
         uiState.text.clearText()
         uiState.attachments.clear()
+    }
+
+    private fun updateEditAnnouncementState(announcement: Announcement) {
+        announcementId = announcement.id!!
+        uiState =
+            uiState.copy(
+                attachments = announcement.materials.orEmpty().toMutableStateList(),
+                editAnnouncement = announcement,
+                text = uiState.text.apply { setTextAndPlaceCursorAtEnd(announcement.text.orEmpty()) },
+            )
     }
 }
