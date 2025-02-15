@@ -11,6 +11,7 @@ data class Announcement(
     val creatorUserId: String? = null,
     val id: String? = null,
     val materials: List<Material>? = null,
+    val pinned: Boolean? = null,
     val text: String? = null,
     val totalComments: Int? = null,
     val updateTime: String? = null,
