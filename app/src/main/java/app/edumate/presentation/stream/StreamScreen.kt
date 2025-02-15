@@ -7,6 +7,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts.GetContent
 import androidx.activity.result.contract.ActivityResultContracts.PickVisualMedia
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -94,7 +95,7 @@ import app.edumate.presentation.theme.EdumateTheme
 import kotlinx.coroutines.launch
 import java.io.File
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun StreamScreen(
     uiState: StreamUiState,
@@ -234,8 +235,7 @@ fun StreamScreen(
                 }
 
                 is Result.Success -> {
-                    val announcements = announcementResult.data.orEmpty()
-
+                    val announcements = uiState.announcements
                     Column {
                         Box(
                             Modifier
@@ -266,8 +266,16 @@ fun StreamScreen(
                                             announcement = announcement,
                                             currentUserRole = currentUserRole,
                                             currentUserId = uiState.currentUserId.orEmpty(),
-                                            selected = announcement.id == uiState.editAnnouncementId,
+                                            selected = announcement.id == uiState.editAnnouncement?.id,
                                             fileUtils = fileUtils,
+                                            onPinClick = { id ->
+                                                onEvent(
+                                                    StreamUiEvent.SetAnnouncementPinned(
+                                                        id,
+                                                        announcement.pinned != true,
+                                                    ),
+                                                )
+                                            },
                                             onEditClick = {
                                                 onEvent(
                                                     StreamUiEvent.OnEditAnnouncement(
@@ -310,7 +318,7 @@ fun StreamScreen(
                                                 }
                                             },
                                             onClick = { id ->
-                                                if (uiState.editAnnouncementId == null) {
+                                                if (uiState.editAnnouncement == null) {
                                                     onEvent(
                                                         StreamUiEvent.OnShowCommentsBottomSheetChange(
                                                             id,

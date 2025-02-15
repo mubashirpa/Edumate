@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -21,6 +22,7 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
+import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
@@ -76,6 +78,7 @@ fun AnnouncementListItem(
     currentUserId: String,
     selected: Boolean,
     fileUtils: FileUtils,
+    onPinClick: (id: String) -> Unit,
     onEditClick: (id: String) -> Unit,
     onDeleteClick: (id: String) -> Unit,
     onCopyLinkClick: (link: String) -> Unit,
@@ -94,10 +97,14 @@ fun AnnouncementListItem(
         updateTime = announcement.updateTime.orEmpty(),
         creator = announcement.creator,
         totalComments = announcement.totalComments ?: 0,
+        pinned = announcement.pinned == true,
         currentUserRole = currentUserRole,
         isCurrentUserCreator = isCurrentUserCreator,
         selected = selected,
         fileUtils = fileUtils,
+        onPinClick = {
+            id?.let(onPinClick)
+        },
         onEditClick = {
             id?.let(onEditClick)
         },
@@ -126,10 +133,12 @@ private fun AnnouncementListItemContent(
     updateTime: String,
     creator: User?,
     totalComments: Int,
+    pinned: Boolean,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
     selected: Boolean,
     fileUtils: FileUtils,
+    onPinClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCopyLinkClick: () -> Unit,
@@ -207,22 +216,36 @@ private fun AnnouncementListItemContent(
                 )
             },
             trailingContent = {
-                if (selected) {
-                    IconButton(onClick = onClearSelection) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    if (pinned) {
                         Icon(
-                            imageVector = Icons.Default.Close,
+                            imageVector = Icons.Default.PushPin,
                             contentDescription = null,
+                            modifier = Modifier.size(16.dp),
                         )
                     }
-                } else {
-                    MenuButton(
-                        itemUserRole = creator?.role,
-                        currentUserRole = currentUserRole,
-                        isCurrentUserCreator = isCurrentUserCreator,
-                        onEditClick = onEditClick,
-                        onDeleteClick = onDeleteClick,
-                        onCopyLinkClick = onCopyLinkClick,
-                    )
+                    if (selected) {
+                        IconButton(onClick = onClearSelection) {
+                            Icon(
+                                imageVector = Icons.Default.Close,
+                                contentDescription = null,
+                            )
+                        }
+                    } else {
+                        MenuButton(
+                            pinned = pinned,
+                            itemUserRole = creator?.role,
+                            currentUserRole = currentUserRole,
+                            isCurrentUserCreator = isCurrentUserCreator,
+                            onPinClick = onPinClick,
+                            onEditClick = onEditClick,
+                            onDeleteClick = onDeleteClick,
+                            onCopyLinkClick = onCopyLinkClick,
+                        )
+                    }
                 }
             },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
@@ -317,7 +340,12 @@ private fun AnnouncementListItemContent(
             }
             if (totalComments > 0) {
                 Text(
-                    text = pluralStringResource(R.plurals.replies, totalComments, totalComments),
+                    text =
+                        pluralStringResource(
+                            R.plurals.replies,
+                            totalComments,
+                            totalComments,
+                        ),
                     modifier =
                         Modifier
                             .padding(top = 12.dp)
@@ -332,9 +360,11 @@ private fun AnnouncementListItemContent(
 
 @Composable
 private fun MenuButton(
+    pinned: Boolean,
     itemUserRole: UserRole?,
     currentUserRole: CourseUserRole,
     isCurrentUserCreator: Boolean,
+    onPinClick: () -> Unit,
     onEditClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onCopyLinkClick: () -> Unit,
@@ -378,6 +408,21 @@ private fun MenuButton(
                 }
 
                 is CourseUserRole.Teacher -> {
+                    DropdownMenuItem(
+                        text = {
+                            val text =
+                                if (pinned) {
+                                    stringResource(R.string.unpin)
+                                } else {
+                                    stringResource(R.string.pin)
+                                }
+                            Text(text = text)
+                        },
+                        onClick = {
+                            expanded = false
+                            onPinClick()
+                        },
+                    )
                     if (itemUserRole == UserRole.TEACHER) {
                         DropdownMenuItem(
                             text = {
@@ -424,10 +469,12 @@ private fun AnnouncementListItemPreview() {
             updateTime = "2025-01-28T08:26:42.830742+00:00",
             creator = User(name = "User"),
             totalComments = 10,
+            pinned = true,
             currentUserRole = CourseUserRole.Teacher(isCourseOwner = true),
             isCurrentUserCreator = true,
             selected = false,
             fileUtils = FileUtils(LocalContext.current),
+            onPinClick = {},
             onEditClick = {},
             onDeleteClick = {},
             onCopyLinkClick = {},
