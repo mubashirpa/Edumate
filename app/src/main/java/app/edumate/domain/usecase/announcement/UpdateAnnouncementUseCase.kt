@@ -17,18 +17,17 @@ class UpdateAnnouncementUseCase(
 ) {
     operator fun invoke(
         id: String,
-        text: String,
-        materials: List<Material>?,
+        text: String? = null,
+        materials: List<Material>? = null,
+        pinned: Boolean? = null,
     ): Flow<Result<Announcement>> =
         execute(ioDispatcher) {
             announcementRepository
                 .updateAnnouncement(
                     id = id,
                     text = text,
-                    materials =
-                        materials
-                            ?.map { it.toMaterialDto() }
-                            .takeIf { !it.isNullOrEmpty() },
+                    materials = materials?.map { it.toMaterialDto() },
+                    pinned = pinned,
                 ).toAnnouncementDomainModel()
         }
 }
