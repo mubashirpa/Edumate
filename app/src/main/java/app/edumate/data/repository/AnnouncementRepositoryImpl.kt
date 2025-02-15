@@ -35,14 +35,21 @@ class AnnouncementRepositoryImpl(
 
     override suspend fun updateAnnouncement(
         id: String,
-        text: String,
+        text: String?,
         materials: List<MaterialDto>?,
+        pinned: Boolean?,
     ): AnnouncementDto =
         postgrest[Supabase.Table.ANNOUNCEMENTS]
             .update(
                 {
-                    set(Supabase.Column.TEXT, text)
-                    set(Supabase.Column.MATERIALS, materials)
+                    text?.let { set(Supabase.Column.TEXT, text) }
+                    materials?.let {
+                        set(
+                            Supabase.Column.MATERIALS,
+                            materials.takeIf { it.isNotEmpty() },
+                        )
+                    }
+                    pinned?.let { set(Supabase.Column.PINNED, pinned) }
 
                     val now: Instant = Clock.System.now()
                     val updateTime = now.toLocalDateTime(TimeZone.UTC)

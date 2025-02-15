@@ -51,6 +51,7 @@ object Supabase {
         const val MULTIPLE_CHOICE_QUESTION = "multiple_choice_question"
         const val MULTIPLE_CHOICE_SUBMISSION = "multiple_choice_submission"
         const val NAME = "name"
+        const val PINNED = "pinned"
         const val ROLE = "role"
         const val ROOM = "room"
         const val SECTION = "section"

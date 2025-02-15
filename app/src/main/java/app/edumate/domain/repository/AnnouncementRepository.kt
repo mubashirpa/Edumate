@@ -11,8 +11,9 @@ interface AnnouncementRepository {
 
     suspend fun updateAnnouncement(
         id: String,
-        text: String,
+        text: String?,
         materials: List<MaterialDto>?,
+        pinned: Boolean?,
     ): AnnouncementDto
 
     suspend fun deleteAnnouncement(id: String): AnnouncementDto
