@@ -1,5 +1,6 @@
 package app.edumate.presentation.components
 
+import android.util.Patterns
 import android.webkit.URLUtil
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -42,7 +43,7 @@ fun AddLinkDialog(
 ) {
     if (open) {
         val link = rememberTextFieldState()
-        val confirmEnabled by remember { derivedStateOf { URLUtil.isValidUrl("${link.text}") } }
+        val confirmEnabled by remember { derivedStateOf { isValidUrl("${link.text}") } }
 
         Dialog(onDismissRequest = onDismissRequest) {
             val focusRequester = remember { FocusRequester() }
@@ -108,3 +109,5 @@ fun AddLinkDialog(
         }
     }
 }
+
+private fun isValidUrl(url: String): Boolean = URLUtil.isValidUrl(url) && Patterns.WEB_URL.matcher(url).matches()
