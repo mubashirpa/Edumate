@@ -13,6 +13,8 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +39,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.edumate.R
@@ -74,8 +78,7 @@ fun ViewCourseWorkScreen(
     val coroutineScope = rememberCoroutineScope()
     val fileUtils = remember { FileUtils(context) }
     val isCurrentUserTeacher = currentUserRole is CourseUserRole.Teacher
-    val courseWorkResult = uiState.courseWorkResult
-    val courseWork = courseWorkResult.data
+    val courseWork = uiState.courseWork
     val isSingleTabScreen = !isCurrentUserTeacher || courseWork?.workType == CourseWorkType.MATERIAL
     val tabs =
         when (courseWork?.workType) {
@@ -202,10 +205,31 @@ fun ViewCourseWorkScreen(
                         Text(text = stringResource(R.string.comments))
                     },
                     icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.Comment,
-                            contentDescription = null,
-                        )
+                        BadgedBox(
+                            badge = {
+                                val commentsCount = uiState.commentsCount
+                                if (commentsCount > 0) {
+                                    Badge {
+                                        Text(
+                                            text = commentsCount.toString(),
+                                            modifier =
+                                                Modifier.semantics {
+                                                    contentDescription =
+                                                        context.getString(
+                                                            R.string._comments,
+                                                            commentsCount,
+                                                        )
+                                                },
+                                        )
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.Comment,
+                                contentDescription = null,
+                            )
+                        }
                     },
                     onClick = {
                         onEvent(ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange(true))
@@ -214,7 +238,7 @@ fun ViewCourseWorkScreen(
             }
         },
     ) { innerPadding ->
-        when (courseWorkResult) {
+        when (val courseWorkResult = uiState.courseWorkResult) {
             is Result.Empty -> {}
 
             is Result.Error -> {
@@ -235,6 +259,8 @@ fun ViewCourseWorkScreen(
             }
 
             is Result.Success -> {
+                val courseWork = courseWorkResult.data!!
+
                 Column(modifier = Modifier.padding(innerPadding)) {
                     if (!isSingleTabScreen) {
                         SecondaryTabRow(selectedTabIndex = pagerState.currentPage) {
@@ -270,7 +296,7 @@ fun ViewCourseWorkScreen(
                                 ViewCourseWorkContent(
                                     uiState = uiState,
                                     onEvent = onEvent,
-                                    courseWork = courseWork!!,
+                                    courseWork = courseWork,
                                     isCurrentUserTeacher = isCurrentUserTeacher,
                                     fileUtils = fileUtils,
                                     contentPadding =
@@ -288,7 +314,7 @@ fun ViewCourseWorkScreen(
                             1 -> {
                                 StudentWorkScreen(
                                     snackbarHostState = snackbarHostState,
-                                    courseWork = courseWork!!,
+                                    courseWork = courseWork,
                                     isRefreshing = uiState.isRefreshing,
                                     onNavigateToViewStudentSubmission = onNavigateToViewStudentSubmission,
                                     modifier = Modifier.fillMaxSize(),

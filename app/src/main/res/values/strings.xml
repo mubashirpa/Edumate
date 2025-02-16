@@ -1,4 +1,5 @@
 <resources>
+    <string name="_comments">%1$d comments</string>
     <string name="_points">%1$s points</string>
     <string name="_return">Return</string>
     <string name="add">Add</string>
