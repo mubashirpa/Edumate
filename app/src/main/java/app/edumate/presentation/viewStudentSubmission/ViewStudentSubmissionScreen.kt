@@ -193,8 +193,9 @@ fun ViewStudentSubmissionScreen(
                                             modifier =
                                                 Modifier.semantics {
                                                     contentDescription =
-                                                        context.getString(
-                                                            R.string._comments,
+                                                        context.resources.getQuantityString(
+                                                            R.plurals.comments,
+                                                            commentsCount,
                                                             commentsCount,
                                                         )
                                                 },
