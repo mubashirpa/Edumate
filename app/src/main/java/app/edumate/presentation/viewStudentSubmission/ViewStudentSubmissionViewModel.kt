@@ -46,18 +46,16 @@ class ViewStudentSubmissionViewModel(
         private set
 
     private val args = savedStateHandle.toRoute<Screen.ViewStudentSubmission>()
-    private var submissionId: String? = null
+    private val courseId = args.courseId
+    private val courseWorkId = args.courseWorkId
+    private val studentId = args.studentId
     private var getStudentSubmissionJob: Job? = null
     private var getSubmissionCommentsJob: Job? = null
+    private var submissionId: String? = null
 
     init {
         getCurrentUser()
-        getStudentSubmission(
-            isRefreshing = false,
-            courseId = args.courseId,
-            courseWorkId = args.courseWorkId,
-            studentId = args.studentId,
-        )
+        getStudentSubmission(false)
     }
 
     fun onEvent(event: ViewStudentSubmissionUiEvent) {
@@ -71,39 +69,21 @@ class ViewStudentSubmissionViewModel(
             }
 
             is ViewStudentSubmissionUiEvent.OnShowCommentsBottomSheetChange -> {
-                if (commentsUiState.commentsResult is Result.Empty) {
-                    submissionId?.let {
-                        getComments(it, false)
-                    }
-                }
                 uiState = uiState.copy(showCommentsBottomSheet = event.show)
             }
 
             ViewStudentSubmissionUiEvent.Refresh -> {
-                getStudentSubmission(
-                    isRefreshing = uiState.studentSubmissionResult is Result.Success,
-                    courseId = args.courseId,
-                    courseWorkId = args.courseWorkId,
-                    studentId = args.studentId,
-                )
+                getStudentSubmission(uiState.studentSubmissionResult is Result.Success)
             }
 
             ViewStudentSubmissionUiEvent.Retry -> {
-                getStudentSubmission(
-                    isRefreshing = false,
-                    courseId = args.courseId,
-                    courseWorkId = args.courseWorkId,
-                    studentId = args.studentId,
-                )
+                getStudentSubmission(false)
             }
 
             is ViewStudentSubmissionUiEvent.Return -> {
                 event.grade?.let { grade ->
-                    updateStudentSubmission(
-                        id = event.id,
-                        grade = grade,
-                    )
-                } ?: returnStudentSubmission(event.id)
+                    updateStudentSubmission(grade)
+                } ?: returnStudentSubmission()
             }
 
             ViewStudentSubmissionUiEvent.UserMessageShown -> {
@@ -115,30 +95,18 @@ class ViewStudentSubmissionViewModel(
     fun onEvent(event: CommentsBottomSheetUiEvent) {
         when (event) {
             is CommentsBottomSheetUiEvent.AddComment -> {
-                submissionId?.let {
-                    if (commentsUiState.editCommentId != null) {
-                        updateComment(
-                            submissionId = it,
-                            id = commentsUiState.editCommentId!!,
-                            text = event.text,
-                        )
-                    } else {
-                        addComment(
-                            courseId = args.courseId,
-                            submissionId = it,
-                            text = event.text,
-                        )
-                    }
+                if (commentsUiState.editCommentId != null) {
+                    updateComment(
+                        commentId = commentsUiState.editCommentId!!,
+                        text = event.text,
+                    )
+                } else {
+                    addComment(event.text)
                 }
             }
 
             is CommentsBottomSheetUiEvent.DeleteComment -> {
-                submissionId?.let {
-                    deleteComment(
-                        submissionId = it,
-                        id = event.commentId,
-                    )
-                }
+                deleteComment(event.commentId)
             }
 
             is CommentsBottomSheetUiEvent.OnEditComment -> {
@@ -153,9 +121,7 @@ class ViewStudentSubmissionViewModel(
             }
 
             CommentsBottomSheetUiEvent.Retry -> {
-                submissionId?.let {
-                    getComments(it, false)
-                }
+                getComments(false)
             }
 
             CommentsBottomSheetUiEvent.UserMessageShown -> {
@@ -175,12 +141,7 @@ class ViewStudentSubmissionViewModel(
             }.launchIn(viewModelScope)
     }
 
-    private fun getStudentSubmission(
-        isRefreshing: Boolean,
-        courseId: String,
-        courseWorkId: String,
-        studentId: String,
-    ) {
+    private fun getStudentSubmission(isRefreshing: Boolean) {
         // Cancel any ongoing getStudentSubmissionJob before making a new call.
         getStudentSubmissionJob?.cancel()
         getStudentSubmissionJob =
@@ -227,13 +188,17 @@ class ViewStudentSubmissionViewModel(
                                     studentSubmissionResult = result,
                                     title = submission.courseWork?.title.orEmpty(),
                                 )
+
+                            getComments(false)
                         }
                     }
                 }.launchIn(viewModelScope)
     }
 
-    private fun returnStudentSubmission(id: String) {
-        returnStudentSubmissionUseCase(id)
+    private fun returnStudentSubmission() {
+        submissionId ?: return
+
+        returnStudentSubmissionUseCase(submissionId!!)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -252,22 +217,16 @@ class ViewStudentSubmissionViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getStudentSubmission(
-                            isRefreshing = true,
-                            courseId = args.courseId,
-                            courseWorkId = args.courseWorkId,
-                            studentId = args.studentId,
-                        )
+                        getStudentSubmission(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun updateStudentSubmission(
-        id: String,
-        grade: Int?,
-    ) {
-        updateStudentSubmissionUseCase(id = id, assignedGrade = grade)
+    private fun updateStudentSubmission(grade: Int?) {
+        submissionId ?: return
+
+        updateStudentSubmissionUseCase(submissionId!!, assignedGrade = grade)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -285,17 +244,15 @@ class ViewStudentSubmissionViewModel(
                     }
 
                     is Result.Success -> {
-                        returnStudentSubmission(id)
+                        returnStudentSubmission()
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun addComment(
-        courseId: String,
-        submissionId: String,
-        text: String,
-    ) {
+    private fun addComment(text: String) {
+        submissionId ?: return
+
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
             commentsUiState =
@@ -305,7 +262,7 @@ class ViewStudentSubmissionViewModel(
             return
         }
 
-        createSubmissionCommentUseCase(courseId, submissionId, text)
+        createSubmissionCommentUseCase(courseId, submissionId!!, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -325,20 +282,19 @@ class ViewStudentSubmissionViewModel(
 
                     is Result.Success -> {
                         commentsUiState.comment.clearText()
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun getComments(
-        submissionId: String,
-        isRefreshing: Boolean,
-    ) {
+    private fun getComments(isRefreshing: Boolean) {
+        submissionId ?: return
+
         // Cancel any ongoing getSubmissionCommentsJob before making a new call.
         getSubmissionCommentsJob?.cancel()
         getSubmissionCommentsJob =
-            getSubmissionCommentsUseCase(submissionId)
+            getSubmissionCommentsUseCase(submissionId!!)
                 .onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
@@ -369,19 +325,21 @@ class ViewStudentSubmissionViewModel(
                         }
 
                         is Result.Success -> {
+                            val comments = result.data!!
+
                             commentsUiState =
                                 commentsUiState.copy(
                                     isLoading = false,
                                     commentsResult = result,
                                 )
+                            uiState = uiState.copy(commentsCount = comments.size)
                         }
                     }
                 }.launchIn(viewModelScope)
     }
 
     private fun updateComment(
-        submissionId: String,
-        id: String,
+        commentId: String,
         text: String,
     ) {
         val textResult = validateTextField.execute(text)
@@ -393,7 +351,7 @@ class ViewStudentSubmissionViewModel(
             return
         }
 
-        updateCommentUseCase(id, text)
+        updateCommentUseCase(commentId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -415,17 +373,14 @@ class ViewStudentSubmissionViewModel(
                         commentsUiState.comment.clearText()
                         commentsUiState =
                             commentsUiState.copy(editCommentId = null)
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun deleteComment(
-        submissionId: String,
-        id: String,
-    ) {
-        deleteCommentUseCase(id)
+    private fun deleteComment(commentId: String) {
+        deleteCommentUseCase(commentId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -447,7 +402,7 @@ class ViewStudentSubmissionViewModel(
                     }
 
                     is Result.Success -> {
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
