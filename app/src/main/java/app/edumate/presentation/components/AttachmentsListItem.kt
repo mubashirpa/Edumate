@@ -1,5 +1,6 @@
 package app.edumate.presentation.components
 
+import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -14,7 +15,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.Attachment
 import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
@@ -39,9 +39,11 @@ import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
+import coil3.ImageLoader
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import coil3.video.VideoFrameDecoder
 
 @Composable
 fun AttachmentsListItem(
@@ -67,12 +69,13 @@ private fun AttachmentsListItemContent(
     onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClickLink: (url: String) -> Unit,
 ) {
+    val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
     val thumbnail: String?
-    val url: String?
+    val url: String
 
     when {
         driveFile != null -> {
@@ -86,22 +89,17 @@ private fun AttachmentsListItemContent(
                     FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                 }
             thumbnail = driveFile.thumbnailUrl
-            url = driveFile.alternateLink
+            url = driveFile.alternateLink.orEmpty()
         }
 
         link != null -> {
             title = link.title.orEmpty()
             icon = Icons.Default.Link
             thumbnail = link.thumbnailUrl
-            url = link.url
+            url = link.url.orEmpty()
         }
 
-        else -> {
-            title = ""
-            icon = Icons.Default.Attachment
-            thumbnail = null
-            url = null
-        }
+        else -> return
     }
 
     Column(
@@ -110,11 +108,10 @@ private fun AttachmentsListItemContent(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
-                    enabled = url != null,
                     onClick = {
                         when {
-                            link != null -> onClickLink(url!!)
-                            driveFile != null -> onClickFile(mimeType, url!!, driveFile.title)
+                            link != null -> onClickLink(url)
+                            driveFile != null -> onClickFile(mimeType, url, driveFile.title)
                         }
                     },
                 ),
@@ -125,27 +122,41 @@ private fun AttachmentsListItemContent(
                     .aspectRatio(16f / 9f)
                     .indication(interactionSource, ripple()),
         ) {
-            if (thumbnail != null) {
-                AsyncImage(
-                    model =
-                        ImageRequest
-                            .Builder(LocalContext.current)
-                            .data(thumbnail)
-                            .crossfade(true)
-                            .build(),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop,
-                )
-            } else {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = null,
+            when {
+                thumbnail != null -> {
+                    ImageThumbnail(
+                        context = context,
+                        url = thumbnail,
+                        modifier = Modifier.fillMaxSize(),
                     )
+                }
+
+                mimeType == FileType.IMAGE -> {
+                    ImageThumbnail(
+                        context = context,
+                        url = url,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+
+                mimeType == FileType.VIDEO -> {
+                    VideoThumbnail(
+                        context = context,
+                        url = url,
+                        modifier = Modifier.fillMaxSize(),
+                    )
+                }
+
+                else -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                        )
+                    }
                 }
             }
         }
@@ -166,4 +177,53 @@ private fun AttachmentsListItemContent(
         }
         Spacer(modifier = Modifier.height(4.dp))
     }
+}
+
+@Composable
+private fun ImageThumbnail(
+    context: Context,
+    url: String,
+    modifier: Modifier = Modifier,
+) {
+    AsyncImage(
+        model =
+            ImageRequest
+                .Builder(context)
+                .data(url)
+                .size(180)
+                .crossfade(true)
+                .build(),
+        contentDescription = null,
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+    )
+}
+
+@Composable
+private fun VideoThumbnail(
+    context: Context,
+    url: String,
+    modifier: Modifier = Modifier,
+) {
+    val videoEnabledLoader =
+        ImageLoader
+            .Builder(context)
+            .components {
+                add(VideoFrameDecoder.Factory())
+            }.build()
+
+    val request =
+        ImageRequest
+            .Builder(context)
+            .data(url)
+            .size(180)
+            .build()
+
+    AsyncImage(
+        model = request,
+        imageLoader = videoEnabledLoader,
+        contentDescription = null,
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+    )
 }
