@@ -76,7 +76,6 @@ class ViewCourseWorkViewModel(
     init {
         getCurrentUser()
         getCourseWork(false)
-        getStudentSubmission()
     }
 
     fun onEvent(event: ViewCourseWorkUiEvent) {
@@ -140,7 +139,6 @@ class ViewCourseWorkViewModel(
 
             ViewCourseWorkUiEvent.Refresh -> {
                 getCourseWork(uiState.courseWorkResult is Result.Success)
-                getStudentSubmission()
             }
 
             is ViewCourseWorkUiEvent.RemoveAttachment -> {
@@ -291,6 +289,8 @@ class ViewCourseWorkViewModel(
                                     courseWorkResult = result,
                                     isRefreshing = false,
                                 )
+
+                            getStudentSubmission()
                         }
                     }
                 }.launchIn(viewModelScope)
