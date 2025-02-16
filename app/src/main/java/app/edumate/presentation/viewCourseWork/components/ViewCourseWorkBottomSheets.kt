@@ -4,8 +4,6 @@ import android.content.Intent
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,23 +21,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Attachment
-import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
-import androidx.compose.material3.ListItemDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -56,16 +43,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.core.utils.FileType
-import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.courseWork.CourseWork
 import app.edumate.domain.model.material.Material
 import app.edumate.domain.model.studentSubmission.StudentSubmission
@@ -222,7 +206,6 @@ private fun StudentSubmissionBottomSheetContent(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val fileUtils = remember { FileUtils(context) }
     val coroutineScope = rememberCoroutineScope()
 
     Column(modifier = modifier) {
@@ -241,98 +224,38 @@ private fun StudentSubmissionBottomSheetContent(
             )
         } else {
             attachments.onEachIndexed { index, attachment ->
-                val colors = ListItemDefaults.colors(containerColor = Color.Transparent)
-                val driveFile = attachment.driveFile
-                val link = attachment.link
-                var title = ""
-                var icon = Icons.Default.Attachment
-                var attachmentModifier: Modifier = Modifier
-
-                when {
-                    driveFile != null -> {
-                        val mimeType =
-                            fileUtils.getFileTypeFromMimeType(driveFile.mimeType)
-                        title = driveFile.title.orEmpty()
-                        icon =
-                            when (mimeType) {
-                                FileType.IMAGE -> Icons.Default.Image
-                                FileType.VIDEO -> Icons.Default.VideoFile
-                                FileType.AUDIO -> Icons.Default.AudioFile
-                                FileType.PDF -> Icons.Default.PictureAsPdf
-                                FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                            }
-                        attachmentModifier =
-                            Modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant,
-                                    shape = MaterialTheme.shapes.medium,
-                                ).clickable {
-                                    driveFile.alternateLink?.let { link ->
-                                        coroutineScope
-                                            .launch { bottomSheetState.hide() }
-                                            .invokeOnCompletion {
-                                                if (!bottomSheetState.isVisible) {
-                                                    onFileAttachmentClick(
-                                                        mimeType,
-                                                        link,
-                                                        driveFile.title,
-                                                    )
-                                                }
-                                            }
+                AttachmentsListItem(
+                    material = attachment,
+                    submissionState = studentSubmission.state,
+                    onClickFile = { mimeType, link, title ->
+                        if (mimeType == FileType.IMAGE) {
+                            coroutineScope
+                                .launch { bottomSheetState.hide() }
+                                .invokeOnCompletion {
+                                    if (!bottomSheetState.isVisible) {
+                                        onFileAttachmentClick(
+                                            mimeType,
+                                            link,
+                                            title,
+                                        )
                                     }
                                 }
-                    }
-
-                    link != null -> {
-                        title = link.title.orEmpty()
-                        icon = Icons.Default.Link
-                        attachmentModifier =
-                            Modifier
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant,
-                                    shape = MaterialTheme.shapes.medium,
-                                ).clickable {
-                                    link.url?.let { url ->
-                                        val browserIntent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                        context.startActivity(browserIntent)
-                                    }
-                                }
-                    }
-                }
-
-                ListItem(
-                    headlineContent = {
-                        Text(
-                            text = title,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
-                    },
-                    modifier = attachmentModifier,
-                    leadingContent = {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                        )
-                    },
-                    trailingContent = {
-                        if (studentSubmission.state != SubmissionState.TURNED_IN) {
-                            IconButton(
-                                onClick = {
-                                    onRemoveAttachmentClick(index)
-                                },
-                            ) {
-                                Icon(
-                                    imageVector = Icons.Default.Clear,
-                                    contentDescription = null,
-                                )
-                            }
+                        } else {
+                            onFileAttachmentClick(
+                                mimeType,
+                                link,
+                                title,
+                            )
                         }
                     },
-                    colors = colors,
+                    onClickLink = { url ->
+                        val browserIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context.startActivity(browserIntent)
+                    },
+                    onRemoveAttachmentClick = {
+                        onRemoveAttachmentClick(index)
+                    },
                 )
                 if (index < attachments.lastIndex) {
                     Spacer(modifier = Modifier.height(10.dp))
