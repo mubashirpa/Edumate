@@ -8,7 +8,8 @@ class JsoupRepositoryImpl : JsoupRepository {
     override suspend fun getUrlMetadata(url: String): LinkDto {
         val document = Jsoup.connect(url).get()
         val title = document.title().ifEmpty { url }
-        val thumbnailUrl = document.select("meta[property=og:image]").attr("content")
+        val thumbnailUrl =
+            document.select("meta[property=og:image]").attr("content").takeIf { it.isNotEmpty() }
         return LinkDto(thumbnailUrl = thumbnailUrl, title = title, url = url)
     }
 }
