@@ -225,7 +225,7 @@ fun PointsDialog(
                                 cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                             )
                             Text(
-                                text = stringResource(id = R.string._points, ""),
+                                text = stringResource(id = R.string.points).lowercase(),
                                 overflow = TextOverflow.Ellipsis,
                                 maxLines = 1,
                                 style = MaterialTheme.typography.bodyLarge,
