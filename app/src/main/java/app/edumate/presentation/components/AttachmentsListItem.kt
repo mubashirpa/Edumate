@@ -1,6 +1,5 @@
 package app.edumate.presentation.components
 
-import android.content.Context
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -30,7 +29,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -39,11 +37,6 @@ import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
-import coil3.ImageLoader
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
-import coil3.video.VideoFrameDecoder
 
 @Composable
 fun AttachmentsListItem(
@@ -71,11 +64,12 @@ private fun AttachmentsListItemContent(
 ) {
     val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
+    val thumbnailModifier = Modifier.fillMaxSize()
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
     val thumbnail: String?
-    val url: String
+    val url: String?
 
     when {
         driveFile != null -> {
@@ -89,14 +83,14 @@ private fun AttachmentsListItemContent(
                     FileType.UNKNOWN -> Icons.AutoMirrored.Filled.InsertDriveFile
                 }
             thumbnail = driveFile.thumbnailUrl
-            url = driveFile.alternateLink.orEmpty()
+            url = driveFile.alternateLink
         }
 
         link != null -> {
             title = link.title.orEmpty()
             icon = Icons.Default.Link
             thumbnail = link.thumbnailUrl
-            url = link.url.orEmpty()
+            url = link.url
         }
 
         else -> return
@@ -108,10 +102,11 @@ private fun AttachmentsListItemContent(
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
+                    enabled = url != null,
                     onClick = {
                         when {
-                            link != null -> onClickLink(url)
-                            driveFile != null -> onClickFile(mimeType, url, driveFile.title)
+                            link != null -> onClickLink(url!!)
+                            driveFile != null -> onClickFile(mimeType, url!!, driveFile.title)
                         }
                     },
                 ),
@@ -126,30 +121,33 @@ private fun AttachmentsListItemContent(
                 thumbnail != null -> {
                     ImageThumbnail(
                         context = context,
-                        url = thumbnail,
-                        modifier = Modifier.fillMaxSize(),
+                        imageUrl = thumbnail,
+                        imageSize = 180,
+                        modifier = thumbnailModifier,
                     )
                 }
 
                 mimeType == FileType.IMAGE -> {
                     ImageThumbnail(
                         context = context,
-                        url = url,
-                        modifier = Modifier.fillMaxSize(),
+                        imageUrl = url,
+                        imageSize = 180,
+                        modifier = thumbnailModifier,
                     )
                 }
 
                 mimeType == FileType.VIDEO -> {
                     VideoThumbnail(
                         context = context,
-                        url = url,
-                        modifier = Modifier.fillMaxSize(),
+                        videoUrl = url,
+                        imageSize = 180,
+                        modifier = thumbnailModifier,
                     )
                 }
 
                 else -> {
                     Box(
-                        modifier = Modifier.fillMaxSize(),
+                        modifier = thumbnailModifier,
                         contentAlignment = Alignment.Center,
                     ) {
                         Icon(
@@ -177,53 +175,4 @@ private fun AttachmentsListItemContent(
         }
         Spacer(modifier = Modifier.height(4.dp))
     }
-}
-
-@Composable
-private fun ImageThumbnail(
-    context: Context,
-    url: String,
-    modifier: Modifier = Modifier,
-) {
-    AsyncImage(
-        model =
-            ImageRequest
-                .Builder(context)
-                .data(url)
-                .size(180)
-                .crossfade(true)
-                .build(),
-        contentDescription = null,
-        modifier = modifier,
-        contentScale = ContentScale.Crop,
-    )
-}
-
-@Composable
-private fun VideoThumbnail(
-    context: Context,
-    url: String,
-    modifier: Modifier = Modifier,
-) {
-    val videoEnabledLoader =
-        ImageLoader
-            .Builder(context)
-            .components {
-                add(VideoFrameDecoder.Factory())
-            }.build()
-
-    val request =
-        ImageRequest
-            .Builder(context)
-            .data(url)
-            .size(180)
-            .build()
-
-    AsyncImage(
-        model = request,
-        imageLoader = videoEnabledLoader,
-        contentDescription = null,
-        modifier = modifier,
-        contentScale = ContentScale.Crop,
-    )
 }
