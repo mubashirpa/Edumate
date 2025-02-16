@@ -201,22 +201,18 @@ class ViewCourseWorkViewModel(
     fun onEvent(event: CommentsBottomSheetUiEvent) {
         when (event) {
             is CommentsBottomSheetUiEvent.AddComment -> {
-                studentSubmissionId?.let {
-                    if (commentsUiState.editCommentId != null) {
-                        updateComment(
-                            commentId = commentsUiState.editCommentId!!,
-                            text = event.text,
-                        )
-                    } else {
-                        addComment(event.text)
-                    }
+                if (commentsUiState.editCommentId != null) {
+                    updateComment(
+                        commentId = commentsUiState.editCommentId!!,
+                        text = event.text,
+                    )
+                } else {
+                    addComment(event.text)
                 }
             }
 
             is CommentsBottomSheetUiEvent.DeleteComment -> {
-                studentSubmissionId?.let {
-                    deleteComment(event.commentId)
-                }
+                deleteComment(event.commentId)
             }
 
             is CommentsBottomSheetUiEvent.OnEditComment -> {
@@ -231,9 +227,7 @@ class ViewCourseWorkViewModel(
             }
 
             CommentsBottomSheetUiEvent.Retry -> {
-                studentSubmissionId?.let {
-                    getComments(false)
-                }
+                getComments(false)
             }
 
             CommentsBottomSheetUiEvent.UserMessageShown -> {
@@ -337,7 +331,7 @@ class ViewCourseWorkViewModel(
                             else -> {}
                         }
 
-                        studentSubmissionId?.let { getComments(false) }
+                        getComments(false)
                     }
 
                     uiState = uiState.copy(studentSubmissionResult = result)
