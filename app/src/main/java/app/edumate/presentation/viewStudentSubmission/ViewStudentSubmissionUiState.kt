@@ -6,6 +6,7 @@ import app.edumate.core.UiText
 import app.edumate.domain.model.studentSubmission.StudentSubmission
 
 data class ViewStudentSubmissionUiState(
+    val commentsCount: Int = 0,
     val currentUserId: String? = null,
     val expandedAppBarDropdown: Boolean = false,
     val grade: TextFieldState = TextFieldState(),

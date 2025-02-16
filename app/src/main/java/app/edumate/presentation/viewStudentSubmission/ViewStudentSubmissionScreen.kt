@@ -21,6 +21,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Comment
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -45,6 +47,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.edumate.R
@@ -179,10 +183,31 @@ fun ViewStudentSubmissionScreen(
                         Text(text = stringResource(R.string.comments))
                     },
                     icon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Default.Comment,
-                            contentDescription = null,
-                        )
+                        BadgedBox(
+                            badge = {
+                                val commentsCount = uiState.commentsCount
+                                if (commentsCount > 0) {
+                                    Badge {
+                                        Text(
+                                            text = commentsCount.toString(),
+                                            modifier =
+                                                Modifier.semantics {
+                                                    contentDescription =
+                                                        context.getString(
+                                                            R.string._comments,
+                                                            commentsCount,
+                                                        )
+                                                },
+                                        )
+                                    }
+                                }
+                            },
+                        ) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Default.Comment,
+                                contentDescription = null,
+                            )
+                        }
                     },
                     onClick = {
                         onEvent(ViewStudentSubmissionUiEvent.OnShowCommentsBottomSheetChange(true))
