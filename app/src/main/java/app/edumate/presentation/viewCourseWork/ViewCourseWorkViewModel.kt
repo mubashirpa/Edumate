@@ -69,22 +69,19 @@ class ViewCourseWorkViewModel(
     private val isCurrentUserStudent = args.isCurrentUserStudent
     private var getCourseWorkJob: Job? = null
     private var getStudentSubmissionJob: Job? = null
+    private var getSubmissionCommentsJob: Job? = null
     private var studentSubmissionId: String? = null
     private var courseWorkType: CourseWorkType? = null
-    private var getSubmissionCommentsJob: Job? = null
 
     init {
         getCurrentUser()
-        getCourseWork(
-            id = courseWorkId,
-            isRefreshing = false,
-        )
+        getCourseWork(false)
     }
 
     fun onEvent(event: ViewCourseWorkUiEvent) {
         when (event) {
             is ViewCourseWorkUiEvent.AddLinkAttachment -> {
-                getUrlMetadata(url = event.link, submissionId = studentSubmissionId!!)
+                getUrlMetadata(event.link)
             }
 
             is ViewCourseWorkUiEvent.OnEditShortAnswerChange -> {
@@ -97,9 +94,6 @@ class ViewCourseWorkViewModel(
 
             is ViewCourseWorkUiEvent.OnFilePicked -> {
                 uploadFile(
-                    courseId = courseId,
-                    courseWorkId = courseWorkId,
-                    submissionId = studentSubmissionId!!,
                     title = event.title,
                     file = event.file,
                     mimeType = event.mimeType,
@@ -132,11 +126,6 @@ class ViewCourseWorkViewModel(
             }
 
             is ViewCourseWorkUiEvent.OnShowCommentsBottomSheetChange -> {
-                if (commentsUiState.commentsResult is Result.Empty) {
-                    studentSubmissionId?.let {
-                        getComments(it, false)
-                    }
-                }
                 uiState = uiState.copy(showCommentsBottomSheet = event.show)
             }
 
@@ -145,52 +134,43 @@ class ViewCourseWorkViewModel(
             }
 
             ViewCourseWorkUiEvent.Reclaim -> {
-                reclaim(studentSubmissionId!!)
+                reclaim()
             }
 
             ViewCourseWorkUiEvent.Refresh -> {
-                getCourseWork(
-                    id = courseWorkId,
-                    isRefreshing = uiState.courseWorkResult is Result.Success,
-                )
+                getCourseWork(uiState.courseWorkResult is Result.Success)
             }
 
             is ViewCourseWorkUiEvent.RemoveAttachment -> {
                 val attachment = uiState.assignmentAttachments[event.position]
                 when {
                     attachment.driveFile != null -> {
-                        deleteFile(
-                            courseId = courseId,
-                            courseWorkId = courseWorkId,
-                            submissionId = studentSubmissionId!!,
-                            material = attachment,
-                        )
+                        deleteFile(attachment)
                     }
 
                     attachment.link != null -> {
                         uiState.assignmentAttachments.removeAt(event.position)
-                        modifyAttachments(studentSubmissionId!!, uiState.assignmentAttachments)
+                        modifyAttachments(uiState.assignmentAttachments)
                     }
                 }
             }
 
             ViewCourseWorkUiEvent.Retry -> {
-                getCourseWork(id = courseWorkId, isRefreshing = false)
+                getCourseWork(false)
             }
 
             ViewCourseWorkUiEvent.RetryStudentSubmission -> {
-                getStudentSubmission(courseId = courseId, courseWorkId = courseWorkId)
+                getStudentSubmission()
             }
 
             is ViewCourseWorkUiEvent.TurnIn -> {
                 when (courseWorkType) {
                     CourseWorkType.ASSIGNMENT -> {
-                        turnIn(courseWorkId = courseWorkId, id = studentSubmissionId!!)
+                        turnIn()
                     }
 
                     CourseWorkType.MULTIPLE_CHOICE_QUESTION -> {
                         updateStudentSubmission(
-                            id = studentSubmissionId!!,
                             multipleChoiceAnswer = uiState.multipleChoiceAnswer,
                             shortAnswer = null,
                         )
@@ -198,7 +178,6 @@ class ViewCourseWorkViewModel(
 
                     CourseWorkType.SHORT_ANSWER_QUESTION -> {
                         updateStudentSubmission(
-                            id = studentSubmissionId!!,
                             multipleChoiceAnswer = null,
                             shortAnswer =
                                 uiState.shortAnswer.text
@@ -223,26 +202,18 @@ class ViewCourseWorkViewModel(
                 studentSubmissionId?.let {
                     if (commentsUiState.editCommentId != null) {
                         updateComment(
-                            submissionId = it,
-                            id = commentsUiState.editCommentId!!,
+                            commentId = commentsUiState.editCommentId!!,
                             text = event.text,
                         )
                     } else {
-                        addComment(
-                            courseId = args.courseId,
-                            submissionId = it,
-                            text = event.text,
-                        )
+                        addComment(event.text)
                     }
                 }
             }
 
             is CommentsBottomSheetUiEvent.DeleteComment -> {
                 studentSubmissionId?.let {
-                    deleteComment(
-                        submissionId = it,
-                        id = event.commentId,
-                    )
+                    deleteComment(event.commentId)
                 }
             }
 
@@ -259,7 +230,7 @@ class ViewCourseWorkViewModel(
 
             CommentsBottomSheetUiEvent.Retry -> {
                 studentSubmissionId?.let {
-                    getComments(it, false)
+                    getComments(false)
                 }
             }
 
@@ -280,14 +251,11 @@ class ViewCourseWorkViewModel(
             }.launchIn(viewModelScope)
     }
 
-    private fun getCourseWork(
-        id: String,
-        isRefreshing: Boolean,
-    ) {
+    private fun getCourseWork(isRefreshing: Boolean) {
         // Cancel any ongoing getCourseWorkJob before making a new call.
         getCourseWorkJob?.cancel()
         getCourseWorkJob =
-            getCourseWorkUseCase(id)
+            getCourseWorkUseCase(courseWorkId)
                 .onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
@@ -323,25 +291,20 @@ class ViewCourseWorkViewModel(
 
                             uiState =
                                 uiState.copy(
+                                    courseWork = courseWork,
                                     courseWorkResult = result,
                                     isRefreshing = false,
                                 )
 
                             if (isCurrentUserStudent && courseWorkType != CourseWorkType.MATERIAL) {
-                                getStudentSubmission(
-                                    courseId = courseId,
-                                    courseWorkId = courseWorkId,
-                                )
+                                getStudentSubmission()
                             }
                         }
                     }
                 }.launchIn(viewModelScope)
     }
 
-    private fun getStudentSubmission(
-        courseId: String,
-        courseWorkId: String,
-    ) {
+    private fun getStudentSubmission() {
         // Cancel any ongoing getStudentSubmissionJob before making a new call.
         getStudentSubmissionJob?.cancel()
         getStudentSubmissionJob =
@@ -373,17 +336,18 @@ class ViewCourseWorkViewModel(
 
                             else -> {}
                         }
+
+                        studentSubmissionId?.let { getComments(false) }
                     }
 
                     uiState = uiState.copy(studentSubmissionResult = result)
                 }.launchIn(viewModelScope)
     }
 
-    private fun modifyAttachments(
-        id: String,
-        attachments: List<Material>,
-    ) {
-        modifyStudentSubmissionAttachmentsUseCase(id, attachments)
+    private fun modifyAttachments(attachments: List<Material>) {
+        studentSubmissionId ?: return
+
+        modifyStudentSubmissionAttachmentsUseCase(studentSubmissionId!!, attachments)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -408,11 +372,12 @@ class ViewCourseWorkViewModel(
     }
 
     private fun updateStudentSubmission(
-        id: String,
         multipleChoiceAnswer: String?,
         shortAnswer: String?,
     ) {
-        updateStudentSubmissionUseCase(id, multipleChoiceAnswer, shortAnswer)
+        studentSubmissionId ?: return
+
+        updateStudentSubmissionUseCase(studentSubmissionId!!, multipleChoiceAnswer, shortAnswer)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -431,17 +396,16 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(editShortAnswer = false)
-                        turnIn(courseWorkId, id)
+                        turnIn()
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun turnIn(
-        courseWorkId: String,
-        id: String,
-    ) {
-        turnInStudentSubmissionUseCase(courseWorkId, id)
+    private fun turnIn() {
+        studentSubmissionId ?: return
+
+        turnInStudentSubmissionUseCase(courseWorkId, studentSubmissionId!!)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -460,14 +424,16 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getStudentSubmission(courseId, courseWorkId)
+                        getStudentSubmission()
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun reclaim(id: String) {
-        reclaimStudentSubmissionUseCase(id)
+    private fun reclaim() {
+        studentSubmissionId ?: return
+
+        reclaimStudentSubmissionUseCase(studentSubmissionId!!)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -486,17 +452,15 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         uiState = uiState.copy(openProgressDialog = false)
-                        getStudentSubmission(courseId, courseWorkId)
+                        getStudentSubmission()
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun addComment(
-        courseId: String,
-        submissionId: String,
-        text: String,
-    ) {
+    private fun addComment(text: String) {
+        studentSubmissionId ?: return
+
         val textResult = validateTextField.execute(text)
         if (!textResult.successful) {
             commentsUiState =
@@ -506,7 +470,7 @@ class ViewCourseWorkViewModel(
             return
         }
 
-        createSubmissionCommentUseCase(courseId, submissionId, text)
+        createSubmissionCommentUseCase(courseId, studentSubmissionId!!, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -526,20 +490,19 @@ class ViewCourseWorkViewModel(
 
                     is Result.Success -> {
                         commentsUiState.comment.clearText()
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun getComments(
-        submissionId: String,
-        isRefreshing: Boolean,
-    ) {
+    private fun getComments(isRefreshing: Boolean) {
+        studentSubmissionId ?: return
+
         // Cancel any ongoing getSubmissionCommentsJob before making a new call.
         getSubmissionCommentsJob?.cancel()
         getSubmissionCommentsJob =
-            getSubmissionCommentsUseCase(submissionId)
+            getSubmissionCommentsUseCase(studentSubmissionId!!)
                 .onEach { result ->
                     when (result) {
                         is Result.Empty -> {}
@@ -570,19 +533,21 @@ class ViewCourseWorkViewModel(
                         }
 
                         is Result.Success -> {
+                            val comments = result.data!!
+
                             commentsUiState =
                                 commentsUiState.copy(
                                     isLoading = false,
                                     commentsResult = result,
                                 )
+                            uiState = uiState.copy(commentsCount = comments.size)
                         }
                     }
                 }.launchIn(viewModelScope)
     }
 
     private fun updateComment(
-        submissionId: String,
-        id: String,
+        commentId: String,
         text: String,
     ) {
         val textResult = validateTextField.execute(text)
@@ -594,7 +559,7 @@ class ViewCourseWorkViewModel(
             return
         }
 
-        updateCommentUseCase(id, text)
+        updateCommentUseCase(commentId, text)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -616,17 +581,14 @@ class ViewCourseWorkViewModel(
                         commentsUiState.comment.clearText()
                         commentsUiState =
                             commentsUiState.copy(editCommentId = null)
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
-    private fun deleteComment(
-        submissionId: String,
-        id: String,
-    ) {
-        deleteCommentUseCase(id)
+    private fun deleteComment(commentId: String) {
+        deleteCommentUseCase(commentId)
             .onEach { result ->
                 when (result) {
                     is Result.Empty -> {}
@@ -648,24 +610,23 @@ class ViewCourseWorkViewModel(
                     }
 
                     is Result.Success -> {
-                        getComments(submissionId, true)
+                        getComments(true)
                     }
                 }
             }.launchIn(viewModelScope)
     }
 
     private fun uploadFile(
-        courseId: String,
-        courseWorkId: String,
-        submissionId: String,
         title: String,
         file: File,
         mimeType: String?,
         size: Long?,
     ) {
+        studentSubmissionId ?: return
+
         uploadFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
-            path = "$courseId/coursework/$courseWorkId/submission/$submissionId/$title",
+            path = "$courseId/coursework/$courseWorkId/submission/$studentSubmissionId/$title",
             file = file,
         ).onEach { result ->
             when (result) {
@@ -695,7 +656,7 @@ class ViewCourseWorkViewModel(
                             )
                         uiState.assignmentAttachments.add(Material(driveFile = driveFile))
                         uiState = uiState.copy(uploadProgress = null)
-                        modifyAttachments(submissionId, uiState.assignmentAttachments)
+                        modifyAttachments(uiState.assignmentAttachments)
                     } else {
                         uiState = uiState.copy(uploadProgress = state.progress)
                     }
@@ -704,17 +665,14 @@ class ViewCourseWorkViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteFile(
-        courseId: String,
-        courseWorkId: String,
-        submissionId: String,
-        material: Material,
-    ) {
+    private fun deleteFile(material: Material) {
+        studentSubmissionId ?: return
+
         val title = material.driveFile?.title ?: return
 
         deleteFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
-            paths = listOf("$courseId/coursework/$courseWorkId/submission/$submissionId/$title"),
+            paths = listOf("$courseId/coursework/$courseWorkId/submission/$studentSubmissionId/$title"),
         ).onEach { result ->
             when (result) {
                 is Result.Empty -> {}
@@ -733,16 +691,15 @@ class ViewCourseWorkViewModel(
 
                 is Result.Success -> {
                     uiState.assignmentAttachments.remove(material)
-                    modifyAttachments(submissionId, uiState.assignmentAttachments)
+                    modifyAttachments(uiState.assignmentAttachments)
                 }
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun getUrlMetadata(
-        url: String,
-        submissionId: String,
-    ) {
+    private fun getUrlMetadata(url: String) {
+        studentSubmissionId ?: return
+
         getUrlMetadataUseCase(url)
             .onEach { result ->
                 when (result) {
@@ -765,7 +722,7 @@ class ViewCourseWorkViewModel(
                     is Result.Success -> {
                         val link = result.data!!
                         uiState.assignmentAttachments.add(Material(link = link))
-                        modifyAttachments(submissionId, uiState.assignmentAttachments)
+                        modifyAttachments(uiState.assignmentAttachments)
                     }
                 }
             }.launchIn(viewModelScope)

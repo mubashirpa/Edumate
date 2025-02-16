@@ -11,6 +11,8 @@ import app.edumate.domain.model.studentSubmission.StudentSubmission
 
 data class ViewCourseWorkUiState(
     val assignmentAttachments: SnapshotStateList<Material> = mutableStateListOf(),
+    val commentsCount: Int = 0,
+    val courseWork: CourseWork? = null,
     val courseWorkResult: Result<CourseWork> = Result.Empty(),
     val currentUserId: String? = null,
     val editShortAnswer: Boolean = false,
