@@ -146,6 +146,7 @@
     <string name="password">Password</string>
     <string name="pick_photo">Pick photo</string>
     <string name="pin">Pin</string>
+    <string name="pinned">Pinned</string>
     <string name="please_check_your_email_for_a_verification_link">Please check your email for a verification link</string>
     <string name="please_fill_in_the_form_to_continue">Please fill in the form to continue</string>
     <string name="please_sign_in_to_your_account">Please sign in to your account</string>

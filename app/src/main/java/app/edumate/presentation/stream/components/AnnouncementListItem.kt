@@ -3,6 +3,7 @@ package app.edumate.presentation.stream.components
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
@@ -22,7 +22,6 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
@@ -42,6 +41,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.pluralStringResource
@@ -185,12 +185,30 @@ private fun AnnouncementListItemContent(
     ) {
         ListItem(
             headlineContent = {
-                Text(
-                    text = creator?.name.orEmpty(),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    overflow = TextOverflow.Ellipsis,
-                    maxLines = 1,
-                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = creator?.name.orEmpty(),
+                        modifier = Modifier.weight(1f, false),
+                        color = MaterialTheme.colorScheme.onSurface,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1,
+                    )
+                    if (pinned) {
+                        Text(
+                            text = stringResource(R.string.pinned),
+                            modifier =
+                                Modifier
+                                    .clip(MaterialTheme.shapes.large)
+                                    .background(MaterialTheme.colorScheme.primaryContainer)
+                                    .padding(horizontal = 6.dp),
+                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            style = MaterialTheme.typography.labelSmall,
+                        )
+                    }
+                }
             },
             supportingContent = {
                 if (creationDateTime != null) {
@@ -217,35 +235,23 @@ private fun AnnouncementListItemContent(
                 )
             },
             trailingContent = {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    if (pinned) {
+                if (selected) {
+                    IconButton(onClick = onClearSelection) {
                         Icon(
-                            imageVector = Icons.Default.PushPin,
+                            imageVector = Icons.Default.Close,
                             contentDescription = null,
-                            modifier = Modifier.size(16.dp),
                         )
                     }
-                    if (selected) {
-                        IconButton(onClick = onClearSelection) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = null,
-                            )
-                        }
-                    } else if (showMenuButton) {
-                        MenuButton(
-                            pinned = pinned,
-                            itemUserRole = creator?.role,
-                            currentUserRole = currentUserRole,
-                            isCurrentUserCreator = isCurrentUserCreator,
-                            onPinClick = onPinClick,
-                            onEditClick = onEditClick,
-                            onDeleteClick = onDeleteClick,
-                        )
-                    }
+                } else if (showMenuButton) {
+                    MenuButton(
+                        pinned = pinned,
+                        itemUserRole = creator?.role,
+                        currentUserRole = currentUserRole,
+                        isCurrentUserCreator = isCurrentUserCreator,
+                        onPinClick = onPinClick,
+                        onEditClick = onEditClick,
+                        onDeleteClick = onDeleteClick,
+                    )
                 }
             },
             colors = ListItemDefaults.colors(containerColor = Color.Transparent),
