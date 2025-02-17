@@ -6,10 +6,7 @@ import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.material.MaterialDto
 import app.edumate.domain.repository.AnnouncementRepository
 import io.github.jan.supabase.postgrest.Postgrest
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
-import kotlinx.datetime.TimeZone
-import kotlinx.datetime.toLocalDateTime
+import kotlinx.datetime.LocalDateTime
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
@@ -38,6 +35,7 @@ class AnnouncementRepositoryImpl(
         text: String?,
         materials: List<MaterialDto>?,
         pinned: Boolean?,
+        updateTime: LocalDateTime?,
     ): AnnouncementDto =
         postgrest[Supabase.Table.ANNOUNCEMENTS]
             .update(
@@ -50,10 +48,7 @@ class AnnouncementRepositoryImpl(
                         )
                     }
                     pinned?.let { set(Supabase.Column.PINNED, pinned) }
-
-                    val now: Instant = Clock.System.now()
-                    val updateTime = now.toLocalDateTime(TimeZone.UTC)
-                    set(Supabase.Column.UPDATE_TIME, updateTime)
+                    updateTime?.let { set(Supabase.Column.UPDATE_TIME, updateTime) }
                 },
             ) {
                 select()

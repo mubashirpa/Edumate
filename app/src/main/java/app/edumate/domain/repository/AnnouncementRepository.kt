@@ -3,6 +3,7 @@ package app.edumate.domain.repository
 import app.edumate.data.remote.dto.announcement.AnnouncementDto
 import app.edumate.data.remote.dto.comment.CommentDto
 import app.edumate.data.remote.dto.material.MaterialDto
+import kotlinx.datetime.LocalDateTime
 
 interface AnnouncementRepository {
     suspend fun createAnnouncement(announcement: AnnouncementDto): AnnouncementDto
@@ -14,6 +15,7 @@ interface AnnouncementRepository {
         text: String?,
         materials: List<MaterialDto>?,
         pinned: Boolean?,
+        updateTime: LocalDateTime?,
     ): AnnouncementDto
 
     suspend fun deleteAnnouncement(id: String): AnnouncementDto
