@@ -70,6 +70,7 @@ fun ViewCourseWorkScreen(
     onNavigateUp: () -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
     onNavigateToViewStudentSubmission: (courseWorkId: String, studentId: String) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -308,6 +309,7 @@ fun ViewCourseWorkScreen(
                                             bottom = if (isFabVisible) 100.dp else 12.dp,
                                         ),
                                     onNavigateToImageViewer = onNavigateToImageViewer,
+                                    onNavigateToPdfViewer = onNavigateToPdfViewer,
                                     modifier = Modifier.fillMaxSize(),
                                 )
                             }

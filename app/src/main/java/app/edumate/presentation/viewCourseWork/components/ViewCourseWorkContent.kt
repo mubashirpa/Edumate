@@ -76,6 +76,7 @@ fun ViewCourseWorkContent(
     fileUtils: FileUtils,
     contentPadding: PaddingValues,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -155,11 +156,20 @@ fun ViewCourseWorkContent(
                             material = material,
                             fileUtils = fileUtils,
                             onClickFile = { mimeType, url, title ->
-                                if (mimeType == FileType.IMAGE) {
-                                    onNavigateToImageViewer(url, title)
-                                } else {
-                                    val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                    context.startActivity(browserIntent)
+                                when (mimeType) {
+                                    FileType.IMAGE -> {
+                                        onNavigateToImageViewer(url, title)
+                                    }
+
+                                    FileType.PDF -> {
+                                        onNavigateToPdfViewer(url, title)
+                                    }
+
+                                    else -> {
+                                        val browserIntent =
+                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        context.startActivity(browserIntent)
+                                    }
                                 }
                             },
                             onClickLink = { url ->
