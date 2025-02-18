@@ -24,6 +24,7 @@ lottieCompose = "6.6.2"
 jsoup = "1.18.3"
 onesignal = "5.1.28"
 zoomable = "2.0.0"
+pdfViewer = "2.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -67,6 +68,7 @@ lottie-compose = { group = "com.airbnb.android", name = "lottie-compose", versio
 jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 onesignal = { group = "com.onesignal", name = "OneSignal", version.ref = "onesignal" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable" }
+pdf-viewer = { group = "io.github.afreakyelf", name = "Pdf-Viewer", version.ref = "pdfViewer" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

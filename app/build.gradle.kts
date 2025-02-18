@@ -118,4 +118,5 @@ dependencies {
     implementation(libs.jsoup)
     implementation(libs.onesignal)
     implementation(libs.zoomable)
+    implementation(libs.pdf.viewer)
 }
