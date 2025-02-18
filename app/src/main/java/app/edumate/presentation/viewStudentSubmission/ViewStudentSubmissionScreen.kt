@@ -83,6 +83,7 @@ fun ViewStudentSubmissionScreen(
     commentsOnEvent: (CommentsBottomSheetUiEvent) -> Unit,
     onNavigateUp: () -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -252,6 +253,7 @@ fun ViewStudentSubmissionScreen(
                         onEvent = onEvent,
                         studentSubmission = studentSubmission,
                         onNavigateToImageViewer = onNavigateToImageViewer,
+                        onNavigateToPdfViewer = onNavigateToPdfViewer,
                         modifier = Modifier.fillMaxSize(),
                     )
                 }
@@ -277,6 +279,7 @@ private fun ViewStudentSubmissionContent(
     onEvent: (ViewStudentSubmissionUiEvent) -> Unit,
     studentSubmission: StudentSubmission,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -403,12 +406,20 @@ private fun ViewStudentSubmissionContent(
                                 material = attachment,
                                 fileUtils = fileUtils,
                                 onClickFile = { mimeType, url, title ->
-                                    if (mimeType == FileType.IMAGE) {
-                                        onNavigateToImageViewer(url, title)
-                                    } else {
-                                        val browserIntent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                        context.startActivity(browserIntent)
+                                    when (mimeType) {
+                                        FileType.IMAGE -> {
+                                            onNavigateToImageViewer(url, title)
+                                        }
+
+                                        FileType.PDF -> {
+                                            onNavigateToPdfViewer(url, title)
+                                        }
+
+                                        else -> {
+                                            val browserIntent =
+                                                Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                            context.startActivity(browserIntent)
+                                        }
                                     }
                                 },
                                 onClickLink = { url ->

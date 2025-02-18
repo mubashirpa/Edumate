@@ -139,6 +139,7 @@ fun CourseDetailsNavHost(
                 commentsOnEvent = viewModel::onEvent,
                 onNavigateUp = navController::navigateUp,
                 onNavigateToImageViewer = onNavigateToImageViewer,
+                onNavigateToPdfViewer = onNavigateToPdfViewer,
             )
         }
     }
