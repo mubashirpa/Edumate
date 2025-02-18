@@ -29,6 +29,7 @@ fun CourseDetailsScreen(
     onNavigateUp: () -> Unit,
     onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -57,6 +58,7 @@ fun CourseDetailsScreen(
                 onNavigateUp = onNavigateUp,
                 onNavigateToCourseSettings = onNavigateToCourseSettings,
                 onNavigateToImageViewer = onNavigateToImageViewer,
+                onNavigateToPdfViewer = onNavigateToPdfViewer,
                 onLeaveCourse = onLeaveCourse,
                 modifier = modifier,
             )
@@ -71,6 +73,7 @@ fun CourseDetailsContent(
     onNavigateUp: () -> Unit,
     onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
     // Separate NavHostController for nested navigation
@@ -96,6 +99,7 @@ fun CourseDetailsContent(
             onNavigateUp = onNavigateUp,
             onNavigateToCourseSettings = onNavigateToCourseSettings,
             onNavigateToImageViewer = onNavigateToImageViewer,
+            onNavigateToPdfViewer = onNavigateToPdfViewer,
             onLeaveCourse = onLeaveCourse,
             modifier =
                 Modifier

@@ -30,6 +30,7 @@ fun CourseDetailsNavHost(
     onNavigateUp: () -> Unit,
     onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
 ) {

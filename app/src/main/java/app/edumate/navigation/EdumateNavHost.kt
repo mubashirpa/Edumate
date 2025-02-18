@@ -23,6 +23,7 @@ import app.edumate.presentation.home.HomeScreen
 import app.edumate.presentation.home.HomeUiEvent
 import app.edumate.presentation.home.HomeViewModel
 import app.edumate.presentation.imageViewer.ImageViewerScreen
+import app.edumate.presentation.pdfViewer.PdfViewerScreen
 import app.edumate.presentation.profile.ProfileScreen
 import app.edumate.presentation.settings.SettingsScreen
 import app.edumate.presentation.settings.SettingsViewModel
@@ -157,6 +158,9 @@ fun EdumateNavHost(
                 onNavigateToImageViewer = { url, title ->
                     navController.navigate(Screen.ImageViewer(url, title))
                 },
+                onNavigateToPdfViewer = { url, title ->
+                    navController.navigate(Screen.PdfViewer(url, title))
+                },
                 onLeaveCourse = {
                     navController.previousBackStackEntry
                         ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
@@ -169,7 +173,15 @@ fun EdumateNavHost(
             ImageViewerScreen(
                 imageUrl = route.imageUrl,
                 onNavigateUp = navController::navigateUp,
-                imageTitle = route.title,
+                imageTitle = route.imageTitle,
+            )
+        }
+        composable<Screen.PdfViewer> { backStackEntry ->
+            val route = backStackEntry.toRoute<Screen.PdfViewer>()
+            PdfViewerScreen(
+                pdfUrl = route.pdfUrl,
+                onNavigateUp = navController::navigateUp,
+                pdfTitle = route.pdfTitle,
             )
         }
     }

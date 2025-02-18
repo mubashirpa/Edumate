@@ -86,7 +86,13 @@ sealed class Screen {
     @Serializable
     data class ImageViewer(
         val imageUrl: String,
-        val title: String? = null,
+        val imageTitle: String? = null,
+    ) : Screen()
+
+    @Serializable
+    data class PdfViewer(
+        val pdfUrl: String,
+        val pdfTitle: String? = null,
     ) : Screen()
 }
 
