@@ -228,7 +228,7 @@ private fun StudentSubmissionBottomSheetContent(
                     material = attachment,
                     submissionState = studentSubmission.state,
                     onClickFile = { mimeType, link, title ->
-                        if (mimeType == FileType.IMAGE) {
+                        if (mimeType == FileType.IMAGE || mimeType == FileType.PDF) {
                             coroutineScope
                                 .launch { bottomSheetState.hide() }
                                 .invokeOnCompletion {
