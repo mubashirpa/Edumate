@@ -104,6 +104,7 @@ fun StreamScreen(
     onNavigateUp: () -> Unit,
     onNavigateToCourseSettings: (id: String) -> Unit,
     onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
@@ -291,12 +292,23 @@ fun StreamScreen(
                                                 onEvent(StreamUiEvent.OnEditAnnouncement(null))
                                             },
                                             onFileAttachmentClick = { mimeType, url, title ->
-                                                if (mimeType == FileType.IMAGE) {
-                                                    onNavigateToImageViewer(url, title)
-                                                } else {
-                                                    val browserIntent =
-                                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                                                    context.startActivity(browserIntent)
+                                                when (mimeType) {
+                                                    FileType.IMAGE -> {
+                                                        onNavigateToImageViewer(url, title)
+                                                    }
+
+                                                    FileType.PDF -> {
+                                                        onNavigateToPdfViewer(url, title)
+                                                    }
+
+                                                    else -> {
+                                                        val browserIntent =
+                                                            Intent(
+                                                                Intent.ACTION_VIEW,
+                                                                Uri.parse(url),
+                                                            )
+                                                        context.startActivity(browserIntent)
+                                                    }
                                                 }
                                             },
                                             onClick = { id ->
@@ -531,6 +543,7 @@ private fun StreamScreenPreview() {
             onNavigateUp = {},
             onNavigateToCourseSettings = {},
             onNavigateToImageViewer = { _, _ -> },
+            onNavigateToPdfViewer = { _, _ -> },
         )
     }
 }

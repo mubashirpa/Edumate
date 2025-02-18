@@ -51,6 +51,7 @@ fun CourseDetailsNavHost(
                 onNavigateUp = onNavigateUp,
                 onNavigateToCourseSettings = onNavigateToCourseSettings,
                 onNavigateToImageViewer = onNavigateToImageViewer,
+                onNavigateToPdfViewer = onNavigateToPdfViewer,
             )
         }
         composable<Screen.CourseWork> {
