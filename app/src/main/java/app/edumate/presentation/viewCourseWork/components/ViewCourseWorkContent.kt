@@ -251,12 +251,20 @@ fun ViewCourseWorkContent(
             onEvent(ViewCourseWorkUiEvent.RetryStudentSubmission)
         },
         onFileAttachmentClick = { mimeType, url, title ->
-            if (mimeType == FileType.IMAGE) {
-                onNavigateToImageViewer(url, title)
-            } else {
-                val browserIntent =
-                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                context.startActivity(browserIntent)
+            when (mimeType) {
+                FileType.IMAGE -> {
+                    onNavigateToImageViewer(url, title)
+                }
+
+                FileType.PDF -> {
+                    onNavigateToPdfViewer(url, title)
+                }
+
+                else -> {
+                    val browserIntent =
+                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                    context.startActivity(browserIntent)
+                }
             }
         },
     )
