@@ -26,7 +26,7 @@ Edumate is currently available on the **Amazon Appstore**.
 </picture>
 </a>
 
-## Screenshots
+## **Screenshots**
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="screenshots/screenshot1-dark.png">
@@ -105,6 +105,10 @@ We welcome contributions! To contribute:
 
 ## **Support & Contact**
 
-For issues or suggestions, feel free to open an [issue](https://github.com/mubashirpa/Edumate/issues) or start a discussion.
+For issues or suggestions, feel free to open
+an [issue](https://github.com/mubashirpa/Edumate/issues) or start a discussion.
 
-Happy learning! 🚀
+## **License**
+
+This project is licensed under the **GNU Affero General Public License v3.0**. You can find the full
+license text in the [LICENSE](LICENSE) file.
