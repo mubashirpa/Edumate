@@ -1,5 +1,4 @@
 <resources>
-    <string name="_points">%1$d points</string>
     <string name="_return">Return</string>
     <string name="add">Add</string>
     <string name="add_a_class_to_get_started">Add a class to get started</string>

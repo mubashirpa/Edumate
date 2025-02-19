@@ -42,6 +42,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -126,7 +127,7 @@ fun ViewCourseWorkContent(
                         if (maxPoints != null && maxPoints > 0) {
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = stringResource(id = R.string._points, maxPoints),
+                                text = pluralStringResource(R.plurals.points, maxPoints, maxPoints),
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 style = MaterialTheme.typography.bodyMedium,
                             )

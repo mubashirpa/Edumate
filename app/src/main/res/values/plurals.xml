@@ -8,6 +8,10 @@
         <item quantity="one">%1$d attachment will be submitted for "%2$s".</item>
         <item quantity="other">%1$d attachments will be submitted for "%2$s".</item>
     </plurals>
+    <plurals name="points">
+        <item quantity="one">%1$d point</item>
+        <item quantity="other">%1$d points</item>
+    </plurals>
     <plurals name="replies">
         <item quantity="one">%1$d reply</item>
         <item quantity="other">%1$d replies</item>

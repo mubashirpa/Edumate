@@ -54,6 +54,7 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.pluralStringResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
@@ -284,7 +285,7 @@ fun ContentAssignment(
             FieldListItem(
                 title =
                     if (uiState.points != null && uiState.points > 0) {
-                        stringResource(id = R.string._points, uiState.points)
+                        pluralStringResource(R.plurals.points, uiState.points, uiState.points)
                     } else {
                         stringResource(id = R.string.set_total_points)
                     },
