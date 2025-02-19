@@ -105,6 +105,6 @@ We welcome contributions! To contribute:
 
 ## **Support & Contact**
 
-For issues or suggestions, feel free to open an [issue](#) or start a discussion.
+For issues or suggestions, feel free to open an [issue](https://github.com/mubashirpa/Edumate/issues) or start a discussion.
 
 Happy learning! 🚀
