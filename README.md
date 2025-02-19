@@ -1,24 +1,24 @@
-# Edumate
+# **Edumate**
 
-Edumate makes it easy for learners and instructors to connect – inside and outside of schools.
-Edumate saves time and paper and makes it easy to create classes, distribute assignments,
-communicate and stay organised.
+Edumate makes it easy for learners and instructors to connect—inside and outside of schools.
+It saves time and paper while simplifying class creation, assignment distribution, and
+communication.
 
-There are many benefits to using Edumate:
+## **Features**
 
-- Easy to set up – Teachers can add students directly or share a code with their class to join. It
-  takes just minutes to set up.
-- Saves time – The simple, paperless assignment workflow allows teachers to create, review and mark
-  assignments quickly, all in one place.
-- Improves organization – Students can see all of their assignments, and all class materials (e.g.,
-  documents, photos, and videos).
-- Enhances communication – Edumate allows teachers to send announcements and start class discussions
-  instantly. Students can share resources with each other or provide answers to questions on the
-  stream.
+- **Easy Setup** – Teachers can add students directly or share a class code for quick onboarding.
+- **Paperless Workflow** – Teachers can create, review, and grade assignments efficiently in one
+  place.
+- **Organized Learning** – Students can access assignments and class materials (documents, images,
+  videos) seamlessly.
+- **Instant Communication** – Teachers can send announcements and initiate class discussions.
+  Students can collaborate and answer questions.
 
-Currently available on the Amazon Appstore.
+## **Download the App**
 
-<a href='https://www.amazon.com/gp/product/B0DXCWYZZY'>
+Edumate is currently available on the **Amazon Appstore**.
+
+<a href='#'>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png">
   <source media="(prefers-color-scheme: light)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png">
@@ -40,49 +40,71 @@ Currently available on the Amazon Appstore.
   <img alt="App Screenshot" src="screenshots/screenshot2.png">
 </picture>
 
-## Architecture
+## **Architecture**
 
-The Google Classroom-like Android app is built with a robust architecture to ensure maintainability,
-scalability, and clean code. We've used the MVVM pattern with Clean Architecture:
+Edumate follows a structured architecture inspired by **Google Classroom**:
 
-- **MVVM (Model-View-ViewModel)**: This architecture pattern separates the user interface from the
-  business logic and data, making the app easy to test and maintain.
+- **MVVM (Model-View-ViewModel)** – Ensures a clean separation of UI and business logic for
+  maintainability.
+- **Clean Architecture** – Implements layers to enhance scalability and flexibility.
 
-- **Clean Architecture**: It ensures a clear separation of concerns, making it easier to make
-  changes in the future without disrupting the entire app.
+## **Getting Started**
 
-## Getting Started
+To run the app locally:
 
-To run the app locally, follow these steps:
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/your-repo/Edumate.git
+   cd Edumate
+   ```
+2. Open the project in **Android Studio**.
+3. Build and run the app on an emulator or physical device.
 
-1. Clone the repository to your local machine.
-2. Open the project in Android Studio.
-3. Build and run the app on an Android emulator or a physical device.
+## **Environment Variables**
 
-## Contributing
+This project requires API keys and sensitive information that should not be committed to version
+control. Ensure you have `local.properties` and `keystore.properties` in your project root with the
+following keys:
 
-Contributions are welcome! If you'd like to contribute to this project, please fork the repository,
-create a branch, make your changes, and submit a pull request.
+1. **`local.properties`** (For API keys)
 
-## License
+   ```properties
+   ONESIGNAL_APP_ID=your-onesignal-app-id
+   SUPABASE_ANON_KEY=your-supabase-anon-key
+   SUPABASE_URL=your-supabase-url
+   ```
 
-```
-Copyright 2021 The Android Open Source Project
+2. **`keystore.properties`** (For signing the app)
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+   ```properties
+   storePassword=your-store-password
+   keyPassword=your-key-password
+   keyAlias=your-key-alias
+   storeFile=path-to-your-keystore.jks
+   ```
 
-    https://www.apache.org/licenses/LICENSE-2.0
+### **Setup Instructions for Developers**
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+Before running the project, create `local.properties` and `keystore.properties` manually and add the
+required values.
 
-Feel free to explore the code and use this project as a reference for your own Android development
-endeavors. If you have any questions or need assistance, please don't hesitate to reach out.
+## **Contributing**
 
-Happy learning!
+We welcome contributions! To contribute:
+
+1. Fork the repository.
+2. Create a feature branch:
+   ```sh
+   git checkout -b feature-name
+   ```
+3. Make your changes and commit:
+   ```sh
+   git commit -m "Add feature-name"
+   ```
+4. Push to your branch and open a **Pull Request**.
+
+## **Support & Contact**
+
+For issues or suggestions, feel free to open an [issue](#) or start a discussion.
+
+Happy learning! 🚀
