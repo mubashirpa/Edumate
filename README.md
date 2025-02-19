@@ -16,6 +16,16 @@ There are many benefits to using Edumate:
   instantly. Students can share resources with each other or provide answers to questions on the
   stream.
 
+Currently available on the Amazon Appstore.
+
+<a href='https://www.amazon.com/gp/product/B0DXCWYZZY'>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png">
+  <source media="(prefers-color-scheme: light)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png">
+  <img alt="Get it on Amazon Appstore" src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png" height='66px'>
+</picture>
+</a>
+
 ## Screenshots
 
 <picture>
