@@ -146,6 +146,7 @@ private fun AttachmentsListItemContent(
                         imageSize = 24,
                         modifier = thumbnailModifier,
                         iconSize = 18,
+                        icon = icon,
                     )
                 }
 

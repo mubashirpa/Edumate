@@ -112,6 +112,7 @@ fun AttachmentsListItem(
                         imageUrl = thumbnail,
                         imageSize = 56,
                         modifier = thumbnailModifier,
+                        icon = icon,
                     )
                 }
 

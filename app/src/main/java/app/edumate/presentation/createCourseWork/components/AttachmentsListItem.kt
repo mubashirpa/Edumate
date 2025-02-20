@@ -38,7 +38,10 @@ fun AttachmentsListItem(
     val context = LocalContext.current
     val driveFile = material.driveFile
     val link = material.link
-    val thumbnailModifier = Modifier.size(24.dp).clip(MaterialTheme.shapes.extraSmall)
+    val thumbnailModifier =
+        Modifier
+            .size(24.dp)
+            .clip(MaterialTheme.shapes.extraSmall)
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
@@ -87,6 +90,7 @@ fun AttachmentsListItem(
                         imageUrl = thumbnail,
                         imageSize = 24,
                         modifier = thumbnailModifier,
+                        icon = icon,
                     )
                 }
 
