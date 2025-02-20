@@ -2,7 +2,6 @@ package app.edumate.presentation.viewCourseWork.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
@@ -20,7 +19,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -33,6 +31,7 @@ import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.material.Material
 import app.edumate.domain.model.studentSubmission.SubmissionState
 import app.edumate.presentation.components.ImageThumbnail
+import app.edumate.presentation.components.ThumbnailPlaceholder
 import app.edumate.presentation.components.VideoThumbnail
 
 @Composable
@@ -45,10 +44,10 @@ fun AttachmentsListItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
-    val fileUtils = remember { FileUtils(context) }
-    val thumbnailModifier = Modifier.size(56.dp).clip(MaterialTheme.shapes.medium)
     val driveFile = material.driveFile
     val link = material.link
+    val fileUtils = remember { FileUtils(context) }
+    val thumbnailModifier = Modifier.size(56.dp).clip(MaterialTheme.shapes.medium)
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
@@ -97,9 +96,11 @@ fun AttachmentsListItem(
                 ).clickable(
                     enabled = url != null,
                     onClick = {
-                        when {
-                            link != null -> onClickLink(url!!)
-                            driveFile != null -> onClickFile(mimeType, url!!, driveFile.title)
+                        url?.let {
+                            when {
+                                link != null -> onClickLink(url)
+                                driveFile != null -> onClickFile(mimeType, url, driveFile.title)
+                            }
                         }
                     },
                 ),
@@ -133,15 +134,10 @@ fun AttachmentsListItem(
                 }
 
                 else -> {
-                    Box(
+                    ThumbnailPlaceholder(
+                        icon = icon,
                         modifier = thumbnailModifier,
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                        )
-                    }
+                    )
                 }
             }
         },
