@@ -25,11 +25,12 @@ fun ImageThumbnail(
     imageUrl: String?,
     imageSize: Int,
     modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.Default.Image,
     iconSize: Int = 24,
 ) {
     val placeholder: @Composable () -> Unit = {
         ThumbnailPlaceholder(
-            icon = Icons.Default.Image,
+            icon = icon,
             modifier = Modifier.fillMaxSize(),
             iconSize = iconSize,
         )
@@ -60,11 +61,12 @@ fun VideoThumbnail(
     videoUrl: String?,
     imageSize: Int,
     modifier: Modifier = Modifier,
+    icon: ImageVector = Icons.Default.VideoFile,
     iconSize: Int = 24,
 ) {
     val placeholder: @Composable () -> Unit = {
         ThumbnailPlaceholder(
-            icon = Icons.Default.VideoFile,
+            icon = icon,
             modifier = Modifier.fillMaxSize(),
             iconSize = iconSize,
         )
