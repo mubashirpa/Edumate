@@ -11,29 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.outlined.Subject
-import androidx.compose.material.icons.filled.Attachment
-import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Link
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
 import androidx.compose.material.icons.outlined.Attachment
 import androidx.compose.material.icons.outlined.Book
 import androidx.compose.material.icons.outlined.People
 import androidx.compose.material3.Button
 import androidx.compose.material3.ElevatedSuggestionChip
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -46,24 +35,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
-import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.presentation.components.FieldListItem
 import app.edumate.presentation.createCourseWork.CreateCourseWorkUiEvent
 import app.edumate.presentation.createCourseWork.CreateCourseWorkUiState
 import app.edumate.presentation.theme.EdumateTheme
-import coil3.compose.AsyncImage
-import coil3.request.ImageRequest
-import coil3.request.crossfade
 
 @Composable
 fun ContentMaterial(
@@ -180,74 +162,11 @@ fun ContentMaterial(
                         verticalArrangement = Arrangement.Center,
                     ) {
                         uiState.attachments.onEachIndexed { index, material ->
-                            val title: String
-                            val icon: ImageVector
-
-                            when {
-                                material.driveFile != null -> {
-                                    val mimeType =
-                                        fileUtils.getFileTypeFromMimeType(material.driveFile.mimeType)
-                                    title = material.driveFile.title.orEmpty()
-                                    icon =
-                                        when (mimeType) {
-                                            FileType.IMAGE -> Icons.Default.Image
-                                            FileType.VIDEO -> Icons.Default.VideoFile
-                                            FileType.AUDIO -> Icons.Default.AudioFile
-                                            FileType.PDF -> Icons.Default.PictureAsPdf
-                                            FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                                        }
-                                }
-
-                                material.link != null -> {
-                                    title = material.link.title.orEmpty()
-                                    icon = Icons.Default.Link
-                                }
-
-                                else -> {
-                                    title = ""
-                                    icon = Icons.Default.Attachment
-                                }
-                            }
-
-                            ListItem(
-                                headlineContent = {
-                                    Text(
-                                        text = title,
-                                        overflow = TextOverflow.Ellipsis,
-                                        maxLines = 1,
-                                    )
-                                },
-                                leadingContent = {
-                                    if (material.link?.thumbnailUrl.isNullOrEmpty()) {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null,
-                                        )
-                                    } else {
-                                        AsyncImage(
-                                            model =
-                                                ImageRequest
-                                                    .Builder(context)
-                                                    .data(material.link.thumbnailUrl)
-                                                    .crossfade(true)
-                                                    .build(),
-                                            contentDescription = null,
-                                            contentScale = ContentScale.Inside,
-                                            modifier = Modifier.size(24.dp),
-                                        )
-                                    }
-                                },
-                                trailingContent = {
-                                    IconButton(
-                                        onClick = {
-                                            onEvent(CreateCourseWorkUiEvent.RemoveAttachment(index))
-                                        },
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Clear,
-                                            contentDescription = null,
-                                        )
-                                    }
+                            AttachmentsListItem(
+                                material = material,
+                                fileUtils = fileUtils,
+                                onRemoveAttachmentClick = {
+                                    onEvent(CreateCourseWorkUiEvent.RemoveAttachment(index))
                                 },
                             )
                             HorizontalDivider()
