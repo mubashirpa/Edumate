@@ -149,6 +149,9 @@ class StreamViewModel(
                     uiState = uiState.copy(replyAnnouncementId = event.announcementId)
                     getComments(commentsAnnouncementId = announcementId, isRefreshing = false)
                 } else {
+                    // Reload announcements to reflect the change in comments count
+                    getAnnouncements(true) // TODO: Is it necessary or is there any alternative?
+
                     uiState = uiState.copy(replyAnnouncementId = null)
                     // Reset the bottom sheet state on close
                     commentsUiState = CommentsBottomSheetUiState()
