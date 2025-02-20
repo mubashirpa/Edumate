@@ -28,19 +28,10 @@ import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Attachment
-import androidx.compose.material.icons.filled.AudioFile
-import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.VideoFile
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +52,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -88,6 +78,7 @@ import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.components.ProgressDialog
 import app.edumate.presentation.courseDetails.CourseUserRole
 import app.edumate.presentation.stream.components.AnnouncementListItem
+import app.edumate.presentation.stream.components.AttachmentsListItem
 import app.edumate.presentation.stream.components.DeleteAnnouncementDialog
 import app.edumate.presentation.theme.EdumateTheme
 import java.io.File
@@ -425,54 +416,13 @@ private fun AttachmentsContent(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             attachments.forEachIndexed { index, attachment ->
-                var title: String = ""
-                var icon: ImageVector = Icons.Default.Attachment
-
-                when {
-                    attachment.driveFile != null -> {
-                        val mimeType =
-                            fileUtils.getFileTypeFromMimeType(attachment.driveFile.mimeType)
-                        title = attachment.driveFile.title.orEmpty()
-                        icon =
-                            when (mimeType) {
-                                FileType.IMAGE -> Icons.Default.Image
-                                FileType.VIDEO -> Icons.Default.VideoFile
-                                FileType.AUDIO -> Icons.Default.AudioFile
-                                FileType.PDF -> Icons.Default.PictureAsPdf
-                                FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                            }
-                    }
-
-                    attachment.link != null -> {
-                        title = attachment.link.title.orEmpty()
-                        icon = Icons.Default.Link
-                    }
-                }
-
-                AssistChip(
+                AttachmentsListItem(
+                    material = attachment,
+                    fileUtils = fileUtils,
                     onClick = {
                         onEvent(StreamUiEvent.RemoveAttachment(index))
                     },
-                    label = {
-                        Text(
-                            text = title,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1,
-                        )
-                    },
                     modifier = Modifier.widthIn(max = 180.dp),
-                    leadingIcon = {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Clear,
-                            contentDescription = null,
-                        )
-                    },
                 )
             }
         }
