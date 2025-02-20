@@ -15,15 +15,8 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
-import androidx.compose.material.icons.filled.AudioFile
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Image
-import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PictureAsPdf
-import androidx.compose.material.icons.filled.VideoFile
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -277,70 +270,17 @@ private fun AnnouncementListItemContent(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     materials.forEach { material ->
-                        when {
-                            material.driveFile != null -> {
-                                val mimeType =
-                                    fileUtils.getFileTypeFromMimeType(material.driveFile.mimeType)
-                                val icon =
-                                    when (mimeType) {
-                                        FileType.IMAGE -> Icons.Default.Image
-                                        FileType.VIDEO -> Icons.Default.VideoFile
-                                        FileType.AUDIO -> Icons.Default.AudioFile
-                                        FileType.PDF -> Icons.Default.PictureAsPdf
-                                        FileType.UNKNOWN -> Icons.AutoMirrored.Default.InsertDriveFile
-                                    }
-
-                                AssistChip(
-                                    onClick = {
-                                        material.driveFile.alternateLink?.let {
-                                            onFileAttachmentClick(
-                                                mimeType,
-                                                it,
-                                                material.driveFile.title,
-                                            )
-                                        }
-                                    },
-                                    label = {
-                                        Text(
-                                            text = material.driveFile.title.orEmpty(),
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                        )
-                                    },
-                                    modifier = Modifier.widthIn(max = 180.dp),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = icon,
-                                            contentDescription = null,
-                                        )
-                                    },
-                                )
-                            }
-
-                            material.link != null -> {
-                                AssistChip(
-                                    onClick = {
-                                        val browserIntent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(material.link.url))
-                                        context.startActivity(browserIntent)
-                                    },
-                                    label = {
-                                        Text(
-                                            text = material.link.title.orEmpty(),
-                                            overflow = TextOverflow.Ellipsis,
-                                            maxLines = 1,
-                                        )
-                                    },
-                                    modifier = Modifier.widthIn(max = 180.dp),
-                                    leadingIcon = {
-                                        Icon(
-                                            imageVector = Icons.Default.Link,
-                                            contentDescription = null,
-                                        )
-                                    },
-                                )
-                            }
-                        }
+                        AttachmentsListItem(
+                            material = material,
+                            fileUtils = fileUtils,
+                            onClickFile = onFileAttachmentClick,
+                            onClickLink = { url ->
+                                val browserIntent =
+                                    Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(browserIntent)
+                            },
+                            modifier = Modifier.widthIn(max = 180.dp),
+                        )
                     }
                 }
             }
