@@ -44,6 +44,7 @@ fun AttachmentsListItem(
     fileUtils: FileUtils,
     onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClickLink: (url: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     AttachmentsListItemContent(
         driveFile = material.driveFile,
@@ -51,6 +52,7 @@ fun AttachmentsListItem(
         fileUtils = fileUtils,
         onClickFile = onClickFile,
         onClickLink = onClickLink,
+        modifier = modifier,
     )
 }
 
@@ -61,6 +63,7 @@ private fun AttachmentsListItemContent(
     fileUtils: FileUtils,
     onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
     onClickLink: (url: String) -> Unit,
+    modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
     val interactionSource = remember { MutableInteractionSource() }
@@ -98,15 +101,17 @@ private fun AttachmentsListItemContent(
 
     Column(
         modifier =
-            Modifier
+            modifier
                 .clickable(
                     interactionSource = interactionSource,
                     indication = null,
                     enabled = url != null,
                     onClick = {
-                        when {
-                            link != null -> onClickLink(url!!)
-                            driveFile != null -> onClickFile(mimeType, url!!, driveFile.title)
+                        url?.let {
+                            when {
+                                link != null -> onClickLink(url)
+                                driveFile != null -> onClickFile(mimeType, url, driveFile.title)
+                            }
                         }
                     },
                 ),
