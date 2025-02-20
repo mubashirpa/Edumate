@@ -49,7 +49,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -85,6 +84,15 @@ fun ContentQuestion(
     val context = LocalContext.current
     val focusRequester = remember { FocusRequester() }
     val fileUtils = remember { FileUtils(context) }
+    val itemModifier =
+        Modifier
+            .fillMaxWidth()
+            .heightIn(min = 56.dp)
+            .border(
+                width = 1.dp,
+                color = MaterialTheme.colorScheme.outline,
+                shape = MaterialTheme.shapes.extraSmall,
+            )
 
     Column(modifier = modifier) {
         Column(
@@ -124,15 +132,7 @@ fun ContentQuestion(
             FieldListItem(
                 headlineContent = {
                     Row(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ).horizontalScroll(rememberScrollState()),
+                        modifier = itemModifier.horizontalScroll(rememberScrollState()),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Spacer(modifier = Modifier.width(16.dp))
@@ -245,16 +245,7 @@ fun ContentQuestion(
                 FieldListItem(
                     headlineContent = {
                         Column(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .heightIn(min = 56.dp)
-                                    .clip(MaterialTheme.shapes.extraSmall)
-                                    .border(
-                                        width = 1.dp,
-                                        color = MaterialTheme.colorScheme.outline,
-                                        shape = MaterialTheme.shapes.extraSmall,
-                                    ),
+                            modifier = itemModifier,
                             verticalArrangement = Arrangement.Center,
                         ) {
                             MultipleChoiceContent(
@@ -276,16 +267,7 @@ fun ContentQuestion(
             FieldListItem(
                 headlineContent = {
                     Column(
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .heightIn(min = 56.dp)
-                                .clip(MaterialTheme.shapes.extraSmall)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ),
+                        modifier = itemModifier,
                         verticalArrangement = Arrangement.Center,
                     ) {
                         uiState.attachments.onEachIndexed { index, material ->
@@ -350,14 +332,7 @@ fun ContentQuestion(
                     val interactionSource = remember { MutableInteractionSource() }
                     Row(
                         modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .height(56.dp)
-                                .border(
-                                    width = 1.dp,
-                                    color = MaterialTheme.colorScheme.outline,
-                                    shape = MaterialTheme.shapes.extraSmall,
-                                ).clip(MaterialTheme.shapes.extraSmall)
+                            itemModifier
                                 .indication(interactionSource, ripple())
                                 .clickable(
                                     interactionSource = interactionSource,
