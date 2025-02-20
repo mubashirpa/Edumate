@@ -1,6 +1,5 @@
 package app.edumate.presentation.stream.components
 
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -15,7 +14,6 @@ import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,6 +26,7 @@ import app.edumate.domain.model.material.DriveFile
 import app.edumate.domain.model.material.Link
 import app.edumate.domain.model.material.Material
 import app.edumate.presentation.components.ImageThumbnail
+import app.edumate.presentation.components.ThumbnailPlaceholder
 import app.edumate.presentation.components.VideoThumbnail
 
 @Composable
@@ -146,6 +145,7 @@ private fun AttachmentsListItemContent(
                         imageUrl = thumbnail,
                         imageSize = 24,
                         modifier = thumbnailModifier,
+                        iconSize = 18,
                     )
                 }
 
@@ -155,6 +155,7 @@ private fun AttachmentsListItemContent(
                         imageUrl = url,
                         imageSize = 24,
                         modifier = thumbnailModifier,
+                        iconSize = 18,
                     )
                 }
 
@@ -164,19 +165,16 @@ private fun AttachmentsListItemContent(
                         videoUrl = url,
                         imageSize = 24,
                         modifier = thumbnailModifier,
+                        iconSize = 18,
                     )
                 }
 
                 else -> {
-                    Box(
+                    ThumbnailPlaceholder(
+                        icon = icon,
                         modifier = thumbnailModifier,
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        Icon(
-                            imageVector = icon,
-                            contentDescription = null,
-                        )
-                    }
+                        iconSize = 18,
+                    )
                 }
             }
         },
