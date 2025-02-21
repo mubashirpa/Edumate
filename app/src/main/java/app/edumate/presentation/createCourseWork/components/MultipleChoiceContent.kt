@@ -1,6 +1,8 @@
 package app.edumate.presentation.createCourseWork.components
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,13 +20,13 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -50,14 +52,18 @@ fun MultipleChoiceContent(
     val context = LocalContext.current
 
     Column(modifier = modifier) {
-        choices.onEachIndexed { index, choice ->
-            var state by remember(choice) {
-                mutableStateOf(
-                    TextFieldValue(
-                        text = choice,
-                        selection = TextRange(choice.length),
-                    ),
-                )
+        choices.forEachIndexed { index, choice ->
+            var value by remember { mutableStateOf(TextFieldValue(choice)) }
+            val interactionSource = remember { MutableInteractionSource() }
+            val isFocused by interactionSource.collectIsFocusedAsState()
+
+            LaunchedEffect(isFocused) {
+                val endRange = if (isFocused) value.text.length else 0
+                value = value.copy(selection = TextRange(start = 0, end = endRange))
+            }
+
+            LaunchedEffect(choice) {
+                value = TextFieldValue(choice)
             }
 
             ListItem(
@@ -71,20 +77,15 @@ fun MultipleChoiceContent(
                             onClick = null,
                         )
                         BasicTextField(
-                            value = state,
+                            value = value,
                             onValueChange = {
+                                value = it
                                 onChoiceChange(index, it.text)
                             },
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp)
-                                    .onFocusChanged { focusState ->
-                                        if (focusState.isFocused) {
-                                            state =
-                                                state.copy(selection = TextRange(0, choice.length))
-                                        }
-                                    },
+                                    .padding(start = 16.dp),
                             textStyle =
                                 MaterialTheme.typography.bodyLarge.copy(
                                     color = MaterialTheme.colorScheme.onSurface,
@@ -102,6 +103,7 @@ fun MultipleChoiceContent(
                                         focusManager.clearFocus()
                                     },
                                 ),
+                            interactionSource = interactionSource,
                             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
                         )
                     }
