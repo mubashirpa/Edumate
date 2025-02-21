@@ -66,6 +66,7 @@ class StreamViewModel(
     private var announcementId = UUID.randomUUID().toString()
     private var getAnnouncementsJob: Job? = null
     private var getAnnouncementCommentsJob: Job? = null
+    private val materialsToDelete = mutableListOf<Material>()
 
     init {
         getCurrentUser()
@@ -85,15 +86,21 @@ class StreamViewModel(
                         .trim()
 
                 if (uiState.editAnnouncement == null) {
+                    // Creating a new announcement with the provided text and attached materials.
                     createAnnouncement(
                         text = text,
                         materials = uiState.attachments,
                     )
                 } else {
-                    updateAnnouncement(
-                        text = text,
-                        materials = uiState.attachments,
-                    )
+                    // Editing an existing announcement:
+                    // First, delete the attachments that were removed from the current announcement during editing.
+                    // Then, proceed with updating the announcement with the remaining attachments.
+                    deleteFiles(materialsToDelete) {
+                        updateAnnouncement(
+                            text = text,
+                            materials = uiState.attachments,
+                        )
+                    }
                 }
             }
 
@@ -102,17 +109,24 @@ class StreamViewModel(
             }
 
             is StreamUiEvent.OnEditAnnouncement -> {
+                // Clear the list of materials marked for deletion.
+                materialsToDelete.clear()
+
                 val announcement = event.announcement
 
                 if (announcement != null) {
                     if (uiState.editAnnouncement == null && uiState.attachments.isNotEmpty()) {
+                        // User is trying to edit an announcement while new attachments have already been added.
+                        // Remove all the newly added attachments first before switching to edit mode.
                         deleteFiles(uiState.attachments) {
                             updateEditAnnouncementState(announcement)
                         }
                     } else {
+                        // No new attachments were added, proceed with editing directly.
                         updateEditAnnouncementState(announcement)
                     }
                 } else {
+                    // No announcement to edit, reset the edit state.
                     uiState = uiState.copy(editAnnouncement = null)
                     resetAnnouncementState()
                 }
@@ -147,13 +161,16 @@ class StreamViewModel(
                 val announcementId = event.announcementId
                 if (announcementId != null) {
                     uiState = uiState.copy(replyAnnouncementId = event.announcementId)
+                    // Fetch and display comments for the selected announcement.
                     getComments(commentsAnnouncementId = announcementId, isRefreshing = false)
                 } else {
-                    // Reload announcements to reflect the change in comments count
-                    getAnnouncements(true) // TODO: Is it necessary or is there any alternative?
+                    // Closing the comments bottom sheet.
+
+                    // Reload announcements to reflect the updated comments count.
+                    getAnnouncements(true) // TODO: Is this necessary, or can we update only the modified announcement?
 
                     uiState = uiState.copy(replyAnnouncementId = null)
-                    // Reset the bottom sheet state on close
+                    // Reset the bottom sheet UI state upon closing.
                     commentsUiState = CommentsBottomSheetUiState()
                 }
             }
@@ -166,7 +183,17 @@ class StreamViewModel(
                 val attachment = uiState.attachments[event.position]
                 when {
                     attachment.driveFile != null -> {
-                        deleteFiles(materials = listOf(attachment))
+                        if (uiState.editAnnouncement == null) {
+                            // No ongoing edit, so delete the attachment file from storage immediately.
+                            deleteFiles(materials = listOf(attachment))
+                        } else {
+                            // Editing is in progress:
+                            // Mark the attachment for deletion (it will be removed from storage after edit confirmation).
+                            materialsToDelete.add(attachment)
+
+                            // Remove the attachment from the UI list to reflect the change immediately.
+                            uiState.attachments.removeAt(event.position)
+                        }
                     }
 
                     attachment.link != null -> {
@@ -710,8 +737,8 @@ class StreamViewModel(
                 }
 
                 is Result.Success -> {
-                    uiState.attachments.removeAll { material ->
-                        material.driveFile?.title?.isNotEmpty() == true
+                    materials.forEach { material ->
+                        uiState.attachments.remove(material)
                     }
                     onSuccess()
                     uiState = uiState.copy(openProgressDialog = false)
