@@ -10,8 +10,9 @@ import androidx.compose.material.icons.filled.Image
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material.icons.filled.PictureAsPdf
 import androidx.compose.material.icons.filled.VideoFile
-import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material3.InputChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,7 +20,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.domain.model.material.DriveFile
@@ -87,8 +87,10 @@ private fun AttachmentsListItemContent(
     val context = LocalContext.current
     val thumbnailModifier =
         Modifier
-            .size(24.dp)
+            .size(InputChipDefaults.AvatarSize)
             .clip(CircleShape)
+    val imageSize = InputChipDefaults.AvatarSize.value.toInt()
+    val iconSize = 18
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
@@ -120,7 +122,8 @@ private fun AttachmentsListItemContent(
         else -> return
     }
 
-    AssistChip(
+    InputChip(
+        selected = false,
         onClick = {
             url?.let {
                 when {
@@ -137,15 +140,15 @@ private fun AttachmentsListItemContent(
             )
         },
         modifier = modifier,
-        leadingIcon = {
+        avatar = {
             when {
                 thumbnail != null -> {
                     ImageThumbnail(
                         context = context,
                         imageUrl = thumbnail,
-                        imageSize = 24,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
-                        iconSize = 18,
+                        iconSize = iconSize,
                         icon = icon,
                     )
                 }
@@ -154,9 +157,9 @@ private fun AttachmentsListItemContent(
                     ImageThumbnail(
                         context = context,
                         imageUrl = url,
-                        imageSize = 24,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
-                        iconSize = 18,
+                        iconSize = iconSize,
                     )
                 }
 
@@ -164,9 +167,9 @@ private fun AttachmentsListItemContent(
                     VideoThumbnail(
                         context = context,
                         videoUrl = url,
-                        imageSize = 24,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
-                        iconSize = 18,
+                        iconSize = iconSize,
                     )
                 }
 
@@ -174,7 +177,7 @@ private fun AttachmentsListItemContent(
                     ThumbnailPlaceholder(
                         icon = icon,
                         modifier = thumbnailModifier,
-                        iconSize = 18,
+                        iconSize = iconSize,
                     )
                 }
             }
