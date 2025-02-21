@@ -36,7 +36,7 @@ fun UserAvatar(
     fullName: String,
     photoUrl: String?,
     modifier: Modifier = Modifier,
-    size: Int = 40,
+    size: Dp = 40.dp,
     shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
@@ -49,7 +49,7 @@ fun UserAvatar(
             firstName = firstName,
             lastName = lastName,
             modifier = modifier,
-            size = size.dp,
+            size = size,
             shape = shape,
             textStyle = textStyle,
         )
@@ -61,13 +61,13 @@ fun UserAvatar(
                 ImageRequest
                     .Builder(LocalContext.current)
                     .data(photoUrl)
-                    .size(size)
+                    .size(size.value.toInt())
                     .crossfade(true)
                     .build(),
             contentDescription = null,
             modifier =
                 modifier
-                    .size(size.dp)
+                    .size(size)
                     .clip(shape),
             loading = {
                 avatar()
