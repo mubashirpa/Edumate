@@ -2,6 +2,7 @@ package app.edumate.presentation.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Menu
@@ -40,6 +42,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.stringResource
@@ -153,21 +156,21 @@ private fun HomeContent(
                     }
                 },
                 actions = {
-                    Box(
-                        modifier = Modifier.minimumInteractiveComponentSize(),
-                        contentAlignment = Alignment.Center,
-                    ) {
-                        UserAvatar(
-                            id = uiState.currentUser?.id.orEmpty(),
-                            fullName =
-                                uiState.currentUser?.name
-                                    ?: uiState.currentUser?.email.orEmpty(),
-                            photoUrl = uiState.currentUser?.photoUrl,
-                            modifier = Modifier.clickable(onClick = onNavigateToProfile),
-                            size = 30.dp,
-                            textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),
-                        )
-                    }
+                    val interactionSource = remember { MutableInteractionSource() }
+                    UserAvatar(
+                        id = uiState.currentUser?.id.orEmpty(),
+                        fullName =
+                            uiState.currentUser?.name
+                                ?: uiState.currentUser?.email.orEmpty(),
+                        photoUrl = uiState.currentUser?.photoUrl,
+                        modifier =
+                            Modifier
+                                .minimumInteractiveComponentSize()
+                                .clip(CircleShape)
+                                .clickable(onClick = onNavigateToProfile),
+                        size = 30.dp,
+                        textStyle = MaterialTheme.typography.titleMedium.copy(fontSize = 12.sp),
+                    )
                     Box(modifier = Modifier.wrapContentSize(Alignment.TopStart)) {
                         IconButton(
                             onClick = {
