@@ -5,11 +5,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,9 +25,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.isUnspecified
 import androidx.core.graphics.ColorUtils
-import coil3.compose.AsyncImagePainter
 import coil3.compose.SubcomposeAsyncImage
-import coil3.compose.SubcomposeAsyncImageContent
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import kotlin.math.absoluteValue
@@ -40,7 +36,7 @@ fun UserAvatar(
     fullName: String,
     photoUrl: String?,
     modifier: Modifier = Modifier,
-    size: Dp = 40.dp,
+    size: Int = 40,
     shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
@@ -53,7 +49,7 @@ fun UserAvatar(
             firstName = firstName,
             lastName = lastName,
             modifier = modifier,
-            size = size,
+            size = size.dp,
             shape = shape,
             textStyle = textStyle,
         )
@@ -65,32 +61,22 @@ fun UserAvatar(
                 ImageRequest
                     .Builder(LocalContext.current)
                     .data(photoUrl)
+                    .size(size)
                     .crossfade(true)
                     .build(),
             contentDescription = null,
             modifier =
                 modifier
-                    .size(size)
+                    .size(size.dp)
                     .clip(shape),
+            loading = {
+                avatar()
+            },
+            error = {
+                avatar()
+            },
             contentScale = ContentScale.Crop,
-        ) {
-            val state by painter.state.collectAsState()
-            when (state) {
-                is AsyncImagePainter.State.Loading -> {
-                    Box(contentAlignment = Alignment.Center) {
-                        CircularProgressIndicator()
-                    }
-                }
-
-                is AsyncImagePainter.State.Error -> {
-                    avatar()
-                }
-
-                else -> {
-                    SubcomposeAsyncImageContent()
-                }
-            }
-        }
+        )
     } else {
         avatar()
     }
