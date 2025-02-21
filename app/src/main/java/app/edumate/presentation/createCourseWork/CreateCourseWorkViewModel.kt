@@ -53,6 +53,7 @@ class CreateCourseWorkViewModel(
     private val args = savedStateHandle.toRoute<Screen.CreateCourseWork>()
     private val courseId = args.courseId
     private val courseWorkId = args.courseWorkId ?: UUID.randomUUID().toString()
+    private val materialsToDelete = mutableListOf<Material>()
 
     init {
         uiState =
@@ -82,6 +83,7 @@ class CreateCourseWorkViewModel(
                         .trim()
 
                 if (uiState.isNewCourseWork) {
+                    // Creating a new coursework with the provided details.
                     createCourseWork(
                         title = title,
                         description = description,
@@ -91,14 +93,20 @@ class CreateCourseWorkViewModel(
                         dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
                     )
                 } else {
-                    updateCourseWork(
-                        title = title,
-                        description = description,
-                        choices = uiState.choices,
-                        materials = uiState.attachments,
-                        maxPoints = uiState.points,
-                        dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
-                    )
+                    // Editing an existing coursework:
+                    // First, delete any attachments that were removed during editing.
+                    // Then, clear the deleted materials list and update the coursework.
+                    deleteFiles(materialsToDelete) {
+                        materialsToDelete.clear()
+                        updateCourseWork(
+                            title = title,
+                            description = description,
+                            choices = uiState.choices,
+                            materials = uiState.attachments,
+                            maxPoints = uiState.points,
+                            dueTime = uiState.dueTime?.toString()?.plus("+05:30"),
+                        )
+                    }
                 }
             }
 
@@ -174,7 +182,16 @@ class CreateCourseWorkViewModel(
                 val attachment = uiState.attachments[event.position]
                 when {
                     attachment.driveFile != null -> {
-                        deleteFile(material = attachment)
+                        if (uiState.isNewCourseWork) {
+                            // If this is a new coursework, delete the file immediately from storage.
+                            deleteFiles(listOf(attachment))
+                        } else {
+                            // If editing an existing coursework:
+                            // Mark the attachment for deletion (to be removed from storage later).
+                            materialsToDelete.add(attachment)
+                            // Remove it from the attachments list in UI.
+                            uiState.attachments.removeAt(event.position)
+                        }
                     }
 
                     attachment.link != null -> {
@@ -421,12 +438,25 @@ class CreateCourseWorkViewModel(
         }.launchIn(viewModelScope)
     }
 
-    private fun deleteFile(material: Material) {
-        val title = material.driveFile?.title ?: return
+    private fun deleteFiles(
+        materials: List<Material>,
+        onSuccess: () -> Unit = {},
+    ) {
+        val paths =
+            materials.mapNotNull { material ->
+                material.driveFile?.title?.takeIf { it.isNotEmpty() }?.let {
+                    "$courseId/coursework/$courseWorkId/$it"
+                }
+            }
+
+        if (paths.isEmpty()) {
+            onSuccess()
+            return
+        }
 
         deleteFileUseCase(
             bucketId = Supabase.Storage.MATERIALS_BUCKET_ID,
-            paths = listOf("$courseId/coursework/$courseWorkId/$title"),
+            paths = paths,
         ).onEach { result ->
             when (result) {
                 is Result.Empty -> {}
@@ -444,7 +474,8 @@ class CreateCourseWorkViewModel(
                 }
 
                 is Result.Success -> {
-                    uiState.attachments.remove(material)
+                    uiState.attachments.removeAll(materials)
+                    onSuccess()
                     uiState = uiState.copy(openProgressDialog = false)
                 }
             }
