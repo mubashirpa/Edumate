@@ -2,7 +2,6 @@ package app.edumate.presentation.home
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -156,7 +155,6 @@ private fun HomeContent(
                     }
                 },
                 actions = {
-                    val interactionSource = remember { MutableInteractionSource() }
                     UserAvatar(
                         id = uiState.currentUser?.id.orEmpty(),
                         fullName =
