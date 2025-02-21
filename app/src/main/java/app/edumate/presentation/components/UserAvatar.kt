@@ -104,11 +104,10 @@ private fun TextAvatar(
 
     Box(
         modifier =
-            Modifier
+            modifier
                 .size(size)
                 .clip(shape)
-                .background(color)
-                .then(modifier),
+                .background(color),
         contentAlignment = Alignment.Center,
     ) {
         AutoResizedText(
