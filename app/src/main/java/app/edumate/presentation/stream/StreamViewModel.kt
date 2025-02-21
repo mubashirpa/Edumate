@@ -96,6 +96,7 @@ class StreamViewModel(
                     // First, delete the attachments that were removed from the current announcement during editing.
                     // Then, proceed with updating the announcement with the remaining attachments.
                     deleteFiles(materialsToDelete) {
+                        materialsToDelete.clear()
                         updateAnnouncement(
                             text = text,
                             materials = uiState.attachments,
@@ -737,9 +738,7 @@ class StreamViewModel(
                 }
 
                 is Result.Success -> {
-                    materials.forEach { material ->
-                        uiState.attachments.remove(material)
-                    }
+                    uiState.attachments.removeAll(materials)
                     onSuccess()
                     uiState = uiState.copy(openProgressDialog = false)
                 }
