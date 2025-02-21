@@ -90,7 +90,7 @@ fun EnrolledListItem(
                         id = enrolledCourse.owner?.id.orEmpty(),
                         fullName = enrolledCourse.owner?.name.orEmpty(),
                         photoUrl = enrolledCourse.owner?.photoUrl,
-                        size = InputChipDefaults.AvatarSize,
+                        size = InputChipDefaults.AvatarSize.value.toInt(),
                         shape = MaterialTheme.shapes.medium,
                         textStyle = MaterialTheme.typography.labelSmall,
                     )
