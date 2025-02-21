@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import app.edumate.R
@@ -120,8 +121,16 @@ private fun DueText(
 
                     val annotatedString =
                         buildAnnotatedString {
-                            append("$assignedGrade")
-                            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.onSurfaceVariant)) {
+                            withStyle(
+                                style =
+                                    SpanStyle(
+                                        color = MaterialTheme.colorScheme.tertiary,
+                                        fontWeight = FontWeight.Bold,
+                                    ),
+                            ) {
+                                append("$assignedGrade")
+                            }
+                            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.tertiary)) {
                                 append("/$maxPoints")
                             }
                         }
@@ -173,6 +182,7 @@ private fun DueText(
                     Icon(
                         imageVector = Icons.Default.Done,
                         contentDescription = null,
+                        tint = MaterialTheme.colorScheme.tertiary,
                     )
                     late(isLate)
                 }
