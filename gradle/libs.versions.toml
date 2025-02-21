@@ -25,6 +25,9 @@ jsoup = "1.18.3"
 onesignal = "5.1.28"
 zoomable = "2.0.0"
 pdfViewer = "2.1.1"
+googleServices = "4.4.2"
+firebaseBom = "33.9.0"
+firebaseCrashlytics = "3.0.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -69,12 +72,17 @@ jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
 onesignal = { group = "com.onesignal", name = "OneSignal", version.ref = "onesignal" }
 zoomable = { group = "net.engawapg.lib", name = "zoomable", version.ref = "zoomable" }
 pdf-viewer = { group = "io.github.afreakyelf", name = "Pdf-Viewer", version.ref = "pdfViewer" }
+firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 
 [bundles]
 koin = [
@@ -100,4 +108,8 @@ coil = [
     "coil-compose",
     "coil-network-ktor",
     "coil-video",
+]
+firebase = [
+    "firebase-analytics",
+    "firebase-crashlytics",
 ]

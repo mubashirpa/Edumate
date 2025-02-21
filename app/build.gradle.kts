@@ -14,6 +14,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 android {
@@ -119,4 +121,6 @@ dependencies {
     implementation(libs.onesignal)
     implementation(libs.zoomable)
     implementation(libs.pdf.viewer)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.bundles.firebase)
 }
