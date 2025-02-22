@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -40,9 +41,12 @@ fun UserAvatar(
     shape: Shape = CircleShape,
     textStyle: TextStyle = MaterialTheme.typography.titleMedium,
 ) {
+    val density = LocalDensity.current
+    val imageSize = with(density) { size.toPx().toInt() }
     val name = fullName.split(" ")
     val firstName = name[0]
     val lastName = if (name.size > 1) name[1] else ""
+
     val avatar: @Composable () -> Unit = {
         TextAvatar(
             id = id,
@@ -61,7 +65,7 @@ fun UserAvatar(
                 ImageRequest
                     .Builder(LocalContext.current)
                     .data(photoUrl)
-                    .size(size.value.toInt())
+                    .size(imageSize)
                     .crossfade(true)
                     .build(),
             contentDescription = null,
