@@ -259,7 +259,9 @@ fun ContentQuestion(
                                     uiState.choices.add(it)
                                 },
                                 onChoiceChange = { index, choice ->
-                                    uiState.choices[index] = choice
+                                    if (uiState.choices.size > index) {
+                                        uiState.choices[index] = choice
+                                    }
                                 },
                                 onRemoveChoice = {
                                     uiState.choices.removeAt(it)
