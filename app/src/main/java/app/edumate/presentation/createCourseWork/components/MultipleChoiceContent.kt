@@ -53,7 +53,9 @@ fun MultipleChoiceContent(
 
     Column(modifier = modifier) {
         choices.forEachIndexed { index, choice ->
-            var value by remember { mutableStateOf(TextFieldValue(choice)) }
+            var value by remember {
+                mutableStateOf(TextFieldValue(text = choice, selection = TextRange(choice.length)))
+            }
             val interactionSource = remember { MutableInteractionSource() }
             val isFocused by interactionSource.collectIsFocusedAsState()
 
@@ -63,7 +65,9 @@ fun MultipleChoiceContent(
             }
 
             LaunchedEffect(choice) {
-                value = TextFieldValue(choice)
+                if (value.text != choice) {
+                    value = TextFieldValue(text = choice, selection = TextRange(choice.length))
+                }
             }
 
             ListItem(
