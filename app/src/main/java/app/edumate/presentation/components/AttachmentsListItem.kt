@@ -1,8 +1,10 @@
 package app.edumate.presentation.components
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -55,6 +57,7 @@ fun AttachmentsListItem(
     )
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 private fun AttachmentsListItemContent(
     driveFile: DriveFile?,
@@ -121,40 +124,43 @@ private fun AttachmentsListItemContent(
                     .aspectRatio(16f / 9f)
                     .indication(interactionSource, ripple()),
         ) {
-            when {
-                thumbnail != null -> {
-                    ImageThumbnail(
-                        context = context,
-                        imageUrl = thumbnail,
-                        imageSize = 180,
-                        modifier = thumbnailModifier,
-                        icon = icon,
-                    )
-                }
+            BoxWithConstraints {
+                val imageSize = constraints.maxWidth
+                when {
+                    thumbnail != null -> {
+                        ImageThumbnail(
+                            context = context,
+                            imageUrl = thumbnail,
+                            imageSize = imageSize,
+                            modifier = thumbnailModifier,
+                            icon = icon,
+                        )
+                    }
 
-                mimeType == FileType.IMAGE -> {
-                    ImageThumbnail(
-                        context = context,
-                        imageUrl = url,
-                        imageSize = 180,
-                        modifier = thumbnailModifier,
-                    )
-                }
+                    mimeType == FileType.IMAGE -> {
+                        ImageThumbnail(
+                            context = context,
+                            imageUrl = url,
+                            imageSize = imageSize,
+                            modifier = thumbnailModifier,
+                        )
+                    }
 
-                mimeType == FileType.VIDEO -> {
-                    VideoThumbnail(
-                        context = context,
-                        videoUrl = url,
-                        imageSize = 180,
-                        modifier = thumbnailModifier,
-                    )
-                }
+                    mimeType == FileType.VIDEO -> {
+                        VideoThumbnail(
+                            context = context,
+                            videoUrl = url,
+                            imageSize = imageSize,
+                            modifier = thumbnailModifier,
+                        )
+                    }
 
-                else -> {
-                    ThumbnailPlaceholder(
-                        icon = icon,
-                        modifier = thumbnailModifier,
-                    )
+                    else -> {
+                        ThumbnailPlaceholder(
+                            icon = icon,
+                            modifier = thumbnailModifier,
+                        )
+                    }
                 }
             }
         }

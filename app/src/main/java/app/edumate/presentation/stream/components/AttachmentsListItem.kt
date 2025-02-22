@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
@@ -85,11 +86,12 @@ private fun AttachmentsListItemContent(
     trailingIcon: @Composable (() -> Unit)? = null,
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
     val thumbnailModifier =
         Modifier
             .size(InputChipDefaults.AvatarSize)
             .clip(CircleShape)
-    val imageSize = InputChipDefaults.AvatarSize.value.toInt()
+    val imageSize = with(density) { InputChipDefaults.AvatarSize.toPx().toInt() }
     val iconSize = 18
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String

@@ -24,6 +24,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import app.edumate.core.utils.FileType
@@ -44,10 +45,13 @@ fun AttachmentsListItem(
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
+    val density = LocalDensity.current
     val driveFile = material.driveFile
     val link = material.link
     val fileUtils = remember { FileUtils(context) }
-    val thumbnailModifier = Modifier.size(56.dp).clip(MaterialTheme.shapes.medium)
+    val thumbnailSize = 56.dp
+    val thumbnailModifier = Modifier.size(thumbnailSize).clip(MaterialTheme.shapes.medium)
+    val imageSize = with(density) { thumbnailSize.toPx().toInt() }
     val mimeType = fileUtils.getFileTypeFromMimeType(driveFile?.mimeType)
     val title: String
     val icon: ImageVector
@@ -110,7 +114,7 @@ fun AttachmentsListItem(
                     ImageThumbnail(
                         context = context,
                         imageUrl = thumbnail,
-                        imageSize = 56,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
                         icon = icon,
                     )
@@ -120,7 +124,7 @@ fun AttachmentsListItem(
                     ImageThumbnail(
                         context = context,
                         imageUrl = url,
-                        imageSize = 56,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
                     )
                 }
@@ -129,7 +133,7 @@ fun AttachmentsListItem(
                     VideoThumbnail(
                         context = context,
                         videoUrl = url,
-                        imageSize = 56,
+                        imageSize = imageSize,
                         modifier = thumbnailModifier,
                     )
                 }
