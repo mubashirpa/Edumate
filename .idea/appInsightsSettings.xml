@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="app.edumate" />
+                  <option name="mobileSdkAppId" value="1:242656945367:android:43febbd7e49e72afec7c92" />
+                  <option name="projectId" value="edumate-learning" />
+                  <option name="projectNumber" value="242656945367" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />
