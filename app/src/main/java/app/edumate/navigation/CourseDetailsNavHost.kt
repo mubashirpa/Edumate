@@ -106,6 +106,8 @@ fun CourseDetailsNavHost(
                         ?.savedStateHandle[Navigation.Args.CREATE_COURSE_WORK_SUCCESS] = true
                     navController.navigateUp()
                 },
+                onNavigateToImageViewer = onNavigateToImageViewer,
+                onNavigateToPdfViewer = onNavigateToPdfViewer,
             )
         }
         composable<Screen.ViewCourseWork> {

@@ -1,5 +1,6 @@
 package app.edumate.presentation.createCourseWork.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.InsertDriveFile
@@ -33,7 +34,9 @@ import app.edumate.presentation.components.VideoThumbnail
 fun AttachmentsListItem(
     material: Material,
     fileUtils: FileUtils,
-    onRemoveAttachmentClick: () -> Unit,
+    onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
+    onClickLink: (url: String) -> Unit,
+    onRemoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -85,7 +88,15 @@ fun AttachmentsListItem(
                 maxLines = 1,
             )
         },
-        modifier = modifier,
+        modifier =
+            modifier.clickable {
+                url?.let {
+                    when {
+                        link != null -> onClickLink(url)
+                        driveFile != null -> onClickFile(mimeType, url, driveFile.title)
+                    }
+                }
+            },
         leadingContent = {
             when {
                 thumbnail != null -> {
@@ -125,7 +136,7 @@ fun AttachmentsListItem(
             }
         },
         trailingContent = {
-            IconButton(onClick = onRemoveAttachmentClick) {
+            IconButton(onClick = onRemoveClick) {
                 Icon(
                     imageVector = Icons.Default.Clear,
                     contentDescription = null,

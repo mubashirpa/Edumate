@@ -1,5 +1,7 @@
 package app.edumate.presentation.createCourseWork.components
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -40,6 +42,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import app.edumate.R
+import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
 import app.edumate.presentation.components.FieldListItem
 import app.edumate.presentation.createCourseWork.CreateCourseWorkUiEvent
@@ -51,6 +54,8 @@ fun ContentMaterial(
     uiState: CreateCourseWorkUiState,
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -156,7 +161,32 @@ fun ContentMaterial(
                             AttachmentsListItem(
                                 material = material,
                                 fileUtils = fileUtils,
-                                onRemoveAttachmentClick = {
+                                onClickFile = { mimeType, url, title ->
+                                    when (mimeType) {
+                                        FileType.IMAGE -> {
+                                            onNavigateToImageViewer(url, title)
+                                        }
+
+                                        FileType.PDF -> {
+                                            onNavigateToPdfViewer(url, title)
+                                        }
+
+                                        else -> {
+                                            val browserIntent =
+                                                Intent(
+                                                    Intent.ACTION_VIEW,
+                                                    Uri.parse(url),
+                                                )
+                                            context.startActivity(browserIntent)
+                                        }
+                                    }
+                                },
+                                onClickLink = { url ->
+                                    val browserIntent =
+                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                    context.startActivity(browserIntent)
+                                },
+                                onRemoveClick = {
                                     onEvent(CreateCourseWorkUiEvent.RemoveAttachment(index))
                                 },
                             )
@@ -219,6 +249,8 @@ private fun ContentMaterialPreview() {
             uiState = CreateCourseWorkUiState(),
             onEvent = {},
             courseName = "Course",
+            onNavigateToImageViewer = { _, _ -> },
+            onNavigateToPdfViewer = { _, _ -> },
         )
     }
 }

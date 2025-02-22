@@ -46,6 +46,8 @@ fun CreateCourseWorkScreen(
     courseName: String,
     onNavigateUp: () -> Unit,
     onCreateCourseWorkComplete: () -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: CreateCourseWorkViewModel = koinViewModel(),
 ) {
@@ -66,6 +68,8 @@ fun CreateCourseWorkScreen(
         onEvent = viewModel::onEvent,
         courseName = courseName,
         onNavigateUp = onNavigateUp,
+        onNavigateToImageViewer = onNavigateToImageViewer,
+        onNavigateToPdfViewer = onNavigateToPdfViewer,
         modifier = modifier,
     )
 }
@@ -77,6 +81,8 @@ private fun CreateCourseWorkContent(
     onEvent: (CreateCourseWorkUiEvent) -> Unit,
     courseName: String,
     onNavigateUp: () -> Unit,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val context = LocalContext.current
@@ -135,6 +141,8 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
+                        onNavigateToImageViewer = onNavigateToImageViewer,
+                        onNavigateToPdfViewer = onNavigateToPdfViewer,
                         modifier = contentModifier,
                     )
                 }
@@ -144,6 +152,8 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
+                        onNavigateToImageViewer = onNavigateToImageViewer,
+                        onNavigateToPdfViewer = onNavigateToPdfViewer,
                         modifier = contentModifier,
                     )
                 }
@@ -153,6 +163,8 @@ private fun CreateCourseWorkContent(
                         uiState = uiState,
                         onEvent = onEvent,
                         courseName = courseName,
+                        onNavigateToImageViewer = onNavigateToImageViewer,
+                        onNavigateToPdfViewer = onNavigateToPdfViewer,
                         modifier = contentModifier,
                     )
                 }
