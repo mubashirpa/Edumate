@@ -1,5 +1,6 @@
 package app.edumate.presentation.stream.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -34,24 +35,23 @@ import app.edumate.presentation.components.VideoThumbnail
 fun AttachmentsListItem(
     material: Material,
     fileUtils: FileUtils,
-    onClick: () -> Unit,
+    onClickFile: (mimeType: FileType, url: String, title: String?) -> Unit,
+    onClickLink: (url: String) -> Unit,
+    onRemoveClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     AttachmentsListItemContent(
         driveFile = material.driveFile,
         link = material.link,
         fileUtils = fileUtils,
-        onClickLink = {
-            onClick()
-        },
-        onClickFile = { _, _, _ ->
-            onClick()
-        },
+        onClickLink = onClickLink,
+        onClickFile = onClickFile,
         modifier = modifier,
         trailingIcon = {
             Icon(
                 imageVector = Icons.Default.Clear,
                 contentDescription = null,
+                modifier = Modifier.clickable(onClick = onRemoveClick),
             )
         },
     )

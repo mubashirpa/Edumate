@@ -321,6 +321,8 @@ fun StreamScreen(
                             attachments = uiState.attachments,
                             onEvent = onEvent,
                             fileUtils = fileUtils,
+                            onNavigateToImageViewer = onNavigateToImageViewer,
+                            onNavigateToPdfViewer = onNavigateToPdfViewer,
                             modifier =
                                 Modifier
                                     .fillMaxWidth()
@@ -408,8 +410,11 @@ private fun AttachmentsContent(
     attachments: List<Material>,
     onEvent: (StreamUiEvent) -> Unit,
     fileUtils: FileUtils,
+    onNavigateToImageViewer: (url: String, title: String?) -> Unit,
+    onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val context = LocalContext.current
     if (attachments.isNotEmpty()) {
         Row(
             modifier = modifier,
@@ -419,7 +424,32 @@ private fun AttachmentsContent(
                 AttachmentsListItem(
                     material = attachment,
                     fileUtils = fileUtils,
-                    onClick = {
+                    onClickFile = { mimeType, url, title ->
+                        when (mimeType) {
+                            FileType.IMAGE -> {
+                                onNavigateToImageViewer(url, title)
+                            }
+
+                            FileType.PDF -> {
+                                onNavigateToPdfViewer(url, title)
+                            }
+
+                            else -> {
+                                val browserIntent =
+                                    Intent(
+                                        Intent.ACTION_VIEW,
+                                        Uri.parse(url),
+                                    )
+                                context.startActivity(browserIntent)
+                            }
+                        }
+                    },
+                    onClickLink = { url ->
+                        val browserIntent =
+                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        context.startActivity(browserIntent)
+                    },
+                    onRemoveClick = {
                         onEvent(StreamUiEvent.RemoveAttachment(index))
                     },
                     modifier = Modifier.widthIn(max = 180.dp),
