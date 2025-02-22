@@ -18,7 +18,7 @@ communication.
 
 Edumate is currently available on the **Amazon Appstore**.
 
-<a href='#'>
+<a href='https://www.amazon.com/gp/product/B0DY4MQYB2'>
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png">
   <source media="(prefers-color-scheme: light)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png">
