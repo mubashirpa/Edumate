@@ -31,11 +31,7 @@ sealed class Screen {
         val courseId: String?,
         @SerialName("code")
         val enrollmentCode: String? = null,
-    ) : Screen() {
-        companion object {
-            const val ROUTE = "app.edumate.navigation.Screen.Home/{courseId}?code={code}"
-        }
-    }
+    ) : Screen()
 
     @Serializable
     data class CreateCourse(

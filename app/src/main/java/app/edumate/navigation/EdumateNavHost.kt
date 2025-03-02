@@ -56,9 +56,7 @@ fun EdumateNavHost(
                     emptyList()
                 } else {
                     listOf(
-                        navDeepLink<Screen.Home>(
-                            basePath = "${Constants.EDUMATE_BASE_URL}course",
-                        ),
+                        navDeepLink<Screen.Home>("${Constants.EDUMATE_BASE_URL}course"),
                     )
                 },
         ) {
@@ -89,7 +87,7 @@ fun EdumateNavHost(
                 onNavigateUp = navController::navigateUp,
                 onSignOutComplete = {
                     navController.navigate(Graph.Authentication) {
-                        popUpTo(Screen.Home.ROUTE) {
+                        popUpTo<Screen.Home> {
                             inclusive = true
                         }
                         launchSingleTop = true
@@ -113,7 +111,7 @@ fun EdumateNavHost(
                         ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
                     if (route.courseId == null) {
                         navController.navigate(Screen.CourseDetails(courseId)) {
-                            popUpTo(Screen.Home.ROUTE)
+                            popUpTo<Screen.Home>()
                         }
                     } else {
                         // For course details screen
@@ -134,9 +132,7 @@ fun EdumateNavHost(
                     emptyList()
                 } else {
                     listOf(
-                        navDeepLink<Screen.CourseDetails>(
-                            basePath = "${Constants.EDUMATE_BASE_URL}course",
-                        ),
+                        navDeepLink<Screen.CourseDetails>("${Constants.EDUMATE_BASE_URL}course"),
                     )
                 },
         ) {
