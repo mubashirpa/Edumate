@@ -1,5 +1,6 @@
 package app.edumate.navigation
 
+import android.content.Intent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.SnackbarHostState
@@ -56,7 +57,9 @@ fun EdumateNavHost(
                     emptyList()
                 } else {
                     listOf(
-                        navDeepLink<Screen.Home>("${Constants.EDUMATE_BASE_URL}course"),
+                        navDeepLink<Screen.Home>("${Constants.EDUMATE_BASE_URL}course") {
+                            action = Intent.ACTION_VIEW
+                        },
                     )
                 },
         ) {
@@ -122,7 +125,10 @@ fun EdumateNavHost(
                     }
                 },
                 onNavigateUp = navController::navigateUp,
-                modifier = Modifier.fillMaxSize().imePadding(),
+                modifier =
+                    Modifier
+                        .fillMaxSize()
+                        .imePadding(),
                 courseId = route.courseId,
             )
         }
@@ -132,7 +138,9 @@ fun EdumateNavHost(
                     emptyList()
                 } else {
                     listOf(
-                        navDeepLink<Screen.CourseDetails>("${Constants.EDUMATE_BASE_URL}course"),
+                        navDeepLink<Screen.CourseDetails>("${Constants.EDUMATE_BASE_URL}course") {
+                            action = Intent.ACTION_VIEW
+                        },
                     )
                 },
         ) {
