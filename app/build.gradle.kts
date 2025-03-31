@@ -38,6 +38,11 @@ android {
         )
         buildConfigField(
             "String",
+            "STREAM_API_KEY",
+            "\"${localProperties.getProperty("STREAM_API_KEY")}\"",
+        )
+        buildConfigField(
+            "String",
             "SUPABASE_ANON_KEY",
             "\"${localProperties.getProperty("SUPABASE_ANON_KEY")}\"",
         )
