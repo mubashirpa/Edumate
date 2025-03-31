@@ -5,7 +5,7 @@ coreKtx = "1.15.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
-lifecycleRuntimeKtx = "2.8.7"
+lifecycle = "2.8.7"
 activityCompose = "1.10.1"
 composeBom = "2025.03.01"
 koinBom = "4.0.3"
@@ -28,13 +28,15 @@ pdfViewer = "2.3.2"
 googleServices = "4.4.2"
 firebaseBom = "33.11.0"
 firebaseCrashlytics = "3.0.3"
+streamVideo = "1.4.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui" }
@@ -75,6 +77,8 @@ pdf-viewer = { group = "io.github.afreakyelf", name = "Pdf-Viewer", version.ref 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+stream-video-ui-compose = { group = "io.getstream", name = "stream-video-android-ui-compose", version.ref = "streamVideo" }
+stream-video-ui-previewdata = { group = "io.getstream", name = "stream-video-android-previewdata", version.ref = "streamVideo" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -112,4 +116,12 @@ coil = [
 firebase = [
     "firebase-analytics",
     "firebase-crashlytics",
+]
+stream = [
+    "stream-video-ui-compose",
+    "stream-video-ui-previewdata",
+]
+lifecycle = [
+    "androidx-lifecycle-runtime-ktx",
+    "androidx-lifecycle-runtime-compose",
 ]
