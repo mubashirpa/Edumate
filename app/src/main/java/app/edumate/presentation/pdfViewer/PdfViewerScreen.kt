@@ -1,7 +1,6 @@
 package app.edumate.presentation.pdfViewer
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -30,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.presentation.components.LoadingScreen
 import com.rajat.pdfviewer.PdfRendererView
@@ -95,7 +95,7 @@ fun PdfViewerScreen(
                                 },
                                 onClick = {
                                     expandedAppBarDropdown = false
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(pdfUrl))
+                                    val intent = Intent(Intent.ACTION_VIEW, pdfUrl.toUri())
                                     context.startActivity(intent)
                                 },
                             )
