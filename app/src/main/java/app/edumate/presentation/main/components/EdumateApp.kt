@@ -4,7 +4,6 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.ComponentActivity
@@ -19,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.navigation.NavHostController
 import app.edumate.BuildConfig
 import app.edumate.navigation.EdumateNavHost
@@ -103,7 +103,7 @@ private fun InitializeNotification(
 private fun openNotificationSettings(context: Context) {
     val intent =
         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-            data = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+            data = "package:${BuildConfig.APPLICATION_ID}".toUri()
         }
     context.startActivity(intent)
 }

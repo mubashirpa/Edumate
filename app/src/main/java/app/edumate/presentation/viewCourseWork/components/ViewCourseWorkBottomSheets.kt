@@ -1,7 +1,6 @@
 package app.edumate.presentation.viewCourseWork.components
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -46,6 +45,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.UiText
@@ -250,7 +250,7 @@ private fun StudentSubmissionBottomSheetContent(
                     },
                     onClickLink = { url ->
                         val browserIntent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            Intent(Intent.ACTION_VIEW, url.toUri())
                         context.startActivity(browserIntent)
                     },
                     onRemoveAttachmentClick = {

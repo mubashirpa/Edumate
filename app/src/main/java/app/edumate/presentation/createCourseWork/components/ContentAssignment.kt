@@ -1,7 +1,6 @@
 package app.edumate.presentation.createCourseWork.components
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -50,6 +49,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.core.utils.FileType
 import app.edumate.core.utils.FileUtils
@@ -187,7 +187,7 @@ fun ContentAssignment(
                                             val browserIntent =
                                                 Intent(
                                                     Intent.ACTION_VIEW,
-                                                    Uri.parse(url),
+                                                    url.toUri(),
                                                 )
                                             context.startActivity(browserIntent)
                                         }
@@ -195,7 +195,7 @@ fun ContentAssignment(
                                 },
                                 onClickLink = { url ->
                                     val browserIntent =
-                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        Intent(Intent.ACTION_VIEW, url.toUri())
                                     context.startActivity(browserIntent)
                                 },
                                 onRemoveClick = {

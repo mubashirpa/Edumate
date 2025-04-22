@@ -1,7 +1,6 @@
 package app.edumate.presentation.viewStudentSubmission
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -51,6 +50,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.ext.header
@@ -417,14 +417,14 @@ private fun ViewStudentSubmissionContent(
 
                                         else -> {
                                             val browserIntent =
-                                                Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                                Intent(Intent.ACTION_VIEW, url.toUri())
                                             context.startActivity(browserIntent)
                                         }
                                     }
                                 },
                                 onClickLink = { url ->
                                     val browserIntent =
-                                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                        Intent(Intent.ACTION_VIEW, url.toUri())
                                     context.startActivity(browserIntent)
                                 },
                             )

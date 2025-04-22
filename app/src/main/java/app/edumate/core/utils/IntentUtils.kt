@@ -2,7 +2,7 @@ package app.edumate.core.utils
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
+import androidx.core.net.toUri
 
 object IntentUtils {
     fun shareText(
@@ -25,7 +25,7 @@ object IntentUtils {
     ) {
         val intent =
             Intent(Intent.ACTION_SENDTO).apply {
-                data = Uri.parse("mailto:") // only email apps should handle this
+                data = "mailto:".toUri() // only email apps should handle this
                 putExtra(Intent.EXTRA_EMAIL, addresses)
             }
         if (intent.resolveActivity(context.packageManager) != null) {

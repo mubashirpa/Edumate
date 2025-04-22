@@ -1,11 +1,11 @@
 package app.edumate.presentation.home
 
-import android.net.Uri
 import android.webkit.URLUtil
 import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.net.toUri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -181,7 +181,7 @@ class HomeViewModel(
 
         val joinId =
             if (URLUtil.isValidUrl(courseId)) {
-                val uri = Uri.parse(courseId)
+                val uri = courseId.toUri()
                 uri.lastPathSegment ?: ""
             } else {
                 courseId

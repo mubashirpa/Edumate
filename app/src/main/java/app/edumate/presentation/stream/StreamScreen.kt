@@ -60,6 +60,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.core.Constants
 import app.edumate.core.Result
@@ -296,7 +297,7 @@ fun StreamScreen(
                                                         val browserIntent =
                                                             Intent(
                                                                 Intent.ACTION_VIEW,
-                                                                Uri.parse(url),
+                                                                url.toUri(),
                                                             )
                                                         context.startActivity(browserIntent)
                                                     }
@@ -438,7 +439,7 @@ private fun AttachmentsContent(
                                 val browserIntent =
                                     Intent(
                                         Intent.ACTION_VIEW,
-                                        Uri.parse(url),
+                                        url.toUri(),
                                     )
                                 context.startActivity(browserIntent)
                             }
@@ -446,7 +447,7 @@ private fun AttachmentsContent(
                     },
                     onClickLink = { url ->
                         val browserIntent =
-                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            Intent(Intent.ACTION_VIEW, url.toUri())
                         context.startActivity(browserIntent)
                     },
                     onRemoveClick = {

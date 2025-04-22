@@ -3,7 +3,6 @@ package app.edumate.presentation.settings
 import android.app.UiModeManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.compose.foundation.layout.Column
@@ -26,6 +25,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringArrayResource
 import androidx.compose.ui.res.stringResource
+import androidx.core.net.toUri
 import app.edumate.BuildConfig
 import app.edumate.R
 import app.edumate.domain.model.preferences.AppTheme
@@ -75,7 +75,7 @@ fun SettingsScreen(
                 onClick = {
                     val intent =
                         Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
-                            data = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+                            data = "package:${BuildConfig.APPLICATION_ID}".toUri()
                         }
                     context.startActivity(intent)
                 },

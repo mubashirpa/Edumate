@@ -47,6 +47,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import app.edumate.R
 import app.edumate.core.Result
 import app.edumate.core.ext.header
@@ -168,13 +169,13 @@ fun ViewCourseWorkContent(
 
                                     else -> {
                                         val browserIntent =
-                                            Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                            Intent(Intent.ACTION_VIEW, url.toUri())
                                         context.startActivity(browserIntent)
                                     }
                                 }
                             },
                             onClickLink = { url ->
-                                val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                val browserIntent = Intent(Intent.ACTION_VIEW, url.toUri())
                                 context.startActivity(browserIntent)
                             },
                         )
@@ -263,7 +264,7 @@ fun ViewCourseWorkContent(
 
                 else -> {
                     val browserIntent =
-                        Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        Intent(Intent.ACTION_VIEW, url.toUri())
                     context.startActivity(browserIntent)
                 }
             }

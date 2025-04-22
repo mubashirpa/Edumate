@@ -1,7 +1,6 @@
 package app.edumate.presentation.imageViewer
 
 import android.content.Intent
-import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
@@ -35,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.core.net.toUri
 import app.edumate.R
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
@@ -124,7 +124,7 @@ fun ImageViewerScreen(
                                     },
                                     onClick = {
                                         expandedAppBarDropdown = false
-                                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(imageUrl))
+                                        val intent = Intent(Intent.ACTION_VIEW, imageUrl.toUri())
                                         context.startActivity(intent)
                                     },
                                 )
