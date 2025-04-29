@@ -3,7 +3,6 @@ package app.edumate.presentation.components
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.foundation.text.input.TextObfuscationMode
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
@@ -20,19 +19,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import app.edumate.R
-import app.edumate.core.ext.autofill
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -41,7 +40,7 @@ fun PasswordField(
     focusManager: FocusManager,
     keyboardController: SoftwareKeyboardController?,
     modifier: Modifier = Modifier,
-    autofillType: List<AutofillType> = listOf(AutofillType.Password),
+    fieldContentType: ContentType = ContentType.Password,
     label: @Composable (TextFieldLabelScope.() -> Unit)? = null,
     placeholder: @Composable (() -> Unit)? = null,
     leadingIcon: @Composable (() -> Unit)? = null,
@@ -59,13 +58,10 @@ fun PasswordField(
     OutlinedSecureTextField(
         state = state,
         modifier =
-            modifier
-                .autofill(
-                    autofillType = autofillType,
-                    onFill = { state.setTextAndPlaceCursorAtEnd(it) },
-                ).semantics {
-                    if (isError && errorMessage != null) error(errorMessage)
-                },
+            modifier.semantics {
+                contentType = fieldContentType
+                if (isError && errorMessage != null) error(errorMessage)
+            },
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,
@@ -80,7 +76,10 @@ fun PasswordField(
                     } else {
                         stringResource(R.string.hide_password)
                     }
-                Icon(imageVector = visibilityIcon, contentDescription = description)
+                Icon(
+                    imageVector = visibilityIcon,
+                    contentDescription = description,
+                )
             }
         },
         supportingText = supportingText,

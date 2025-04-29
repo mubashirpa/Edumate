@@ -22,7 +22,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalContext
@@ -126,7 +126,7 @@ private fun NewPasswordContent(
                         Modifier
                             .fillMaxWidth()
                             .focusRequester(focusRequester),
-                    autofillType = listOf(AutofillType.NewPassword),
+                    fieldContentType = ContentType.NewPassword,
                     placeholder = {
                         Text(text = stringResource(R.string.new_password))
                     },

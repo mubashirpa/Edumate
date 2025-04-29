@@ -27,7 +27,7 @@ import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
@@ -150,7 +150,7 @@ private fun SignInContent(
                     focusManager = focusManager,
                     keyboardController = keyboardController,
                     modifier = Modifier.fillMaxWidth(),
-                    autofillType = listOf(AutofillType.Password),
+                    fieldContentType = ContentType.Password,
                     placeholder = {
                         Text(text = stringResource(id = R.string.password))
                     },

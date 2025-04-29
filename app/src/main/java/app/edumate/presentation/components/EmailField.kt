@@ -3,7 +3,6 @@ package app.edumate.presentation.components
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.foundation.text.input.setTextAndPlaceCursorAtEnd
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
@@ -11,17 +10,17 @@ import androidx.compose.material3.TextFieldLabelScope
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.autofill.AutofillType
+import androidx.compose.ui.autofill.ContentType
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.platform.SoftwareKeyboardController
 import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.contentType
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import app.edumate.core.ext.autofill
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
@@ -47,13 +46,10 @@ fun EmailField(
     OutlinedTextField(
         state = state,
         modifier =
-            modifier
-                .autofill(
-                    autofillType = listOf(AutofillType.EmailAddress),
-                    onFill = { state.setTextAndPlaceCursorAtEnd(it) },
-                ).semantics {
-                    if (isError && errorMessage != null) error(errorMessage)
-                },
+            modifier.semantics {
+                contentType = ContentType.EmailAddress
+                if (isError && errorMessage != null) error(errorMessage)
+            },
         label = label,
         placeholder = placeholder,
         leadingIcon = leadingIcon,

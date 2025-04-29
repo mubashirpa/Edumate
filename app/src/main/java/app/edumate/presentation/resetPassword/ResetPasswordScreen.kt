@@ -138,7 +138,7 @@ private fun ResetPasswordContent(
                     },
                     isError = uiState.emailError != null,
                     errorMessage = uiState.emailError?.asString(),
-                    imeAction = ImeAction.Go,
+                    imeAction = ImeAction.Done,
                 )
                 Spacer(modifier = Modifier.height(24.dp))
                 Button(
