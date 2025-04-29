@@ -25,10 +25,15 @@ class MainViewModel(
     }
 
     fun onEvent(event: MainUiEvent) {
-        when (event) {
-            is MainUiEvent.OnOpenRequestNotificationPermissionDialogChange -> {
-                uiState = uiState.copy(openRequestNotificationPermissionDialog = event.open)
+        uiState =
+            when (event) {
+                is MainUiEvent.OnNotificationPermissionRequestedChange -> {
+                    uiState.copy(notificationPermissionRequested = event.requested)
+                }
+
+                is MainUiEvent.OnOpenRequestNotificationPermissionDialogChange -> {
+                    uiState.copy(openRequestNotificationPermissionDialog = event.open)
+                }
             }
-        }
     }
 }

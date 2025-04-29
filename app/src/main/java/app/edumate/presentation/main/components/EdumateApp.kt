@@ -67,23 +67,25 @@ private fun InitializeNotification(
             }
         }
 
-    LaunchedEffect(Unit) {
+    LaunchedEffect(uiState.notificationPermissionRequested) {
         when {
             ContextCompat.checkSelfPermission(
                 context,
                 POST_NOTIFICATIONS,
-            ) == PackageManager.PERMISSION_GRANTED -> {
-            }
+            ) == PackageManager.PERMISSION_GRANTED ||
+                uiState.notificationPermissionRequested -> Unit
 
             ActivityCompat.shouldShowRequestPermissionRationale(
                 activity,
                 POST_NOTIFICATIONS,
             ) -> {
                 onEvent(MainUiEvent.OnOpenRequestNotificationPermissionDialogChange(true))
+                onEvent(MainUiEvent.OnNotificationPermissionRequestedChange(true))
             }
 
             else -> {
                 requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                onEvent(MainUiEvent.OnNotificationPermissionRequestedChange(true))
             }
         }
     }
