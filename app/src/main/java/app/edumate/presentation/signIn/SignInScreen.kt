@@ -217,7 +217,7 @@ private fun SignInContent(
                 }
                 Spacer(modifier = Modifier.height(12.dp))
                 GoogleSignInButton(
-                    filterByAuthorizedAccounts = true,
+                    filterByAuthorizedAccounts = false,
                     onSignInSuccess = { token, nonce ->
                         onEvent(SignInUiEvent.SignInWithGoogle(token, nonce))
                     },
