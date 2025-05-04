@@ -3,6 +3,7 @@ package app.edumate.di
 import app.edumate.data.AndroidMailMatcher
 import app.edumate.data.local.dataStore
 import app.edumate.domain.MailMatcher
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import kotlinx.coroutines.Dispatchers
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
@@ -13,4 +14,5 @@ val appModule =
         single<MailMatcher> { AndroidMailMatcher() }
         single { androidContext().dataStore }
         single { Dispatchers.IO }
+        single { AppUpdateManagerFactory.create(androidContext()) }
     }
