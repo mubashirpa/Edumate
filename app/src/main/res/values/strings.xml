@@ -114,8 +114,6 @@
     <string name="join_a_class_to_get_started">Join a class to get started</string>
     <string name="join_class">Join class</string>
     <string name="join_class_description">Ask your teacher for the class code, then enter it here</string>
-    <string name="label_animate_bottom_sheet_corner_size" translatable="false">ModalBottomSheet Corner Size</string>
-    <string name="label_animate_bottom_sheet_top_padding" translatable="false">ModalBottomSheet DragHandle Top Padding</string>
     <string name="label_student_answers">Student Answers</string>
     <string name="label_student_work">Student Work</string>
     <string name="leave">Leave</string>
