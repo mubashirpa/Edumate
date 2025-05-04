@@ -14,8 +14,11 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.flowWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import app.edumate.R
 import app.edumate.navigation.Graph
@@ -26,6 +29,7 @@ import app.edumate.presentation.theme.EdumateTheme
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.model.AppUpdateType
+import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -51,6 +55,7 @@ class MainActivity : ComponentActivity() {
             val coroutineScope = rememberCoroutineScope()
             val startDestination = determineStartDestination()
             val uiState = viewModel.uiState
+            val lifecycle = LocalLifecycleOwner.current.lifecycle
             val updateLauncher =
                 rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
                     if (result.resultCode != RESULT_OK) {
@@ -82,14 +87,19 @@ class MainActivity : ComponentActivity() {
                 }
             }
 
-            LaunchedEffect(uiState.updateAvailable) {
-                if (uiState.updateAvailable && uiState.updateInfo != null) {
-                    updateManager.startUpdateFlowForResult(
-                        uiState.updateInfo,
-                        updateLauncher,
-                        AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
-                    )
-                }
+            LaunchedEffect(viewModel, lifecycle) {
+                snapshotFlow { viewModel.uiState }
+                    .filter { it.updateAvailable }
+                    .flowWithLifecycle(lifecycle)
+                    .collect {
+                        if (uiState.updateInfo != null) {
+                            updateManager.startUpdateFlowForResult(
+                                uiState.updateInfo,
+                                updateLauncher,
+                                AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
+                            )
+                        }
+                    }
             }
         }
     }
