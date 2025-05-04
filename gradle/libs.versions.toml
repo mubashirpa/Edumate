@@ -28,6 +28,7 @@ pdfViewer = "2.3.3"
 googleServices = "4.4.2"
 firebaseBom = "33.13.0"
 firebaseCrashlytics = "3.0.3"
+appUpdateKtx = "2.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -75,6 +76,7 @@ pdf-viewer = { group = "io.github.afreakyelf", name = "Pdf-Viewer", version.ref 
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
+app-update-ktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "appUpdateKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -26,8 +26,8 @@ android {
         applicationId = "app.edumate"
         minSdk = 24
         targetSdk = 35
-        versionCode = 10101 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
-        versionName = "1.1.1"
+        versionCode = 10102 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
+        versionName = "1.1.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -123,4 +123,5 @@ dependencies {
     implementation(libs.pdf.viewer)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
+    implementation(libs.app.update.ktx)
 }
