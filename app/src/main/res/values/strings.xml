@@ -209,6 +209,7 @@
     <string name="unsubmit">Unsubmit</string>
     <string name="update">Update</string>
     <string name="update_password_description">Create a strong password for updating %1$s</string>
+    <string name="update_failed">Update failed!</string>
     <string name="updating_password">Updating password</string>
     <string name="upload_file">Upload file</string>
     <string name="verify_your_account">Verify your account</string>
