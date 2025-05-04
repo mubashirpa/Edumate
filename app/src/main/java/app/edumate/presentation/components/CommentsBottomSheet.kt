@@ -1,24 +1,18 @@
 package app.edumate.presentation.components
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,14 +20,12 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,7 +42,6 @@ import app.edumate.core.Result
 import app.edumate.core.UiText
 import app.edumate.domain.model.comment.Comment
 import app.edumate.presentation.courseDetails.CourseUserRole
-import kotlin.collections.orEmpty
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,12 +58,6 @@ fun CommentsBottomSheet(
         val snackbarHostState = remember { SnackbarHostState() }
         val focusRequester = remember { FocusRequester() }
         val context = LocalContext.current
-        val isFullscreen = bottomSheetState.targetValue == SheetValue.Expanded
-        val cornerSize by animateDpAsState(
-            targetValue = if (isFullscreen) 0.dp else 28.dp,
-            label = stringResource(id = R.string.label_animate_bottom_sheet_corner_size),
-        )
-        val paddingValues = WindowInsets.systemBars.asPaddingValues()
 
         uiState.userMessage?.let { userMessage ->
             LaunchedEffect(userMessage) {
@@ -85,14 +70,6 @@ fun CommentsBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
-            shape = RoundedCornerShape(topStart = cornerSize, topEnd = cornerSize),
-            dragHandle = {
-                val topPadding by animateDpAsState(
-                    targetValue = if (isFullscreen) paddingValues.calculateTopPadding() else 0.dp,
-                    label = stringResource(id = R.string.label_animate_bottom_sheet_top_padding),
-                )
-                BottomSheetDefaults.DragHandle(modifier = Modifier.padding(top = topPadding))
-            },
         ) {
             Box(modifier = Modifier.fillMaxSize()) {
                 Column {
@@ -181,7 +158,10 @@ fun CommentsBottomSheet(
                 }
                 SnackbarHost(
                     hostState = snackbarHostState,
-                    modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 88.dp),
+                    modifier =
+                        Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 88.dp),
                 )
             }
         }

@@ -2,26 +2,20 @@ package app.edumate.presentation.viewCourseWork.components
 
 import android.content.Intent
 import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBars
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.BottomSheetDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -30,14 +24,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SheetValue
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -79,14 +71,6 @@ fun StudentSubmissionBottomSheet(
         val context = LocalContext.current
         val scrollState = rememberScrollState()
         val snackbarHostState = remember { SnackbarHostState() }
-        val isFullscreen =
-            bottomSheetState.targetValue == SheetValue.Expanded &&
-                (scrollState.canScrollForward || scrollState.canScrollBackward)
-        val cornerSize by animateDpAsState(
-            targetValue = if (isFullscreen) 0.dp else 28.dp,
-            label = stringResource(id = R.string.label_animate_bottom_sheet_corner_size),
-        )
-        val paddingValues = WindowInsets.systemBars.asPaddingValues()
 
         userMessage?.let { userMessage ->
             LaunchedEffect(userMessage) {
@@ -98,14 +82,6 @@ fun StudentSubmissionBottomSheet(
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
             sheetState = bottomSheetState,
-            shape = RoundedCornerShape(topStart = cornerSize, topEnd = cornerSize),
-            dragHandle = {
-                val topPadding by animateDpAsState(
-                    targetValue = if (isFullscreen) paddingValues.calculateTopPadding() else 0.dp,
-                    label = stringResource(id = R.string.label_animate_bottom_sheet_top_padding),
-                )
-                BottomSheetDefaults.DragHandle(modifier = Modifier.padding(top = topPadding))
-            },
         ) {
             Box {
                 Column(
