@@ -1,6 +1,5 @@
 package app.edumate.di
 
-import app.edumate.domain.usecase.CheckUpdateUseCase
 import app.edumate.domain.usecase.GetUrlMetadataUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementCommentUseCase
 import app.edumate.domain.usecase.announcement.CreateAnnouncementUseCase
@@ -62,7 +61,6 @@ import org.koin.dsl.module
 val useCaseModule =
     module {
         singleOf(::ConfigureAppThemeUseCase)
-        singleOf(::CheckUpdateUseCase)
         singleOf(::CreateAnnouncementCommentUseCase)
         singleOf(::CreateAnnouncementUseCase)
         singleOf(::CreateAssignmentUseCase)
