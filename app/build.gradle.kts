@@ -20,14 +20,14 @@ plugins {
 
 android {
     namespace = "app.edumate"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "app.edumate"
         minSdk = 24
-        targetSdk = 35
-        versionCode = 10107 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
-        versionName = "1.1.7"
+        targetSdk = 36
+        versionCode = 10200 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
+        versionName = "1.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
