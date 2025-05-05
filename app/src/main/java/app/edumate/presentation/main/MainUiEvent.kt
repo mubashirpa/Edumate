@@ -8,4 +8,6 @@ sealed class MainUiEvent {
     data class OnOpenRequestNotificationPermissionDialogChange(
         val open: Boolean,
     ) : MainUiEvent()
+
+    data object OnResume : MainUiEvent()
 }

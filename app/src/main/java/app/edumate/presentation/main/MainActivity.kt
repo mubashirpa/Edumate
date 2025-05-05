@@ -48,6 +48,11 @@ class MainActivity : ComponentActivity() {
         setupContent()
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onEvent(MainUiEvent.OnResume)
+    }
+
     private fun setupContent() {
         setContent {
             val navController = rememberNavController()
@@ -92,9 +97,9 @@ class MainActivity : ComponentActivity() {
                     .filter { it.updateAvailable }
                     .flowWithLifecycle(lifecycle)
                     .collect {
-                        if (uiState.updateInfo != null) {
+                        it.updateInfo?.let { updateInfo ->
                             updateManager.startUpdateFlowForResult(
-                                uiState.updateInfo,
+                                updateInfo,
                                 updateLauncher,
                                 AppUpdateOptions.newBuilder(AppUpdateType.IMMEDIATE).build(),
                             )

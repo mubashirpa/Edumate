@@ -5,16 +5,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.edumate.core.Result
-import app.edumate.domain.usecase.CheckUpdateUseCase
 import app.edumate.domain.usecase.authentication.IsUserLoggedInUseCase
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.UpdateAvailability
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class MainViewModel(
     isUserLoggedInUseCase: IsUserLoggedInUseCase,
-    private val checkUpdateUseCase: CheckUpdateUseCase,
+    private val updateManager: AppUpdateManager,
 ) : ViewModel() {
     var uiState by mutableStateOf(MainUiState())
         private set
@@ -31,29 +31,50 @@ class MainViewModel(
     }
 
     fun onEvent(event: MainUiEvent) {
-        uiState =
-            when (event) {
-                is MainUiEvent.OnNotificationPermissionRequestedChange -> {
-                    uiState.copy(notificationPermissionRequested = event.requested)
-                }
-
-                is MainUiEvent.OnOpenRequestNotificationPermissionDialogChange -> {
-                    uiState.copy(openRequestNotificationPermissionDialog = event.open)
-                }
+        when (event) {
+            is MainUiEvent.OnNotificationPermissionRequestedChange -> {
+                uiState = uiState.copy(notificationPermissionRequested = event.requested)
             }
+
+            is MainUiEvent.OnOpenRequestNotificationPermissionDialogChange -> {
+                uiState = uiState.copy(openRequestNotificationPermissionDialog = event.open)
+            }
+
+            MainUiEvent.OnResume -> {
+                resumeUpdate()
+            }
+        }
     }
 
     private fun checkUpdate() {
-        checkUpdateUseCase()
-            .onEach { result ->
-                if (result is Result.Success) {
-                    val updateInfo = result.data!!
+        viewModelScope.launch(Dispatchers.IO) {
+            val updateInfoTask = updateManager.appUpdateInfo
+            updateInfoTask.addOnSuccessListener { updateInfo ->
+                if (updateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE &&
+                    updateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+                ) {
                     uiState =
                         uiState.copy(
                             updateAvailable = true,
                             updateInfo = updateInfo,
                         )
                 }
-            }.launchIn(viewModelScope)
+            }
+        }
+    }
+
+    private fun resumeUpdate() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val updateInfoTask = updateManager.appUpdateInfo
+            updateInfoTask.addOnSuccessListener { updateInfo ->
+                if (updateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    uiState =
+                        uiState.copy(
+                            updateAvailable = true,
+                            updateInfo = updateInfo,
+                        )
+                }
+            }
+        }
     }
 }
