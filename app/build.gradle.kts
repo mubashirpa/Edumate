@@ -123,5 +123,5 @@ dependencies {
     implementation(libs.pdf.viewer)
     implementation(platform(libs.firebase.bom))
     implementation(libs.bundles.firebase)
-    implementation(libs.app.update.ktx)
+    implementation(libs.bundles.google.play)
 }
