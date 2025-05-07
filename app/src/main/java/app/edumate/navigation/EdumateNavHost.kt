@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.imePadding
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -30,7 +29,6 @@ import app.edumate.presentation.settings.SettingsScreen
 import app.edumate.presentation.settings.SettingsViewModel
 import org.koin.androidx.compose.koinViewModel
 
-@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun EdumateNavHost(
     navController: NavHostController,
@@ -111,7 +109,8 @@ fun EdumateNavHost(
             CreateCourseScreen(
                 onNavigateToCourseDetails = { courseId ->
                     navController.previousBackStackEntry
-                        ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
+                        ?.savedStateHandle
+                        ?.set(Navigation.Args.CREATE_COURSE_SUCCESS, true)
                     if (route.courseId == null) {
                         navController.navigate(Screen.CourseDetails(courseId)) {
                             popUpTo<Screen.Home>()
@@ -119,8 +118,8 @@ fun EdumateNavHost(
                     } else {
                         // For course details screen
                         navController.previousBackStackEntry
-                            ?.savedStateHandle[Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS] =
-                            true
+                            ?.savedStateHandle
+                            ?.set(Navigation.Args.UPDATE_COURSE_SETTINGS_SUCCESS, true)
                         navController.navigateUp()
                     }
                 },
@@ -167,7 +166,8 @@ fun EdumateNavHost(
                 },
                 onLeaveCourse = {
                     navController.previousBackStackEntry
-                        ?.savedStateHandle[Navigation.Args.CREATE_COURSE_SUCCESS] = true
+                        ?.savedStateHandle
+                        ?.set(Navigation.Args.CREATE_COURSE_SUCCESS, true)
                     navController.navigateUp()
                 },
             )
