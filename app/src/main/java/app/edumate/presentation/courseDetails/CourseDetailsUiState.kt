@@ -6,4 +6,5 @@ import app.edumate.domain.model.course.CourseWithMembers
 data class CourseDetailsUiState(
     val courseResult: Result<CourseWithMembers> = Result.Empty(),
     val currentUserRole: CourseUserRole = CourseUserRole.Student,
+    val openReviewDialog: Boolean = false,
 )

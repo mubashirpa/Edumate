@@ -13,14 +13,20 @@ import app.edumate.core.UiText
 import app.edumate.domain.model.member.UserRole
 import app.edumate.domain.usecase.authentication.GetCurrentUserUseCase
 import app.edumate.domain.usecase.course.GetCourseWithMembersUseCase
+import app.edumate.domain.usecase.preferences.GetUserPreferencesUseCase
+import app.edumate.domain.usecase.preferences.UpdateReviewDialogShownUseCase
 import app.edumate.navigation.Screen
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import java.util.concurrent.TimeUnit
 
 class CourseDetailsViewModel(
     savedStateHandle: SavedStateHandle,
     private val getCurrentUserUseCase: GetCurrentUserUseCase,
     private val getCourseWithMembersUseCase: GetCourseWithMembersUseCase,
+    private val getUserPreferencesUseCase: GetUserPreferencesUseCase,
+    private val updateReviewDialogShownUseCase: UpdateReviewDialogShownUseCase,
 ) : ViewModel() {
     var uiState by mutableStateOf(CourseDetailsUiState())
         private set
@@ -30,6 +36,7 @@ class CourseDetailsViewModel(
 
     init {
         getCurrentUser()
+        getUserPreferences()
         getCourse()
     }
 
@@ -37,6 +44,10 @@ class CourseDetailsViewModel(
         when (event) {
             CourseDetailsUiEvent.Retry -> {
                 getCourse()
+            }
+
+            CourseDetailsUiEvent.ReviewDialogShown -> {
+                updateReviewDialogShownTime()
             }
         }
     }
@@ -99,5 +110,29 @@ class CourseDetailsViewModel(
                         }
                     }
             }.launchIn(viewModelScope)
+    }
+
+    private fun getUserPreferences() {
+        viewModelScope.launch {
+            getUserPreferencesUseCase().collect { userPreferences ->
+                val reviewTimeout = TimeUnit.MILLISECONDS.convert(4, TimeUnit.DAYS)
+                val reviewShownAt = userPreferences.lastReviewShownAt
+
+                when {
+                    reviewShownAt == 0L -> {
+                        updateReviewDialogShownTime()
+                    }
+
+                    else -> {
+                        val open = System.currentTimeMillis() - reviewShownAt >= reviewTimeout
+                        uiState = uiState.copy(openReviewDialog = open)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun updateReviewDialogShownTime() {
+        updateReviewDialogShownUseCase(System.currentTimeMillis()).launchIn(viewModelScope)
     }
 }

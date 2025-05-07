@@ -1,5 +1,8 @@
 package app.edumate.presentation.courseDetails
 
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.consumeWindowInsets
@@ -21,6 +24,8 @@ import app.edumate.navigation.CourseDetailsNavHost
 import app.edumate.presentation.components.ErrorScreen
 import app.edumate.presentation.components.LoadingScreen
 import app.edumate.presentation.courseDetails.components.CourseDetailsNavigationBar
+import com.google.android.play.core.review.ReviewManager
+import org.koin.compose.koinInject
 
 @Composable
 fun CourseDetailsScreen(
@@ -32,7 +37,17 @@ fun CourseDetailsScreen(
     onNavigateToPdfViewer: (url: String, title: String?) -> Unit,
     onLeaveCourse: () -> Unit,
     modifier: Modifier = Modifier,
+    reviewManager: ReviewManager = koinInject(),
 ) {
+    val activity = LocalActivity.current as ComponentActivity
+
+    BackHandler(uiState.openReviewDialog) {
+        onEvent(CourseDetailsUiEvent.ReviewDialogShown)
+        showReview(reviewManager, activity) {
+            onNavigateUp()
+        }
+    }
+
     when (val courseResult = uiState.courseResult) {
         is Result.Empty -> {}
 
@@ -108,5 +123,24 @@ fun CourseDetailsContent(
                     .consumeWindowInsets(innerPadding)
                     .imePadding(),
         )
+    }
+}
+
+private fun showReview(
+    reviewManager: ReviewManager,
+    activity: ComponentActivity,
+    onReviewComplete: () -> Unit,
+) {
+    val request = reviewManager.requestReviewFlow()
+    request.addOnCompleteListener { task ->
+        if (task.isSuccessful) {
+            val reviewInfo = task.result
+            val flow = reviewManager.launchReviewFlow(activity, reviewInfo)
+            flow.addOnCompleteListener { _ ->
+                onReviewComplete()
+            }
+        } else {
+            onReviewComplete()
+        }
     }
 }
