@@ -11,6 +11,8 @@ interface UserPreferencesRepository {
 
     suspend fun configureAppTheme(appTheme: AppTheme)
 
+    suspend fun updateReviewDialogShownTime(lastReviewShownAt: Long)
+
     suspend fun configureLoginPreferences(
         email: String,
         password: String,

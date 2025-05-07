@@ -1,5 +1,6 @@
 package app.edumate.core
 
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 
 object Constants {
@@ -25,6 +26,7 @@ object Constants {
 
 object PreferencesKeys {
     val APP_THEME = stringPreferencesKey("app_theme")
+    val REVIEW_SHOWN_AT = longPreferencesKey("review_shown_at")
     val USER_EMAIL = stringPreferencesKey("user_email")
     val USER_PASSWORD = stringPreferencesKey("user_password")
 }

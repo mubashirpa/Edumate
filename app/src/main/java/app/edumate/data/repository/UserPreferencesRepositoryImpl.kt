@@ -29,8 +29,11 @@ class UserPreferencesRepositoryImpl(
                 }.map { preferences ->
                     val appTheme =
                         preferences[PreferencesKeys.APP_THEME] ?: AppTheme.SYSTEM_DEFAULT.name
+                    val lastReviewShownAt = preferences[PreferencesKeys.REVIEW_SHOWN_AT] ?: 0
+
                     UserPreferences(
                         appTheme = enumValueOf(appTheme),
+                        lastReviewShownAt = lastReviewShownAt,
                     )
                 }
 
@@ -55,6 +58,12 @@ class UserPreferencesRepositoryImpl(
     override suspend fun configureAppTheme(appTheme: AppTheme) {
         dataStore.edit { settings ->
             settings[PreferencesKeys.APP_THEME] = appTheme.name
+        }
+    }
+
+    override suspend fun updateReviewDialogShownTime(lastReviewShownAt: Long) {
+        dataStore.edit { settings ->
+            settings[PreferencesKeys.REVIEW_SHOWN_AT] = lastReviewShownAt
         }
     }
 
