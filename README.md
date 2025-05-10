@@ -4,6 +4,10 @@ Edumate makes it easy for learners and instructors to connect—inside and outsi
 It saves time and paper while simplifying class creation, assignment distribution, and
 communication.
 
+Currently available on the Play Store
+
+<a href='https://play.google.com/store/apps/details?id=app.edumate'><img alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png' height='80px'/></a>
+
 ## **Features**
 
 - **Easy Setup** – Teachers can add students directly or share a class code for quick onboarding.
@@ -13,18 +17,6 @@ communication.
   videos) seamlessly.
 - **Instant Communication** – Teachers can send announcements and initiate class discussions.
   Students can collaborate and answer questions.
-
-## **Download the App**
-
-Edumate is currently available on the **Amazon Appstore**.
-
-<a href='https://www.amazon.com/gp/product/B0DY4MQYB2'>
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-black.png">
-  <source media="(prefers-color-scheme: light)" srcset="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png">
-  <img alt="Get it on Amazon Appstore" src="https://images-na.ssl-images-amazon.com/images/G/01/mobile-apps/devportal2/res/images/amazon-appstore-badge-english-white.png" height='66px'>
-</picture>
-</a>
 
 ## **Screenshots**
 
@@ -57,8 +49,11 @@ To run the app locally:
    git clone https://github.com/your-repo/Edumate.git
    cd Edumate
    ```
-2. Open the project in **Android Studio**.
-3. Build and run the app on an emulator or physical device.
+2. Configure Firebase:
+    - Create a Firebase project.
+    - Download `google-services.json` and place it in the `app/` directory.
+3. Open the project in **Android Studio**.
+4. Build and run the app on an emulator or physical device.
 
 ## **Environment Variables**
 
