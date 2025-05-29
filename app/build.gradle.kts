@@ -26,8 +26,8 @@ android {
         applicationId = "app.edumate"
         minSdk = 24
         targetSdk = 36
-        versionCode = 10201 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
-        versionName = "1.2.1"
+        versionCode = 10202 // Format: MAJOR * 10000 + MINOR * 100 + PATCH
+        versionName = "1.2.2"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
