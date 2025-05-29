@@ -29,14 +29,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.net.toUri
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.compose.LocalLifecycleOwner
-import androidx.lifecycle.lifecycleScope
 import app.edumate.R
 import app.edumate.presentation.components.LoadingScreen
 import com.rajat.pdfviewer.PdfRendererView
+import com.rajat.pdfviewer.compose.PdfRendererViewCompose
 import com.rajat.pdfviewer.util.PdfSource
 import kotlinx.coroutines.launch
 
@@ -144,26 +141,4 @@ fun PdfViewerScreen(
             }
         }
     }
-}
-
-@Composable
-private fun PdfRendererViewCompose(
-    source: PdfSource.Remote,
-    modifier: Modifier = Modifier,
-    lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    statusCallBack: PdfRendererView.StatusCallBack? = null,
-) {
-    AndroidView(
-        factory = {
-            PdfRendererView(it).apply {
-                statusListener = statusCallBack
-                initWithUrl(
-                    url = source.url,
-                    lifecycleCoroutineScope = lifecycleOwner.lifecycleScope,
-                    lifecycle = lifecycleOwner.lifecycle,
-                )
-            }
-        },
-        modifier = modifier,
-    )
 }
